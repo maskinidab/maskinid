@@ -34,6 +34,16 @@ const TradeInPage = L(() => import("./pages/app/dealer/TradeInPage"), "TradeInPa
 const LeadsPage = L(() => import("./pages/app/dealer/LeadsPage"), "LeadsPage");
 const CustomersPage = L(() => import("./pages/app/dealer/LeadsPage"), "CustomersPage");
 const LabelsPage = L(() => import("./pages/app/dealer/LabelsPage"), "LabelsPage");
+const PortfolioPage = L(() => import("./pages/app/roles/PortfolioPage"), "PortfolioPage");
+const AlertsPage = L(() => import("./pages/app/roles/AlertsPage"), "AlertsPage");
+const WatchlistPage = L(() => import("./pages/app/roles/WatchlistPage"), "WatchlistPage");
+const VerifyQueuePage = L(() => import("./pages/app/roles/VerifyQueuePage"), "VerifyQueuePage");
+const VerifyReviewPage = L(() => import("./pages/app/roles/VerifyQueuePage"), "VerifyReviewPage");
+const AuthoritySearchPage = L(() => import("./pages/app/roles/AuthorityPages"), "AuthoritySearchPage");
+const FlagsPage = L(() => import("./pages/app/roles/AuthorityPages"), "FlagsPage");
+const ExportCheckPage = L(() => import("./pages/app/roles/AuthorityPages"), "ExportCheckPage");
+const ExportsPage = L(() => import("./pages/app/roles/AuthorityPages"), "ExportsPage");
+const OemPage = L(() => import("./pages/app/roles/OemPage"), "OemPage");
 const ImportPage = L(() => import("./pages/app/import/ImportPage"), "ImportPage");
 const NewEncumbrancePage = L(() => import("./pages/app/encumbrances/NewEncumbrancePage"), "NewEncumbrancePage");
 
@@ -75,4 +85,15 @@ export const appRoutes: { path: string; element: ReactNode }[] = [
   { path: "rentals", element: <RentalsPage /> },
   { path: "client-reports", element: <ClientReportsPage /> },
   { path: "inspections/new", element: <InspectionNewPage /> },
+  { path: "portfolio", element: <PortfolioPage /> },
+  { path: "alerts", element: <AlertsPage /> },
+  { path: "watchlist", element: <WatchlistPage /> },
+  { path: "verify", element: <VerifyQueuePage /> },
+  { path: "bookings", element: <VerifyQueuePage /> },
+  { path: "verify/:id", element: <VerifyReviewPage /> },
+  { path: "search", element: <AuthoritySearchPage /> },
+  { path: "flags", element: <FlagsPage /> },
+  { path: "export-check", element: <ExportCheckPage /> },
+  { path: "exports", element: <ExportsPage /> },
+  { path: "oem", element: <OemPage /> },
 ];

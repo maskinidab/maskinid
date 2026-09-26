@@ -24,7 +24,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 11 | Import | ✅ | ADR 0012 (parsning i webbläsaren, en signatur per finansiärsimport) |
 | 12 | Flotta | ✅ | Jobben schemaläggs i steg 26 (pg_cron) |
 | 13 | Handlare | ✅ | |
-| 14 | Roller/portaler | ⬜ | |
+| 14 | Roller/portaler | ✅ | |
 | 15 | API & webhooks | ⬜ | |
 | 16 | Marknadsbevakning | ⬜ | |
 | 17 | Operatörsadmin | ⬜ | |
@@ -172,4 +172,13 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   dela rapport, lagerstatus), `/sales/new`, `/trade-in` (skanna ⇒ begär inbyte), `/leads`, `/customers`, `/labels`
   (beställ märken, batcher, märkeslista), publik `/ad/:reg` med "Kontakta säljaren". Fynd: demoseedens
   organisationsnummer klarade inte kontrollsiffran så uppslag i UI misslyckades ⇒ rättade + test.
+- **Steg 14** – Roller (§7.4, §7.5, §9.2): migration `roles` – watchlist (bevakning med notis via trigger på events,
+  aldrig till den som orsakade händelsen), `list_portfolio` (finansiär: förbehåll, försäkringsbolag: försäkringar),
+  `list_alerts`, försäkringskrav på verifieringsnivå + länk för skadeanmälan (visas för ägaren),
+  `authority_search` (delsök ≥ 4 tecken, loggas), `list_flags` (med senaste skanning), beredskapsexport
+  (aggregat per län/kategori/viktklass, inga ägaruppgifter), registerutdrag (U-nummer + SHA-256, inga
+  personnummer, verifierbart på `/receipt`), tillverkarens leveransdata (`submit_oem_records`, matchning mot
+  registrerade maskiner). Webb: `/portfolio`, `/alerts`, `/watchlist`, `/verify` + `/verify/:id` (granskning med
+  underlag, nivå 2 kräver skyltavläsning), `/bookings`, `/search`, `/flags`, `/export-check`, `/exports`, `/oem`,
+  registerutdrag-PDF och skadeanmälan på maskinsidan.
 

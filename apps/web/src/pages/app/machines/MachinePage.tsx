@@ -15,6 +15,8 @@ import { rpc, useRpc, useRpcMutation } from "../../../lib/api/query";
 import type { DocumentItem, Encumbrance, Flag, HistoryEvent, MachineView } from "../../../lib/api/types";
 import { backend } from "../../../lib/backend";
 import { formatDate, formatDateTime, formatMonth, formatNumber } from "../../../lib/format";
+import { extractPdf } from "../../../lib/pdf/extract";
+import { downloadBytes } from "../../../lib/pdf/receipt";
 import { ServiceTab } from "./ServiceTab";
 import {
   BindLabelDialog, ClearFlagDialog, DeregisterDialog, EditMachineDialog, EncumbranceDialog, FlagDialog, ReleaseEncumbranceDialog,
@@ -56,6 +58,10 @@ export function MachinePage() {
   ];
   const tab: Tab = tabs.some((x) => x.id === tabParam) ? (tabParam as Tab) : "overview";
   const active = m.financing?.active ?? null;
+  async function extract() {
+    const x = await rpc<{ report_number: string; result_hash: string; result: never }>("create_register_extract", { p_org_id: orgId, p_machine_id: m.id });
+    downloadBytes(await extractPdf(x.result, x, t), `registerutdrag-${x.report_number}.pdf`);
+  }
   const flags = m.flags.filter((f) => f.status === "active");
 
   // Actions per role (SPEC §9.2). Every legal step opens a summary + signature.
@@ -102,10 +108,20 @@ export function MachinePage() {
               org: (m.rental as { lessee: string; lessor: string })[m.relations.includes("lessee") ? "lessor" : "lessee"],
               date: formatDate((m.rental as { to: string }).to) })}</p>
           )}
+          {m.insurance_requirement != null && (
+            <Notice kind="info" title={t("machine.insurer_requires", { insurer: (m.insurance_requirement as { insurer: string }).insurer,
+              level: t(`level.${(m.insurance_requirement as { level: number }).level}.name`) })} />
+          )}
           {m.open_transfer && (
             <Notice kind="info" title={t("machine.transfer_open_status", { status: t(`enum.transfer_status.${m.open_transfer.status}`) })}>
               <Link className="mid-lank" to={path(`transfers/${m.open_transfer.id}`)}>{t("common.open")}</Link>
             </Notice>
+          )}
+          {(isOwner || has("authority")) && m.status !== "draft" && (
+            <div className="mid-rad">
+              <button type="button" className="mid-knapp mid-knapp-text mid-knapp-liten" onClick={() => void extract()}><Icon name="dokument" />{t("extract.create")}</button>
+              {typeof m.claim_url === "string" && <a className="mid-knapp mid-knapp-text mid-knapp-liten" href={m.claim_url} target="_blank" rel="noopener noreferrer"><Icon name="extern" />{t("machine.claim")}</a>}
+            </div>
           )}
           {actions.length > 0 && (
             <div className="mid-rad">

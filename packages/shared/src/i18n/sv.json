@@ -118,6 +118,43 @@
   "sent": "Tack. Säljaren har fått ditt meddelande.",
   "serial": "Serienummer {{serial}}"
  },
+ "alerts": {
+  "empty": "Inga larm",
+  "lead": "Det som andra har gjort med maskiner i er portfölj: flaggor, ägarbyten, förbehåll och försök till dubbla förbehåll.",
+  "system": "MaskinID",
+  "type": {
+   "conflict": {
+    "created": "Konflikt"
+   },
+   "encumbrance": {
+    "registered": "Förbehåll registrerat",
+    "released": "Förbehåll släppt"
+   },
+   "flag": {
+    "cleared": "Flagga borttagen",
+    "raised": "Flaggad"
+   },
+   "machine": {
+    "deregistered": "Avregistrerad",
+    "scanned_while_stolen": "Stulen maskin skannad"
+   },
+   "market": {
+    "alert": "Marknadslarm",
+    "listed": "Ute till försäljning"
+   },
+   "ownership": {
+    "transferred": "Ny ägare"
+   },
+   "sighting": {
+    "reported": "Maskinen har setts"
+   },
+   "transfer": {
+    "initiated": "Ägarbyte påbörjat"
+   }
+  },
+  "what": "Händelse",
+  "who": "Av"
+ },
  "auth": {
   "callback_title": "Loggar in",
   "create_account": "Skapa konto",
@@ -147,6 +184,35 @@
   "sign_up_lead": "Registrering är gratis. Du verifierar din identitet med BankID i nästa steg.",
   "sign_up_title": "Skapa konto",
   "signing_in": "Loggar in …"
+ },
+ "authority": {
+  "count": "Antal",
+  "county": "Län",
+  "export_clear": "Inga förbehåll eller flaggor.",
+  "export_financed": "Varning: aktivt förbehåll hos {{holder}}. Export kräver innehavarens medgivande.",
+  "export_lead": "Slå upp maskinen vid gränsen. Aktivt förbehåll eller stöldflagga ger en varning.",
+  "export_stolen": "Varning: maskinen är efterlyst eller beslagtagen.",
+  "flags_active": "Aktiva",
+  "flags_cleared": "Borttagna",
+  "flags_lead": "Efterlysta, beslagtagna och spärrade maskiner med senaste skanning.",
+  "last_scan": "Senast skannad",
+  "logged": "Sökningen och varje träff loggas i åtkomstloggen.",
+  "no_flags": "Inga flaggor",
+  "prep_lead": "Sammanställning per län, kategori och viktklass för beredskapsplanering. Innehåller inga ägaruppgifter.",
+  "prep_run": "Ta fram sammanställning",
+  "prep_total": "{{count}} maskiner totalt, {{date}}.",
+  "query": "Regnr eller serienummer (minst 4 tecken)",
+  "query_hint": "Del av numret räcker.",
+  "search_lead": "Sök på del av regnr eller serienummer, eller på tillverkare, modell och år. Varje träff loggas.",
+  "unknown_county": "Okänt län",
+  "weight": {
+   "10_30t": "10–30 ton",
+   "1_5_10t": "1,5–10 ton",
+   "gt_30t": "Över 30 ton",
+   "lt_1_5t": "Under 1,5 ton",
+   "unknown": "Okänd vikt"
+  },
+  "weight_class": "Viktklass"
  },
  "bankid": {
   "demo_hint": "Det här är Demo-BankID. Ingen riktig signering görs.",
@@ -891,6 +957,19 @@
    "updated": "{{actor}} kompletterade verifieringen"
   }
  },
+ "extract": {
+  "create": "Registerutdrag (PDF)",
+  "encumbrances": "Finansieringsförbehåll",
+  "flag_active": "aktiv",
+  "flag_cleared": "borttagen",
+  "footer": "Utdraget innehåller inga personnummer. Enskilda firmors organisationsnummer är maskerade. Registret innehåller aldrig belopp.",
+  "issued": "Utfärdat",
+  "number": "Utdragsnummer",
+  "owner": "Registrerad ägare",
+  "ownerships": "Ägarhistorik",
+  "title": "Registerutdrag",
+  "verified": "kontrollerad mot skylten"
+ },
  "fleet": {
   "all_machines": "Alla maskiner",
   "archive": "Avsluta projektet (maskinerna släpps)",
@@ -1134,6 +1213,7 @@
  "machine": {
   "access_log": "Vem har tittat",
   "access_log_lead": "Skanningar, kontroller och uppslag på maskinen. Privatpersoner visas utan namn.",
+  "claim": "Anmäl skada",
   "confirm_encumbrance": "Bekräfta förbehållet",
   "doc_status": {
    "failed": "Misslyckades",
@@ -1149,6 +1229,7 @@
   "inspected_until": "Besiktigad t.o.m. {{date}}",
   "inspection_missing": "Besiktning saknas",
   "insured": "Försäkrad",
+  "insurer_requires": "{{insurer}} kräver att maskinen är {{level}}.",
   "label": "Märke",
   "last_transfer": "Senaste ägarbyte",
   "no_access": "Ingen har tittat ännu",
@@ -1380,6 +1461,12 @@
     "title": "Besiktning registrerad"
    }
   },
+  "insurance": {
+   "requires_verification": {
+    "body": "{{insurer}} kräver högre verifieringsnivå för {{reg_number}}.",
+    "title": "Försäkringen kräver verifiering"
+   }
+  },
   "labels": {
    "ordered": {
     "body": "{{org}} beställde {{quantity}} märken.",
@@ -1517,7 +1604,26 @@
     "body": "Ägaren har kompletterat underlaget.",
     "title": "Verifieringen är kompletterad"
    }
+  },
+  "watch": {
+   "hit": {
+    "body": "Något har hänt med {{reg_number}}. Se Bevakning.",
+    "title": "Bevakning: {{value}}"
+   }
   }
+ },
+ "oem": {
+  "delivered": "Levererad",
+  "empty": "Ingen leveransdata ännu",
+  "errors": "Rader med fel: {{rows}}",
+  "file": "Fil med leveransdata",
+  "file_hint": "CSV eller XLSX med mallens kolumner. Befintliga serienummer uppdateras. Även via API.",
+  "lead": "Leveransdata per serienummer. När en maskin registreras med serienumret fylls teknisk data i automatiskt.",
+  "matched": "Registrerade maskiner",
+  "registered": "Regnr",
+  "saved_one": "{{count}} rad sparad",
+  "saved_other": "{{count}} rader sparade",
+  "total": "Serienummer"
  },
  "onboarding": {
   "accept": "Gå med",
@@ -1599,6 +1705,19 @@
   "snapshot": "Kvittot är en ögonblicksbild och ersätter inte en ny kontroll vid ett senare tillfälle.",
   "verify_at": "Kontrollera kvittot på {{url}} med kvittonummer och kontrollsumma.",
   "yes_caps": "JA – aktivt förbehåll finns"
+ },
+ "portfolio": {
+  "claim_url": "Länk för skadeanmälan",
+  "claim_url_hint": "Visas för ägaren på maskiner ni försäkrar.",
+  "empty": "Portföljen är tom",
+  "flagged": "Flaggade",
+  "in_transfer": "I ägarbyte",
+  "last_event": "Senaste händelse",
+  "lead_financier": "Maskiner med ert förbehåll: status, flaggor och pågående ägarbyten.",
+  "lead_insurer": "Maskiner ni försäkrar. Ställ krav på verifieringsnivå per försäkring.",
+  "no_requirement": "Inget krav",
+  "pending": "Att bekräfta",
+  "requirement": "Krav"
  },
  "public": {
   "actors_title": "Värde för alla i kedjan",
@@ -1846,6 +1965,37 @@
   "waiting_awaiting_buyer": "Väntar på att köparen godkänner.",
   "waiting_awaiting_financier": "Väntar på finansiärens beslut.",
   "waiting_draft": "Utkast, inte skickat."
+ },
+ "verifyq": {
+  "approve": "Godkänn",
+  "bookings_lead": "Besök för fysisk verifiering (nivå 2).",
+  "decision": "Beslut",
+  "documents": "Underlag",
+  "empty": "Inga förfrågningar",
+  "lead": "Förfrågningar där ägaren valt er som granskare.",
+  "nameplate_hint": "Läs av skylten på plats. Måste stämma med registret.",
+  "nameplate_serial": "Serienummer enligt skylten",
+  "needs_info": "Begär komplettering",
+  "no_documents": "Inga dokument bifogade.",
+  "note_hint": "Krävs vid avslag eller komplettering. Ägaren ser texten.",
+  "owner_note": "Ägarens meddelande",
+  "register_data": "Registret",
+  "reject": "Avslå",
+  "requested_by": "Från",
+  "review_lead": "Från {{org}}, {{date}}.",
+  "review_title": "Granska: {{level}}",
+  "site": "Plats: {{address}}, önskat datum {{date}}.",
+  "when_where": "När och var"
+ },
+ "watch": {
+  "add": "Bevaka",
+  "bulk": "Flera på en gång",
+  "bulk_hint": "Ett värde per rad, högst 1 000.",
+  "empty": "Inga bevakningar",
+  "lead": "Få en notis när ett bevakat regnr eller serienummer registreras, flaggas, byter ägare eller belånas.",
+  "match": "I registret",
+  "not_registered": "Inte registrerad",
+  "since": "Sedan"
  },
  "wizard": {
   "autosave": "Utkastet sparas automatiskt.",

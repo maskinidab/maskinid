@@ -118,6 +118,43 @@
   "sent": "Thank you. The seller has received your message.",
   "serial": "Serial number {{serial}}"
  },
+ "alerts": {
+  "empty": "No alerts",
+  "lead": "What others have done to machines in your portfolio: flags, transfers, encumbrances and double-encumbrance attempts.",
+  "system": "MaskinID",
+  "type": {
+   "conflict": {
+    "created": "Conflict"
+   },
+   "encumbrance": {
+    "registered": "Encumbrance registered",
+    "released": "Encumbrance released"
+   },
+   "flag": {
+    "cleared": "Flag cleared",
+    "raised": "Flagged"
+   },
+   "machine": {
+    "deregistered": "Deregistered",
+    "scanned_while_stolen": "Stolen machine scanned"
+   },
+   "market": {
+    "alert": "Market alert",
+    "listed": "Listed for sale"
+   },
+   "ownership": {
+    "transferred": "New owner"
+   },
+   "sighting": {
+    "reported": "Machine sighted"
+   },
+   "transfer": {
+    "initiated": "Transfer started"
+   }
+  },
+  "what": "Event",
+  "who": "By"
+ },
  "auth": {
   "callback_title": "Signing in",
   "create_account": "Create account",
@@ -147,6 +184,35 @@
   "sign_up_lead": "Registration is free. You verify your identity with BankID in the next step.",
   "sign_up_title": "Create account",
   "signing_in": "Signing in …"
+ },
+ "authority": {
+  "count": "Count",
+  "county": "County",
+  "export_clear": "No encumbrances or flags.",
+  "export_financed": "Warning: active encumbrance with {{holder}}. Export requires the holder's consent.",
+  "export_lead": "Look up the machine at the border. An active encumbrance or theft flag gives a warning.",
+  "export_stolen": "Warning: the machine is wanted or seized.",
+  "flags_active": "Active",
+  "flags_cleared": "Cleared",
+  "flags_lead": "Wanted, seized and blocked machines with the latest scan.",
+  "last_scan": "Last scanned",
+  "logged": "The search and every hit are logged in the access log.",
+  "no_flags": "No flags",
+  "prep_lead": "Summary by county, category and weight class for preparedness planning. Contains no owner data.",
+  "prep_run": "Generate summary",
+  "prep_total": "{{count}} machines in total, {{date}}.",
+  "query": "Reg number or serial (at least 4 characters)",
+  "query_hint": "Part of the number is enough.",
+  "search_lead": "Search on part of the reg number or serial, or by make, model and year. Every hit is logged.",
+  "unknown_county": "Unknown county",
+  "weight": {
+   "10_30t": "10–30 t",
+   "1_5_10t": "1.5–10 t",
+   "gt_30t": "Over 30 t",
+   "lt_1_5t": "Under 1.5 t",
+   "unknown": "Unknown weight"
+  },
+  "weight_class": "Weight class"
  },
  "bankid": {
   "demo_hint": "This is Demo BankID. No real signing takes place.",
@@ -891,6 +957,19 @@
    "updated": "{{actor}} added documents"
   }
  },
+ "extract": {
+  "create": "Register extract (PDF)",
+  "encumbrances": "Financing encumbrances",
+  "flag_active": "active",
+  "flag_cleared": "cleared",
+  "footer": "The extract contains no personal identity numbers. Sole traders' numbers are masked. The register never contains amounts.",
+  "issued": "Issued",
+  "number": "Extract number",
+  "owner": "Registered owner",
+  "ownerships": "Ownership history",
+  "title": "Register extract",
+  "verified": "checked against the nameplate"
+ },
  "fleet": {
   "all_machines": "All machines",
   "archive": "Close the project (machines are released)",
@@ -1134,6 +1213,7 @@
  "machine": {
   "access_log": "Who has looked",
   "access_log_lead": "Scans, checks and lookups of the machine. Private individuals are shown without name.",
+  "claim": "Report a claim",
   "confirm_encumbrance": "Confirm the encumbrance",
   "doc_status": {
    "failed": "Failed",
@@ -1149,6 +1229,7 @@
   "inspected_until": "Inspected until {{date}}",
   "inspection_missing": "Inspection missing",
   "insured": "Insured",
+  "insurer_requires": "{{insurer}} requires the machine to be {{level}}.",
   "label": "Label",
   "last_transfer": "Latest change of ownership",
   "no_access": "Nobody has looked yet",
@@ -1380,6 +1461,12 @@
     "title": "Inspection recorded"
    }
   },
+  "insurance": {
+   "requires_verification": {
+    "body": "{{insurer}} requires a higher verification level for {{reg_number}}.",
+    "title": "The insurance requires verification"
+   }
+  },
   "labels": {
    "ordered": {
     "body": "{{org}} ordered {{quantity}} labels.",
@@ -1517,7 +1604,26 @@
     "body": "The owner has added documents.",
     "title": "Verification updated"
    }
+  },
+  "watch": {
+   "hit": {
+    "body": "Something happened to {{reg_number}}. See Watchlist.",
+    "title": "Watch: {{value}}"
+   }
   }
+ },
+ "oem": {
+  "delivered": "Delivered",
+  "empty": "No delivery data yet",
+  "errors": "Rows with errors: {{rows}}",
+  "file": "Delivery data file",
+  "file_hint": "CSV or XLSX with the template's columns. Existing serials are updated. Also via API.",
+  "lead": "Delivery data per serial number. When a machine is registered with the serial, technical data is filled in automatically.",
+  "matched": "Registered machines",
+  "registered": "Reg no",
+  "saved_one": "{{count}} row saved",
+  "saved_other": "{{count}} rows saved",
+  "total": "Serial numbers"
  },
  "onboarding": {
   "accept": "Join",
@@ -1599,6 +1705,19 @@
   "snapshot": "The receipt is a snapshot and does not replace a new check at a later time.",
   "verify_at": "Verify the receipt at {{url}} with the receipt number and checksum.",
   "yes_caps": "YES – active encumbrance"
+ },
+ "portfolio": {
+  "claim_url": "Claim link",
+  "claim_url_hint": "Shown to the owner on machines you insure.",
+  "empty": "The portfolio is empty",
+  "flagged": "Flagged",
+  "in_transfer": "In transfer",
+  "last_event": "Latest event",
+  "lead_financier": "Machines with your encumbrance: status, flags and transfers in progress.",
+  "lead_insurer": "Machines you insure. Set a verification level requirement per policy.",
+  "no_requirement": "No requirement",
+  "pending": "To confirm",
+  "requirement": "Requirement"
  },
  "public": {
   "actors_title": "Value for everyone in the chain",
@@ -1846,6 +1965,37 @@
   "waiting_awaiting_buyer": "Waiting for the buyer to approve.",
   "waiting_awaiting_financier": "Waiting for the financier's decision.",
   "waiting_draft": "Draft, not sent."
+ },
+ "verifyq": {
+  "approve": "Approve",
+  "bookings_lead": "Visits for physical verification (level 2).",
+  "decision": "Decision",
+  "documents": "Documents",
+  "empty": "No requests",
+  "lead": "Requests where the owner chose you as reviewer.",
+  "nameplate_hint": "Read the nameplate on site. Must match the register.",
+  "nameplate_serial": "Serial number on the nameplate",
+  "needs_info": "Ask for more",
+  "no_documents": "No documents attached.",
+  "note_hint": "Required when rejecting or asking for more. The owner sees the text.",
+  "owner_note": "Owner's message",
+  "register_data": "The register",
+  "reject": "Reject",
+  "requested_by": "From",
+  "review_lead": "From {{org}}, {{date}}.",
+  "review_title": "Review: {{level}}",
+  "site": "Site: {{address}}, preferred date {{date}}.",
+  "when_where": "When and where"
+ },
+ "watch": {
+  "add": "Watch",
+  "bulk": "Several at once",
+  "bulk_hint": "One value per line, at most 1,000.",
+  "empty": "Nothing watched",
+  "lead": "Get a notice when a watched reg number or serial is registered, flagged, changes owner or is encumbered.",
+  "match": "In the register",
+  "not_registered": "Not registered",
+  "since": "Since"
  },
  "wizard": {
   "autosave": "The draft is saved automatically.",
