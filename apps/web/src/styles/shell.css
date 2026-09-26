@@ -186,3 +186,18 @@
 .kvitto-flaggor { margin: 0; padding: var(--space-3) var(--space-5); border-top: 1px solid var(--linje); font-weight: 600; color: var(--status-sparr); }
 ul.handlingar { list-style: none; margin: 0; padding: 0; }
 .global-sok-knapp span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---------- Public pages ---------- */
+.fakta-kort { border-top: var(--stroke-register) solid var(--text); background: var(--yta-2); padding: var(--space-5); }
+.fakta-kort ul { list-style: none; margin: 0; padding: 0; }
+.fakta-rad { display: flex; gap: var(--space-2); align-items: flex-start; font-size: 15px; line-height: 22px; }
+.fakta-rad svg { width: 18px; height: 18px; flex: none; margin-top: 2px; }
+.aktorer-4 > div:nth-child(4n) { border-right: 0; }
+.aktorer-4 > div:nth-child(-n+4) { border-bottom: 1px solid var(--linje); }
+.aktor-ikon { width: 24px; height: 24px; }
+.publik-maskin .mid-post { max-width: none; }
+.statusbanner-tips { margin-top: var(--space-4); max-width: 560px; }
+.statusbanner-tips .mid-textarea { background: #fff; color: #000; }
+.statusbanner-knapp-kontur { color: #fff; border-color: #fff; }
+.statusbanner-tack { margin-top: var(--space-4); font-weight: 600; }
+.kodblock { font-family: var(--font-mono); font-size: 13px; line-height: 20px; background: var(--yta-2); padding: var(--space-4); overflow-x: auto; white-space: pre-wrap; word-break: break-all; margin: 0; }

@@ -335,6 +335,17 @@
    "serial": "Serienummer",
    "vin": "VIN"
   },
+  "inspection_result": {
+   "approved": "Godkänd",
+   "approved_with_remarks": "Godkänd med anmärkning",
+   "rejected": "Underkänd"
+  },
+  "inspection_type": {
+   "extraordinary": "Extra besiktning",
+   "first": "Första besiktning",
+   "periodic": "Återkommande besiktning",
+   "revision": "Revisionsbesiktning"
+  },
   "label_batch_status": {
    "cancelled": "Avbruten",
    "ordered": "Beställd",
@@ -357,6 +368,13 @@
    "exported": "Exporterad",
    "scrapped": "Skrotad",
    "stolen": "Anmäld stulen"
+  },
+  "maintenance_type": {
+   "hour_reading": "Timavläsning",
+   "inspection": "Kontroll",
+   "other": "Övrigt",
+   "repair": "Reparation",
+   "service": "Service"
   },
   "member_role": {
    "admin": "Administratör",
@@ -639,6 +657,24 @@
    "updated": "{{actor}} kompletterade verifieringen"
   }
  },
+ "fleet": {
+  "inspections": "Besiktningar",
+  "service": "Service"
+ },
+ "how": {
+  "disclaimer": "{{app}} är ett privat, frivilligt register och ingen myndighet.",
+  "financing_body": "En maskin kan ha högst ett aktivt finansieringsförbehåll. Ett andra försök stoppas och båda parter får besked. Belopp lagras aldrig.",
+  "financing_title": "Belåning och förbehåll",
+  "label_body": "Märket bryts om det tas bort och innehåller bara en länk. Skanningssidan visar de tre sista tecknen i serienumret så att du kan jämföra med typskylten.",
+  "label_title": "QR-märket",
+  "lead": "{{app}} ger varje maskin en identitet, en verifierad ägare och en historik som inte går att ändra i efterhand.",
+  "public_body": "Bara det som behövs för att bekräfta identitet och status: modell, status, verifieringsnivå och att en registrerad ägare finns. Aldrig ägarens namn.",
+  "public_title": "Vad visas publikt",
+  "regnr_body": "Sju tecken i formatet XXX-XXXX. Det sista tecknet är ett kontrolltecken, så felskrivningar upptäcks direkt. Numret liknar inte ett bilregistreringsnummer.",
+  "regnr_title": "Registreringsnummer",
+  "theft_body": "En stulen maskin visas med röd varning när den skannas. Ägaren får besked om var och när, och maskinen kan inte säljas eller belånas i registret.",
+  "theft_title": "Stöld"
+ },
  "identity": {
   "button": "Verifiera med BankID",
   "demo_button": "Verifiera med Demo-BankID",
@@ -678,6 +714,11 @@
   },
   "below_trusted": "Under er lägsta betrodda nivå ({{level}})",
   "label": "Verifieringsnivå"
+ },
+ "machine": {
+  "hours": "Timmätare",
+  "tab_documents": "Dokument",
+  "tab_history": "Historik"
  },
  "nav": {
   "admin": "Administration",
@@ -1028,19 +1069,71 @@
   "website": "Webbplats"
  },
  "public": {
+  "actors_title": "Värde för alla i kedjan",
+  "are_you_owner": "Är du ägaren?",
+  "are_you_owner_body": "Logga in och se vem som har skannat maskinen.",
   "call_police": "Ring polisen 114 14",
+  "check_financing": "Ska du köpa maskinen?",
+  "check_financing_body": "Logga in med BankID och se om den är belånad.",
+  "cta_dealer": "Kom igång som handlare",
+  "demo_active_level2": "Skanna en verifierad maskin",
+  "demo_financed": "Skanna en belånad maskin",
+  "demo_scrapped": "Slå upp en skrotad maskin",
+  "demo_stolen": "Skanna en stulen maskin",
+  "demo_title": "Prova demon",
+  "fact_free": "Registrering är gratis och tar under två minuter.",
+  "fact_history": "Historiken kan inte ändras i efterhand. Varje dag publiceras ett kontrollvärde.",
+  "fact_independent": "Fristående och oberoende – kompatibelt med andra registers id-nummer.",
+  "fact_no_amounts": "Inga belopp lagras: bara om maskinen är belånad och hos vem.",
+  "facts_label": "Om registret",
+  "facts_title": "Registret i korthet",
+  "financing_login": "Logga in med BankID för att se",
   "footer_about": "{{app}} är ett fristående och oberoende register för tunga arbetsmaskiner: ägare, förbehåll, historik och stöldskydd.",
   "footer_trust": "Förtroende",
   "hero_lead": "Varje maskin får ett registreringsnummer och ett QR-märke. Registret visar verifierad ägare, historik och finansieringsförbehåll – och gör stulna maskiner svåra att sälja.",
   "hero_title": "Vem äger maskinen – och är den belånad?",
+  "how_title": "Så fungerar det",
+  "inspected_until": "Besiktigad t.o.m. {{date}}",
+  "label_replaced": "Märket är ersatt",
+  "label_replaced_link": "Visa maskinen",
   "lookup_button": "Slå upp",
   "lookup_hint": "Numret står på maskinens QR-märke. Serienummer söks efter inloggning.",
   "lookup_label": "Registreringsnummer",
   "lookup_placeholder": "Till exempel ABC-1234",
+  "not_in_register": "Maskinen finns inte i registret",
+  "not_in_register_body": "Kontrollera numret på märket. Är det din maskin kan du registrera den gratis.",
+  "offline": "Ingen anslutning. Visar senast kända status från {{date}}.",
+  "owner": "Registrerad ägare",
+  "owner_exists": "Registrerad ägare finns (organisation)",
+  "owner_missing": "Ingen registrerad ägare",
   "privacy": "Integritet",
   "register_free": "Registrera gratis",
+  "serial": "Serienummer",
+  "serial_hint": "Jämför de sista tecknen med typskylten på maskinen.",
+  "sighting_consent": "Din ungefärliga plats delas bara om du väljer det. Den skickas till ägaren och den som anmälde stölden.",
+  "sighting_message": "Var och när såg du maskinen? (valfritt)",
+  "sighting_sent": "Tack. Ägaren har fått ditt tips.",
+  "sighting_with_location": "Jag har sett maskinen – dela min plats",
+  "sighting_without_location": "Skicka utan plats",
+  "step1_body": "Fota typskylten eller skriv in serienumret. Maskinen får ett registreringsnummer direkt.",
+  "step1_title": "Registrera maskinen",
+  "step2_body": "QR-märket knyts till maskinen. Vem som helst kan skanna det och se status.",
+  "step2_title": "Sätt på märket",
+  "step3_body": "En betrodd part verifierar underlag eller maskinen. Banker, köpare och försäkringsgivare litar på uppgifterna.",
+  "step3_title": "Verifiera och använd",
   "stolen_list": "Stulna maskiner",
-  "terms": "Villkor"
+  "terms": "Villkor",
+  "value_authority": "Sökning på serienummer och regnr, efterlysning och beslag, exportkontroll och historik.",
+  "value_client": "Följ upp maskinkrav i upphandling med flottrapporter från entreprenörerna.",
+  "value_dealer": "Lager med QR-märkning, försäljning med ägarbyte och förbehåll i ett svep, inbyteskontroll och leads från annons-QR.",
+  "value_financier": "Sök på serienummer, registrera förbehåll, tidsstämplat kontrollkvitto, portfölj och webhooks.",
+  "value_inspector": "Verifiera maskiner fysiskt, montera märken och registrera besiktningar.",
+  "value_insurer": "Portfölj, stöldflaggor och verifierade maskiner som premiegrund.",
+  "value_marketplace": "Verifierad-märkning via API och kontroll innan annonsering.",
+  "value_owner": "Gratis flottöversikt, ägarbevis, stöldskydd, dokumentvalv, timmar och service, delningslänk vid försäljning.",
+  "verify_lead": "Som privatperson kan du se om en maskin är belånad, men inte hos vem. Kontrollen loggas och syns för ägaren.",
+  "verify_logged": "Kontrollen är loggad och syns för ägaren.",
+  "verify_title": "Kontrollera belåning"
  },
  "search": {
   "no_hits": "Inget resultat för {{q}}. Kontrollera numret på typskylten."
@@ -1055,5 +1148,39 @@
   "mfa_scan": "Skanna koden med din autentiseringsapp och skriv in koden som visas.",
   "mfa_session_ok": "verifierad för den här inloggningen",
   "mfa_title": "Tvåfaktorsinloggning"
+ },
+ "securitypage": {
+  "anchor_body": "Varje natt räknas ett gemensamt kontrollvärde (Merkle-rot) för dagens händelser fram. Det publiceras här och i ett publikt GitHub-repo. Den som har ett gammalt värde kan se om något har ändrats.",
+  "anchors_title": "Publicerade ankare",
+  "commit": "Visa på GitHub",
+  "data_backups": "Dagliga säkerhetskopior med återställning till valfri tidpunkt.",
+  "data_eu": "All data lagras inom EU.",
+  "data_exit": "Om bolaget upphör lämnas registerdata över till en neutral part.",
+  "data_pentest": "Penetrationstest görs innan första bankintegration och därefter årligen.",
+  "data_pnr": "Personnummer lagras aldrig i klartext.",
+  "data_rls": "Varje tabell skyddas med radnivåbehörighet och all skrivning går genom kontrollerade funktioner.",
+  "data_sla": "Mål för tillgänglighet: 99,9 %.",
+  "data_title": "Data och drift",
+  "disclosure_body": "Har du hittat en säkerhetsbrist? Mejla oss. Vi svarar inom två arbetsdagar och polisanmäler inte den som rapporterar i god tro.",
+  "disclosure_title": "Rapportera en sårbarhet",
+  "events": "Händelser",
+  "history_body": "Varje ändring i registret är en händelse i en logg som bara kan läggas till. Varje händelse innehåller ett kontrollvärde som bygger på föregående händelse.",
+  "history_title": "Historik som inte går att ändra",
+  "lead": "Så skyddar {{app}} registrets uppgifter, och så kan du själv kontrollera att historiken inte har ändrats.",
+  "published": "Publicerat",
+  "root": "Merkle-rot",
+  "title": "Säkerhet",
+  "verified_bad": "Stämmer inte",
+  "verified_ok": "Stämmer",
+  "verify": "Kontrollera"
+ },
+ "share": {
+  "owner_ordinal": "Antal ägare: {{count}}",
+  "reason_expired": "Länken har gått ut.",
+  "reason_max_views": "Länken har visats så många gånger som ägaren tillät.",
+  "reason_not_found": "Länken finns inte.",
+  "reason_revoked": "Länken är stängd av ägaren.",
+  "shared_by": "Delad av {{org}}. Länken gäller till {{date}}.",
+  "views_left": "{{count}} visningar kvar."
  }
 }

@@ -19,7 +19,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 6 | Dokument, åtkomstlogg, delningslänkar | ✅ | §16 p.10 (skanning) och p.11 (rate limit) |
 | 7 | Verifiering & konflikter | ✅ | + ägarrättelse (fyra ögon, 14 dagar), Inbox |
 | 8 | Frontend – skal | ✅ | lokalt läge = PGlite i webbläsaren (ADR 0011) |
-| 9 | Frontend – publikt | ⬜ | |
+| 9 | Frontend – publikt | ✅ | |
 | 10 | Frontend – kärnflöden | ⬜ | |
 | 11 | Import | ⬜ | |
 | 12 | Flotta | ⬜ | |
@@ -114,3 +114,8 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   inkorg, notiser, inställningar (org/medlemmar/notiser). Demo-seed del 1 (§17: alla organisationer/konton, 60 maskiner
   med scenarier, 200 märken). `apps/web/scripts/demo-db.mjs` bygger demodatabasen. Migration `frontend_support`
   (get_signature_status, list_org_events visar externa aktörer som organisation, demo_shortcuts).
+- **Steg 9** – Publika sidor: startsida (uppslag på regnr med kontrolltecken utan databasanrop, skanna, värde per
+  aktör, demogenvägar i DEMO_MODE), `/m/:code` + `/r/:reg` via scan-log (exakt §5.3-kortet, noindex, röd helskärm vid
+  stöld med 114 14, "Jag har sett maskinen" med samtycke till plats, offline: senast kända status), `/s/:token`
+  (maskinrapport, dokumentnedladdning med token), `/scan`, `/verify` (privatperson med BankID ser bara ja/nej),
+  `/security` (hashformel, ankare med verifiering, drift/utträdesklausul, ansvarsfull rapportering, security.txt), `/how`.

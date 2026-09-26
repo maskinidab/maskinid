@@ -335,6 +335,17 @@
    "serial": "Serial number",
    "vin": "VIN"
   },
+  "inspection_result": {
+   "approved": "Approved",
+   "approved_with_remarks": "Approved with remarks",
+   "rejected": "Rejected"
+  },
+  "inspection_type": {
+   "extraordinary": "Extraordinary inspection",
+   "first": "First inspection",
+   "periodic": "Periodic inspection",
+   "revision": "Revision inspection"
+  },
   "label_batch_status": {
    "cancelled": "Cancelled",
    "ordered": "Ordered",
@@ -357,6 +368,13 @@
    "exported": "Exported",
    "scrapped": "Scrapped",
    "stolen": "Reported stolen"
+  },
+  "maintenance_type": {
+   "hour_reading": "Hour reading",
+   "inspection": "Inspection",
+   "other": "Other",
+   "repair": "Repair",
+   "service": "Service"
   },
   "member_role": {
    "admin": "Administrator",
@@ -639,6 +657,24 @@
    "updated": "{{actor}} added documents"
   }
  },
+ "fleet": {
+  "inspections": "Inspections",
+  "service": "Service"
+ },
+ "how": {
+  "disclaimer": "{{app}} is a private, voluntary register and not a public authority.",
+  "financing_body": "A machine can have at most one active financing encumbrance. A second attempt is stopped and both parties are told. Amounts are never stored.",
+  "financing_title": "Financing",
+  "label_body": "The label breaks if removed and contains only a link. The scan page shows the last three characters of the serial number so you can compare with the nameplate.",
+  "label_title": "The QR label",
+  "lead": "{{app}} gives every machine an identity, a verified owner and a history that cannot be changed afterwards.",
+  "public_body": "Only what is needed to confirm identity and status: model, status, verification level and that a registered owner exists. Never the owner's name.",
+  "public_title": "What is public",
+  "regnr_body": "Seven characters in the format XXX-XXXX. The last one is a check character, so typing errors are caught at once. It does not look like a car registration.",
+  "regnr_title": "Registration number",
+  "theft_body": "A stolen machine shows a red warning when scanned. The owner is told where and when, and the machine cannot be sold or financed in the register.",
+  "theft_title": "Theft"
+ },
  "identity": {
   "button": "Verify with BankID",
   "demo_button": "Verify with Demo BankID",
@@ -678,6 +714,11 @@
   },
   "below_trusted": "Below your minimum trusted level ({{level}})",
   "label": "Verification level"
+ },
+ "machine": {
+  "hours": "Hour meter",
+  "tab_documents": "Documents",
+  "tab_history": "History"
  },
  "nav": {
   "admin": "Administration",
@@ -1028,19 +1069,71 @@
   "website": "Website"
  },
  "public": {
+  "actors_title": "Value for everyone in the chain",
+  "are_you_owner": "Are you the owner?",
+  "are_you_owner_body": "Sign in to see who has scanned the machine.",
   "call_police": "Call the police 114 14",
+  "check_financing": "Buying this machine?",
+  "check_financing_body": "Sign in with BankID to see whether it is encumbered.",
+  "cta_dealer": "Get started as a dealer",
+  "demo_active_level2": "Scan a verified machine",
+  "demo_financed": "Scan an encumbered machine",
+  "demo_scrapped": "Look up a scrapped machine",
+  "demo_stolen": "Scan a stolen machine",
+  "demo_title": "Try the demo",
+  "fact_free": "Registration is free and takes less than two minutes.",
+  "fact_history": "History cannot be changed afterwards. A checksum is published every day.",
+  "fact_independent": "Independent – compatible with other registers' ID numbers.",
+  "fact_no_amounts": "No amounts are stored: only whether the machine is encumbered and by whom.",
+  "facts_label": "About the register",
+  "facts_title": "The register in brief",
+  "financing_login": "Sign in with BankID to see",
   "footer_about": "{{app}} is an independent register for heavy machinery: owners, encumbrances, history and theft protection.",
   "footer_trust": "Trust",
   "hero_lead": "Every machine gets a registration number and a QR label. The register shows the verified owner, history and financing – and makes stolen machines hard to sell.",
   "hero_title": "Who owns the machine – and is it encumbered?",
+  "how_title": "How it works",
+  "inspected_until": "Inspected until {{date}}",
+  "label_replaced": "The label has been replaced",
+  "label_replaced_link": "Show the machine",
   "lookup_button": "Look up",
   "lookup_hint": "The number is on the machine's QR label. Serial numbers can be searched after signing in.",
   "lookup_label": "Registration number",
   "lookup_placeholder": "For example ABC-1234",
+  "not_in_register": "The machine is not in the register",
+  "not_in_register_body": "Check the number on the label. If it is your machine you can register it for free.",
+  "offline": "No connection. Showing the last known status from {{date}}.",
+  "owner": "Registered owner",
+  "owner_exists": "A registered owner exists (organisation)",
+  "owner_missing": "No registered owner",
   "privacy": "Privacy",
   "register_free": "Register for free",
+  "serial": "Serial number",
+  "serial_hint": "Compare the last characters with the nameplate on the machine.",
+  "sighting_consent": "Your approximate location is only shared if you choose so. It goes to the owner and whoever reported the theft.",
+  "sighting_message": "Where and when did you see the machine? (optional)",
+  "sighting_sent": "Thank you. The owner has received your tip.",
+  "sighting_with_location": "I have seen the machine – share my location",
+  "sighting_without_location": "Send without location",
+  "step1_body": "Photograph the nameplate or type the serial number. The machine gets a registration number at once.",
+  "step1_title": "Register the machine",
+  "step2_body": "The QR label is bound to the machine. Anyone can scan it and see its status.",
+  "step2_title": "Fit the label",
+  "step3_body": "A trusted party verifies documents or the machine. Lenders, buyers and insurers rely on the data.",
+  "step3_title": "Verify and use",
   "stolen_list": "Stolen machines",
-  "terms": "Terms"
+  "terms": "Terms",
+  "value_authority": "Search by serial and reg. no., wanted and seized flags, export checks and history.",
+  "value_client": "Follow up machine requirements in procurement with contractors' fleet reports.",
+  "value_dealer": "Stock with QR labels, sale with transfer and financing in one go, trade-in checks and leads from ad QR codes.",
+  "value_financier": "Search by serial, register encumbrances, time-stamped check receipts, portfolio and webhooks.",
+  "value_inspector": "Verify machines physically, fit labels and record inspections.",
+  "value_insurer": "Portfolio, theft flags and verified machines as a premium basis.",
+  "value_marketplace": "Verified badge via API and checks before listing.",
+  "value_owner": "Free fleet overview, certificate of ownership, theft protection, document vault, hours and service, share link when selling.",
+  "verify_lead": "As a private person you can see whether a machine is encumbered, but not by whom. The check is logged and visible to the owner.",
+  "verify_logged": "The check is logged and visible to the owner.",
+  "verify_title": "Check financing"
  },
  "search": {
   "no_hits": "No result for {{q}}. Check the number on the nameplate."
@@ -1055,5 +1148,39 @@
   "mfa_scan": "Scan the code with your authenticator app and enter the code it shows.",
   "mfa_session_ok": "verified for this session",
   "mfa_title": "Two-factor sign-in"
+ },
+ "securitypage": {
+  "anchor_body": "Every night a combined checksum (Merkle root) of the day's events is computed. It is published here and in a public GitHub repository. Anyone holding an old value can see if anything changed.",
+  "anchors_title": "Published anchors",
+  "commit": "View on GitHub",
+  "data_backups": "Daily backups with point-in-time recovery.",
+  "data_eu": "All data is stored in the EU.",
+  "data_exit": "If the company ceases, register data is handed over to a neutral party.",
+  "data_pentest": "Penetration tests are done before the first bank integration and yearly thereafter.",
+  "data_pnr": "Personal numbers are never stored in clear text.",
+  "data_rls": "Every table is protected by row-level security and all writes go through controlled functions.",
+  "data_sla": "Availability target: 99.9%.",
+  "data_title": "Data and operations",
+  "disclosure_body": "Found a security issue? E-mail us. We reply within two working days and do not report good-faith researchers.",
+  "disclosure_title": "Report a vulnerability",
+  "events": "Events",
+  "history_body": "Every change is an event in an append-only log. Every event carries a checksum built on the previous event.",
+  "history_title": "History that cannot be changed",
+  "lead": "How {{app}} protects the register, and how you can verify yourself that the history has not been changed.",
+  "published": "Published",
+  "root": "Merkle root",
+  "title": "Security",
+  "verified_bad": "Does not verify",
+  "verified_ok": "Verified",
+  "verify": "Verify"
+ },
+ "share": {
+  "owner_ordinal": "Number of owners: {{count}}",
+  "reason_expired": "The link has expired.",
+  "reason_max_views": "The link has been viewed as many times as the owner allowed.",
+  "reason_not_found": "The link does not exist.",
+  "reason_revoked": "The owner has closed the link.",
+  "shared_by": "Shared by {{org}}. The link is valid until {{date}}.",
+  "views_left": "{{count}} views left."
  }
 }

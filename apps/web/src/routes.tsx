@@ -1,5 +1,5 @@
-import { lazy, Suspense, type ReactNode } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { lazy, Suspense, useEffect, type ReactNode } from "react";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useAuth } from "./auth/AuthProvider";
 import { Skeleton } from "./components/Feedback";
 import { AppLayout } from "./layouts/AppLayout";
@@ -29,8 +29,20 @@ function AppEntry() {
   return <Navigate to={m ? `/o/${m.org.slug}/dashboard` : "/onboarding"} replace />;
 }
 
+/** New page ⇒ start at the top and move focus to the content (screen readers announce the new page). */
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.getElementById("innehall")?.focus({ preventScroll: true });
+  }, [pathname]);
+  return null;
+}
+
 export function AppRoutes() {
   return (
+    <>
+    <ScrollToTop />
     <Routes>
       <Route element={<PublicLayout />}>
         {publicRoutes.map((r) => <Route key={r.path} path={r.path} element={<Page>{r.element}</Page>} />)}
@@ -51,5 +63,6 @@ export function AppRoutes() {
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
+    </>
   );
 }

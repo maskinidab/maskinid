@@ -5,6 +5,12 @@ const L = <T extends Record<string, unknown>>(loader: () => Promise<T>, name: ke
   lazy(() => loader().then((m) => ({ default: m[name] as React.ComponentType })));
 
 const HomePage = L(() => import("./pages/public/HomePage"), "HomePage");
+const MachinePublicPage = L(() => import("./pages/public/MachinePublicPage"), "MachinePublicPage");
+const SharePage = L(() => import("./pages/public/SharePage"), "SharePage");
+const ScanPage = L(() => import("./pages/public/ScanPage"), "ScanPage");
+const VerifyPage = L(() => import("./pages/public/VerifyPage"), "VerifyPage");
+const SecurityPage = L(() => import("./pages/public/SecurityPage"), "SecurityPage");
+const HowPage = L(() => import("./pages/public/HowPage"), "HowPage");
 const DashboardPage = L(() => import("./pages/app/DashboardPage"), "DashboardPage");
 const InboxPage = L(() => import("./pages/app/InboxPage"), "InboxPage");
 const NotificationsPage = L(() => import("./pages/app/NotificationsPage"), "NotificationsPage");
@@ -12,6 +18,13 @@ const SettingsPage = L(() => import("./pages/app/SettingsPage"), "SettingsPage")
 
 export const publicRoutes: { path: string; element: ReactNode }[] = [
   { path: "/", element: <HomePage /> },
+  { path: "m/:code", element: <MachinePublicPage /> },
+  { path: "r/:reg", element: <MachinePublicPage /> },
+  { path: "s/:token", element: <SharePage /> },
+  { path: "scan", element: <ScanPage /> },
+  { path: "verify", element: <VerifyPage /> },
+  { path: "security", element: <SecurityPage /> },
+  { path: "how", element: <HowPage /> },
 ];
 
 export const appRoutes: { path: string; element: ReactNode }[] = [
