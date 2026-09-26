@@ -15,7 +15,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 2 | Organisationer & användare | ✅ | notiser, e-postkö, webhooks/api_keys-tabeller skapade här (infrastruktur) |
 | 3 | Maskiner, identifierare, märken | ✅ | + modellkatalog, adaptrar (alla 7) i packages/shared |
 | 4 | Events & audit (verify_chain, anchor-events) | ✅ | |
-| 5 | Förbehåll, ägarbyten, flaggor | ⬜ | |
+| 5 | Förbehåll, ägarbyten, flaggor | ✅ | §16 p.3–5, 9, 10 (skanningsdelen i steg 6) |
 | 6 | Dokument, åtkomstlogg, delningslänkar | ⬜ | |
 | 7 | Verifiering & konflikter | ⬜ | |
 | 8 | Frontend – skal | ⬜ | |
@@ -71,3 +71,15 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   admin_verify_chain, anchor_compute (vägrar ankra bruten kedja + critical-notis), anchor_mark_published. Edge Function
   `anchor-events` (GitHub-publicering av anchors/YYYY-MM-DD.txt). Edge-infrastruktur: `_shared/http.ts`, `_shared/db.ts`,
   `_shared/shared` (synkad kopia av packages/shared, `npm run sync:functions`, CI kontrollerar), `deno check` i CI.
+- **Steg 5** – Migration `encumbrances_transfers_flags`: signatures (text byggs server-side på användarens språk,
+  bunden till action+subjekt+parametrar, engångs, bankid krävs utanför demo), encumbrances (partiellt unikt index
+  = max ett aktivt finansieringsförbehåll), transfers (10-dagarsregeln, ett öppet per maskin, e-postinbjudan med token),
+  flags (status härleds med prioritet stolen>blocked>disputed), check_receipts (K-ÅÅÅÅ-NNNNNN, resultat-hash).
+  RPC: start_signature, complete_mock_signature, record_signature (service, personnummer-hash måste matcha kontot),
+  register/request/confirm/reject/release_encumbrance, request_encumbrance_release, transfer_encumbrance_holder +
+  accept_encumbrance_transfer, initiate_transfer, request_trade_in/approve_trade_in, approve_transfer_financier
+  (släpp/överför till köpare/neka), accept_transfer, cancel_transfer, get_transfer, raise_flag/clear_flag,
+  deregister_machine (märken revokeras, serienummer frigörs), perform_check(+_batch ≤500), list/get receipts,
+  private_financing_status (privatperson ser bara ja/nej). Konflikt vid dubbelt förbehåll returneras (ADR 0007) med
+  conflict-rad, critical-notis till holder, notis till ägare och webhook `encumbrance.conflict`.
+  Integritetsfynd: `registered_by` gav evig insyn efter försäljning ⇒ bara under första ägarperioden (ADR 0010).

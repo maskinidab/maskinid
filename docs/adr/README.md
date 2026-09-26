@@ -14,3 +14,4 @@ the product owner decided otherwise. Format: context → decision → consequenc
 | [0007](0007-error-model.md) | Error model: stable codes, PostgREST status codes, conflicts returned (not raised) |
 | [0008](0008-test-database.md) | Database tests on plain PostgreSQL with Supabase stubs, and on local Supabase in CI |
 | [0009](0009-signatory-proof.md) | Signatory proof before an organisation is auto-approved or claimed |
+| [0010](0010-signatures-api-and-registrant-access.md) | Signature rules incl. API keys; registering org sees a machine only during the first ownership period |

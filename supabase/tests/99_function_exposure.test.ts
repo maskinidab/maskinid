@@ -12,7 +12,7 @@ const ANON = [
 
 const SERVICE_ONLY = [
   "public.anchor_compute", "public.anchor_mark_published", "public.record_company_lookup",
-  "public.record_identity_verification", "public.record_vtr_lookup",
+  "public.record_identity_verification", "public.record_signature", "public.record_vtr_lookup",
 ];
 
 describe("function exposure", () => {
