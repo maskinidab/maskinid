@@ -6,10 +6,11 @@ import { tx } from "./helpers.ts";
 const ANON = [
   "public.get_app_config",
   "public.list_event_anchors",
+  "public.public_machine_card",
   "public.verify_anchor",
 ];
 
-const SERVICE_ONLY = ["public.record_company_lookup", "public.record_identity_verification"];
+const SERVICE_ONLY = ["public.record_company_lookup", "public.record_identity_verification", "public.record_vtr_lookup"];
 
 describe("function exposure", () => {
   it("anon can execute exactly the public RPCs", async () => {

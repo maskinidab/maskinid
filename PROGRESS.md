@@ -13,7 +13,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 |---|---|---|---|
 | 1 | Grund: monorepo, CI, lokal DB, 0001–0002, shared (regnr, APP_NAME, flaggor) | ✅ | npm workspaces (ADR 0001); events/hashkedja skapad redan här (ADR 0004) |
 | 2 | Organisationer & användare | ✅ | notiser, e-postkö, webhooks/api_keys-tabeller skapade här (infrastruktur) |
-| 3 | Maskiner, identifierare, märken | ⬜ | |
+| 3 | Maskiner, identifierare, märken | ✅ | + modellkatalog, adaptrar (alla 7) i packages/shared |
 | 4 | Events & audit (verify_chain, anchor-events) | ⬜ | tabell + kedja + ankare klara i steg 1; kvar: Edge Function + integration |
 | 5 | Förbehåll, ägarbyten, flaggor | ⬜ | |
 | 6 | Dokument, åtkomstlogg, delningslänkar | ⬜ | |
@@ -54,3 +54,15 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   (service), approve/suspend_org, notiser. Säkerhetsfynd åtgärdat: PUBLIC hade EXECUTE på nya funktioner ⇒ global
   `alter default privileges revoke execute … from public` + test som låser exponerade funktioner (99_function_exposure).
   Prototypens Edge Function invite-user borttagen (ersätts av invite_member + send-email i steg 18).
+- **Steg 3** – Migration `machines`: machine_models, machines (alla tekniska fält §4.2), machine_identifiers (unik slot
+  `unique_active` via triggers – skrotad/exporterad frigör serienummer), ownerships, label_batches, labels (role, medium),
+  conflicts, oem_records, vtr_lookups. `app.create_machine` (kärnan för registrering/import/nyförsäljning): dubblett ⇒
+  `disputed` + conflict + notiser, fabriksdata förifyller + `factory_data_confirmed`, VTR-mock med ägarkategori-varning,
+  ägare via orgnr ⇒ platshållar-org + inbjudan. RPC: register_machine, utkast (save/list/delete), check_identifier,
+  update_machine, bind_label (återanvändning ⇒ label_reuse-konflikt, ersättning revokerar), revoke_label, order_labels,
+  print_label_batch, list_labels, public_machine_card (exakt §5.3-fält), lookup_machine (rollfiltrerad vy), get_machine,
+  list_machines, lookup_vehicle_registry, lookup_oem, search_models. Säkerhet: firmatecknarkontroll före
+  auto-godkännande/övertag av org (ADR 0009). NULL-säkra behörighetskontroller (`… is not true`).
+  Adaptrar (`packages/shared/src/adapters`): IdentityProvider/SignatureProvider (BankID via OIDC-broker, id_token
+  RS256-verifiering), CompanyLookup (Roaring), VehicleRegistryLookup (Transportstyrelsen, konfigurerbar), TheftRegistrySync
+  (Larmtjänst), Ocr (mock; Anthropic i steg 10), Email (Resend/console); `createAdapters(env)` tvingar mock i DEMO_MODE.
