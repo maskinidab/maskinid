@@ -16,7 +16,7 @@ sql_paths = ["./seed.sql"]
 [auth]
 site_url = "http://localhost:5173"
 additional_redirect_urls = ["http://localhost:5173/mina-sidor"]
-enable_signup = false
+enable_signup = true
 
 [auth.email]
 enable_signup = true
@@ -24,3 +24,13 @@ enable_confirmations = false
 
 [functions.invite-user]
 verify_jwt = true
+
+# Public Edge Functions (no user JWT): they authorise internally (rate limits, share tokens, cron secret).
+[functions.scan-log]
+verify_jwt = false
+[functions.share-view]
+verify_jwt = false
+[functions.anchor-events]
+verify_jwt = false
+[functions.av-scan]
+verify_jwt = false

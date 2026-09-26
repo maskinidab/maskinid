@@ -25,7 +25,7 @@
     "db:types": "node supabase/scripts/gen-types.mjs",
     "tokens": "npm run tokens -w @maskinid/web",
     "ingest": "npm run start -w @maskinid/ingest",
-    "check:functions": "node scripts/sync-functions-shared.mjs --check && cd supabase/functions && deno check */index.ts",
+    "check:functions": "node scripts/sync-functions-shared.mjs --check && cd supabase/functions && deno check */index.ts && deno test --allow-env _shared/",
     "sync:functions": "node scripts/sync-functions-shared.mjs"
   },
   "devDependencies": {

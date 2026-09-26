@@ -16,7 +16,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 3 | Maskiner, identifierare, märken | ✅ | + modellkatalog, adaptrar (alla 7) i packages/shared |
 | 4 | Events & audit (verify_chain, anchor-events) | ✅ | |
 | 5 | Förbehåll, ägarbyten, flaggor | ✅ | §16 p.3–5, 9, 10 (skanningsdelen i steg 6) |
-| 6 | Dokument, åtkomstlogg, delningslänkar | ⬜ | |
+| 6 | Dokument, åtkomstlogg, delningslänkar | ✅ | §16 p.10 (skanning) och p.11 (rate limit) |
 | 7 | Verifiering & konflikter | ⬜ | |
 | 8 | Frontend – skal | ⬜ | |
 | 9 | Frontend – publikt | ⬜ | |
@@ -83,3 +83,13 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   private_financing_status (privatperson ser bara ja/nej). Konflikt vid dubbelt förbehåll returneras (ADR 0007) med
   conflict-rad, critical-notis till holder, notis till ägare och webhook `encumbrance.conflict`.
   Integritetsfynd: `registered_by` gav evig insyn efter försäljning ⇒ bara under första ägarperioden (ADR 0010).
+- **Steg 6** – Migration `documents_access`: documents (privat bucket `documents`, uppladdning bara till reserverad
+  sökväg via storage-policy, sha256 i eventet, status scanning/clean/infected), publik bucket `machine-photos` för
+  primärfoto, access_log partitionerad per månad (RLS även på partitioner), share_links (token hashad, visas en gång),
+  rate limit-tabell. RPC: create_document_upload, finalize_document, list_documents, authorize_document_download,
+  set_document_visibility, archive_document, set_primary_photo, scan_label, list_access_log (myndighetsläsningar
+  dolda för ägaren som standard, operatör alltid dold), log_public_scan (30/min + 300/dag per IP ⇒ PT429; stulen ⇒
+  critical-notis med ungefärlig plats + webhook machine.scanned), report_sighting ("Jag har sett maskinen"),
+  create/list/revoke_share_link, get_share_view (maskinrapport: historik, förbehåll ja/nej + holder, dokument ≥
+  verifiers). Edge Functions: scan-log, share-view, document-url (5 min), av-scan (JPEG EXIF-strippning + VirusScanner
+  ClamAV/mock). `packages/shared/image.ts` (EXIF-strippning), VirusScanner-adapter.

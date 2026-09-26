@@ -1,8 +1,17 @@
 import { normalizeOrgNumber, isSoleTraderNumber } from "../identifiers.ts";
 import type {
   CompanyLookup, Email, IdentityProvider, Ocr, SignatureProvider, TheftRegistrySync, VehicleRegistryLookup,
-  TheftReport,
+  TheftReport, VirusScanner,
 } from "./types.ts";
+
+/** Detects the EICAR test string so the quarantine path can be exercised without a real scanner. */
+export const mockVirusScanner: VirusScanner = {
+  name: "mock",
+  async scan(bytes) {
+    const head = new TextDecoder("latin1").decode(bytes.subarray(0, Math.min(bytes.length, 4096)));
+    return head.includes("EICAR-STANDARD-ANTIVIRUS-TEST-FILE") ? { clean: false, signature: "Eicar-Test-Signature" } : { clean: true };
+  },
+};
 
 /** Demo-BankID: always succeeds with a deterministic fake personal number derived from the state. */
 export const mockIdentity: IdentityProvider = {

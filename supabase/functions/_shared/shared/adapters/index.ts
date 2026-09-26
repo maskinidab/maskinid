@@ -1,9 +1,10 @@
 import type { Adapters, Ocr } from "./types.ts";
 import {
   createConsoleEmail, createMockTheftRegistry, mockCompanyLookup, mockIdentity, mockOcr, mockSignature, mockVehicleRegistry,
+  mockVirusScanner,
 } from "./mock.ts";
 import {
-  createBankIdIdentity, createBankIdSignature, createLarmtjanstSync, createResendEmail, createRoaringLookup,
+  createBankIdIdentity, createBankIdSignature, createClamAvScanner, createLarmtjanstSync, createResendEmail, createRoaringLookup,
   createTransportstyrelsenLookup,
 } from "./real.ts";
 
@@ -38,5 +39,6 @@ export function createAdapters(env: Env, ocr: Ocr = mockOcr): Adapters {
     email: !demo && (env.EMAIL_PROVIDER ?? "resend") === "resend" && env.RESEND_API_KEY
       ? createResendEmail({ apiKey: env.RESEND_API_KEY, from: env.EMAIL_FROM ?? "MaskinID <noreply@maskinid.se>" })
       : createConsoleEmail(),
+    virusScanner: !demo && env.CLAMAV_URL ? createClamAvScanner({ url: env.CLAMAV_URL, token: env.CLAMAV_TOKEN }) : mockVirusScanner,
   };
 }

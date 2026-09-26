@@ -122,6 +122,11 @@ export interface Email {
   send(msg: EmailMessage): Promise<{ id: string }>;
 }
 
+export interface VirusScanner {
+  readonly name: "clamav" | "mock";
+  scan(bytes: Uint8Array, filename: string): Promise<{ clean: boolean; signature?: string }>;
+}
+
 export interface Adapters {
   identity: IdentityProvider;
   signature: SignatureProvider;
@@ -130,4 +135,5 @@ export interface Adapters {
   theftRegistry: TheftRegistrySync;
   ocr: Ocr;
   email: Email;
+  virusScanner: VirusScanner;
 }

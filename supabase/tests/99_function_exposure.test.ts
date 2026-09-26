@@ -4,6 +4,7 @@ import { tx } from "./helpers.ts";
 // Every function that anon or authenticated can execute must be deliberate. When a step adds an RPC,
 // add it here – a missing entry means a function was exposed (or hidden) by accident.
 const ANON = [
+  "public.authorize_document_download",
   "public.get_app_config",
   "public.list_event_anchors",
   "public.public_machine_card",
@@ -11,7 +12,8 @@ const ANON = [
 ];
 
 const SERVICE_ONLY = [
-  "public.anchor_compute", "public.anchor_mark_published", "public.record_company_lookup",
+  "public.anchor_compute", "public.anchor_mark_published", "public.get_share_view", "public.log_public_scan",
+  "public.record_company_lookup", "public.record_document_scan", "public.report_sighting",
   "public.record_identity_verification", "public.record_signature", "public.record_vtr_lookup",
 ];
 

@@ -5,7 +5,7 @@
  */
 import { normalizeOrgNumber, isSoleTraderNumber } from "../identifiers.ts";
 import type {
-  CompanyLookup, Email, IdentityProvider, IdentityResult, SignatureProvider, TheftRegistrySync, VehicleRegistryLookup,
+  CompanyLookup, Email, IdentityProvider, IdentityResult, SignatureProvider, TheftRegistrySync, VehicleRegistryLookup, VirusScanner,
 } from "./types.ts";
 
 type FetchLike = typeof fetch;
@@ -262,6 +262,29 @@ export function createResendEmail(cfg: ResendConfig): Email {
       });
       if (!res.ok) throw new Error(`resend ${res.status}: ${await res.text()}`);
       return (await res.json()) as { id: string };
+    },
+  };
+}
+
+// ---------- ClamAV over HTTP (e.g. a clamav-rest container next to the database) ----------
+export interface ClamAvConfig { url: string; token?: string; fetch?: FetchLike }
+
+export function createClamAvScanner(cfg: ClamAvConfig): VirusScanner {
+  const f = cfg.fetch ?? fetch;
+  return {
+    name: "clamav",
+    async scan(bytes, filename) {
+      const form = new FormData();
+      form.append("file", new Blob([bytes as BlobPart]), filename);
+      const res = await f(`${cfg.url.replace(/\/$/, "")}/scan`, {
+        method: "POST",
+        headers: cfg.token ? { Authorization: `Bearer ${cfg.token}` } : {},
+        body: form,
+      });
+      if (!res.ok) throw new Error(`clamav ${res.status}`);
+      const b = (await res.json()) as { infected?: boolean; clean?: boolean; viruses?: string[]; signature?: string };
+      const infected = b.infected ?? (b.clean === false);
+      return { clean: !infected, signature: b.signature ?? b.viruses?.[0] };
     },
   };
 }
