@@ -23,7 +23,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 10 | Frontend – kärnflöden | ✅ | Ägarbevis-PDF i steg 19 |
 | 11 | Import | ✅ | ADR 0012 (parsning i webbläsaren, en signatur per finansiärsimport) |
 | 12 | Flotta | ✅ | Jobben schemaläggs i steg 26 (pg_cron) |
-| 13 | Handlare | ⬜ | |
+| 13 | Handlare | ✅ | |
 | 14 | Roller/portaler | ⬜ | |
 | 15 | API & webhooks | ⬜ | |
 | 16 | Marknadsbevakning | ⬜ | |
@@ -162,4 +162,14 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   besiktningsmärke, "Rapportera timmar" via skanning), `/rentals`, `/client-reports`, `/inspections/new`
   (kontrollorgan), delad rapport på `/s/:token`, dokument som följer med vid ägarbyte, kolumnerna projekt och nästa
   åtgärd i maskinlistan.
+- **Steg 13** – Handlare (§6.3, §7.2): migration `dealer` – `sell_machine` (ägarbyte som köparen godkänner med
+  BankID; nyförsäljning från lager kräver faktura och ger nivå 2/`new_sale` + första försäljning när köparen
+  godkänt, via `app.after_transfer_completed`), `set_stock_status` (lager/inbyte/demo), `list_sales`,
+  `list_customers` (byggs av försäljningar och registreringar), leads (tabell med RLS, `submit_lead` via Edge
+  Function `lead` med IP-hash och rate limit, samtycke, webhook `lead.created`, rensning efter 24 månader),
+  `public_ad_card` (maskinkort + säljande handlare bara medan maskinen är i lager), `trade_in_lookup` (historik och
+  förbehåll inkl. innehavare för handlaren vid inbyte). Webb: `/stock` (flikar, Sälj, annons-QR-PDF, lagerlapp,
+  dela rapport, lagerstatus), `/sales/new`, `/trade-in` (skanna ⇒ begär inbyte), `/leads`, `/customers`, `/labels`
+  (beställ märken, batcher, märkeslista), publik `/ad/:reg` med "Kontakta säljaren". Fynd: demoseedens
+  organisationsnummer klarade inte kontrollsiffran så uppslag i UI misslyckades ⇒ rättade + test.
 

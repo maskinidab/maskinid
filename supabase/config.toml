@@ -32,6 +32,8 @@ verify_jwt = false
 verify_jwt = false
 [functions.av-scan]
 verify_jwt = false
+[functions.lead]
+verify_jwt = false
 # OIDC callbacks arrive without a Supabase JWT; the POST side authenticates the user itself.
 [functions.bankid-identify]
 verify_jwt = false

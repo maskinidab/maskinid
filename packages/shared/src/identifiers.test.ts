@@ -37,3 +37,14 @@ describe("identifiers", () => {
     expect(labelCodeFromScan("https://evil.example/other")).toBeNull();
   });
 });
+
+describe("demo seed", () => {
+  it("uses valid organisation numbers so demo lookups work in the UI", async () => {
+    const { readFileSync } = await import("node:fs");
+    const sql = readFileSync(new URL("../../../supabase/seed/00_orgs.sql", import.meta.url), "utf8");
+    const numbers = [...sql.matchAll(/seed\.company\('(\d{6}-\d{4})'/g)].map((m) => m[1]!);
+    expect(numbers.length).toBeGreaterThan(10);
+    expect(numbers.filter((n) => !isValidOrgNumber(n))).toEqual([]);
+    expect(new Set(numbers).size).toBe(numbers.length);
+  });
+});

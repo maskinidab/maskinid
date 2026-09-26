@@ -27,6 +27,13 @@ export const localFunctions: Record<string, Handler> = {
     });
   },
 
+  async lead(ctx, body) {
+    return ctx.rpcAs("service_role", "submit_lead", {
+      p_reg: String(body?.reg ?? ""), p_name: String(body?.name ?? ""), p_contact: String(body?.contact ?? ""),
+      p_message: body?.message ?? null, p_consent: body?.consent === true, p_ip_hash: LOCAL_IP,
+    });
+  },
+
   async "share-view"(ctx, _body, opts) {
     const r = await ctx.rpcAs<{ ok: boolean }>("service_role", "get_share_view", { p_token: opts.query?.token ?? "", p_ip_hash: LOCAL_IP });
     return r;

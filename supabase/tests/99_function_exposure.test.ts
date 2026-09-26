@@ -8,6 +8,7 @@ const ANON = [
   "public.demo_shortcuts",
   "public.get_app_config",
   "public.list_event_anchors",
+  "public.public_ad_card",
   "public.public_machine_card",
   "public.verify_anchor",
   "public.verify_check_receipt",
@@ -17,7 +18,7 @@ const ANON = [
 const SERVICE_ONLY = [
   "public.anchor_compute", "public.anchor_mark_published", "public.get_share_view", "public.log_public_scan",
   "public.record_company_lookup", "public.record_document_scan", "public.report_sighting",
-  "public.record_identity_verification", "public.record_signature", "public.record_vtr_lookup", "public.rate_limit_check",
+  "public.record_identity_verification", "public.record_signature", "public.record_vtr_lookup", "public.rate_limit_check", "public.submit_lead",
 ];
 
 describe("function exposure", () => {

@@ -564,7 +564,7 @@ function StepLabel({ d, set }: { d: WizardData; set: Setter }) {
 
 function Done({ r, withLabel, onNext }: { r: Result; withLabel: boolean; onNext(): void }) {
   const { t } = useTranslation();
-  const { path } = useOrg();
+  const { path, has } = useOrg();
   const nav = useNavigate();
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => { heading.current?.focus(); }, []);
@@ -582,6 +582,7 @@ function Done({ r, withLabel, onNext }: { r: Result; withLabel: boolean; onNext(
         {!withLabel && <p className="t-liten t-sekundar">{t("wizard.label_reminder")}</p>}
         <div className="mid-rad">
           <button type="button" className="mid-knapp mid-knapp-primar" onClick={() => nav(path(`machines/${r.id}?tab=documents`))}><Icon name="uppladdning" />{t("wizard.done_upload")}</button>
+          {has("dealer") && <Link className="mid-knapp mid-knapp-kontur" to={path(`sales/new?machine=${r.id}`)}>{t("dealer.sell")}</Link>}
           <Link className="mid-knapp mid-knapp-kontur" to={path(`machines/${r.id}`)}>{t("wizard.done_open")}</Link>
           <button type="button" className="mid-knapp mid-knapp-kontur" onClick={onNext}><Icon name="plus" />{t("wizard.done_next")}</button>
         </div>

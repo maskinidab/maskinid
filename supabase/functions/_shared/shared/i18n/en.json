@@ -105,6 +105,19 @@
    "title": "Raise verification level"
   }
  },
+ "ad": {
+  "consent": "I agree that {{dealer}} gets my name and contact details to reply. The details are deleted after 24 months.",
+  "contact": "E-mail or phone",
+  "contact_hint": "The seller only uses it to reply to you.",
+  "contact_title": "Contact {{dealer}}",
+  "not_for_sale": "The machine is not for sale right now",
+  "not_for_sale_body": "The ad has ended or the machine has been sold.",
+  "register_note": "The details come from MaskinID. Always check that the serial number on the nameplate matches.",
+  "see_card": "See the machine's register card",
+  "send": "Send",
+  "sent": "Thank you. The seller has received your message.",
+  "serial": "Serial number {{serial}}"
+ },
  "auth": {
   "callback_title": "Signing in",
   "create_account": "Create account",
@@ -334,6 +347,77 @@
   "stolen": "Reported stolen",
   "title": "Overview",
   "waiting": "Waiting for me"
+ },
+ "dealer": {
+  "ad_qr": "Ad QR",
+  "ad_scan": "Scan to see the machine's history",
+  "ad_scan_body": "Registered in MaskinID: verification level, theft check and whether there are encumbrances. Contact the seller directly from the page.",
+  "buyer_financing": "Buyer's financing",
+  "contact": "Contact",
+  "customers_lead": "Built automatically from your sales and registrations.",
+  "history": {
+   "encumbrance": {
+    "registered": "Encumbrance registered",
+    "released": "Encumbrance released"
+   },
+   "flag": {
+    "cleared": "Flag cleared",
+    "raised": "Flagged"
+   },
+   "inspection": {
+    "recorded": "Inspected"
+   },
+   "machine": {
+    "registered": "Registered",
+    "verified": "Verified"
+   },
+   "ownership": {
+    "transferred": "Change of ownership"
+   }
+  },
+  "import_stock": "Import stock",
+  "invoice": "Invoice",
+  "invoice_required": "Attach the invoice for a new sale.",
+  "last_deal": "Latest",
+  "lead_status": {
+   "contacted": "Contacted",
+   "lost": "Lost",
+   "new": "New",
+   "won": "Won"
+  },
+  "leads_lead": "Enquiries from your ad QR codes. Also sent as webhook lead.created to your business system.",
+  "lot_tag": "Lot tag",
+  "lot_tag_note": "Scan for the machine's register card",
+  "machines_registered": "Registered for the customer",
+  "machines_sold": "Machines sold",
+  "message": "Message",
+  "message_to_owner": "Message to the owner",
+  "new_sale": "New sale",
+  "new_sale_hint": "First sale from your stock with an invoice. The machine becomes physically verified (level 2) when the buyer accepts.",
+  "no_customers": "No customers yet",
+  "no_leads": "No enquiries yet",
+  "no_leads_body": "Create an ad QR under Stock and put it on the machine or in the ad.",
+  "no_sales": "No sales yet",
+  "not_in_stock": "Is the machine not in the register?",
+  "reg_or_scan": "Reg number",
+  "request_trade_in": "Request trade-in",
+  "sale_lead": "The buyer accepts with BankID. The financier confirms its encumbrance.",
+  "sale_next": "The buyer gets an e-mail with a link, sees the machine card and accepts. An ownership certificate is created when the transfer is complete.",
+  "sell": "Sell",
+  "share_report": "Share report",
+  "sold_by": "Salesperson",
+  "stock_empty": "No machines here",
+  "stock_lead": "Machines you own in stock, trade-ins and demo machines. Sell, create an ad QR or share a report.",
+  "stock_status": "Stock status",
+  "tab_demo": "Demo",
+  "tab_sold": "Sold",
+  "tab_stock": "In stock",
+  "tab_trade_in": "Trade-ins",
+  "trade_in_financing": "Encumbrance: {{type}} with {{holder}}. Request a release as part of the deal.",
+  "trade_in_lead": "Scan the label on the machine the customer wants to trade in. You see history and encumbrances, the customer approves the trade-in.",
+  "trade_in_own": "The machine is already yours.",
+  "trade_in_sent": "The owner has received a trade-in request.",
+  "trade_in_verify": "The machine is not physically verified. You can verify it on site once the customer has approved the trade-in."
  },
  "encumbrance_new": {
   "done": "The encumbrance is registered",
@@ -1011,6 +1095,26 @@
   "no_lifting": "The machine is not marked as having a lifting device.",
   "title": "Record inspection"
  },
+ "labels": {
+  "batch_one": "{{count}} label, ordered {{date}}",
+  "batch_other": "{{count}} labels, ordered {{date}}",
+  "bound_at": "Attached",
+  "labels": "Labels",
+  "lead": "Tamper-proof labels with a QR code. A label becomes active when it is attached to a machine and can only be attached once.",
+  "none": "No labels yet",
+  "none_body": "Order labels above. They appear here when they have been shipped.",
+  "order_one": "Order {{count}} label",
+  "order_other": "Order {{count}} labels",
+  "order_title": "Order labels",
+  "ordered": "The order is received. We send the labels within five working days.",
+  "orders": "Orders",
+  "postal_code": "Postal code",
+  "quantity": "Quantity",
+  "role": "Type",
+  "role_primary": "Primary",
+  "role_secondary": "Hidden secondary",
+  "serial": "Label number"
+ },
  "level": {
   "0": {
    "desc": "The owner registered the machine without reviewed documents.",
@@ -1284,6 +1388,12 @@
    "printed": {
     "body": "{{quantity}} labels are printed and on their way.",
     "title": "Labels printed"
+   }
+  },
+  "lead": {
+   "created": {
+    "body": "Someone wants to know more about {{make}} {{model}} ({{reg_number}}).",
+    "title": "New enquiry"
    }
   },
   "machine": {

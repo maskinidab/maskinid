@@ -194,3 +194,4 @@ a { color: var(--id-text); }
 .timgraf { margin: 0; color: var(--text); }
 .timgraf svg { width: 100%; max-width: 560px; height: auto; display: block; }
 .t-fel { color: var(--status-sparr); }
+.mid-select-liten { height: 36px; font-size: 14px; padding-top: 0; padding-bottom: 0; width: auto; }

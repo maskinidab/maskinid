@@ -70,13 +70,13 @@ end $$;
 do $$
 declare op uuid; a uuid; v uuid;
 begin
-  insert into app.mock_companies (org_number, name, city) values ('559412-0001', 'MaskinID Sverige AB', 'Stockholm') on conflict do nothing;
+  insert into app.mock_companies (org_number, name, city) values ('559412-0007', 'MaskinID Sverige AB', 'Stockholm') on conflict do nothing;
   a := seed.user('admin@demo.se', 'Alva Admin');
   v := seed.user('verifier@demo.se', 'Viktor Verifierare');
   perform seed.act('admin@demo.se');
   -- The operator org is created directly (create_org never grants the operator type).
   insert into public.organizations (slug, types, name, org_number, org_number_hash, status, approved_at, lookup_source, city, dpa_accepted_at, dpa_version, created_by)
-  values ('maskinid', array['operator']::public.org_type[], 'MaskinID Sverige AB', '559412-0001', app.org_number_hash('559412-0001'), 'approved', now(), 'mock',
+  values ('maskinid', array['operator']::public.org_type[], 'MaskinID Sverige AB', '559412-0007', app.org_number_hash('559412-0007'), 'approved', now(), 'mock',
           'Stockholm', now(), '2026-09', a) returning id into op;
   insert into public.memberships (org_id, user_id, role, status, accepted_at) values (op, a, 'admin', 'active', now()), (op, v, 'member', 'active', now());
   insert into public.operator_roles (user_id, role) values (a, 'superadmin'), (v, 'verifier');
@@ -87,20 +87,20 @@ do $$
 begin
   perform seed.company('556701-1001', 'Nordmaskin AB', 'Uppsala', array['dealer', 'owner']::public.org_type[], 'nordmaskin@demo.se', 'Nils Nordin',
     false, '[{"email":"saljare@nordmaskin.demo.se","name":"Sara Säljare"},{"email":"verkstad@nordmaskin.demo.se","name":"Vilhelm Verkstad","role":"readonly"}]');
-  perform seed.company('556701-1002', 'Entreprenadcenter Syd AB', 'Malmö', array['dealer', 'owner']::public.org_type[], 'syd@demo.se', 'Selma Syd');
-  perform seed.company('556701-1003', 'Skogsmaskiner Norr AB', 'Umeå', array['dealer', 'owner']::public.org_type[], 'norr@demo.se', 'Nora Norr');
-  perform seed.company('556701-2001', 'Bergs Schakt & Entreprenad AB', 'Västerås', array['owner']::public.org_type[], 'berg@demo.se', 'Bengt Berg',
+  perform seed.company('556701-1019', 'Entreprenadcenter Syd AB', 'Malmö', array['dealer', 'owner']::public.org_type[], 'syd@demo.se', 'Selma Syd');
+  perform seed.company('556701-1027', 'Skogsmaskiner Norr AB', 'Umeå', array['dealer', 'owner']::public.org_type[], 'norr@demo.se', 'Nora Norr');
+  perform seed.company('556701-2009', 'Bergs Schakt & Entreprenad AB', 'Västerås', array['owner']::public.org_type[], 'berg@demo.se', 'Bengt Berg',
     false, '[{"email":"platschef@berg.demo.se","name":"Petra Platschef"}]');
-  perform seed.company('780512-1236', 'Lena Grävmaskin', 'Sala', array['owner']::public.org_type[], 'lena@demo.se', 'Lena Lind', true);
-  perform seed.company('212000-2003', 'Kommunfastigheter Väst', 'Göteborg', array['owner', 'client']::public.org_type[], 'kommun@demo.se', 'Karin Kommun');
-  perform seed.company('516401-3001', 'Demo Bank Finans', 'Stockholm', array['financier']::public.org_type[], 'bank@demo.se', 'Björn Bank');
-  perform seed.company('516401-3002', 'Nordisk Maskinfinans', 'Stockholm', array['financier']::public.org_type[], 'finans@demo.se', 'Frida Finans');
-  perform seed.company('516401-4001', 'Demo Försäkring', 'Stockholm', array['insurer']::public.org_type[], 'forsakring@demo.se', 'Fredrik Försäkring');
-  perform seed.company('202100-0064', 'Polisen (demo)', 'Stockholm', array['authority']::public.org_type[], 'polisen@demo.se', 'Paula Polis');
+  perform seed.company('780512-1238', 'Lena Grävmaskin', 'Sala', array['owner']::public.org_type[], 'lena@demo.se', 'Lena Lind', true);
+  perform seed.company('212000-2007', 'Kommunfastigheter Väst', 'Göteborg', array['owner', 'client']::public.org_type[], 'kommun@demo.se', 'Karin Kommun');
+  perform seed.company('516401-3004', 'Demo Bank Finans', 'Stockholm', array['financier']::public.org_type[], 'bank@demo.se', 'Björn Bank');
+  perform seed.company('516401-3012', 'Nordisk Maskinfinans', 'Stockholm', array['financier']::public.org_type[], 'finans@demo.se', 'Frida Finans');
+  perform seed.company('516401-4002', 'Demo Försäkring', 'Stockholm', array['insurer']::public.org_type[], 'forsakring@demo.se', 'Fredrik Försäkring');
+  perform seed.company('202100-0068', 'Polisen (demo)', 'Stockholm', array['authority']::public.org_type[], 'polisen@demo.se', 'Paula Polis');
   perform seed.company('202100-4730', 'Tullverket (demo)', 'Stockholm', array['authority']::public.org_type[], 'tull@demo.se', 'Tove Tull');
-  perform seed.company('556701-5001', 'Maskinkontroll Sverige AB', 'Örebro', array['inspector']::public.org_type[], 'kontroll@demo.se', 'Kurt Kontroll');
-  perform seed.company('556701-6001', 'Volvo Construction Equipment (demo)', 'Eskilstuna', array['manufacturer']::public.org_type[], 'tillverkare@demo.se', 'Tina Tillverkare');
-  perform seed.company('556701-7001', 'Maskinmarknaden (demo)', 'Stockholm', array['marketplace']::public.org_type[], 'marknad@demo.se', 'Max Marknad');
+  perform seed.company('556701-5002', 'Maskinkontroll Sverige AB', 'Örebro', array['inspector']::public.org_type[], 'kontroll@demo.se', 'Kurt Kontroll');
+  perform seed.company('556701-6000', 'Volvo Construction Equipment (demo)', 'Eskilstuna', array['manufacturer']::public.org_type[], 'tillverkare@demo.se', 'Tina Tillverkare');
+  perform seed.company('556701-7008', 'Maskinmarknaden (demo)', 'Stockholm', array['marketplace']::public.org_type[], 'marknad@demo.se', 'Max Marknad');
   -- Pending approvals and partner types are approved by the operator (as in production).
   perform seed.act('admin@demo.se');
   perform public.approve_org(o.id) from public.organizations o where o.status = 'pending';

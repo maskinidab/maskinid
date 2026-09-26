@@ -11,6 +11,7 @@ const ScanPage = L(() => import("./pages/public/ScanPage"), "ScanPage");
 const VerifyPage = L(() => import("./pages/public/VerifyPage"), "VerifyPage");
 const SecurityPage = L(() => import("./pages/public/SecurityPage"), "SecurityPage");
 const HowPage = L(() => import("./pages/public/HowPage"), "HowPage");
+const AdPage = L(() => import("./pages/public/AdPage"), "AdPage");
 const ReceiptVerifyPage = L(() => import("./pages/public/ReceiptVerifyPage"), "ReceiptVerifyPage");
 const DashboardPage = L(() => import("./pages/app/DashboardPage"), "DashboardPage");
 const InboxPage = L(() => import("./pages/app/InboxPage"), "InboxPage");
@@ -27,6 +28,12 @@ const FleetPage = L(() => import("./pages/app/fleet/FleetPage"), "FleetPage");
 const RentalsPage = L(() => import("./pages/app/fleet/RentalsPage"), "RentalsPage");
 const ClientReportsPage = L(() => import("./pages/app/fleet/ClientReportsPage"), "ClientReportsPage");
 const InspectionNewPage = L(() => import("./pages/app/fleet/InspectionNewPage"), "InspectionNewPage");
+const StockPage = L(() => import("./pages/app/dealer/StockPage"), "StockPage");
+const SalePage = L(() => import("./pages/app/dealer/SalePage"), "SalePage");
+const TradeInPage = L(() => import("./pages/app/dealer/TradeInPage"), "TradeInPage");
+const LeadsPage = L(() => import("./pages/app/dealer/LeadsPage"), "LeadsPage");
+const CustomersPage = L(() => import("./pages/app/dealer/LeadsPage"), "CustomersPage");
+const LabelsPage = L(() => import("./pages/app/dealer/LabelsPage"), "LabelsPage");
 const ImportPage = L(() => import("./pages/app/import/ImportPage"), "ImportPage");
 const NewEncumbrancePage = L(() => import("./pages/app/encumbrances/NewEncumbrancePage"), "NewEncumbrancePage");
 
@@ -40,6 +47,7 @@ export const publicRoutes: { path: string; element: ReactNode }[] = [
   { path: "security", element: <SecurityPage /> },
   { path: "how", element: <HowPage /> },
   { path: "receipt", element: <ReceiptVerifyPage /> },
+  { path: "ad/:reg", element: <AdPage /> },
 ];
 
 export const appRoutes: { path: string; element: ReactNode }[] = [
@@ -58,6 +66,12 @@ export const appRoutes: { path: string; element: ReactNode }[] = [
   { path: "encumbrances/new", element: <NewEncumbrancePage /> },
   { path: "import", element: <ImportPage /> },
   { path: "fleet", element: <FleetPage /> },
+  { path: "stock", element: <StockPage /> },
+  { path: "sales/new", element: <SalePage /> },
+  { path: "trade-in", element: <TradeInPage /> },
+  { path: "leads", element: <LeadsPage /> },
+  { path: "customers", element: <CustomersPage /> },
+  { path: "labels", element: <LabelsPage /> },
   { path: "rentals", element: <RentalsPage /> },
   { path: "client-reports", element: <ClientReportsPage /> },
   { path: "inspections/new", element: <InspectionNewPage /> },

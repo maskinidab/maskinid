@@ -105,6 +105,19 @@
    "title": "Höj verifieringsnivå"
   }
  },
+ "ad": {
+  "consent": "Jag godkänner att {{dealer}} får mitt namn och min kontaktuppgift för att svara. Uppgifterna raderas efter 24 månader.",
+  "contact": "E-post eller telefon",
+  "contact_hint": "Säljaren använder uppgiften bara för att svara dig.",
+  "contact_title": "Kontakta {{dealer}}",
+  "not_for_sale": "Maskinen är inte till salu just nu",
+  "not_for_sale_body": "Annonsen är avslutad eller maskinen har sålts.",
+  "register_note": "Uppgifterna kommer från MaskinID. Kontrollera alltid att serienumret på skylten stämmer.",
+  "see_card": "Se maskinens registerkort",
+  "send": "Skicka",
+  "sent": "Tack. Säljaren har fått ditt meddelande.",
+  "serial": "Serienummer {{serial}}"
+ },
  "auth": {
   "callback_title": "Loggar in",
   "create_account": "Skapa konto",
@@ -334,6 +347,77 @@
   "stolen": "Anmälda stulna",
   "title": "Översikt",
   "waiting": "Väntar på mig"
+ },
+ "dealer": {
+  "ad_qr": "Annons-QR",
+  "ad_scan": "Skanna och se maskinens historik",
+  "ad_scan_body": "Registrerad i MaskinID: verifieringsnivå, stöldkontroll och om det finns förbehåll. Kontakta säljaren direkt från sidan.",
+  "buyer_financing": "Köparens finansiering",
+  "contact": "Kontakt",
+  "customers_lead": "Byggs automatiskt av era försäljningar och registreringar.",
+  "history": {
+   "encumbrance": {
+    "registered": "Förbehåll registrerat",
+    "released": "Förbehåll släppt"
+   },
+   "flag": {
+    "cleared": "Flagga borttagen",
+    "raised": "Flaggad"
+   },
+   "inspection": {
+    "recorded": "Besiktigad"
+   },
+   "machine": {
+    "registered": "Registrerad",
+    "verified": "Verifierad"
+   },
+   "ownership": {
+    "transferred": "Ägarbyte"
+   }
+  },
+  "import_stock": "Importera lager",
+  "invoice": "Faktura",
+  "invoice_required": "Bifoga fakturan för en nyförsäljning.",
+  "last_deal": "Senast",
+  "lead_status": {
+   "contacted": "Kontaktad",
+   "lost": "Ingen affär",
+   "new": "Ny",
+   "won": "Affär"
+  },
+  "leads_lead": "Förfrågningar från era annons-QR. Skickas även som webhook lead.created till ert affärssystem.",
+  "lot_tag": "Lagerlapp",
+  "lot_tag_note": "Skanna för maskinens registerkort",
+  "machines_registered": "Registrerade åt kunden",
+  "machines_sold": "Sålda maskiner",
+  "message": "Meddelande",
+  "message_to_owner": "Meddelande till ägaren",
+  "new_sale": "Nyförsäljning",
+  "new_sale_hint": "Första försäljningen från ert lager med faktura. Maskinen blir fysiskt verifierad (nivå 2) när köparen godkänner.",
+  "no_customers": "Inga kunder ännu",
+  "no_leads": "Inga förfrågningar ännu",
+  "no_leads_body": "Skapa en annons-QR under Lager och sätt den på maskinen eller i annonsen.",
+  "no_sales": "Inga försäljningar ännu",
+  "not_in_stock": "Finns maskinen inte i registret?",
+  "reg_or_scan": "Regnr",
+  "request_trade_in": "Begär inbyte",
+  "sale_lead": "Köparen godkänner med BankID. Finansiären bekräftar sitt förbehåll.",
+  "sale_next": "Köparen får e-post med en länk, ser maskinkortet och godkänner. Ägarbevis skapas när ägarbytet är klart.",
+  "sell": "Sälj",
+  "share_report": "Dela rapport",
+  "sold_by": "Säljare",
+  "stock_empty": "Inga maskiner här",
+  "stock_lead": "Maskiner ni äger i lager, inbyten och demomaskiner. Sälj, skapa annons-QR eller dela rapport.",
+  "stock_status": "Lagerstatus",
+  "tab_demo": "Demo",
+  "tab_sold": "Sålda",
+  "tab_stock": "I lager",
+  "tab_trade_in": "Inbyten",
+  "trade_in_financing": "Förbehåll: {{type}} hos {{holder}}. Begär frisläppning som del av affären.",
+  "trade_in_lead": "Skanna märket på maskinen kunden vill byta in. Ni ser historik och förbehåll, kunden godkänner inbytet.",
+  "trade_in_own": "Maskinen ägs redan av er.",
+  "trade_in_sent": "Ägaren har fått en förfrågan om inbyte.",
+  "trade_in_verify": "Maskinen är inte fysiskt verifierad. Ni kan verifiera den på plats när kunden har godkänt inbytet."
  },
  "encumbrance_new": {
   "done": "Förbehållet är registrerat",
@@ -1011,6 +1095,26 @@
   "no_lifting": "Maskinen är inte markerad med lyftanordning.",
   "title": "Registrera besiktning"
  },
+ "labels": {
+  "batch_one": "{{count}} märke, beställt {{date}}",
+  "batch_other": "{{count}} märken, beställda {{date}}",
+  "bound_at": "Kopplat",
+  "labels": "Märken",
+  "lead": "Manipuleringssäkra märken med QR-kod. Ett märke blir aktivt när det kopplas till en maskin och kan bara kopplas en gång.",
+  "none": "Inga märken ännu",
+  "none_body": "Beställ märken ovan. De dyker upp här när de har skickats.",
+  "order_one": "Beställ {{count}} märke",
+  "order_other": "Beställ {{count}} märken",
+  "order_title": "Beställ märken",
+  "ordered": "Beställningen är mottagen. Vi skickar märkena inom fem arbetsdagar.",
+  "orders": "Beställningar",
+  "postal_code": "Postnummer",
+  "quantity": "Antal",
+  "role": "Typ",
+  "role_primary": "Huvudmärke",
+  "role_secondary": "Dolt märke",
+  "serial": "Märkesnummer"
+ },
  "level": {
   "0": {
    "desc": "Ägaren har lagt in maskinen utan granskat underlag.",
@@ -1284,6 +1388,12 @@
    "printed": {
     "body": "{{quantity}} märken är tryckta och skickas till er.",
     "title": "Märken tryckta"
+   }
+  },
+  "lead": {
+   "created": {
+    "body": "Någon vill veta mer om {{make}} {{model}} ({{reg_number}}).",
+    "title": "Ny förfrågan"
    }
   },
   "machine": {
