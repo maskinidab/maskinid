@@ -110,10 +110,10 @@ describe("access log (step 6, §16.2, §16.10, §16.17)", () => {
       await t.as(null);
       const log = await t.one<any>("select viewer_type, via, approx_location from public.access_log where machine_id = $1", [m.id]);
       expect(log).toMatchObject({ viewer_type: "public", via: "web", approx_location: { lat: 59.86, lng: 17.64, city: "Uppsala" } });
-      const n = await t.one<any>("select severity, data from public.notifications where type = 'machine.stolen_scanned'");
+      const n = await t.one<any>("select severity, data from public.notifications where type = 'machine.stolen_scanned' and data ->> 'machine_id' = $1", [m.id]);
       expect(n.severity).toBe("critical");
       expect(n.data.location.city).toBe("Uppsala");
-      expect(await t.val("select count(*)::int from public.webhook_deliveries where event_type = 'machine.scanned'")).toBe(1);
+      expect(await t.val("select count(*)::int from public.webhook_deliveries where event_type = 'machine.scanned' and webhook_id in (select id from public.webhooks where org_id = $1)", [ORGS.owner_a])).toBe(1);
     });
   });
 

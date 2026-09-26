@@ -29,7 +29,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 16 | Marknadsbevakning | ✅ | §16 p.16, ADR 0014; operatörsdashboard i steg 17 |
 | 17 | Operatörsadmin | ✅ | ADR 0015 |
 | 18 | PDF:er & e-post | ✅ | §10, §13 |
-| 19 | Seed & demo | ⬜ | |
+| 19 | Seed & demo | ✅ | §17, ADR 0016 |
 | 20 | Redskap, förare, daglig kontroll, bränsle/klimat | ⬜ | tolkas från CLAUDE.md (ADR 0003) |
 | 21 | Fullmakter, kommission, risksignaler, koncern | ⬜ | tolkas från CLAUDE.md |
 | 22 | Tips, stöldlista, hjälpcenter, support, juridik, kontosäkerhet, "Visa som" | ⬜ | tolkas från CLAUDE.md |
@@ -216,3 +216,9 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   och SMS-text; Edge Function `email-send`. Webb: gemensam PDF-layout (ID-band, dokumentnummer, QR, kontrolltext +
   SHA-256 på varje sida), ägarbevis/maskinrapport på maskinsidan, efter registrering och efter ägarbyte, maskinrapport
   på delningssidan, `/verify-document`, e-postingångar `/go?to=` och `/transfer/:id` (även för köpare utan konto).
+- **Steg 19** – Seed & demo (§17): kompletterat med projekt (Bergs, 2 st), 2 uthyrda maskiner, timmar varje vecka,
+  service, besiktningar, kontroller från båda finansiärerna, 31 publika skanningar i 11 orter (stulen maskin skannad i
+  Norrköping), 150 marknadsobservationer (1 stulen matchad, 2 med samma serienummer hos olika säljare), 400+ händelser
+  över 30 dagar med 30 publicerade ankare (ADR 0016). Test `00_seed_data` kontrollerar §17-siffrorna. Demo-manuset
+  körs i webbläsaren (skanning, stöldnotis, sälj → ägarbevis-PDF, kontroll + blockerat andra förbehåll, inbyte, import,
+  marknadskandidater) – staging kräver driftsättning (steg 26).

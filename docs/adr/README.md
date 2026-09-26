@@ -20,3 +20,4 @@ the product owner decided otherwise. Format: context → decision → consequenc
 | [0013](0013-api-gateway-over-rpc.md) | Public API as a thin gateway over the same RPCs |
 | [0014](0014-market-ingest-structured-data.md) | Market ingest reads structured data only; privacy guard rails in worker and database |
 | [0015](0015-operator-admin-and-audit.md) | Operator admin in the operator org; append-only operator audit |
+| [0016](0016-demo-timeline-in-seed.md) | Demo seed spreads events over 30 days and anchors them |
