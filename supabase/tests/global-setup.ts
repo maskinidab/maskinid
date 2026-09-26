@@ -1,5 +1,4 @@
 import type { TestProject } from "vitest/node";
-// @ts-expect-error – plain ESM script without types
 import { reset, targetUrl } from "../scripts/local-db.mjs";
 
 export default async function setup(project: TestProject) {

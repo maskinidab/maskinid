@@ -14,7 +14,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 1 | Grund: monorepo, CI, lokal DB, 0001–0002, shared (regnr, APP_NAME, flaggor) | ✅ | npm workspaces (ADR 0001); events/hashkedja skapad redan här (ADR 0004) |
 | 2 | Organisationer & användare | ✅ | notiser, e-postkö, webhooks/api_keys-tabeller skapade här (infrastruktur) |
 | 3 | Maskiner, identifierare, märken | ✅ | + modellkatalog, adaptrar (alla 7) i packages/shared |
-| 4 | Events & audit (verify_chain, anchor-events) | ⬜ | tabell + kedja + ankare klara i steg 1; kvar: Edge Function + integration |
+| 4 | Events & audit (verify_chain, anchor-events) | ✅ | |
 | 5 | Förbehåll, ägarbyten, flaggor | ⬜ | |
 | 6 | Dokument, åtkomstlogg, delningslänkar | ⬜ | |
 | 7 | Verifiering & konflikter | ⬜ | |
@@ -66,3 +66,8 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   Adaptrar (`packages/shared/src/adapters`): IdentityProvider/SignatureProvider (BankID via OIDC-broker, id_token
   RS256-verifiering), CompanyLookup (Roaring), VehicleRegistryLookup (Transportstyrelsen, konfigurerbar), TheftRegistrySync
   (Larmtjänst), Ocr (mock; Anthropic i steg 10), Email (Resend/console); `createAdapters(env)` tvingar mock i DEMO_MODE.
+- **Steg 4** – RLS på events (kategori per roll: finansiär ser förbehåll/ägarbyte/flagga, försäkring flaggor, tidigare
+  ägare fram till sin överlåtelse), get_machine_history (tidslinje), list_org_events, admin_list_events,
+  admin_verify_chain, anchor_compute (vägrar ankra bruten kedja + critical-notis), anchor_mark_published. Edge Function
+  `anchor-events` (GitHub-publicering av anchors/YYYY-MM-DD.txt). Edge-infrastruktur: `_shared/http.ts`, `_shared/db.ts`,
+  `_shared/shared` (synkad kopia av packages/shared, `npm run sync:functions`, CI kontrollerar), `deno check` i CI.

@@ -1,9 +1,24 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "ignorePatterns": ["**/dist/**", "**/dist-demo/**", "**/node_modules/**", "supabase/functions/**/vendor/**"],
+  "plugins": [
+    "react",
+    "typescript",
+    "oxc"
+  ],
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/dist-demo/**",
+    "**/node_modules/**",
+    "supabase/functions/**/vendor/**",
+    "supabase/functions/_shared/shared/**"
+  ],
   "rules": {
     "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
+    "react/only-export-components": [
+      "warn",
+      {
+        "allowConstantExport": true
+      }
+    ]
   }
 }

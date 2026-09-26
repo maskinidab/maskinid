@@ -3,27 +3,35 @@
   "private": true,
   "version": "0.2.0",
   "type": "module",
-  "description": "MaskinID – registret för tunga arbetsmaskiner: ägare, förbehåll, historik och QR-märken.",
-  "workspaces": ["packages/*", "apps/*"],
-  "engines": { "node": ">=20.19" },
+  "description": "MaskinID \u2013 registret f\u00f6r tunga arbetsmaskiner: \u00e4gare, f\u00f6rbeh\u00e5ll, historik och QR-m\u00e4rken.",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=20.19"
+  },
   "scripts": {
     "dev": "npm run dev -w @maskinid/web",
     "build": "npm run build -w @maskinid/shared --if-present && npm run build -w @maskinid/web",
     "build:demo": "npm run build:demo -w @maskinid/web",
     "preview": "npm run preview -w @maskinid/web",
     "lint": "oxlint",
-    "typecheck": "tsc -b packages/shared apps/web apps/ingest",
+    "typecheck": "tsc -b packages/shared apps/web apps/ingest supabase/tests",
     "test": "vitest run",
     "test:db": "vitest run --config supabase/tests/vitest.config.ts",
     "test:e2e": "playwright test --config e2e/playwright.config.ts",
     "db:reset": "node supabase/scripts/local-db.mjs reset",
     "db:types": "node supabase/scripts/gen-types.mjs",
     "tokens": "npm run tokens -w @maskinid/web",
-    "ingest": "npm run start -w @maskinid/ingest"
+    "ingest": "npm run start -w @maskinid/ingest",
+    "check:functions": "node scripts/sync-functions-shared.mjs --check && cd supabase/functions && deno check */index.ts",
+    "sync:functions": "node scripts/sync-functions-shared.mjs"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",
     "@types/pg": "^8.15.6",
+    "deno": "^2.9.6",
     "oxlint": "^1.81.0",
     "pg": "^8.23.0",
     "typescript": "~6.0.2",
