@@ -766,7 +766,7 @@
   "items": "Punkter",
   "items_count_one": "1 punkt",
   "items_count_other": "{{count}} punkter",
-  "items_hint": "En punkt per rad. Börja raden med ! för en kritisk punkt – fel där ställer maskinen ur drift.",
+  "items_hint": "En punkt per rad. Börja raden med * för en kritisk punkt – fel där ställer maskinen ur drift.",
   "lead": "Gå igenom maskinen före start. Ett fel på en kritisk punkt ställer maskinen ur drift och meddelar ägaren.",
   "missing_one": "1 punkt kvar",
   "missing_other": "{{count}} punkter kvar",

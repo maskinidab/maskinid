@@ -219,10 +219,10 @@ function TemplateDialog({ tpl, lang, onClose }: { tpl: Template | null; lang: st
   const { t } = useTranslation();
   const { orgId } = useOrg();
   const [name, setName] = useState(tpl?.name ?? "");
-  const [text, setText] = useState((tpl?.items ?? []).map((i) => `${i.critical ? "! " : ""}${itemLabel(i, lang)}`).join("\n"));
+  const [text, setText] = useState((tpl?.items ?? []).map((i) => `${i.critical ? "* " : ""}${itemLabel(i, lang)}`).join("\n"));
   const m = useRpcMutation<{ p_org_id: string; p_template_id: string | null; p_data: Record<string, unknown> }>("save_checklist_template", { onSuccess: onClose });
-  // One item per line; a leading "!" marks a critical item (a fault stops the machine).
-  const items = text.split("\n").map((l) => l.trim()).filter(Boolean).map((l, n) => ({ id: `i${n + 1}`, sv: l.replace(/^!\s*/, ""), critical: l.startsWith("!") }));
+  // One item per line; a leading "*" marks a critical item (a fault stops the machine).
+  const items = text.split("\n").map((l) => l.trim()).filter(Boolean).map((l, n) => ({ id: `i${n + 1}`, sv: l.replace(/^\*\s*/, ""), critical: l.startsWith("*") }));
   return (
     <Dialog open onClose={onClose} title={tpl?.id ? t("daily.edit_template") : t("daily.new_template")} wide>
       <form className="stack-4" onSubmit={(e) => { e.preventDefault(); m.mutate({ p_org_id: orgId, p_template_id: tpl?.id || null, p_data: { name, items, categories: tpl?.categories ?? [] } }); }}>

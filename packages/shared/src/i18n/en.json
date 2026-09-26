@@ -766,7 +766,7 @@
   "items": "Items",
   "items_count_one": "1 item",
   "items_count_other": "{{count}} items",
-  "items_hint": "One item per line. Start the line with ! for a critical item – a fault there takes the machine out of service.",
+  "items_hint": "One item per line. Start the line with * for a critical item – a fault there takes the machine out of service.",
   "lead": "Go through the machine before starting. A fault on a critical item takes the machine out of service and notifies the owner.",
   "missing_one": "1 item left",
   "missing_other": "{{count}} items left",
