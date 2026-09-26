@@ -10,6 +10,7 @@ import { FinancingBadge, MachineStatusBadge, VerificationBadge } from "../../../
 import { useRpc, useRpcMutation } from "../../../lib/api/query";
 import type { MachineListItem, MachineStatus } from "../../../lib/api/types";
 import { formatDate, formatDateTime, formatNumber } from "../../../lib/format";
+import { MarketCandidates } from "./MarketCandidates";
 
 type Scope = "owned" | "used" | "registered" | "previous" | "all";
 const STATUSES: MachineStatus[] = ["active", "stolen", "blocked", "disputed", "scrapped", "exported", "deregistered"];
@@ -63,6 +64,7 @@ export function MachinesPage() {
     <div className="stack-6">
       <PageHeader title={t("machines.title")} lead={t("machines.lead")}
         actions={canRegister ? <Link className="mid-knapp mid-knapp-primar" to={path("machines/new")}><Icon name="plus" />{t("nav.register")}</Link> : undefined} />
+      {canRegister && <MarketCandidates orgId={orgId} />}
       {(drafts.data?.length ?? 0) > 0 && (
         <section className="panel stack-3" aria-labelledby="utkast">
           <h2 id="utkast" className="t-rubrik-4">{t("machines.drafts_title")}</h2>

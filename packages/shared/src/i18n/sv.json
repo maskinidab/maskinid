@@ -753,6 +753,26 @@
    "repair": "Reparation",
    "service": "Service"
   },
+  "market_alert_status": {
+   "dismissed": "Avfärdad",
+   "escalated": "Eskalerad",
+   "open": "Öppen",
+   "reviewed": "Granskad"
+  },
+  "market_alert_type": {
+   "duplicate_serial_in_market": "Dubbelt serienummer",
+   "listed_after_transfer": "Annons efter ägarbyte",
+   "listed_with_active_financing": "Belånad maskin annonseras",
+   "price_anomaly": "Prisavvikelse",
+   "seller_not_owner": "Säljare är inte ägare",
+   "stolen_machine_listed": "Stulen maskin annonseras"
+  },
+  "market_tos_status": {
+   "allowed": "Tillåten",
+   "partner_feed": "Partneravtal",
+   "restricted": "Spärrad av villkor",
+   "unknown": "Ej granskad"
+  },
   "member_role": {
    "admin": "Administratör",
    "member": "Medlem",
@@ -1317,6 +1337,12 @@
   "insurer_requires": "{{insurer}} kräver att maskinen är {{level}}.",
   "label": "Märke",
   "last_transfer": "Senaste ägarbyte",
+  "market_listed_one": "Maskinen syns i en annons",
+  "market_listed_other": "Maskinen syns i {{count}} annonser",
+  "market_open": "Visa annonsen",
+  "market_seen_at": "Senast sedd till salu hos {{where}} {{date}}",
+  "market_stolen_listed_one": "Stulen maskin syns i en annons – kontakta polisen",
+  "market_stolen_listed_other": "Stulen maskin syns i {{count}} annonser – kontakta polisen",
   "no_access": "Ingen har tittat ännu",
   "no_documents": "Inga dokument ännu",
   "no_label": "Inget kopplat märke",
@@ -1374,6 +1400,17 @@
   "search_placeholder": "Sök regnr, serienummer eller modell",
   "title": "Maskiner",
   "transfer_open": "Ägarbyte pågår"
+ },
+ "market": {
+  "candidate_seen": "sedd hos {{source}} {{date}}",
+  "candidates_create_one": "Skapa ett utkast",
+  "candidates_create_other": "Skapa {{count}} utkast",
+  "candidates_created_one": "Ett utkast har skapats under Utkast.",
+  "candidates_created_other": "{{count}} utkast har skapats under Utkast.",
+  "candidates_lead": "De finns i annonser med ert organisationsnummer men är inte registrerade. Välj vilka som ska bli förifyllda utkast – ni granskar och signerar varje registrering.",
+  "candidates_review": "Visa maskinerna",
+  "candidates_title_one": "Vi hittade en maskin som ni annonserat",
+  "candidates_title_other": "Vi hittade {{count}} maskiner som ni annonserat"
  },
  "nav": {
   "admin": "Administration",
@@ -1591,6 +1628,32 @@
    }
   },
   "mark_all_read": "Markera alla som lästa",
+  "market": {
+   "duplicate_serial_in_market": {
+    "body": "Serienumret för {{reg_number}} förekommer hos flera säljare.",
+    "title": "Samma serienummer i flera annonser"
+   },
+   "listed_after_transfer": {
+    "body": "{{reg_number}} har bytt ägare men annonsen hos {{source}} är fortfarande aktiv.",
+    "title": "Annons kvar efter ägarbyte"
+   },
+   "listed_with_active_financing": {
+    "body": "{{reg_number}} har ett aktivt förbehåll och syns i en annons hos {{source}}.",
+    "title": "Belånad maskin ute till försäljning"
+   },
+   "price_anomaly": {
+    "body": "En annons för {{reg_number}} ligger långt under jämförbara maskiner.",
+    "title": "Ovanligt lågt pris i annons"
+   },
+   "seller_not_owner": {
+    "body": "{{reg_number}} annonseras hos {{source}} av ett företag som inte är registrerad ägare.",
+    "title": "Annonseras av annan än ägaren"
+   },
+   "stolen_machine_listed": {
+    "body": "{{reg_number}} är anmäld stulen men syns i en annons hos {{source}}.",
+    "title": "Stulen maskin ute till försäljning"
+   }
+  },
   "member": {
    "access_requested": {
     "body": "{{name}} ({{email}}) vill gå med i organisationen.",

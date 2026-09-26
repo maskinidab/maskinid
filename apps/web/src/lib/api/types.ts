@@ -129,6 +129,7 @@ export interface MachineView {
   identifiers: Identifier[];
   labels: { id: string; code: string; status: string; role: string; bound_at: string | null; serial: string }[] | { has_bound_label: boolean };
   financing?: { has_active: boolean; active: Encumbrance | null; min_trusted_level: number };
+  market_listings?: MarketListing[];
   encumbrances?: Encumbrance[];
   flags: Flag[];
   last_transfer_date: string | null;
@@ -241,4 +242,14 @@ export interface DocumentItem {
   uploaded_by: string;
   org_id: string;
   created_at: string;
+}
+
+/** A matched, active market listing (SPEC §8.6: shown as "last seen for sale at …", never as owner). */
+export interface MarketListing {
+  source: string;
+  url: string | null;
+  seen_at: string;
+  first_seen_at: string;
+  seller: string | null;
+  location: string | null;
 }

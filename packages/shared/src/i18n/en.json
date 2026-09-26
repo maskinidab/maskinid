@@ -753,6 +753,26 @@
    "repair": "Repair",
    "service": "Service"
   },
+  "market_alert_status": {
+   "dismissed": "Dismissed",
+   "escalated": "Escalated",
+   "open": "Open",
+   "reviewed": "Reviewed"
+  },
+  "market_alert_type": {
+   "duplicate_serial_in_market": "Duplicate serial",
+   "listed_after_transfer": "Listed after transfer",
+   "listed_with_active_financing": "Financed machine listed",
+   "price_anomaly": "Price anomaly",
+   "seller_not_owner": "Seller is not owner",
+   "stolen_machine_listed": "Stolen machine listed"
+  },
+  "market_tos_status": {
+   "allowed": "Allowed",
+   "partner_feed": "Partner feed",
+   "restricted": "Restricted by terms",
+   "unknown": "Not reviewed"
+  },
   "member_role": {
    "admin": "Administrator",
    "member": "Member",
@@ -1317,6 +1337,12 @@
   "insurer_requires": "{{insurer}} requires the machine to be {{level}}.",
   "label": "Label",
   "last_transfer": "Latest change of ownership",
+  "market_listed_one": "The machine appears in a listing",
+  "market_listed_other": "The machine appears in {{count}} listings",
+  "market_open": "View listing",
+  "market_seen_at": "Last seen for sale at {{where}} on {{date}}",
+  "market_stolen_listed_one": "Stolen machine appears in a listing – contact the police",
+  "market_stolen_listed_other": "Stolen machine appears in {{count}} listings – contact the police",
   "no_access": "Nobody has looked yet",
   "no_documents": "No documents yet",
   "no_label": "No attached label",
@@ -1374,6 +1400,17 @@
   "search_placeholder": "Search reg no, serial number or model",
   "title": "Machines",
   "transfer_open": "Transfer in progress"
+ },
+ "market": {
+  "candidate_seen": "seen on {{source}} {{date}}",
+  "candidates_create_one": "Create one draft",
+  "candidates_create_other": "Create {{count}} drafts",
+  "candidates_created_one": "One draft has been created under Drafts.",
+  "candidates_created_other": "{{count}} drafts have been created under Drafts.",
+  "candidates_lead": "They appear in listings with your organisation number but are not registered. Choose which ones become prefilled drafts – you review and sign each registration.",
+  "candidates_review": "Show machines",
+  "candidates_title_one": "We found a machine you have advertised",
+  "candidates_title_other": "We found {{count}} machines you have advertised"
  },
  "nav": {
   "admin": "Administration",
@@ -1591,6 +1628,32 @@
    }
   },
   "mark_all_read": "Mark all as read",
+  "market": {
+   "duplicate_serial_in_market": {
+    "body": "The serial number of {{reg_number}} appears with several sellers.",
+    "title": "Same serial number in several listings"
+   },
+   "listed_after_transfer": {
+    "body": "{{reg_number}} has changed owner but the listing on {{source}} is still active.",
+    "title": "Listing still active after transfer"
+   },
+   "listed_with_active_financing": {
+    "body": "{{reg_number}} has an active encumbrance and appears in a listing on {{source}}.",
+    "title": "Financed machine listed for sale"
+   },
+   "price_anomaly": {
+    "body": "A listing for {{reg_number}} is far below comparable machines.",
+    "title": "Unusually low price in listing"
+   },
+   "seller_not_owner": {
+    "body": "{{reg_number}} is listed on {{source}} by a company that is not the registered owner.",
+    "title": "Listed by someone other than the owner"
+   },
+   "stolen_machine_listed": {
+    "body": "{{reg_number}} is reported stolen but appears in a listing on {{source}}.",
+    "title": "Stolen machine listed for sale"
+   }
+  },
   "member": {
    "access_requested": {
     "body": "{{name}} ({{email}}) wants to join the organisation.",

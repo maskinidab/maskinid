@@ -26,7 +26,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 13 | Handlare | ✅ | |
 | 14 | Roller/portaler | ✅ | |
 | 15 | API & webhooks | ✅ | ADR 0013 |
-| 16 | Marknadsbevakning | ⬜ | |
+| 16 | Marknadsbevakning | ✅ | §16 p.16, ADR 0014; operatörsdashboard i steg 17 |
 | 17 | Operatörsadmin | ⬜ | |
 | 18 | PDF:er & e-post | ⬜ | |
 | 19 | Seed & demo | ⬜ | |
@@ -190,3 +190,12 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   noindex). Delad `packages/shared/src/api/routes.ts` driver även OpenAPI 3.1 på `/api-docs`. Webb: Inställningar →
   API och webhooks.
 
+- **Steg 16** – Marknadsbevakning (§8): migration `market` – `market_sources` (kill switch, villkorsstatus, config
+  utan hemligheter), `market_runs`, `market_observations` (säljare bara för företag; enskild firma lagras som privat;
+  `raw` rensas rekursivt från personfält), `market_alerts` (sex typer, en öppen per typ/maskin), matchning på
+  serienummer (≥ 0,85), notiser + webhook till ägare/långivare/flaggare/bevakare, stöldflagga i efterhand kontrollerar
+  aktiva annonser, kandidater → förifyllda utkast, `claim_ocr_candidates` för bild-OCR, gallring efter 24 mån.
+  Annonspris visas aldrig i registret. Worker `apps/ingest`: connector-interface, Mascus, Blocket, generisk
+  handlarwebbplats (sitemap + JSON-LD), partnerflöde; robots.txt + ≥ 2 s/domän; sanering i workern och igen i
+  databasen; CLI + GitHub Actions-schema (`ingest.yml`). Webb: "Senast sedd till salu hos …" på maskinsidan,
+  kandidatpanel på Maskiner. Demo-seed: stulen CAT 950 GC i annons + tre kandidater för Nordmaskin.

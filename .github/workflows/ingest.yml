@@ -1,0 +1,43 @@
+name: Market ingest
+
+# SPEC §8.5: scheduled market surveillance. Sources are enabled per source in operator admin (kill switch + terms
+# review); disabled sources are skipped by the database, so this schedule never bypasses a decision there.
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      source:
+        description: "Source key (empty = all)"
+        required: false
+
+concurrency:
+  group: market-ingest
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Run ingest
+        working-directory: apps/ingest
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          INGEST_OCR: "1"
+          PARTNER_FEED_TOKEN: ${{ secrets.PARTNER_FEED_TOKEN }}
+          SOURCE: ${{ github.event.inputs.source }}
+        run: |
+          if [ -n "$SOURCE" ]; then
+            node --experimental-strip-types src/cli.ts --source "$SOURCE"
+          else
+            node --experimental-strip-types src/cli.ts --all
+          fi

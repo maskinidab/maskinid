@@ -12,7 +12,7 @@ import { FinancingBadge, MachineStatusBadge, StatusBadge, VerificationBadge } fr
 import { StatusBanner } from "../../../components/StatusBanner";
 import { Timeline } from "../../../components/Timeline";
 import { rpc, useRpc, useRpcMutation } from "../../../lib/api/query";
-import type { DocumentItem, Encumbrance, Flag, HistoryEvent, MachineView } from "../../../lib/api/types";
+import type { DocumentItem, Encumbrance, Flag, HistoryEvent, MachineView, MarketListing } from "../../../lib/api/types";
 import { backend } from "../../../lib/backend";
 import { formatDate, formatDateTime, formatMonth, formatNumber } from "../../../lib/format";
 import { extractPdf } from "../../../lib/pdf/extract";
@@ -112,6 +112,7 @@ export function MachinePage() {
             <Notice kind="info" title={t("machine.insurer_requires", { insurer: (m.insurance_requirement as { insurer: string }).insurer,
               level: t(`level.${(m.insurance_requirement as { level: number }).level}.name`) })} />
           )}
+          {Array.isArray(m.market_listings) && m.market_listings.length > 0 && <MarketListings listings={m.market_listings} stolen={m.status === "stolen"} />}
           {m.open_transfer && (
             <Notice kind="info" title={t("machine.transfer_open_status", { status: t(`enum.transfer_status.${m.open_transfer.status}`) })}>
               <Link className="mid-lank" to={path(`transfers/${m.open_transfer.id}`)}>{t("common.open")}</Link>
@@ -374,5 +375,24 @@ function Access({ m }: { m: MachineView }) {
         )}
       </section>
     </div>
+  );
+}
+
+/** "Senast sedd till salu hos …" (SPEC §8.6) – never presented as owner, never with a price. */
+function MarketListings({ listings, stolen }: { listings: MarketListing[]; stolen: boolean }) {
+  const { t } = useTranslation();
+  return (
+    <Notice kind={stolen ? "fel" : "info"} title={t(stolen ? "machine.market_stolen_listed" : "machine.market_listed", { count: listings.length })}>
+      <ul className="stack-1">
+        {listings.map((l, i) => (
+          <li key={i} className="t-liten">
+            {t("machine.market_seen_at", { where: l.seller ?? l.source, date: formatDate(l.seen_at) })}
+            {l.location ? ` · ${l.location}` : ""}
+            {l.seller && <span className="t-sekundar"> · {l.source}</span>}
+            {l.url && <> · <a className="mid-lank" href={l.url} target="_blank" rel="noopener noreferrer nofollow">{t("machine.market_open")}</a></>}
+          </li>
+        ))}
+      </ul>
+    </Notice>
   );
 }
