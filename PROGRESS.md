@@ -21,7 +21,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 8 | Frontend – skal | ✅ | lokalt läge = PGlite i webbläsaren (ADR 0011) |
 | 9 | Frontend – publikt | ✅ | |
 | 10 | Frontend – kärnflöden | ✅ | Ägarbevis-PDF i steg 19 |
-| 11 | Import | ⬜ | |
+| 11 | Import | ✅ | ADR 0012 (parsning i webbläsaren, en signatur per finansiärsimport) |
 | 12 | Flotta | ⬜ | |
 | 13 | Handlare | ⬜ | |
 | 14 | Roller/portaler | ⬜ | |
@@ -138,4 +138,13 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   IndexedDB) ⇒ fullständig synk efter laddning + efter varje transaktion, markör för komplett kopia.
   Webbläsartestat: registrering (mobil), sälj → köpare signerar (Demo-BankID), finansiär kontrollerar + registrerar
   förbehåll, kvitto-PDF.
+- **Steg 11** – Import (§6.5): migration `imports` (imports/import_rows med RLS, `create_import` validerar rad för
+  rad i databasen – obligatoriska fält, identifierarformat, dubbletter i filen och mot registret med regnr, kategori
+  från fritext sv/en eller modellkatalogen, orgnr, förbehållsregler – `import_commit` en subtransaktion per rad,
+  `import.committed`-event, `get_import`/`list_imports`). Finansiärsimport: nya maskiner registreras hos kunden,
+  befintliga får förbehållet (`encumber_existing`), en signatur för hela importen, aldrig överskrivning (konflikt +
+  notiser om ett annat förbehåll hunnit registreras). Signaturtexter för nya åtgärder via `app.sigtext_<åtgärd>`.
+  Webb: `/import` i fyra steg (fil/klistra in, kolumnmappning via `import-map`, förhandsgranskning med fel,
+  "Importera bara giltiga rader", felrapport-CSV, mall, tidigare importer), `lib/tabular.ts` (CSV-autodetektering,
+  XLSX via read-excel-file). Webbläsartestat: handlare 20 rader (2 fel ⇒ 18 maskiner), finansiär med signering.
 

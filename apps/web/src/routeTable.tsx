@@ -23,6 +23,7 @@ const ReportErrorPage = L(() => import("./pages/app/machines/ReportErrorPage"), 
 const TransferPage = L(() => import("./pages/app/transfers/TransferPage"), "TransferPage");
 const CheckPage = L(() => import("./pages/app/check/CheckPage"), "CheckPage");
 const ReceiptsPage = L(() => import("./pages/app/check/CheckPage"), "ReceiptsPage");
+const ImportPage = L(() => import("./pages/app/import/ImportPage"), "ImportPage");
 const NewEncumbrancePage = L(() => import("./pages/app/encumbrances/NewEncumbrancePage"), "NewEncumbrancePage");
 
 export const publicRoutes: { path: string; element: ReactNode }[] = [
@@ -51,4 +52,5 @@ export const appRoutes: { path: string; element: ReactNode }[] = [
   { path: "check", element: <CheckPage /> },
   { path: "receipts", element: <ReceiptsPage /> },
   { path: "encumbrances/new", element: <NewEncumbrancePage /> },
+  { path: "import", element: <ImportPage /> },
 ];

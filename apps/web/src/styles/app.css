@@ -189,3 +189,5 @@ a { color: var(--id-text); }
 .radlista > li { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; justify-content: space-between; padding: var(--space-3) 0; border-bottom: 1px solid var(--linje); }
 .radlista > li > a { color: var(--text); }
 .maskin-huvud .badge-rad, .maskin-huvud .mid-rad { display: flex; }
+.mid-tabell tr.rad-fel td { background: var(--status-sparr-ljus); }
+.felista { margin: 0; padding-left: 18px; color: var(--status-sparr); font-size: 14px; line-height: 20px; }

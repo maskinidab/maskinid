@@ -29,6 +29,7 @@
     "react-hook-form": "^7.89.0",
     "react-i18next": "^17.0.15",
     "react-router-dom": "^7.18.4",
+    "read-excel-file": "^9.3.10",
     "zod": "^4.6.5"
   },
   "devDependencies": {
