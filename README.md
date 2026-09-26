@@ -88,7 +88,7 @@ docs/
 
 Se **[docs/BACKEND.md](docs/BACKEND.md)**. Kortversion:
 
-1. `supabase link --project-ref ilutcrqeqgluymgcapqg`, `supabase db push` och `supabase functions deploy invite-user`.
+1. `supabase link --project-ref ogpqatvgamzgwwhgtlcr`, `supabase db push` och `supabase functions deploy invite-user`.
 2. Kopiera `.env.example` till `.env`, sätt `VITE_DATA_SOURCE=supabase` och fyll i URL och publishable key.
 3. Starta om `npm run dev`. Ingen frontendkod behöver ändras.
 

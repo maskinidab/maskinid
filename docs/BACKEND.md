@@ -14,12 +14,30 @@ Backend består av:
 | --- | --- |
 | Schema, RLS och registerfunktioner | [`supabase/migrations/20260926000001_initial_schema.sql`](../supabase/migrations/20260926000001_initial_schema.sql) |
 | Administration: registerhållare, administratörer, verifiering, organisationer | [`supabase/migrations/20260926000002_administration.sql`](../supabase/migrations/20260926000002_administration.sql) |
+| Åtgärder från Supabase Advisors: fast `search_path`, index på främmande nycklar | [`supabase/migrations/20260926000003_hardening.sql`](../supabase/migrations/20260926000003_hardening.sql) |
 | Edge Function för inbjudan av användare | [`supabase/functions/invite-user/index.ts`](../supabase/functions/invite-user/index.ts) |
 | Exempeldata (bara test/staging) | [`supabase/seed.sql`](../supabase/seed.sql) |
 
 Allt utom Edge Function är testat med `npm run test:db`.
 
-**Projekt:** `ilutcrqeqgluymgcapqg` – `https://ilutcrqeqgluymgcapqg.supabase.co`
+**Projekt:** `maskinid` (`ogpqatvgamzgwwhgtlcr`) i organisationen maskinidab, region eu-north-1 (Stockholm) –
+`https://ogpqatvgamzgwwhgtlcr.supabase.co`
+
+### Status i projektet
+
+| Del | Status |
+| --- | --- |
+| Migreringar `initial_schema`, `administration`, `hardening` | Körda |
+| Edge Function `invite-user` (verify_jwt på) | Driftsatt |
+| Exempeldata (`seed.sql`) | **Inte** körd – databasen är tom |
+| Första administratören | Inte skapad – se avsnitt 4 |
+| `SITE_URL` för inbjudningslänkar | Inte satt – sätt när appen har en adress |
+
+**Kvarvarande råd från Supabase Advisors – avsiktliga:**
+
+- *RLS enabled, no policy* på registertabellerna: klienter ska inte läsa eller skriva tabellerna direkt, bara via funktionerna.
+- *Security definer function executable* för anon/authenticated: det är API:t. Varje funktion kontrollerar själv inloggning och behörighet.
+- *Unused index*: försvinner när databasen används.
 
 ---
 
@@ -45,7 +63,7 @@ VITE_SUPABASE_PUBLISHABLE_KEY=<publishable/anon key>
 
 ```bash
 supabase login
-supabase link --project-ref ilutcrqeqgluymgcapqg
+supabase link --project-ref ogpqatvgamzgwwhgtlcr
 supabase db push                             # kör båda migreringarna
 supabase functions deploy invite-user
 supabase secrets set SITE_URL=https://<din-domän>/mina-sidor
