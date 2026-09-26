@@ -57,7 +57,7 @@ function SideNav({ onNavigate }: { onNavigate?: () => void }) {
           <ul>
             {g.items.map((i) => (
               <li key={i.to}>
-                <NavLink to={i.to.startsWith("/") ? i.to : path(i.to)} end={i.to === "machines"}>
+                <NavLink to={i.to.startsWith("/") ? i.to : path(i.to)} end={i.to === "machines" || i.to === "admin"}>
                   <Icon name={i.icon} />
                   <span>{t(i.label)}</span>
                   {i.badge && <Badge kind={i.badge} />}

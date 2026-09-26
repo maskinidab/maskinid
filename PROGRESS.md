@@ -27,7 +27,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 14 | Roller/portaler | ✅ | |
 | 15 | API & webhooks | ✅ | ADR 0013 |
 | 16 | Marknadsbevakning | ✅ | §16 p.16, ADR 0014; operatörsdashboard i steg 17 |
-| 17 | Operatörsadmin | ⬜ | |
+| 17 | Operatörsadmin | ✅ | ADR 0015 |
 | 18 | PDF:er & e-post | ⬜ | |
 | 19 | Seed & demo | ⬜ | |
 | 20 | Redskap, förare, daglig kontroll, bränsle/klimat | ⬜ | tolkas från CLAUDE.md (ADR 0003) |
@@ -199,3 +199,11 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   handlarwebbplats (sitemap + JSON-LD), partnerflöde; robots.txt + ≥ 2 s/domän; sanering i workern och igen i
   databasen; CLI + GitHub Actions-schema (`ingest.yml`). Webb: "Senast sedd till salu hos …" på maskinsidan,
   kandidatpanel på Maskiner. Demo-seed: stulen CAT 950 GC i annons + tre kandidater för Nordmaskin.
+- **Steg 17** – Operatörsadmin (§9 `/admin`, §2.4): migration `operator_admin` – `operator_audit` (append-only,
+  varje supportsök/uppslag/ändring loggas), `admin_overview`, `admin_list_orgs`/`admin_get_org`/`admin_set_org_types`
+  (godkännandekö, begränsa roller), märkesbatcher (lista, tryckfil med koder, skickad/avbruten), `admin_api_usage`,
+  `admin_support_search` (org, användare, maskin via regnr/serienummer), funktionsflaggor (`admin_set_config`,
+  superadmin, event + audit), `admin_system_health` (kedja, ankare, webhooks, e-post, marknad), `admin_market_overview`.
+  Webb under `/o/<operatör>/admin/*` (+ `/admin/*`-omdirigering): översikt, organisationer, verifieringskö,
+  konflikter, rättelser (fyra ögon med BankID), märkesbatcher, händelselogg + ankarverifiering, marknadsbevakning
+  (larm, källor med kill switch, körningar), API-användning, supportsök, flaggor, systemhälsa + operatörslogg.

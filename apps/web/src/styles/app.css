@@ -154,6 +154,7 @@ a { color: var(--id-text); }
 
 /* ---------- Vertikal rytm – sist i filen så att den vinner över elementens egna marginaler ---------- */
 .stack-2 > * + * { margin-top: var(--space-2); }
+.stack-1 > * + * { margin-top: var(--space-1); }
 .stack-3 > * + * { margin-top: var(--space-3); }
 .stack-4 > * + * { margin-top: var(--space-4); }
 .stack-5 > * + * { margin-top: var(--space-5); }
@@ -195,3 +196,16 @@ a { color: var(--id-text); }
 .timgraf svg { width: 100%; max-width: 560px; height: auto; display: block; }
 .t-fel { color: var(--status-sparr); }
 .mid-select-liten { height: 36px; font-size: 14px; padding-top: 0; padding-bottom: 0; width: auto; }
+
+/* Operator admin (step 17) */
+.admin-rutor { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.admin-rutor a { display: grid; grid-template-columns: auto 1fr; gap: var(--space-1) var(--space-3); align-items: center; padding: var(--space-4) var(--space-5);
+  background: var(--yta-kort); border: 1px solid var(--linje); color: var(--text); text-decoration: none; }
+.admin-rutor a:hover { border-color: var(--text); }
+.admin-rutor a.is-akut { border-left: 4px solid var(--status-sparr); }
+.admin-rutor svg { width: 20px; height: 20px; grid-row: span 2; }
+.admin-ruta-varde { font-family: var(--font-display); font-size: 28px; line-height: 32px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.admin-rutor span:last-child { font-size: 14px; line-height: 20px; color: var(--text-sekundar); }
+.stapeldiagram { display: flex; align-items: flex-end; gap: 2px; height: 120px; margin: 0; padding: var(--space-3); border: 1px solid var(--linje); background: var(--yta-kort); }
+.stapeldiagram > div { flex: 1; min-width: 2px; background: var(--text); }
+.nyckeltal dd.nyckeltal-not { font-family: inherit; font-size: 13px; line-height: 18px; font-weight: 400; color: var(--text-sekundar); }

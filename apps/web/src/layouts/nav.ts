@@ -65,7 +65,22 @@ export function navGroups(types: OrgType[], isAdmin: boolean, isOperator: boolea
   const uniq = role.filter((x, i) => role.findIndex((y) => y.to === x.to) === i);
   if (uniq.length) groups.push({ label: "nav.group_role", items: uniq });
   groups.push({ label: "nav.group_org", items: org });
-  if (isOperator) groups.push({ label: "nav.admin", items: [{ to: "/admin", label: "nav.admin", icon: "skold" }] });
+  if (has("operator")) {
+    groups.push({ label: "nav.admin", items: [
+      { to: "admin", label: "nav.admin_home", icon: "skold" },
+      { to: "admin/organizations", label: "nav.admin_orgs", icon: "personer" },
+      { to: "verify", label: "nav.verify", icon: "sigill" },
+      { to: "admin/conflicts", label: "nav.admin_conflicts", icon: "varning" },
+      { to: "admin/corrections", label: "nav.admin_corrections", icon: "penna" },
+      { to: "admin/labels", label: "nav.admin_labels", icon: "qr" },
+      { to: "admin/events", label: "nav.admin_events", icon: "lista" },
+      { to: "admin/market", label: "nav.admin_market", icon: "sok" },
+      { to: "admin/api", label: "nav.admin_api", icon: "diagram" },
+      { to: "admin/support", label: "nav.admin_support", icon: "info" },
+      { to: "admin/flags", label: "nav.admin_flags", icon: "installningar" },
+      { to: "admin/health", label: "nav.admin_health", icon: "bock" },
+    ] });
+  } else if (isOperator) groups.push({ label: "nav.admin", items: [{ to: "/admin", label: "nav.admin", icon: "skold" }] });
   return groups;
 }
 

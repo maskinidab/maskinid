@@ -47,6 +47,18 @@ const ExportsPage = L(() => import("./pages/app/roles/AuthorityPages"), "Exports
 const OemPage = L(() => import("./pages/app/roles/OemPage"), "OemPage");
 const ImportPage = L(() => import("./pages/app/import/ImportPage"), "ImportPage");
 const NewEncumbrancePage = L(() => import("./pages/app/encumbrances/NewEncumbrancePage"), "NewEncumbrancePage");
+const AdminHomePage = L(() => import("./pages/app/admin/AdminQueues"), "AdminHomePage");
+const AdminConflictsPage = L(() => import("./pages/app/admin/AdminQueues"), "AdminConflictsPage");
+const AdminCorrectionsPage = L(() => import("./pages/app/admin/AdminQueues"), "AdminCorrectionsPage");
+const AdminOrgsPage = L(() => import("./pages/app/admin/AdminOrgs"), "AdminOrgsPage");
+const AdminOrgPage = L(() => import("./pages/app/admin/AdminOrgs"), "AdminOrgPage");
+const AdminLabelsPage = L(() => import("./pages/app/admin/AdminTools"), "AdminLabelsPage");
+const AdminEventsPage = L(() => import("./pages/app/admin/AdminTools"), "AdminEventsPage");
+const AdminMarketPage = L(() => import("./pages/app/admin/AdminTools"), "AdminMarketPage");
+const AdminApiPage = L(() => import("./pages/app/admin/AdminTools"), "AdminApiPage");
+const AdminSupportPage = L(() => import("./pages/app/admin/AdminTools"), "AdminSupportPage");
+const AdminFlagsPage = L(() => import("./pages/app/admin/AdminTools"), "AdminFlagsPage");
+const AdminHealthPage = L(() => import("./pages/app/admin/AdminTools"), "AdminHealthPage");
 
 export const publicRoutes: { path: string; element: ReactNode }[] = [
   { path: "/", element: <HomePage /> },
@@ -98,4 +110,17 @@ export const appRoutes: { path: string; element: ReactNode }[] = [
   { path: "export-check", element: <ExportCheckPage /> },
   { path: "exports", element: <ExportsPage /> },
   { path: "oem", element: <OemPage /> },
+  { path: "admin", element: <AdminHomePage /> },
+  { path: "admin/organizations", element: <AdminOrgsPage /> },
+  { path: "admin/organizations/:id", element: <AdminOrgPage /> },
+  { path: "admin/verifications", element: <VerifyQueuePage /> },
+  { path: "admin/conflicts", element: <AdminConflictsPage /> },
+  { path: "admin/corrections", element: <AdminCorrectionsPage /> },
+  { path: "admin/labels", element: <AdminLabelsPage /> },
+  { path: "admin/events", element: <AdminEventsPage /> },
+  { path: "admin/market", element: <AdminMarketPage /> },
+  { path: "admin/api", element: <AdminApiPage /> },
+  { path: "admin/support", element: <AdminSupportPage /> },
+  { path: "admin/flags", element: <AdminFlagsPage /> },
+  { path: "admin/health", element: <AdminHealthPage /> },
 ];

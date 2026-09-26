@@ -29,6 +29,17 @@ function AppEntry() {
   return <Navigate to={m ? `/o/${m.org.slug}/dashboard` : "/onboarding"} replace />;
 }
 
+/** /admin/* (links in notifications and e-mail) → the operator org's admin area. */
+function AdminRedirect() {
+  const { ready, session, context } = useAuth();
+  const location = useLocation();
+  if (!ready || (session && !context)) return <div className="behallare sektion"><Skeleton lines={4} /></div>;
+  if (!session) return <Navigate to={`/login?next=${encodeURIComponent(location.pathname)}`} replace />;
+  const op = context!.memberships.find((m) => m.org.types.includes("operator"));
+  if (!op) return <NotFoundPage />;
+  return <Navigate to={`/o/${op.org.slug}${location.pathname}${location.search}`} replace />;
+}
+
 /** New page ⇒ start at the top and move focus to the content (screen readers announce the new page). */
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -55,6 +66,7 @@ export function AppRoutes() {
         <Route path="design" element={<Page><DesignProfilePage /></Page>} />
         <Route path="app" element={<AppEntry />} />
         <Route path="dashboard" element={<AppEntry />} />
+        <Route path="admin/*" element={<AdminRedirect />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
       <Route path="o/:orgSlug" element={<AppLayout />}>
