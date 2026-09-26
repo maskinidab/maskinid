@@ -44,6 +44,15 @@ export class Tx {
     return this;
   }
 
+  /** Sets the JWT claims of a fixture user but stays the database owner – for calling internal app.* helpers. */
+  async claims(who: UserKey, extra: Record<string, unknown> = {}) {
+    await this.client.query("reset role");
+    await this.client.query("select set_config('request.jwt.claims', $1, true)", [
+      JSON.stringify({ sub: USERS[who], role: "authenticated", aal: "aal2", ...extra }),
+    ]);
+    return this;
+  }
+
   async q<T = Record<string, unknown>>(sql: string, params: unknown[] = []): Promise<T[]> {
     return (await this.client.query(sql, params)).rows as T[];
   }

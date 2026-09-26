@@ -15,7 +15,9 @@ create schema if not exists app;
 revoke all on schema app from public;
 grant usage on schema app to anon, authenticated, service_role;
 
--- Functions are not executable by default: every exposed RPC grants explicitly.
+-- Functions are not executable by default: every exposed RPC grants explicitly. PostgreSQL grants EXECUTE to
+-- PUBLIC globally, and per-schema default privileges cannot remove a global default, so revoke it globally too.
+alter default privileges revoke execute on functions from public;
 alter default privileges in schema public revoke execute on functions from public, anon, authenticated;
 alter default privileges in schema app revoke execute on functions from public, anon, authenticated;
 -- Clients never write tables directly (CLAUDE.md rule 2): no write privileges for API roles on new tables,

@@ -12,7 +12,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | # | Steg | Status | Anteckning |
 |---|---|---|---|
 | 1 | Grund: monorepo, CI, lokal DB, 0001–0002, shared (regnr, APP_NAME, flaggor) | ✅ | npm workspaces (ADR 0001); events/hashkedja skapad redan här (ADR 0004) |
-| 2 | Organisationer & användare | ⬜ | |
+| 2 | Organisationer & användare | ✅ | notiser, e-postkö, webhooks/api_keys-tabeller skapade här (infrastruktur) |
 | 3 | Maskiner, identifierare, märken | ⬜ | |
 | 4 | Events & audit (verify_chain, anchor-events) | ⬜ | tabell + kedja + ankare klara i steg 1; kvar: Edge Function + integration |
 | 5 | Förbehåll, ägarbyten, flaggor | ⬜ | |
@@ -44,3 +44,13 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   `packages/shared`: `APP_NAME`, feature flags, regler, regnr (Luhn mod 32, blandade grupper), identifierare, orgnr.
   Migrationer: prototypen flyttad till `legacy` (ADR 0005), extensions/app-schema/app_config, alla enums, events med
   hashkedja + append-only + Merkle-ankare. Testrigg: `npm run test:db` (10 tester), `npm test` (enhetstester).
+- **Steg 2** – Migration `orgs_users`: organizations (enskild firma krypterad med pgcrypto, nyckel i Vault/app.secrets,
+  maskerad visning), profiles (personnummer endast som saltad hash), memberships (inbjudningstoken hashad), operator_roles,
+  company_lookups (mock i DEMO_MODE), notifications + preferences, email_outbox, api_keys, api_requests, webhooks,
+  webhook_deliveries. Hjälpfunktioner i `app`: current_org_ids, is_member_of, has_org_type (pending ⇒ owner-rätt),
+  is_operator, require_actor (verifierad identitet, MFA utanför demo, API-nycklar), notify_*, enqueue_webhook.
+  RPC: my_context, create_org (owner auto-godkänd efter uppslag), update_org, get_org, search_orgs, invite_member,
+  accept_invite, suggested_orgs, request_membership, members, verify_identity (mock), record_identity_verification
+  (service), approve/suspend_org, notiser. Säkerhetsfynd åtgärdat: PUBLIC hade EXECUTE på nya funktioner ⇒ global
+  `alter default privileges revoke execute … from public` + test som låser exponerade funktioner (99_function_exposure).
+  Prototypens Edge Function invite-user borttagen (ersätts av invite_member + send-email i steg 18).
