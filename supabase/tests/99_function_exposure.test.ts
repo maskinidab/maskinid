@@ -5,6 +5,7 @@ import { tx } from "./helpers.ts";
 // add it here – a missing entry means a function was exposed (or hidden) by accident.
 const ANON = [
   "public.authorize_document_download",
+  "public.demo_shortcuts",
   "public.get_app_config",
   "public.list_event_anchors",
   "public.public_machine_card",

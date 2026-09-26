@@ -1,21 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { formatDate, formatDateIso, formatDateTime, formatSek, formatTime } from "./format";
+import { formatDate, formatDateIso, formatDateTime, formatNumber, formatReg } from "./format";
 
-const NBSP = " ";
-
-describe("format enligt profilens tonalitet", () => {
-  it("datum i löptext: 26 sep 2026", () => {
-    expect(formatDate("2026-09-26T12:05:00Z")).toBe(`26${NBSP}sep${NBSP}2026`);
+describe("format", () => {
+  it("Swedish dates follow the profile", () => {
+    expect(formatDate("2026-09-26T12:05:00Z", "sv")).toBe("26 sep 2026");
+    expect(formatDateIso("2026-09-26T23:30:00Z")).toBe("2026-09-27");
+    expect(formatDateTime("2026-09-26T12:05:00Z", "sv")).toBe("26 sep 2026 kl. 14.05");
+    expect(formatDateTime("2026-09-26T12:05:00Z", "en")).toBe("26 Sep 2026 14:05");
   });
-  it("datum i tabeller: 2026-09-26", () => {
-    expect(formatDateIso("2026-09-26T12:05:00Z")).toBe("2026-09-26");
+  it("plain dates are not shifted by time zones", () => {
+    expect(formatDate("2026-01-01", "sv")).toBe("1 jan 2026");
   });
-  it("tid: kl. 14.05 (svensk tid)", () => {
-    expect(formatTime("2026-09-26T12:05:00Z")).toBe(`kl.${NBSP}14.05`);
-    expect(formatDateTime("2026-09-26T12:05:00Z")).toBe(`26${NBSP}sep${NBSP}2026 kl.${NBSP}14.05`);
-  });
-  it("belopp med hårt mellanslag: 1 250 000 kr", () => {
-    expect(formatSek(1250000)).toBe(`1${NBSP}250${NBSP}000${NBSP}kr`);
-    expect(formatSek(980)).toBe(`980${NBSP}kr`);
+  it("numbers and reg numbers", () => {
+    expect(formatNumber(2450, "sv")).toMatch(/^2\s450$/);
+    expect(formatReg("AB3CD4E")).toBe("AB3-CD4E");
   });
 });

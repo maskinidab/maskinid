@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.2.0",
   "type": "module",
-  "description": "MaskinID \u2013 registret f\u00f6r tunga arbetsmaskiner: \u00e4gare, f\u00f6rbeh\u00e5ll, historik och QR-m\u00e4rken.",
+  "description": "MaskinID – registret för tunga arbetsmaskiner: ägare, förbehåll, historik och QR-märken.",
   "workspaces": [
     "packages/*",
     "apps/*"
@@ -29,6 +29,7 @@
     "sync:functions": "node scripts/sync-functions-shared.mjs"
   },
   "devDependencies": {
+    "@playwright/test": "1.63",
     "@types/node": "^24.13.3",
     "@types/pg": "^8.15.6",
     "deno": "^2.9.6",

@@ -1,141 +1,244 @@
-import type {
-  BlockReason,
-  LookupResult,
-  MachineRecord,
-  MachineType,
-  Organization,
-  RegisterEvent,
-  RegisterExtract,
-  UserProfile,
-  AdminUser,
-  OrganizationType,
-} from "../types";
+// Shapes returned by the RPCs (jsonb). Only the fields the UI uses are typed; everything else stays `unknown`.
+export type OrgType = "operator" | "dealer" | "owner" | "financier" | "insurer" | "authority" | "inspector" | "marketplace" | "manufacturer" | "client";
+export type MemberRole = "admin" | "member" | "readonly";
+export type MachineStatus = "draft" | "active" | "stolen" | "blocked" | "disputed" | "scrapped" | "exported" | "deregistered";
+export type Level = 0 | 1 | 2;
 
-/**
- * Kontraktet mellan frontend och backend.
- *
- * Två implementationer finns:
- * - `mockApi`     – körs i webbläsaren med exempeldata (localStorage). Används tills Supabase är på plats.
- * - `supabaseApi` – anropar Supabase (tabeller, vyer, RPC och Auth) enligt docs/BACKEND.md.
- *
- * Vilken som används styrs av VITE_DATA_SOURCE (se src/lib/api/index.ts).
- * Alla fel kastas som ApiError med ett meddelande som kan visas för användaren.
- */
-export interface MaskinIdApi {
-  // ---------- Auth ----------
-  /** Nuvarande inloggade användare, eller null. */
-  getCurrentUser(): Promise<UserProfile | null>;
-  /** Skickar en inloggningslänk (magic link) till e-postadressen. */
-  requestSignInLink(email: string): Promise<void>;
-  /** Inloggning med lösenord. */
-  signInWithPassword(email: string, password: string): Promise<UserProfile>;
-  signOut(): Promise<void>;
-  /** Anropas när inloggningsstatus ändras. Returnerar en funktion som avslutar prenumerationen. */
-  onAuthChange(callback: (user: UserProfile | null) => void): () => void;
-
-  // ---------- Register (läsning) ----------
-  /** Slår upp en maskin på PIN, serienummer eller registernummer. */
-  lookupMachine(query: string): Promise<LookupResult>;
-  /** Hämtar en registerpost via maskinens id. */
-  getMachineRecord(machineId: string): Promise<MachineRecord | null>;
-  /** Maskinens historik, nyast först. */
-  getMachineHistory(machineId: string): Promise<RegisterEvent[]>;
-  /** Maskiner där den inloggade användarens organisation är ägare, långivare eller försäkringsgivare. */
-  listMyMachines(): Promise<MachineRecord[]>;
-  /** Organisationer, för val av ny ägare m.m. */
-  listOrganizations(): Promise<Organization[]>;
-
-  // ---------- Register (skrivning) ----------
-  registerMachine(input: RegisterMachineInput): Promise<MachineRecord>;
-  transferOwnership(input: TransferOwnershipInput): Promise<MachineRecord>;
-  registerPledge(input: RegisterPledgeInput): Promise<MachineRecord>;
-  releasePledge(pledgeId: string): Promise<MachineRecord>;
-  registerInsurance(input: RegisterInsuranceInput): Promise<MachineRecord>;
-  reportBlock(input: ReportBlockInput): Promise<MachineRecord>;
-  liftBlock(blockId: string): Promise<MachineRecord>;
-
-  // ---------- Registerutdrag ----------
-  /** Utfärdar ett registerutdrag (sparas med ögonblicksbild och loggas i historiken). */
-  issueExtract(machineId: string): Promise<RegisterExtract>;
-  getExtract(extractId: string): Promise<RegisterExtract | null>;
-
-  // ---------- Administration (kräver isAdmin) ----------
-  /** Markerar maskinens identitet som kontrollerad mot typskylten. */
-  verifyIdentity(machineId: string, note: string | null): Promise<MachineRecord>;
-  listUsers(): Promise<AdminUser[]>;
-  createOrganization(input: CreateOrganizationInput): Promise<Organization>;
-  /** Skickar en inbjudan via e-post och kopplar användaren till en organisation (Edge Function invite-user). */
-  inviteUser(input: InviteUserInput): Promise<AdminUser>;
-}
-
-export interface CreateOrganizationInput {
+export interface OrgBrief {
+  id: string;
   name: string;
-  orgNr: string;
-  type: OrganizationType;
+  slug: string;
+  org_number: string | null;
+  is_sole_trader: boolean;
+  types: OrgType[];
+  status: "pending" | "approved" | "suspended";
+  city: string | null;
 }
 
-export interface InviteUserInput {
+export interface Membership {
+  membership_id: string;
+  role: MemberRole;
+  org: OrgBrief;
+  effective_types: OrgType[];
+  min_trusted_level: number;
+}
+
+export interface MyContext {
+  user_id: string;
   email: string;
-  fullName: string;
-  organizationId: string;
-  isAdmin: boolean;
+  full_name: string | null;
+  phone: string | null;
+  locale: "sv" | "en";
+  identity_verified_at: string | null;
+  identity_provider: "bankid" | "mock" | null;
+  last_active_org_id: string | null;
+  operator_role: "superadmin" | "verifier" | "support" | null;
+  memberships: Membership[];
+  pending_invites: { membership_id: string; org: OrgBrief; role: MemberRole }[];
+  unread_notifications: number;
+  demo_mode: boolean;
 }
 
-export interface RegisterMachineInput {
-  pin: string | null;
-  serialNumber: string | null;
-  manufacturer: string;
+export interface Identifier {
+  id?: string;
+  type: string;
+  value: string;
+  verified?: boolean;
+  source?: string;
+  external_system?: string | null;
+  vtr_snapshot?: Record<string, unknown> | null;
+  in_conflict?: boolean;
+}
+
+export interface Encumbrance {
+  id: string;
+  type: "ownership_reservation" | "leasing" | "rental" | "other";
+  status: string;
+  start_date: string;
+  end_date: string | null;
+  holder: { id: string; name: string };
+  contract_ref?: string | null;
+  counterparty?: OrgBrief | null;
+  confirmed_at?: string | null;
+  released_at?: string | null;
+  created_at: string;
+}
+
+export interface Flag {
+  id?: string;
+  type: string;
+  status: string;
+  raised_at: string;
+  reference?: string | null;
+  description?: string | null;
+  raised_by?: string | null;
+  can_clear?: boolean;
+  occurred_at?: string | null;
+  location_text?: string | null;
+}
+
+export interface Technical {
+  service_weight_kg: number | null;
+  engine_power_kw: number | null;
+  power_standard: string | null;
+  has_lifting_device: boolean;
+  fuel_type: string | null;
+  electric_config: string | null;
+  emission_stage: string | null;
+  engine_make: string | null;
+  engine_model: string | null;
+  engine_type_approval_no: string | null;
+  ce_marked: boolean | null;
+  registration_liable: boolean;
+}
+
+export interface MachineView {
+  id: string;
+  reg_number: string;
+  status: MachineStatus;
+  verification_level: Level;
+  verification_method: string | null;
+  verified_at: string | null;
+  verified_by: string | null;
+  make: string;
   model: string;
-  machineType: MachineType;
-  modelYear: number | null;
-  /** Organisation som registreras som ägare. Standard: användarens egen organisation. */
-  ownerOrganizationId?: string;
-}
-
-export interface TransferOwnershipInput {
-  machineId: string;
-  newOwnerOrganizationId: string;
-  /** ISO-datum då ägarbytet gäller från. */
-  effectiveFrom: string;
-}
-
-export interface RegisterPledgeInput {
-  machineId: string;
-  reference: string | null;
-  amountSek: number | null;
-}
-
-export interface RegisterInsuranceInput {
-  machineId: string;
-  coverage: string;
-  policyNumber: string | null;
-  /** "YYYY-MM-DD" */
-  validFrom: string;
-  /** "YYYY-MM-DD", inklusive */
-  validTo: string;
-}
-
-export interface ReportBlockInput {
-  machineId: string;
-  reason: BlockReason;
+  variant: string | null;
+  year: number | null;
+  category: string;
+  color: string | null;
   description: string | null;
-  policeReportNumber: string | null;
+  technical: Technical;
+  registration_type: "permanent" | "temporary";
+  valid_until: string | null;
+  origin_country: string | null;
+  origin: string;
+  hour_meter: number | null;
+  hour_meter_updated_at: string | null;
+  primary_photo_path: string | null;
+  deregistered_at: string | null;
+  deregistration_reason: string | null;
+  stock_status: string | null;
+  created_at: string;
+  updated_at: string;
+  relations: string[];
+  access: "full" | "previous_owner" | "partner" | "basic";
+  owner: OrgBrief | null;
+  user_org: OrgBrief | null;
+  registered_by: OrgBrief | null;
+  owner_ordinal: number;
+  identifiers: Identifier[];
+  labels: { id: string; code: string; status: string; role: string; bound_at: string | null; serial: string }[] | { has_bound_label: boolean };
+  financing?: { has_active: boolean; active: Encumbrance | null; min_trusted_level: number };
+  encumbrances?: Encumbrance[];
+  flags: Flag[];
+  last_transfer_date: string | null;
+  open_transfer?: Transfer | null;
+  [extra: string]: unknown;
 }
 
-export type ApiErrorCode =
-  | "ej_inloggad"
-  | "saknar_behorighet"
-  | "hittades_inte"
-  | "finns_redan"
-  | "ogiltig_inmatning"
-  | "natverksfel"
-  | "okant";
+export interface MachineListItem {
+  id: string;
+  reg_number: string;
+  status: MachineStatus;
+  verification_level: Level;
+  make: string;
+  model: string;
+  year: number | null;
+  category: string;
+  hour_meter: number | null;
+  primary_photo_path: string | null;
+  owner_org_id: string;
+  stock_status: string | null;
+  serial: string | null;
+  emission_stage: string | null;
+  fuel_type: string | null;
+  service_weight_kg: number | null;
+  engine_power_kw: number | null;
+  has_active_financing: boolean;
+  active_flags: string[];
+  open_transfer_status: string | null;
+  updated_at: string;
+  [extra: string]: unknown;
+}
 
-export class ApiError extends Error {
-  readonly code: ApiErrorCode;
-  constructor(code: ApiErrorCode, message: string) {
-    super(message);
-    this.name = "ApiError";
-    this.code = code;
-  }
+export interface PublicCard {
+  reg_number: string;
+  make: string;
+  model: string;
+  year: number | null;
+  category: string;
+  primary_photo_path: string | null;
+  status: MachineStatus;
+  verification_level: Level;
+  serial_masked: string;
+  has_registered_owner: boolean;
+  label_status: "bound" | "replaced" | "unbound" | null;
+  inspection_valid_until: string | null;
+}
+
+export interface Transfer {
+  id: string;
+  machine_id: string;
+  reg_number: string;
+  from: OrgBrief | null;
+  to: OrgBrief | null;
+  to_email: string | null;
+  to_org_number: string | null;
+  sale_date: string;
+  effective_date: string;
+  status: string;
+  is_trade_in: boolean;
+  financier_decision: string | null;
+  expires_at: string;
+  existing_encumbrance: { id: string; type: string; holder: { id: string; name: string } } | null;
+  new_financing: Record<string, unknown> | null;
+  created_at: string;
+}
+
+export interface HistoryEvent {
+  seq: number;
+  id: string;
+  type: string;
+  category: string;
+  created_at: string;
+  actor_type: "user" | "system" | "api";
+  actor_org: { id: string; name: string } | null;
+  actor_name: string | null;
+  payload: Record<string, unknown>;
+}
+
+export interface NotificationItem {
+  id: string;
+  org_id: string | null;
+  type: string;
+  title: string | null;
+  body: string | null;
+  data: Record<string, unknown>;
+  link: string | null;
+  severity: "info" | "warning" | "critical";
+  read_at: string | null;
+  created_at: string;
+}
+
+export interface InboxItem {
+  kind: string;
+  id: string;
+  created_at: string;
+  [k: string]: unknown;
+}
+
+export interface DocumentItem {
+  id: string;
+  machine_id: string | null;
+  type: string;
+  filename: string;
+  mime: string;
+  size_bytes: number;
+  sha256: string;
+  visibility: string;
+  status: string;
+  generated: boolean;
+  uploaded_by: string;
+  org_id: string;
+  created_at: string;
 }

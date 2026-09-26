@@ -18,7 +18,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 5 | Förbehåll, ägarbyten, flaggor | ✅ | §16 p.3–5, 9, 10 (skanningsdelen i steg 6) |
 | 6 | Dokument, åtkomstlogg, delningslänkar | ✅ | §16 p.10 (skanning) och p.11 (rate limit) |
 | 7 | Verifiering & konflikter | ✅ | + ägarrättelse (fyra ögon, 14 dagar), Inbox |
-| 8 | Frontend – skal | ⬜ | |
+| 8 | Frontend – skal | ✅ | lokalt läge = PGlite i webbläsaren (ADR 0011) |
 | 9 | Frontend – publikt | ⬜ | |
 | 10 | Frontend – kärnflöden | ⬜ | |
 | 11 | Import | ⬜ | |
@@ -101,3 +101,16 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   get_inbox ("Väntar på mig"). Säkerhetsfynd: NULL-osäkra behörighetskontroller i decide/claim_verification och i
   committade get_transfer (e-postöverlåtelse läsbar för alla) ⇒ rättade + regressionstest + statisk kontroll i
   99_function_exposure som stoppar mönstret `if not (… _org_id = …)`.
+- **Steg 8** – Frontend-skal: datalager `lib/backend` (Supabase eller lokal PGlite med samma migrationer + seed,
+  emulerad auth/magisk länk/TOTP-MFA och Edge Functions), TanStack Query-hooks, i18next (sv standard, en; 770+ nycklar,
+  paritets-/tonalitetstester, `scripts/i18n-check.mjs`, `scripts/i18n-set.mjs`), AuthProvider/OrgContext
+  (`/o/:orgSlug/...`), layouter (publik; app med rollgrupperad sidomeny, org-växlare, global sök Ctrl/Cmd+K,
+  inkorgsräknare, notisklocka, DEMO-banner, mobil bottennav med central Skanna). Komponenter: RegNumber,
+  VerificationBadge, MachineStatusBadge, FinancingBadge, StatusBanner, Timeline, ScanButton/ScannerView (@zxing),
+  SerialInput (live dubblettkoll + fabriksdata), CompanyLookupField, DocumentDropzone (EXIF-strippning, sha256,
+  reserverad sökväg, av-scan), MachineCard, MachinePhoto, ReceiptCard, SignatureProvider (Demo-BankID/BankID),
+  DataTable (sök/filter/CSV, kort på mobil), Dialog, Tabs, Skeleton, EmptyState. Sidor: login (demokonton),
+  signup, callback, invite, onboarding (Demo-BankID + org med uppslag, typer, PuB-avtal), profil (+MFA), översikt,
+  inkorg, notiser, inställningar (org/medlemmar/notiser). Demo-seed del 1 (§17: alla organisationer/konton, 60 maskiner
+  med scenarier, 200 märken). `apps/web/scripts/demo-db.mjs` bygger demodatabasen. Migration `frontend_support`
+  (get_signature_status, list_org_events visar externa aktörer som organisation, demo_shortcuts).

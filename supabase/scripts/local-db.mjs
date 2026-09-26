@@ -25,6 +25,10 @@ function withDb(url, db) {
   return u.toString();
 }
 
+export function seedFiles() {
+  return readdirSync(join(root, "seed")).filter((f) => f.endsWith(".sql")).sort();
+}
+
 export function migrationFiles() {
   return readdirSync(join(root, "migrations")).filter((f) => f.endsWith(".sql")).sort();
 }
@@ -67,8 +71,10 @@ export async function reset({ seed = true, fixtures = true, quiet = false } = {}
     log(`applied ${f}`);
   }
   if (seed) {
-    await applySql(c, readFileSync(join(root, "seed.sql"), "utf8"), "seed.sql");
-    log("applied seed.sql");
+    for (const f of seedFiles()) {
+      await applySql(c, readFileSync(join(root, "seed", f), "utf8"), `seed/${f}`);
+      log(`applied seed/${f}`);
+    }
   }
   if (fixtures) {
     await applySql(c, readFileSync(join(root, "tests/fixtures.sql"), "utf8"), "fixtures.sql");

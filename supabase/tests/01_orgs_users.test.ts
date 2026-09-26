@@ -69,7 +69,7 @@ describe("organisations (step 2)", () => {
   it("sole trader: personal number encrypted, never stored in clear, masked for others", async () => {
     await tx(async (t) => {
       await t.as("newcomer");
-      const org = await t.rpc("create_org", { p_org_number: "780512-1236", p_types: "{owner}", p_accept_dpa_version: DPA });
+      const org = await t.rpc("create_org", { p_org_number: "820304-5678", p_types: "{owner}", p_accept_dpa_version: DPA });
       expect(org.is_sole_trader).toBe(true);
       expect(org.org_number).toBe("19XXXXXX-XXXX");
       await t.as(null);
@@ -78,11 +78,11 @@ describe("organisations (step 2)", () => {
         [org.id],
       );
       expect(raw.org_number).toBeNull();
-      expect(raw.row).not.toContain("780512");
+      expect(raw.row).not.toContain("820304");
       await t.claims("authority");
-      expect(await t.val("select app.org_number_display($1)", [org.id])).toBe("780512-1236");
+      expect(await t.val("select app.org_number_display($1)", [org.id])).toBe("820304-5678");
       await t.claims("operator");
-      expect(await t.val("select app.org_number_display($1)", [org.id])).toBe("780512-1236");
+      expect(await t.val("select app.org_number_display($1)", [org.id])).toBe("820304-5678");
       await t.claims("owner_b");
       expect(await t.val("select app.org_number_display($1)", [org.id])).toBe("19XXXXXX-XXXX");
     });

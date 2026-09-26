@@ -1,1 +1,0 @@
--- Demo seed (SPEC §17): written in step 19.

@@ -15,3 +15,4 @@ the product owner decided otherwise. Format: context → decision → consequenc
 | [0008](0008-test-database.md) | Database tests on plain PostgreSQL with Supabase stubs, and on local Supabase in CI |
 | [0009](0009-signatory-proof.md) | Signatory proof before an organisation is auto-approved or claimed |
 | [0010](0010-signatures-api-and-registrant-access.md) | Signature rules incl. API keys; registering org sees a machine only during the first ownership period |
+| [0011](0011-local-mode-pglite.md) | Local mode runs the real database in the browser (PGlite) |
