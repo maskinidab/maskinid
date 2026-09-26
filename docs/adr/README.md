@@ -1,0 +1,15 @@
+# Architecture Decision Records
+
+Short records of decisions where the specification was ambiguous, contradicted the existing code base, or where
+the product owner decided otherwise. Format: context → decision → consequences. Newest last.
+
+| # | Decision |
+|---|---|
+| [0001](0001-build-on-existing-codebase.md) | Build on the existing code base: npm workspaces, React 19, profile CSS instead of pnpm/React 18/Tailwind/shadcn |
+| [0002](0002-maskinid-brand-over-spec-design.md) | MaskinID graphic profile and name override SPEC §10 |
+| [0003](0003-spec-v1-2-sections-missing.md) | SPEC v1.2 §20–§21 not available – steps 20–27 interpreted from CLAUDE.md |
+| [0004](0004-migration-naming.md) | Migration naming and order |
+| [0005](0005-retire-prototype-schema.md) | Retire the prototype schema into `legacy`, migrate data, drop it |
+| [0006](0006-event-hash-chain.md) | Event hash covers all columns; seq assigned under an advisory lock |
+| [0007](0007-error-model.md) | Error model: stable codes, PostgREST status codes, conflicts returned (not raised) |
+| [0008](0008-test-database.md) | Database tests on plain PostgreSQL with Supabase stubs, and on local Supabase in CI |

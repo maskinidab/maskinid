@@ -1,0 +1,27 @@
+{
+  "name": "@maskinid/web",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "build:demo": "node scripts/build-demo.mjs",
+    "preview": "vite preview",
+    "tokens": "node scripts/build-tokens.mjs"
+  },
+  "dependencies": {
+    "@maskinid/shared": "*",
+    "@supabase/supabase-js": "^2.117.2",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.4"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@vitejs/plugin-react": "^6.1.1",
+    "vite": "^8.3.0"
+  }
+}

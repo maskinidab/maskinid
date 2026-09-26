@@ -1,35 +1,32 @@
 {
-  "name": "maskin-id",
+  "name": "maskinid",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
-  "description": "MaskinID – registret över maskiners ägare, belåning och försäkring.",
+  "description": "MaskinID – registret för tunga arbetsmaskiner: ägare, förbehåll, historik och QR-märken.",
+  "workspaces": ["packages/*", "apps/*"],
+  "engines": { "node": ">=20.19" },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "build:demo": "node scripts/build-demo.mjs",
-    "typecheck": "tsc -b",
-    "tokens": "node scripts/build-tokens.mjs",
+    "dev": "npm run dev -w @maskinid/web",
+    "build": "npm run build -w @maskinid/shared --if-present && npm run build -w @maskinid/web",
+    "build:demo": "npm run build:demo -w @maskinid/web",
+    "preview": "npm run preview -w @maskinid/web",
     "lint": "oxlint",
+    "typecheck": "tsc -b packages/shared apps/web apps/ingest",
     "test": "vitest run",
-    "test:db": "node supabase/tests/rpc.test.mjs",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.117.2",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
-    "react-router-dom": "^7.18.4"
+    "test:db": "vitest run --config supabase/tests/vitest.config.ts",
+    "test:e2e": "playwright test --config e2e/playwright.config.ts",
+    "db:reset": "node supabase/scripts/local-db.mjs reset",
+    "db:types": "node supabase/scripts/gen-types.mjs",
+    "tokens": "npm run tokens -w @maskinid/web",
+    "ingest": "npm run start -w @maskinid/ingest"
   },
   "devDependencies": {
-    "@electric-sql/pglite": "^0.5.8",
     "@types/node": "^24.13.3",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.7",
-    "@vitejs/plugin-react": "^6.1.1",
+    "@types/pg": "^8.15.6",
     "oxlint": "^1.81.0",
+    "pg": "^8.23.0",
     "typescript": "~6.0.2",
-    "vite": "^8.3.0",
     "vitest": "^5.0.2"
   }
 }

@@ -2,7 +2,7 @@
 // Kör: npm run tokens
 import { readFileSync, writeFileSync } from "node:fs";
 
-const tokens = JSON.parse(readFileSync(new URL("../design-system/tokens.json", import.meta.url), "utf8"));
+const tokens = JSON.parse(readFileSync(new URL("../../../design-system/tokens.json", import.meta.url), "utf8"));
 const [light, dark] = tokens.color.themes.map((t) => t.id);
 
 const ljust = [];

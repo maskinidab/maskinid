@@ -5,8 +5,13 @@ on:
     branches: [main]
   pull_request:
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build:
+  quality:
+    name: Lint, typecheck, unit tests, build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,6 +21,51 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run lint
+      - run: npm run typecheck
       - run: npm test
-      - run: npm run test:db
       - run: npm run build
+      - name: Dependency scan
+        run: npm audit --audit-level=high --omit=dev
+
+  db:
+    name: RLS & RPC tests (local Supabase)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - run: npm ci
+      - name: Start local Supabase database and apply migrations + seed
+        run: |
+          supabase db start
+          supabase db reset --local
+      - name: Run RLS/RPC tests
+        env:
+          SUPABASE_LOCAL: "1"
+          DATABASE_URL: postgres://postgres:postgres@127.0.0.1:54322/postgres
+        run: npm run test:db
+
+  db-plain:
+    name: RLS & RPC tests (plain PostgreSQL, same suite as in containers without Docker)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ["54322:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run test:db

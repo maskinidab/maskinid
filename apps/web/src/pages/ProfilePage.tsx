@@ -1,4 +1,4 @@
-import tokens from "../../design-system/tokens.json";
+import tokens from "../../../../design-system/tokens.json";
 import appikonGul from "../assets/logo/maskinid-appikon-gul.svg";
 import appikon from "../assets/logo/maskinid-appikon.svg";
 import ordmarkeNegativ from "../assets/logo/maskinid-ordmarke-negativ.svg";

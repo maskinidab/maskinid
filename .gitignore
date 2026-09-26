@@ -24,3 +24,12 @@ dist-ssr
 *.sw?
 .env
 dist-demo
+coverage
+playwright-report
+test-results
+.lighthouse
+apps/*/dist
+apps/web/dist-demo
+apps/web/public/demo-db
+supabase/.temp
+supabase/.branches
