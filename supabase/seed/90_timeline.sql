@@ -1,3 +1,4 @@
+-- (runs last)
 -- Demo timeline (SPEC §17: "händelselogg med 400+ events och 30 dagars ankare"). The seed runs in seconds, so every
 -- event would carry the same timestamp. Here – and only in the seed – events are spread over the last 30 days in
 -- their original order, the hash chain is recomputed, and one anchor per day is computed and marked published.

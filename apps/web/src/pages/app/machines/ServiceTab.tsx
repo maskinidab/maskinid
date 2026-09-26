@@ -10,6 +10,7 @@ import { Icon } from "../../../components/Icon";
 import { StatusBadge } from "../../../components/StatusBadge";
 import { queryClient, rpc, useRpc } from "../../../lib/api/query";
 import type { MachineView } from "../../../lib/api/types";
+import { OperationsSection } from "./OperationsSection";
 import { formatDate, formatNumber, todayIso } from "../../../lib/format";
 
 export interface MaintenanceEntry {
@@ -81,6 +82,7 @@ export function ServiceTab({ m }: { m: MachineView }) {
 
   return (
     <div className="stack-6">
+      {owner && <OperationsSection m={m} write={write} />}
       {write && (
         <section className="panel stack-3" aria-labelledby="timmar">
           <h2 id="timmar" className="t-rubrik-4">{t("service.hours_title")}</h2>

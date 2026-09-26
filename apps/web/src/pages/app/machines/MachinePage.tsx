@@ -18,6 +18,7 @@ import { formatDate, formatDateTime, formatMonth, formatNumber } from "../../../
 import { extractPdf } from "../../../lib/pdf/extract";
 import { downloadCertificate, downloadMachineReport } from "../../../lib/pdf/downloads";
 import { downloadBytes } from "../../../lib/pdf/receipt";
+import { OperationalNotice } from "./OperationsSection";
 import { ServiceTab } from "./ServiceTab";
 import {
   BindLabelDialog, ClearFlagDialog, DeregisterDialog, EditMachineDialog, EncumbranceDialog, FlagDialog, ReleaseEncumbranceDialog,
@@ -99,6 +100,7 @@ export function MachinePage() {
       <PageHeader title={`${m.make} ${m.model}`} crumbs={[{ to: path("machines"), label: t("machines.title") }]}
         lead={[m.variant, m.year, t(`enum.category.${m.category}`)].filter(Boolean).join(" · ")} />
       {m.status !== "active" && m.status !== "draft" && <StatusBanner status={m.status} />}
+      <OperationalNotice m={m} />
       <section className="panel maskin-huvud" aria-label={t("machine.summary")}>
         <MachinePhoto path={m.primary_photo_path} category={m.category} size={132} alt={`${m.make} ${m.model}`} />
         <div className="stack-3">

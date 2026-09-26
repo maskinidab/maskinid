@@ -47,6 +47,10 @@ const ExportsPage = L(() => import("./pages/app/roles/AuthorityPages"), "Exports
 const OemPage = L(() => import("./pages/app/roles/OemPage"), "OemPage");
 const ImportPage = L(() => import("./pages/app/import/ImportPage"), "ImportPage");
 const NewEncumbrancePage = L(() => import("./pages/app/encumbrances/NewEncumbrancePage"), "NewEncumbrancePage");
+const AttachmentsPage = L(() => import("./pages/app/fleet/EquipmentPages"), "AttachmentsPage");
+const OperatorsPage = L(() => import("./pages/app/fleet/EquipmentPages"), "OperatorsPage");
+const DailyCheckPage = L(() => import("./pages/app/fleet/DailyCheckPage"), "DailyCheckPage");
+const ClimatePage = L(() => import("./pages/app/fleet/ClimatePage"), "ClimatePage");
 const AdminHomePage = L(() => import("./pages/app/admin/AdminQueues"), "AdminHomePage");
 const AdminConflictsPage = L(() => import("./pages/app/admin/AdminQueues"), "AdminConflictsPage");
 const AdminCorrectionsPage = L(() => import("./pages/app/admin/AdminQueues"), "AdminCorrectionsPage");
@@ -111,6 +115,10 @@ export const appRoutes: { path: string; element: ReactNode }[] = [
   { path: "export-check", element: <ExportCheckPage /> },
   { path: "exports", element: <ExportsPage /> },
   { path: "oem", element: <OemPage /> },
+  { path: "attachments", element: <AttachmentsPage /> },
+  { path: "operators", element: <OperatorsPage /> },
+  { path: "daily-check", element: <DailyCheckPage /> },
+  { path: "climate", element: <ClimatePage /> },
   { path: "admin", element: <AdminHomePage /> },
   { path: "admin/organizations", element: <AdminOrgsPage /> },
   { path: "admin/organizations/:id", element: <AdminOrgPage /> },

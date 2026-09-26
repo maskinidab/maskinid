@@ -48,6 +48,9 @@ export function MachinesPage() {
         <VerificationBadge level={m.verification_level} minTrusted={minTrustedLevel} />
         {m.has_active_financing && <FinancingBadge hasActive />}
         {m.open_transfer_status && <span className="mid-status mid-status-vantar">{t("machines.transfer_open")}</span>}
+        {typeof m.operational_status === "string" && m.operational_status !== "operational" && (
+          <span className={`mid-status ${m.operational_status === "out_of_service" ? "mid-status-sparr" : "mid-status-vantar"}`}>{t(`operations.status.${m.operational_status as string}`)}</span>
+        )}
       </span>
     ) },
   ];

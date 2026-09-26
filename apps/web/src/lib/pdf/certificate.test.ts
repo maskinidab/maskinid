@@ -33,3 +33,16 @@ describe("formal PDFs render in both languages (WinAnsi-safe)", () => {
     });
   }
 });
+
+describe("climate report PDF", () => {
+  it("renders with factors and machines", async () => {
+    const { climatePdf } = await import("./climate");
+    const t = translator("sv") as unknown as TFunction;
+    const bytes = await climatePdf({ from: "2026-01-01", to: "2026-09-26", org_name: "Bergs", generated_at: "2026-09-26T10:00:00Z",
+      factors: { diesel: 2.95, hvo100: 0.52, electricity: 0.04 }, totals: { co2e_kg: 12345, entries: 3, fossil_free_share: 75 },
+      by_fuel: [{ fuel: "hvo100", unit: "l", quantity: 300, co2e_kg: 156 }],
+      by_machine: [{ reg_number: "C9XK4F", make: "Volvo", model: "EC220E", category: "excavator_tracked", emission_stage: "stage_v", quantity_l: 400, kwh: null, co2e_kg: 451, hours: 20 }],
+      by_project: [{ project: "E18", co2e_kg: 451 }] }, { report_number: "C-2026-000001", result_hash: "b".repeat(64) }, t);
+    expect(bytes.byteLength).toBeGreaterThan(1500);
+  });
+});

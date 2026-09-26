@@ -574,6 +574,40 @@
   "lead": "Rapporter som entreprenörer har delat med er. De visar alltid dagens läge i registret.",
   "live": "Delad av {{org}}, aktuell just nu."
  },
+ "climate": {
+  "add_fuel": "Registrera tankning",
+  "by_fuel": "Per drivmedel",
+  "by_machine": "Per maskin",
+  "by_project": "Per projekt",
+  "download": "Klimatrapport (PDF)",
+  "factors": "Emissionsfaktorer som användes",
+  "fossil_free": "Andel fossilfritt drivmedel",
+  "from": "Från",
+  "fuel": {
+   "biogas": "Biogas",
+   "diesel": "Diesel",
+   "electricity": "El",
+   "hvo100": "HVO100",
+   "other": "Annat",
+   "petrol": "Bensin",
+   "rme": "RME"
+  },
+  "fuel_label": "Drivmedel",
+  "lead": "Logga tankning och laddning per maskin. Klimatrapporten räknar ut koldioxidekvivalenter per period, maskin och projekt.",
+  "litres": "Liter",
+  "method": "Beräkningen använder emissionsfaktorer ur ett livscykelperspektiv (från källa till användning). Faktorerna anges i rapporten och kan justeras av registerhållaren. Andel fossilfritt avser flytande drivmedel (HVO100 och RME).",
+  "no_data": "Ingen bränsledata för perioden",
+  "no_data_body": "Registrera tankningar på maskinerna eller under fliken Tankningar.",
+  "no_fuel": "Inga tankningar registrerade.",
+  "pdf_title": "Klimatrapport",
+  "per_hour": "{{value}} l/h",
+  "period": "Period",
+  "quantity": "Mängd",
+  "tab_log": "Tankningar",
+  "tab_report": "Klimatrapport",
+  "to": "Till",
+  "total": "Utsläpp totalt"
+ },
  "common": {
   "actions": "Åtgärder",
   "add": "Lägg till",
@@ -618,6 +652,7 @@
   "not_found_title": "Sidan finns inte",
   "not_set": "Inte angivet",
   "note": "Kommentar",
+  "notes": "Anteckning",
   "open": "Öppna",
   "optional": "valfritt",
   "org_number": "Organisationsnummer",
@@ -713,6 +748,46 @@
    "empty": "Inga händelser än.",
    "load_more": "Visa äldre händelser"
   }
+ },
+ "daily": {
+  "all_ok": "Markera alla OK",
+  "builtin": "Inbyggd",
+  "copy": "kopia",
+  "copy_edit": "Kopiera och ändra",
+  "critical": "kritisk",
+  "done": {
+   "failed": "Kritiskt fel – maskinen är ur drift",
+   "ok": "Kontrollen är sparad – inga anmärkningar",
+   "remarks": "Kontrollen är sparad med anmärkningar"
+  },
+  "edit_template": "Ändra checklista",
+  "fault": "Fel",
+  "fault_note": "Beskriv felet",
+  "items": "Punkter",
+  "items_count_one": "1 punkt",
+  "items_count_other": "{{count}} punkter",
+  "items_hint": "En punkt per rad. Börja raden med ! för en kritisk punkt – fel där ställer maskinen ur drift.",
+  "lead": "Gå igenom maskinen före start. Ett fel på en kritisk punkt ställer maskinen ur drift och meddelar ägaren.",
+  "missing_one": "1 punkt kvar",
+  "missing_other": "{{count}} punkter kvar",
+  "new_template": "Ny checklista",
+  "next": "Nästa maskin",
+  "none": "Inga dagliga kontroller ännu.",
+  "ok": "OK",
+  "operator": "Förare",
+  "out_of_service": "Maskinen är ställd ur drift tills felet är åtgärdat och en ny kontroll är utan anmärkning.",
+  "result": {
+   "failed": "Kritiskt fel",
+   "ok": "Utan anmärkning",
+   "remarks": "Anmärkning"
+  },
+  "result_label": "Resultat",
+  "submit": "Spara kontrollen",
+  "tab_history": "Historik",
+  "tab_new": "Ny kontroll",
+  "tab_templates": "Checklistor",
+  "template": "Checklista",
+  "templates_lead": "De inbyggda checklistorna gäller alla maskiner av rätt typ. Kopiera och anpassa för er organisation."
  },
  "dashboard": {
   "financed": "Belånade",
@@ -1163,6 +1238,69 @@
    "verifiers": "Granskare och köpare med länk"
   }
  },
+ "equipment": {
+  "add_attachment": "Lägg till redskap",
+  "add_certificate": "Lägg till behörighet",
+  "add_certificate_for": "Ny behörighet för {{name}}",
+  "add_operator": "Lägg till förare",
+  "assign": "Koppla till maskin",
+  "assign_title": "Vilken maskin kör {{name}}?",
+  "attachment": "Redskap",
+  "attachment_type": {
+   "auger": "Jordborr",
+   "bucket": "Skopa",
+   "compactor": "Markvibrator",
+   "ditch_bucket": "Planeringsskopa",
+   "fork": "Pallgafflar",
+   "grapple": "Gripklo",
+   "hammer": "Hydraulhammare",
+   "mower": "Slåtteraggregat",
+   "other": "Annat redskap",
+   "quick_coupler": "Snabbfäste",
+   "ripper": "Rivtand",
+   "snow_plough": "Snöplog",
+   "sweeper": "Sopvals",
+   "tiltrotator": "Rototilt"
+  },
+  "attachments_lead": "Skopor, hammare, rototiltar och andra redskap – och vilken maskin de sitter på just nu.",
+  "cert_attention": "Utgår eller har gått ut",
+  "cert_label": "Benämning",
+  "cert_type": {
+   "aerial_platform": "Liftkort",
+   "crane": "Kranförarbevis",
+   "first_aid": "Första hjälpen",
+   "forklift": "Truckkort",
+   "hot_work": "Heta arbeten",
+   "loader_crane": "Lastbilskran",
+   "machine_operator_licence": "Förarbevis anläggningsmaskin",
+   "other": "Annan behörighet",
+   "road_safety": "Säkerhet på väg",
+   "ykb": "YKB"
+  },
+  "certificates": "Behörigheter",
+  "deactivate": "Inaktiv (slutat)",
+  "drives": "Kör",
+  "edit_attachment": "Ändra redskap",
+  "edit_operator": "Ändra förare",
+  "employee_ref": "Anställningsnummer",
+  "employee_ref_hint": "Frivilligt. Ange aldrig personnummer.",
+  "expired": "Utgången",
+  "expiring": "Går ut snart",
+  "has_login": "Inloggning: {{name}}",
+  "inactive": "Inaktiv",
+  "issued_at": "Utfärdad",
+  "login": "Inloggning",
+  "login_hint": "Koppla till en användare i organisationen så att föraren kan göra daglig kontroll i mobilen.",
+  "mounted_on": "Sitter på",
+  "no_attachments": "Inga redskap registrerade",
+  "no_operators": "Inga förare registrerade",
+  "not_mounted": "Ej monterat",
+  "operators_lead": "Förare, deras förarbevis och utbildningar, och vilken maskin de kör. Inga personnummer lagras.",
+  "retire": "Utrangerat (tas ur bruk)",
+  "retired": "Utrangerat",
+  "valid_until": "Giltig till",
+  "weight": "Vikt (kg)"
+ },
  "errors": {
   "ACTIVE_ENCUMBRANCE_EXISTS": "Maskinen har redan ett aktivt förbehåll hos {{holder}}. Ditt förbehåll registrerades inte och båda parter har fått en notis.",
   "CHAIN_BROKEN": "Händelsekedjan stämmer inte.",
@@ -1241,6 +1379,10 @@
    "created": "{{actor}} skapade en API-nyckel",
    "revoked": "{{actor}} spärrade en API-nyckel"
   },
+  "attachment": {
+   "mounted": "{{actor}} monterade ett redskap",
+   "unmounted": "{{actor}} tog av ett redskap"
+  },
   "audit": {
    "anchor_published": "Dagens ankare publicerades"
   },
@@ -1285,6 +1427,9 @@
    "cleared": "{{actor}} avslutade flaggan",
    "raised": "{{actor}} flaggade maskinen"
   },
+  "fuel": {
+   "logged": "{{actor}} registrerade tankning"
+  },
   "identity": {
    "verified": "Identitet verifierad med {{payload.provider}}"
   },
@@ -1314,9 +1459,12 @@
   "machine": {
    "assigned": "{{actor}} placerade maskinen i ett projekt",
    "checked": "{{actor}} kontrollerade maskinen",
+   "daily_check": "{{actor}} gjorde daglig kontroll",
    "deregistered": "{{actor}} avregistrerade maskinen",
    "factory_data_confirmed": "Fabriksdata bekräftade maskinens uppgifter",
    "hours_reported": "{{actor}} rapporterade {{payload.hour_meter}} timmar",
+   "operational_status_changed": "{{actor}} ändrade driftstatus",
+   "operator_assigned": "{{actor}} ändrade förare",
    "photo_set": "{{actor}} bytte foto",
    "registered": "{{actor}} registrerade maskinen",
    "sighting_reported": "Tips om den stulna maskinen",
@@ -1777,10 +1925,13 @@
   "admin_support": "Supportsök",
   "alerts": "Larm",
   "api_docs": "API",
+  "attachments": "Redskap",
   "bookings": "Bokningar",
   "check": "Kontroll",
   "client_reports": "Delade rapporter",
+  "climate": "Bränsle & klimat",
   "customers": "Kunder",
+  "daily_check": "Daglig kontroll",
   "dashboard": "Översikt",
   "encumbrances_new": "Registrera förbehåll",
   "export_check": "Exportkontroll",
@@ -1803,6 +1954,7 @@
   "main": "Huvudmeny",
   "notifications": "Notiser",
   "oem": "Leveransdata",
+  "operators": "Förare",
   "org_switcher": "Byt organisation",
   "portfolio": "Portfölj",
   "pricing": "Priser",
@@ -1978,6 +2130,10 @@
    "deregistered": {
     "body": "{{by}} avregistrerade {{reg_number}}.",
     "title": "Maskinen är avregistrerad"
+   },
+   "out_of_service": {
+    "body": "{{reason}}",
+    "title": "{{reg_number}} är ur drift"
    },
    "registered_for_you": {
     "body": "{{by}} registrerade {{reg_number}} med er som ägare.",
@@ -2178,6 +2334,18 @@
   "types_hint": "Välj en eller flera. Andra typer än maskinägare granskas av oss inom en arbetsdag – under tiden kan ni lägga in maskiner.",
   "types_legend": "Vad gör organisationen?"
  },
+ "operations": {
+  "change_status": "Ändra driftstatus",
+  "operator": "Förare",
+  "recent_checks": "Senaste dagliga kontroller",
+  "recent_fuel": "Senaste tankningar",
+  "status": {
+   "operational": "I drift",
+   "out_of_service": "Ur drift",
+   "restricted": "Begränsad drift"
+  },
+  "title": "Drift"
+ },
  "org": {
   "authority_reads": "Visa våra läsningar för maskinägaren",
   "claims_url": "Länk för skadeanmälan",
@@ -2313,6 +2481,7 @@
   "invalid": "Kvittot kunde inte bekräftas",
   "invalid_body": "Kontrollera kvittonummer och kontrollsumma. Stämmer de inte kan kvittot vara ändrat.",
   "kind": {
+   "climate_report": "Äkta klimatrapport, utfärdad {{date}} för {{org}}.",
    "machine_report": "Äkta maskinrapport, utfärdad {{date}} för {{org}}.",
    "ownership_certificate": "Äkta ägarbevis, utfärdat {{date}} för {{org}}.",
    "register_extract": "Äkta registerutdrag, utfärdat {{date}} för {{org}}."
@@ -2614,6 +2783,7 @@
   "variant": "Variant",
   "vtr_mismatch": "Ägaren i vägtrafikregistret stämmer inte med angiven ägare. Kontrollera uppgifterna.",
   "weight": "Tjänstevikt (kg)",
-  "weight_hint": "Avgör om maskinen omfattas av registreringsplikt (från 1 500 kg)."
+  "weight_hint": "Avgör om maskinen omfattas av registreringsplikt (från 1 500 kg).",
+  "year": "Årsmodell"
  }
 }

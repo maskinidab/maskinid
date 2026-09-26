@@ -30,3 +30,12 @@ Frågor som kräver affärsbeslut. Bygget stannar inte för dem; det säkraste a
    `Sms`-adapter och leverantör är valda; flaggan `FEATURE_SMS` är av.
 9. **Dokumentnummer.** B-/R-/U-/F-/K-nummer är unika men kan hoppa över värden (databassekvenser). *Antagande:* det är
    acceptabelt eftersom nummer + kontrollsumma verifieras mot registret.
+
+## Redskap, förare, daglig kontroll, klimat (steg 20, tolkat – SPEC §20.1–20.4 saknas)
+10. **Emissionsfaktorer.** Standardvärden (kg CO2e, källa-till-hjul): diesel 2,95/l, HVO100 0,52/l, RME 1,10/l,
+    bensin 2,80/l, biogas 0,60/kg, el 0,04/kWh. *Antagande* – ska ersättas med faktorer från vald källa
+    (t.ex. Energimyndigheten/Naturvårdsverket) innan kunder använder rapporten. Ändras i `app_config` utan release.
+11. **Daglig kontroll och driftstopp.** *Antagande:* fel på kritisk punkt ställer maskinen ur drift automatiskt och
+    meddelar ägare/brukare; ingen blockering av registeråtgärder (ägarbyte m.m.) sker på grund av driftstatus.
+12. **Förarbehörigheter.** Typlistan (förarbevis, truckkort, kranförarbevis, lift, heta arbeten m.fl.) är ett urval.
+    Påminnelse vid utgång visas i listan (60 dagar); e-postpåminnelse ingår inte ännu.

@@ -26,7 +26,11 @@ export function navGroups(types: OrgType[], isAdmin: boolean, isOperator: boolea
     register.splice(2, 0, { to: "machines/new", label: "nav.register", icon: "plus" });
   }
   const role: NavItem[] = [];
-  if (has("owner")) role.push({ to: "fleet", label: "nav.fleet", icon: "bygg" }, { to: "rentals", label: "nav.rentals", icon: "byt" });
+  if (has("owner")) {
+    role.push({ to: "fleet", label: "nav.fleet", icon: "bygg" }, { to: "daily-check", label: "nav.daily_check", icon: "bock" },
+      { to: "rentals", label: "nav.rentals", icon: "byt" }, { to: "attachments", label: "nav.attachments", icon: "verktyg" },
+      { to: "operators", label: "nav.operators", icon: "personer" }, { to: "climate", label: "nav.climate", icon: "diagram" });
+  }
   if (has("dealer")) {
     role.push(
       { to: "stock", label: "nav.stock", icon: "tagg" }, { to: "sales/new", label: "nav.sales_new", icon: "pil-hoger" },

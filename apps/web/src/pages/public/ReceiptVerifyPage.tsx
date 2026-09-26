@@ -22,7 +22,7 @@ export function ReceiptVerifyPage() {
   const [hash, setHash] = useState(params.get("hash") ?? "");
   const qn = params.get("nr");
   const qh = params.get("hash");
-  const report = !!qn && /^[FUBR]-/i.test(qn.trim());
+  const report = !!qn && /^[FUBRC]-/i.test(qn.trim());
   const q = useRpc<Verified>(report ? "verify_report" : "verify_check_receipt",
     qn && qh ? (report ? { p_report_number: qn, p_result_hash: qh } : { p_receipt_number: qn, p_result_hash: qh }) : null, { retry: false });
   return (

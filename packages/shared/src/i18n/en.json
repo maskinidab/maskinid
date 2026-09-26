@@ -574,6 +574,40 @@
   "lead": "Reports contractors have shared with you. They always show the register as of today.",
   "live": "Shared by {{org}}, current right now."
  },
+ "climate": {
+  "add_fuel": "Log fuel",
+  "by_fuel": "By fuel",
+  "by_machine": "By machine",
+  "by_project": "By project",
+  "download": "Climate report (PDF)",
+  "factors": "Emission factors used",
+  "fossil_free": "Share of fossil-free fuel",
+  "from": "From",
+  "fuel": {
+   "biogas": "Biogas",
+   "diesel": "Diesel",
+   "electricity": "Electricity",
+   "hvo100": "HVO100",
+   "other": "Other",
+   "petrol": "Petrol",
+   "rme": "RME"
+  },
+  "fuel_label": "Fuel",
+  "lead": "Log refuelling and charging per machine. The climate report calculates CO2 equivalents per period, machine and project.",
+  "litres": "Litres",
+  "method": "The calculation uses well-to-wheel emission factors. The factors are stated in the report and can be adjusted by the register keeper. The fossil-free share refers to liquid fuels (HVO100 and RME).",
+  "no_data": "No fuel data for the period",
+  "no_data_body": "Log fuel on the machines or under the Fuel log tab.",
+  "no_fuel": "No fuel logged.",
+  "pdf_title": "Climate report",
+  "per_hour": "{{value}} l/h",
+  "period": "Period",
+  "quantity": "Quantity",
+  "tab_log": "Fuel log",
+  "tab_report": "Climate report",
+  "to": "To",
+  "total": "Total emissions"
+ },
  "common": {
   "actions": "Actions",
   "add": "Add",
@@ -618,6 +652,7 @@
   "not_found_title": "Page not found",
   "not_set": "Not set",
   "note": "Comment",
+  "notes": "Note",
   "open": "Open",
   "optional": "optional",
   "org_number": "Organisation number",
@@ -713,6 +748,46 @@
    "empty": "No events yet.",
    "load_more": "Show older events"
   }
+ },
+ "daily": {
+  "all_ok": "Mark all OK",
+  "builtin": "Built-in",
+  "copy": "copy",
+  "copy_edit": "Copy and edit",
+  "critical": "critical",
+  "done": {
+   "failed": "Critical fault – the machine is out of service",
+   "ok": "The check is saved – no remarks",
+   "remarks": "The check is saved with remarks"
+  },
+  "edit_template": "Edit checklist",
+  "fault": "Fault",
+  "fault_note": "Describe the fault",
+  "items": "Items",
+  "items_count_one": "1 item",
+  "items_count_other": "{{count}} items",
+  "items_hint": "One item per line. Start the line with ! for a critical item – a fault there takes the machine out of service.",
+  "lead": "Go through the machine before starting. A fault on a critical item takes the machine out of service and notifies the owner.",
+  "missing_one": "1 item left",
+  "missing_other": "{{count}} items left",
+  "new_template": "New checklist",
+  "next": "Next machine",
+  "none": "No daily checks yet.",
+  "ok": "OK",
+  "operator": "Operator",
+  "out_of_service": "The machine is out of service until the fault is fixed and a new check is clean.",
+  "result": {
+   "failed": "Critical fault",
+   "ok": "No remarks",
+   "remarks": "Remarks"
+  },
+  "result_label": "Result",
+  "submit": "Save the check",
+  "tab_history": "History",
+  "tab_new": "New check",
+  "tab_templates": "Checklists",
+  "template": "Checklist",
+  "templates_lead": "The built-in checklists apply to all machines of the right type. Copy and adapt them for your organisation."
  },
  "dashboard": {
   "financed": "Encumbered",
@@ -1163,6 +1238,69 @@
    "verifiers": "Verifiers and buyers with a link"
   }
  },
+ "equipment": {
+  "add_attachment": "Add attachment",
+  "add_certificate": "Add certificate",
+  "add_certificate_for": "New certificate for {{name}}",
+  "add_operator": "Add operator",
+  "assign": "Assign to machine",
+  "assign_title": "Which machine does {{name}} drive?",
+  "attachment": "Attachment",
+  "attachment_type": {
+   "auger": "Auger",
+   "bucket": "Bucket",
+   "compactor": "Plate compactor",
+   "ditch_bucket": "Ditch bucket",
+   "fork": "Pallet forks",
+   "grapple": "Grapple",
+   "hammer": "Hydraulic hammer",
+   "mower": "Mower",
+   "other": "Other attachment",
+   "quick_coupler": "Quick coupler",
+   "ripper": "Ripper",
+   "snow_plough": "Snow plough",
+   "sweeper": "Sweeper",
+   "tiltrotator": "Tiltrotator"
+  },
+  "attachments_lead": "Buckets, hammers, tiltrotators and other attachments – and which machine they are on right now.",
+  "cert_attention": "Expiring or expired",
+  "cert_label": "Name",
+  "cert_type": {
+   "aerial_platform": "Aerial platform licence",
+   "crane": "Crane operator licence",
+   "first_aid": "First aid",
+   "forklift": "Forklift licence",
+   "hot_work": "Hot work",
+   "loader_crane": "Loader crane",
+   "machine_operator_licence": "Earthmoving machine licence",
+   "other": "Other certificate",
+   "road_safety": "Road work safety",
+   "ykb": "Driver CPC (YKB)"
+  },
+  "certificates": "Certificates",
+  "deactivate": "Inactive (left)",
+  "drives": "Drives",
+  "edit_attachment": "Edit attachment",
+  "edit_operator": "Edit operator",
+  "employee_ref": "Employee number",
+  "employee_ref_hint": "Optional. Never enter a personal identity number.",
+  "expired": "Expired",
+  "expiring": "Expires soon",
+  "has_login": "Login: {{name}}",
+  "inactive": "Inactive",
+  "issued_at": "Issued",
+  "login": "Login",
+  "login_hint": "Link to a user in the organisation so the operator can do daily checks on the phone.",
+  "mounted_on": "Mounted on",
+  "no_attachments": "No attachments registered",
+  "no_operators": "No operators registered",
+  "not_mounted": "Not mounted",
+  "operators_lead": "Operators, their licences and training, and which machine they drive. No personal identity numbers are stored.",
+  "retire": "Retired (out of use)",
+  "retired": "Retired",
+  "valid_until": "Valid until",
+  "weight": "Weight (kg)"
+ },
  "errors": {
   "ACTIVE_ENCUMBRANCE_EXISTS": "The machine already has an active encumbrance held by {{holder}}. Yours was not registered and both parties have been notified.",
   "CHAIN_BROKEN": "The event chain does not verify.",
@@ -1241,6 +1379,10 @@
    "created": "{{actor}} created an API key",
    "revoked": "{{actor}} revoked an API key"
   },
+  "attachment": {
+   "mounted": "{{actor}} mounted an attachment",
+   "unmounted": "{{actor}} removed an attachment"
+  },
   "audit": {
    "anchor_published": "Daily anchor published"
   },
@@ -1285,6 +1427,9 @@
    "cleared": "{{actor}} cleared the flag",
    "raised": "{{actor}} flagged the machine"
   },
+  "fuel": {
+   "logged": "{{actor}} logged fuel"
+  },
   "identity": {
    "verified": "Identity verified with {{payload.provider}}"
   },
@@ -1314,9 +1459,12 @@
   "machine": {
    "assigned": "{{actor}} assigned the machine to a project",
    "checked": "{{actor}} checked the machine",
+   "daily_check": "{{actor}} did a daily check",
    "deregistered": "{{actor}} deregistered the machine",
    "factory_data_confirmed": "Factory data confirmed the machine details",
    "hours_reported": "{{actor}} reported {{payload.hour_meter}} hours",
+   "operational_status_changed": "{{actor}} changed the operational status",
+   "operator_assigned": "{{actor}} changed the operator",
    "photo_set": "{{actor}} changed the photo",
    "registered": "{{actor}} registered the machine",
    "sighting_reported": "Tip about the stolen machine",
@@ -1777,10 +1925,13 @@
   "admin_support": "Support search",
   "alerts": "Alerts",
   "api_docs": "API",
+  "attachments": "Attachments",
   "bookings": "Bookings",
   "check": "Check",
   "client_reports": "Shared reports",
+  "climate": "Fuel & climate",
   "customers": "Customers",
+  "daily_check": "Daily check",
   "dashboard": "Overview",
   "encumbrances_new": "Register encumbrance",
   "export_check": "Export check",
@@ -1803,6 +1954,7 @@
   "main": "Main menu",
   "notifications": "Notifications",
   "oem": "Delivery data",
+  "operators": "Operators",
   "org_switcher": "Switch organisation",
   "portfolio": "Portfolio",
   "pricing": "Pricing",
@@ -1978,6 +2130,10 @@
    "deregistered": {
     "body": "{{by}} deregistered {{reg_number}}.",
     "title": "Machine deregistered"
+   },
+   "out_of_service": {
+    "body": "{{reason}}",
+    "title": "{{reg_number}} is out of service"
    },
    "registered_for_you": {
     "body": "{{by}} registered {{reg_number}} with you as owner.",
@@ -2178,6 +2334,18 @@
   "types_hint": "Choose one or more. Types other than machine owner are reviewed within one working day – meanwhile you can add machines.",
   "types_legend": "What does the organisation do?"
  },
+ "operations": {
+  "change_status": "Change operational status",
+  "operator": "Operator",
+  "recent_checks": "Latest daily checks",
+  "recent_fuel": "Latest refuelling",
+  "status": {
+   "operational": "In operation",
+   "out_of_service": "Out of service",
+   "restricted": "Restricted operation"
+  },
+  "title": "Operation"
+ },
  "org": {
   "authority_reads": "Show our reads to the machine owner",
   "claims_url": "Claims link",
@@ -2313,6 +2481,7 @@
   "invalid": "The receipt could not be confirmed",
   "invalid_body": "Check the receipt number and checksum. If they do not match the receipt may have been altered.",
   "kind": {
+   "climate_report": "Genuine climate report, issued {{date}} for {{org}}.",
    "machine_report": "Genuine machine report, issued {{date}} for {{org}}.",
    "ownership_certificate": "Genuine ownership certificate, issued {{date}} for {{org}}.",
    "register_extract": "Genuine register extract, issued {{date}} for {{org}}."
@@ -2614,6 +2783,7 @@
   "variant": "Variant",
   "vtr_mismatch": "The owner in the road vehicle register does not match the stated owner. Check the details.",
   "weight": "Operating weight (kg)",
-  "weight_hint": "Determines whether registration is mandatory (from 1,500 kg)."
+  "weight_hint": "Determines whether registration is mandatory (from 1,500 kg).",
+  "year": "Model year"
  }
 }

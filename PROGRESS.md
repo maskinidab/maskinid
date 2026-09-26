@@ -30,7 +30,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 17 | Operatörsadmin | ✅ | ADR 0015 |
 | 18 | PDF:er & e-post | ✅ | §10, §13 |
 | 19 | Seed & demo | ✅ | §17, ADR 0016 |
-| 20 | Redskap, förare, daglig kontroll, bränsle/klimat | ⬜ | tolkas från CLAUDE.md (ADR 0003) |
+| 20 | Redskap, förare, daglig kontroll, bränsle/klimat | ✅ | tolkat, ADR 0017 |
 | 21 | Fullmakter, kommission, risksignaler, koncern | ⬜ | tolkas från CLAUDE.md |
 | 22 | Tips, stöldlista, hjälpcenter, support, juridik, kontosäkerhet, "Visa som" | ⬜ | tolkas från CLAUDE.md |
 | 23 | Betalning (Stripe testläge) | ⬜ | tolkas från CLAUDE.md |
@@ -222,3 +222,10 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   över 30 dagar med 30 publicerade ankare (ADR 0016). Test `00_seed_data` kontrollerar §17-siffrorna. Demo-manuset
   körs i webbläsaren (skanning, stöldnotis, sälj → ägarbevis-PDF, kontroll + blockerat andra förbehåll, inbyte, import,
   marknadskandidater) – staging kräver driftsättning (steg 26).
+- **Steg 20** – Redskap, förare, daglig kontroll, bränsle/klimat (tolkat, ADR 0017): migration `equipment_operators` –
+  `operational_status` på maskinen, redskap med monteringshistorik, förare (utan personnummer) med behörigheter och
+  utgångsvarning, maskin–förare-koppling, inbyggda och egna checklistor, daglig kontroll (kritiskt fel ⇒ ur drift +
+  notis, ren kontroll häver), bränsle/el-logg, klimatrapport per period/maskin/projekt med emissionsfaktorer i
+  `app_config` och verifierbar C-ögonblicksbild. Webb: Daglig kontroll (mobil, stora knappar, historik, mallar),
+  Redskap, Förare, Bränsle & klimat (+ PDF), Drift-sektion på maskinens Service-flik, "Ur drift" i listan och på
+  maskinsidan. Seed: redskap, förare, kontroller (en med fel), 8 veckors tankningar för Bergs.
