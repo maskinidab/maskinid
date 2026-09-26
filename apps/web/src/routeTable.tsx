@@ -11,6 +11,7 @@ const ScanPage = L(() => import("./pages/public/ScanPage"), "ScanPage");
 const VerifyPage = L(() => import("./pages/public/VerifyPage"), "VerifyPage");
 const SecurityPage = L(() => import("./pages/public/SecurityPage"), "SecurityPage");
 const HowPage = L(() => import("./pages/public/HowPage"), "HowPage");
+const ApiDocsPage = L(() => import("./pages/public/ApiDocsPage"), "ApiDocsPage");
 const AdPage = L(() => import("./pages/public/AdPage"), "AdPage");
 const ReceiptVerifyPage = L(() => import("./pages/public/ReceiptVerifyPage"), "ReceiptVerifyPage");
 const DashboardPage = L(() => import("./pages/app/DashboardPage"), "DashboardPage");
@@ -58,6 +59,7 @@ export const publicRoutes: { path: string; element: ReactNode }[] = [
   { path: "how", element: <HowPage /> },
   { path: "receipt", element: <ReceiptVerifyPage /> },
   { path: "ad/:reg", element: <AdPage /> },
+  { path: "api-docs", element: <ApiDocsPage /> },
 ];
 
 export const appRoutes: { path: string; element: ReactNode }[] = [

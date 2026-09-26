@@ -25,7 +25,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 12 | Flotta | ✅ | Jobben schemaläggs i steg 26 (pg_cron) |
 | 13 | Handlare | ✅ | |
 | 14 | Roller/portaler | ✅ | |
-| 15 | API & webhooks | ⬜ | |
+| 15 | API & webhooks | ✅ | ADR 0013 |
 | 16 | Marknadsbevakning | ⬜ | |
 | 17 | Operatörsadmin | ⬜ | |
 | 18 | PDF:er & e-post | ⬜ | |
@@ -181,4 +181,12 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   registrerade maskiner). Webb: `/portfolio`, `/alerts`, `/watchlist`, `/verify` + `/verify/:id` (granskning med
   underlag, nivå 2 kräver skyltavläsning), `/bookings`, `/search`, `/flags`, `/export-check`, `/exports`, `/oem`,
   registerutdrag-PDF och skadeanmälan på maskinsidan.
+- **Steg 15** – API & webhooks (§12): migration `api` – API-nycklar (visas en gång, SHA-256, scopes, sandlåda, rate
+  limit per nyckel/minut), `resolve_api_key`, `log_api_request`, idempotens (24 h), `api_usage`, webhooks (https
+  till publika värdar, hemlighet visas en gång, händelsefilter, test, leveranslogg, "Skicka igen", 5 försök med
+  backoff via `claim_webhook_deliveries`/`record_webhook_result`), `badge_data`, API-paritet (service_role kan köra
+  allt som inloggade kan). Edge Functions: `api-v1` (routing från delad routetabell, scope-kontroll, 409 vid dubbelt
+  förbehåll, 202 + signing_url för ägarbyte), `webhook-dispatch` (HMAC-SHA256-signatur), `badge` (SVG, 5 min cache,
+  noindex). Delad `packages/shared/src/api/routes.ts` driver även OpenAPI 3.1 på `/api-docs`. Webb: Inställningar →
+  API och webhooks.
 

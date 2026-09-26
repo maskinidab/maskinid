@@ -39,3 +39,10 @@ verify_jwt = false
 verify_jwt = false
 [functions.bankid-sign]
 verify_jwt = false
+# API gateway authenticates with API keys; badge is public; the dispatcher checks CRON_SECRET/service key.
+[functions.api-v1]
+verify_jwt = false
+[functions.badge]
+verify_jwt = false
+[functions.webhook-dispatch]
+verify_jwt = false

@@ -8,6 +8,7 @@ const ANON = [
   "public.demo_shortcuts",
   "public.get_app_config",
   "public.list_event_anchors",
+  "public.badge_data",
   "public.public_ad_card",
   "public.public_machine_card",
   "public.verify_anchor",
@@ -18,7 +19,8 @@ const ANON = [
 const SERVICE_ONLY = [
   "public.anchor_compute", "public.anchor_mark_published", "public.get_share_view", "public.log_public_scan",
   "public.record_company_lookup", "public.record_document_scan", "public.report_sighting",
-  "public.record_identity_verification", "public.record_signature", "public.record_vtr_lookup", "public.rate_limit_check", "public.submit_lead",
+  "public.record_identity_verification", "public.record_signature", "public.record_vtr_lookup", "public.rate_limit_check", "public.submit_lead", "public.resolve_api_key", "public.log_api_request",
+  "public.api_idempotency_get", "public.api_idempotency_put", "public.claim_webhook_deliveries", "public.record_webhook_result",
 ];
 
 describe("function exposure", () => {
@@ -40,6 +42,16 @@ describe("function exposure", () => {
         expect(rows.length, f).toBeGreaterThan(0);
         for (const r of rows) expect(r.ok, f).toBe(false);
       }
+    });
+  });
+
+  it("API parity: service_role can execute everything authenticated can (api-v1 calls the same RPCs)", async () => {
+    await tx(async (t) => {
+      const rows = await t.q<{ f: string }>(`
+        select n.nspname || '.' || p.proname as f from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+        where n.nspname = 'public' and has_function_privilege('authenticated', p.oid, 'execute')
+          and not has_function_privilege('service_role', p.oid, 'execute')`);
+      expect(rows.map((r) => r.f)).toEqual([]);
     });
   });
 
