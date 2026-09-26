@@ -11,6 +11,7 @@ const ANON = [
   "public.public_machine_card",
   "public.verify_anchor",
   "public.verify_check_receipt",
+  "public.verify_report",
 ];
 
 const SERVICE_ONLY = [

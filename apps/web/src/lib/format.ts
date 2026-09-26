@@ -28,6 +28,13 @@ export function formatDate(iso: string | Date | null | undefined, locale = curre
   return `${p.day}${NBSP}${MONTHS[locale][p.month - 1]}${NBSP}${p.year}`;
 }
 
+/** "2027-09" – "Besiktigad t.o.m. YYYY-MM" (SPEC §7.1). */
+export function formatMonth(iso: string | Date | null | undefined): string {
+  if (!iso) return "";
+  const p = parts(iso);
+  return `${p.year}-${String(p.month).padStart(2, "0")}`;
+}
+
 /** "2026-09-26" – tables and forms. */
 export function formatDateIso(iso: string | Date | null | undefined): string {
   if (!iso) return "";

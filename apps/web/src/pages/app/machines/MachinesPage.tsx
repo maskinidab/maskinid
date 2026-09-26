@@ -9,7 +9,7 @@ import { RegNumber } from "../../../components/RegNumber";
 import { FinancingBadge, MachineStatusBadge, VerificationBadge } from "../../../components/StatusBadge";
 import { useRpc, useRpcMutation } from "../../../lib/api/query";
 import type { MachineListItem, MachineStatus } from "../../../lib/api/types";
-import { formatDateTime, formatNumber } from "../../../lib/format";
+import { formatDate, formatDateTime, formatNumber } from "../../../lib/format";
 
 type Scope = "owned" | "used" | "registered" | "previous" | "all";
 const STATUSES: MachineStatus[] = ["active", "stolen", "blocked", "disputed", "scrapped", "exported", "deregistered"];
@@ -34,6 +34,13 @@ export function MachinesPage() {
     { id: "year", header: t("machines.col_year"), cell: (m) => m.year ?? "–", value: (m) => m.year, sortable: true, hideOnMobile: true },
     { id: "serial", header: t("machines.col_serial"), cell: (m) => <span className="mid-id">{m.serial ?? "–"}</span>, value: (m) => m.serial, hideOnMobile: true },
     { id: "hours", header: t("machine.hours"), cell: (m) => (m.hour_meter === null ? "–" : formatNumber(m.hour_meter)), value: (m) => m.hour_meter, sortable: true, hideOnMobile: true },
+    { id: "project", header: t("fleet.col.project"), value: (m) => (m.project as string | null) ?? "", cell: (m) => (m.project as string | null) ?? "–", hideOnMobile: true },
+    { id: "next", header: t("machines.col_next"), hideOnMobile: true,
+      value: (m) => (m.next_action as { title: string } | null)?.title ?? "",
+      cell: (m) => {
+        const n = m.next_action as { title: string; due_at: string | null; due_hours: number | null } | null;
+        return n ? <>{n.title}<br /><span className="t-liten t-sekundar">{[n.due_at && formatDate(n.due_at), n.due_hours && `${formatNumber(n.due_hours)} h`].filter(Boolean).join(" / ")}</span></> : "–";
+      } },
     { id: "status", header: t("common.status"), value: (m) => m.status, cell: (m) => (
       <span className="badge-rad">
         {m.status !== "active" && <MachineStatusBadge status={m.status} />}

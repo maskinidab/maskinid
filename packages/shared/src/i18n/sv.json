@@ -81,6 +81,8 @@
    "buyer_required": "Slå upp köparens organisationsnummer.",
    "by_email": "E-post (köparen saknar konto)",
    "by_org": "Organisationsnummer",
+   "documents": "Dokument som följer med",
+   "documents_hint": "Dokument som inte är privata följer alltid med. Välj vilka privata dokument köparen också ska få.",
    "email_hint": "Köparen får en länk och skapar konto innan hen godkänner.",
    "email_invalid": "Ange en giltig e-postadress.",
    "financier_first": "Maskinen har ett aktivt förbehåll hos {{holder}}. De får ta ställning innan köparen kan godkänna.",
@@ -173,6 +175,13 @@
   "type_road_reg": "Vägtrafikregnr",
   "type_serial": "Serienummer",
   "type_vin": "VIN"
+ },
+ "client": {
+  "choose": "Rapport",
+  "empty": "Inga delade rapporter",
+  "empty_body": "Be entreprenören ge er läsrätt under Flotta → Beställare.",
+  "lead": "Rapporter som entreprenörer har delat med er. De visar alltid dagens läge i registret.",
+  "live": "Delad av {{org}}, aktuell just nu."
  },
  "common": {
   "actions": "Åtgärder",
@@ -569,6 +578,12 @@
    "permanent": "Permanent",
    "temporary": "Tillfällig"
   },
+  "rental_status": {
+   "active": "Uthyrd",
+   "overdue": "Försenad",
+   "planned": "Planerad",
+   "returned": "Återlämnad"
+  },
   "share_scope": {
    "buyer_report": "Maskinrapport",
    "fleet_report": "Flottrapport",
@@ -664,6 +679,7 @@
   "ORG_REQUIRED": "Välj en organisation först.",
   "OTP_FAILED": "Inloggningslänken kunde inte skickas.",
   "RATE_LIMITED": "För många uppslag på kort tid. Vänta en minut och försök igen.",
+  "RENTAL_OVERLAP": "Maskinen är redan uthyrd under den perioden.",
   "SIGNATORY_REQUIRED": "Bara en firmatecknare kan ta över organisationen. Be en firmatecknare om en inbjudan.",
   "SIGNATURE_ALREADY_USED": "Signaturen är redan använd. Signera igen.",
   "SIGNATURE_EXPIRED": "Signaturen har gått ut. Signera igen.",
@@ -792,8 +808,70 @@
   }
  },
  "fleet": {
+  "all_machines": "Alla maskiner",
+  "archive": "Avsluta projektet (maskinerna släpps)",
+  "client": "Beställare",
+  "clients_lead": "Ge en beställare (till exempel kommun eller Trafikverket) läsrätt till rapporten. Den är alltid aktuell och ni kan stänga den när som helst.",
+  "col": {
+   "category": "Kategori",
+   "emission": "Utsläppssteg",
+   "fuel": "Drivmedel",
+   "inspection": "Besiktad t.o.m.",
+   "level": "Nivå",
+   "machine": "Maskin",
+   "machines": "Maskiner",
+   "power": "Effekt",
+   "project": "Projekt",
+   "reg": "Regnr",
+   "weight": "Vikt",
+   "year": "År"
+  },
+  "digest_note": "Varje måndag får ni ett mejl med det som kommer de närmaste två veckorna.",
+  "download_pdf": "Ladda ner PDF",
+  "edit_project": "Ändra projekt",
+  "ends_on": "Till",
+  "generated": "Skapad {{date}}",
+  "grant": "Ge läsrätt",
+  "granted": "Sedan {{date}}",
+  "inspection_missing_short": "Saknas",
   "inspections": "Besiktningar",
-  "service": "Service"
+  "lead": "Service, besiktningar, projekt och rapporter för era maskiner.",
+  "machines_on_site": "Maskiner",
+  "new_project": "Nytt projekt",
+  "no_grants": "Ingen beställare har läsrätt.",
+  "no_projects": "Inga projekt ännu",
+  "no_projects_body": "Lägg upp projekt eller arbetsplatser och tilldela maskiner under fliken Service på maskinen.",
+  "not_required": "Krävs ej",
+  "overdue": "Försenat ({{count}})",
+  "pdf_footer": "Kontrollera rapporten på {{url}} med rapportnummer och kontrollsumma. Rapporten visar registrets innehåll {{date}}.",
+  "period": "Period",
+  "project_list_lead": "Vilka maskiner som står på projektet, med regnr och verifieringsnivå.",
+  "project_list_title": "Projektlista",
+  "public_badge": "Visa \"Besiktigad t.o.m.\" för alla som skannar maskiner som {{org}} äger",
+  "public_badge_title": "Besiktning på det publika maskinkortet",
+  "reference": "Beställarens referens",
+  "reference_hint": "Till exempel upphandlings- eller kontraktsnummer.",
+  "report_hours": "Rapportera timmar",
+  "report_kind": "Rapport",
+  "report_lead": "Utsläppssteg, drivmedel, vikt, effekt, besiktning och verifieringsnivå – det beställare kräver i upphandling och uppföljning.",
+  "report_title": "Flott- och upphandlingsrapport",
+  "revoke": "Stäng",
+  "service": "Service",
+  "share_created": "Länken är skapad. Den visas bara nu.",
+  "share_link": "Dela länk (30 dagar)",
+  "show_archived": "Visa avslutade",
+  "site_address": "Arbetsplats",
+  "starts_on": "Från",
+  "sum_electric": "El eller hybrid",
+  "sum_inspection_due": "Saknar giltig besiktning",
+  "sum_level2": "Fysiskt verifierade",
+  "sum_stage_v": "Steg V / nollutsläpp",
+  "summary_line": "{{count}} maskiner · steg V/nollutsläpp {{stage_v}} · el/hybrid {{electric}} · HVO {{hvo}} · nivå 2 {{level2}} · saknar giltig besiktning {{inspection_due}}",
+  "tab_clients": "Beställare",
+  "tab_projects": "Projekt",
+  "tab_report": "Rapport",
+  "tab_todo": "Att göra",
+  "upcoming": "Kommande"
  },
  "how": {
   "disclaimer": "{{app}} är ett privat, frivilligt register och ingen myndighet.",
@@ -927,6 +1005,12 @@
   "verification_needs_info": "Komplettera verifiering",
   "verification_review": "Verifiering att granska"
  },
+ "inspection_new": {
+  "done": "Besiktningen är registrerad",
+  "lead": "Sök maskinen eller skanna märket och registrera besiktningen. Ägaren får besked och protokollet följer maskinen.",
+  "no_lifting": "Maskinen är inte markerad med lyftanordning.",
+  "title": "Registrera besiktning"
+ },
  "level": {
   "0": {
    "desc": "Ägaren har lagt in maskinen utan granskat underlag.",
@@ -958,6 +1042,9 @@
   "hours": "Timmätare",
   "identity": "Identitet",
   "in_conflict": "i konflikt",
+  "inspected_until": "Besiktigad t.o.m. {{date}}",
+  "inspection_missing": "Besiktning saknas",
+  "insured": "Försäkrad",
   "label": "Märke",
   "last_transfer": "Senaste ägarbyte",
   "no_access": "Ingen har tittat ännu",
@@ -969,6 +1056,8 @@
   "registered_by": "Registrerad av",
   "registration_liable": "Registreringspliktig",
   "released_at": "släppt {{date}}",
+  "rented_from": "Inhyrd från {{org}} till {{date}}.",
+  "rented_to": "Uthyrd till {{org}} till {{date}}.",
   "set_primary": "Använd som huvudbild",
   "share_closed": "stängd",
   "share_links": "Delningslänkar",
@@ -980,6 +1069,7 @@
   "tab_financing": "Förbehåll",
   "tab_history": "Historik",
   "tab_overview": "Översikt",
+  "tab_service": "Service",
   "tabs": "Maskinens flikar",
   "technical": "Teknisk data",
   "temporary_until": "Tillfällig till {{date}}",
@@ -994,6 +1084,7 @@
  },
  "machines": {
   "col_machine": "Maskin",
+  "col_next": "Nästa åtgärd",
   "col_reg": "Regnr",
   "col_serial": "Serienummer",
   "col_year": "Årsmodell",
@@ -1037,6 +1128,7 @@
   "how_it_works": "Så fungerar det",
   "import": "Importera",
   "inbox": "Väntar på mig",
+  "inspection_new": "Registrera besiktning",
   "labels": "Märken",
   "leads": "Leads",
   "machines": "Maskiner",
@@ -1178,6 +1270,12 @@
     "title": "Maskinen har flaggats"
    }
   },
+  "inspection": {
+   "recorded": {
+    "body": "{{body}} har registrerat en besiktning av {{reg_number}}.",
+    "title": "Besiktning registrerad"
+   }
+  },
   "labels": {
    "ordered": {
     "body": "{{org}} beställde {{quantity}} märken.",
@@ -1237,6 +1335,24 @@
    "suspended": {
     "body": "{{name}} är avstängd: {{reason}}",
     "title": "Organisationen är avstängd"
+   }
+  },
+  "reminder": {
+   "due": {
+    "body": "{{reg_number}} – {{title}}. Se Flotta → Att göra.",
+    "title": "Dags: {{title}}"
+   }
+  },
+  "rental": {
+   "created": {
+    "body": "{{lessor}} hyr ut {{reg_number}} till er {{from}}–{{to}}.",
+    "title": "Ny inhyrning"
+   }
+  },
+  "report_grant": {
+   "created": {
+    "body": "{{owner}} har gett er läsrätt till sin flottrapport.",
+    "title": "Delad flottrapport"
    }
   },
   "transfer": {
@@ -1446,7 +1562,9 @@
   "hash_hint": "64 tecken längst ner på kvittot.",
   "invalid": "Kvittot kunde inte bekräftas",
   "invalid_body": "Kontrollera kvittonummer och kontrollsumma. Stämmer de inte kan kvittot vara ändrat.",
-  "lead": "Har du fått ett kontrollkvitto från en finansiär eller handlare kan du bekräfta att det är äkta. Ange kvittonumret och kontrollsumman som står på kvittot.",
+  "lead": "Har du fått ett kontrollkvitto (K-…) eller en flottrapport (F-…) kan du bekräfta att det är äkta. Ange numret och kontrollsumman som står på dokumentet.",
+  "report_one": "Rapport skapad {{date}} av {{org}}, {{count}} maskin.",
+  "report_other": "Rapport skapad {{date}} av {{org}}, {{count}} maskiner.",
   "submit": "Kontrollera",
   "title": "Kontrollera ett kvitto",
   "valid": "Kvittot är äkta"
@@ -1455,6 +1573,19 @@
   "empty": "Inga kontroller ännu",
   "lead": "Alla kontroller er organisation har gjort, med kvittonummer.",
   "title": "Kontrollkvitton"
+ },
+ "rentals": {
+  "direction": "Riktning",
+  "empty": "Inga uthyrningar",
+  "in": "Inhyrd",
+  "lead": "Maskiner ni hyr ut och hyr in. Uthyrningen syns i registret som en nyttjanderätt men påverkar aldrig finansieringskontrollen.",
+  "lessee": "Hyrestagarens orgnr",
+  "lessee_needs_account": "Hyrestagaren behöver finnas i registret. Bjud in dem först.",
+  "new": "Ny uthyrning",
+  "out": "Uthyrd av oss",
+  "party": "Motpart",
+  "register_note": "Hyrestagaren får en notis och ser maskinen under uthyrningstiden.",
+  "returned": "Markera återlämnad"
  },
  "report_error": {
   "description": "Vad är fel",
@@ -1507,6 +1638,62 @@
   "verified_bad": "Stämmer inte",
   "verified_ok": "Stämmer",
   "verify": "Kontrollera"
+ },
+ "service": {
+  "add_entry": "Logga service",
+  "add_inspection": "Registrera besiktning",
+  "add_insurance": "Lägg till försäkring",
+  "add_reminder": "Ny påminnelse",
+  "at_hours": "Vid timmar",
+  "attach": "Kvitto eller protokoll",
+  "attached": "Bifogat",
+  "certificate_no": "Intygsnummer",
+  "chart_label": "Timmätarens utveckling från {{from}} till {{to}} timmar",
+  "coverage": {
+   "full": "Helförsäkring",
+   "liability": "Ansvar",
+   "machine": "Maskinskada",
+   "theft": "Stöld"
+  },
+  "coverage_label": "Omfattning",
+  "done": "Klar",
+  "hours_correction": "Spara ändå som rättelse (mätaren bytt eller felskrivning)",
+  "hours_now": "Nu {{hours}} h",
+  "hours_report": "Spara",
+  "hours_saved": "Timmarna är sparade.",
+  "hours_saved_due": "Sparat. Snart dags: {{title}}.",
+  "hours_title": "Timmätare",
+  "inspection_body": "Kontrollorgan",
+  "inspection_required": "Maskinen har lyftanordning och ska besiktigas av ett ackrediterat kontrollorgan.",
+  "inspections": "Besiktningar",
+  "insurance": "Försäkring",
+  "insurer": "Försäkringsbolag",
+  "insurer_name": "Bolagets namn",
+  "insurer_other": "Annat bolag",
+  "log": "Service och reparationer",
+  "next_due": "Nästa: {{when}}",
+  "next_due_at": "Nästa service, datum",
+  "next_due_hint": "Till exempel 2 000. Vi påminner när timmätaren närmar sig.",
+  "next_due_hours": "Nästa service, timmar",
+  "no_entries": "Inget loggat ännu.",
+  "no_inspections": "Inga besiktningar registrerade.",
+  "no_insurance": "Ingen försäkring registrerad.",
+  "no_project": "Inget projekt",
+  "no_reminders": "Inga påminnelser.",
+  "overdue": "försenad",
+  "performed_by": "Utförd av",
+  "policy_number": "Försäkringsnummer",
+  "project": "Projekt eller arbetsplats",
+  "protocol": "Besiktningsprotokoll",
+  "remarks": "Anmärkningar",
+  "reminder_title": "Vad",
+  "reminders": "Påminnelser",
+  "result": "Resultat",
+  "snooze_week": "Om en vecka",
+  "valid_from": "Gäller från",
+  "valid_to": "Gäller till",
+  "valid_until": "gäller t.o.m. {{date}}",
+  "valid_until_label": "Gäller till"
  },
  "share": {
   "owner_ordinal": "Antal ägare: {{count}}",

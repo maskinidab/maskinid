@@ -81,6 +81,8 @@
    "buyer_required": "Look up the buyer's organisation number.",
    "by_email": "E-mail (buyer has no account)",
    "by_org": "Organisation number",
+   "documents": "Documents that follow",
+   "documents_hint": "Documents that are not private always follow. Choose which private documents the buyer should also get.",
    "email_hint": "The buyer gets a link and creates an account before approving.",
    "email_invalid": "Enter a valid e-mail address.",
    "financier_first": "The machine has an active encumbrance with {{holder}}. They decide before the buyer can approve.",
@@ -173,6 +175,13 @@
   "type_road_reg": "Road registration",
   "type_serial": "Serial number",
   "type_vin": "VIN"
+ },
+ "client": {
+  "choose": "Report",
+  "empty": "No shared reports",
+  "empty_body": "Ask the contractor to give you read access under Fleet → Clients.",
+  "lead": "Reports contractors have shared with you. They always show the register as of today.",
+  "live": "Shared by {{org}}, current right now."
  },
  "common": {
   "actions": "Actions",
@@ -569,6 +578,12 @@
    "permanent": "Permanent",
    "temporary": "Temporary"
   },
+  "rental_status": {
+   "active": "Rented out",
+   "overdue": "Overdue",
+   "planned": "Planned",
+   "returned": "Returned"
+  },
   "share_scope": {
    "buyer_report": "Machine report",
    "fleet_report": "Fleet report",
@@ -664,6 +679,7 @@
   "ORG_REQUIRED": "Choose an organisation first.",
   "OTP_FAILED": "The sign-in link could not be sent.",
   "RATE_LIMITED": "Too many lookups in a short time. Wait a minute and try again.",
+  "RENTAL_OVERLAP": "The machine is already rented out in that period.",
   "SIGNATORY_REQUIRED": "Only a signatory can take over the organisation. Ask a signatory for an invitation.",
   "SIGNATURE_ALREADY_USED": "The signature was already used. Sign again.",
   "SIGNATURE_EXPIRED": "The signature has expired. Sign again.",
@@ -792,8 +808,70 @@
   }
  },
  "fleet": {
+  "all_machines": "All machines",
+  "archive": "Close the project (machines are released)",
+  "client": "Client",
+  "clients_lead": "Give a client (e.g. a municipality or the transport administration) read access to the report. It is always current and you can close it at any time.",
+  "col": {
+   "category": "Category",
+   "emission": "Emission stage",
+   "fuel": "Fuel",
+   "inspection": "Inspected until",
+   "level": "Level",
+   "machine": "Machine",
+   "machines": "Machines",
+   "power": "Power",
+   "project": "Project",
+   "reg": "Reg no",
+   "weight": "Weight",
+   "year": "Year"
+  },
+  "digest_note": "Every Monday you get an e-mail with what is coming in the next two weeks.",
+  "download_pdf": "Download PDF",
+  "edit_project": "Edit project",
+  "ends_on": "To",
+  "generated": "Generated {{date}}",
+  "grant": "Grant read access",
+  "granted": "Since {{date}}",
+  "inspection_missing_short": "Missing",
   "inspections": "Inspections",
-  "service": "Service"
+  "lead": "Service, inspections, projects and reports for your machines.",
+  "machines_on_site": "Machines",
+  "new_project": "New project",
+  "no_grants": "No client has read access.",
+  "no_projects": "No projects yet",
+  "no_projects_body": "Create projects or sites and assign machines on the machine's Service tab.",
+  "not_required": "Not required",
+  "overdue": "Overdue ({{count}})",
+  "pdf_footer": "Verify the report at {{url}} with the report number and checksum. The report shows the register content on {{date}}.",
+  "period": "Period",
+  "project_list_lead": "Which machines are on the project, with reg number and verification level.",
+  "project_list_title": "Project list",
+  "public_badge": "Show \"Inspected until\" to everyone who scans machines owned by {{org}}",
+  "public_badge_title": "Inspection on the public machine card",
+  "reference": "Client reference",
+  "reference_hint": "For example a procurement or contract number.",
+  "report_hours": "Report hours",
+  "report_kind": "Report",
+  "report_lead": "Emission stage, fuel, weight, power, inspection and verification level – what clients require in procurement and follow-up.",
+  "report_title": "Fleet and procurement report",
+  "revoke": "Close",
+  "service": "Service",
+  "share_created": "The link is created. It is shown only now.",
+  "share_link": "Share link (30 days)",
+  "show_archived": "Show archived",
+  "site_address": "Site",
+  "starts_on": "From",
+  "sum_electric": "Electric or hybrid",
+  "sum_inspection_due": "Without valid inspection",
+  "sum_level2": "Physically verified",
+  "sum_stage_v": "Stage V / zero emission",
+  "summary_line": "{{count}} machines · stage V/zero emission {{stage_v}} · electric/hybrid {{electric}} · HVO {{hvo}} · level 2 {{level2}} · without valid inspection {{inspection_due}}",
+  "tab_clients": "Clients",
+  "tab_projects": "Projects",
+  "tab_report": "Report",
+  "tab_todo": "To do",
+  "upcoming": "Upcoming"
  },
  "how": {
   "disclaimer": "{{app}} is a private, voluntary register and not a public authority.",
@@ -927,6 +1005,12 @@
   "verification_needs_info": "Complete verification",
   "verification_review": "Verification to review"
  },
+ "inspection_new": {
+  "done": "The inspection is recorded",
+  "lead": "Find the machine or scan the label and record the inspection. The owner is notified and the record follows the machine.",
+  "no_lifting": "The machine is not marked as having a lifting device.",
+  "title": "Record inspection"
+ },
  "level": {
   "0": {
    "desc": "The owner registered the machine without reviewed documents.",
@@ -958,6 +1042,9 @@
   "hours": "Hour meter",
   "identity": "Identity",
   "in_conflict": "in conflict",
+  "inspected_until": "Inspected until {{date}}",
+  "inspection_missing": "Inspection missing",
+  "insured": "Insured",
   "label": "Label",
   "last_transfer": "Latest change of ownership",
   "no_access": "Nobody has looked yet",
@@ -969,6 +1056,8 @@
   "registered_by": "Registered by",
   "registration_liable": "Subject to registration",
   "released_at": "released {{date}}",
+  "rented_from": "Rented from {{org}} until {{date}}.",
+  "rented_to": "Rented to {{org}} until {{date}}.",
   "set_primary": "Use as main photo",
   "share_closed": "closed",
   "share_links": "Share links",
@@ -980,6 +1069,7 @@
   "tab_financing": "Encumbrances",
   "tab_history": "History",
   "tab_overview": "Overview",
+  "tab_service": "Service",
   "tabs": "Machine tabs",
   "technical": "Technical data",
   "temporary_until": "Temporary until {{date}}",
@@ -994,6 +1084,7 @@
  },
  "machines": {
   "col_machine": "Machine",
+  "col_next": "Next action",
   "col_reg": "Reg no",
   "col_serial": "Serial number",
   "col_year": "Model year",
@@ -1037,6 +1128,7 @@
   "how_it_works": "How it works",
   "import": "Import",
   "inbox": "Waiting for me",
+  "inspection_new": "Record inspection",
   "labels": "Labels",
   "leads": "Leads",
   "machines": "Machines",
@@ -1178,6 +1270,12 @@
     "title": "Machine flagged"
    }
   },
+  "inspection": {
+   "recorded": {
+    "body": "{{body}} has recorded an inspection of {{reg_number}}.",
+    "title": "Inspection recorded"
+   }
+  },
   "labels": {
    "ordered": {
     "body": "{{org}} ordered {{quantity}} labels.",
@@ -1237,6 +1335,24 @@
    "suspended": {
     "body": "{{name}} is suspended: {{reason}}",
     "title": "Organisation suspended"
+   }
+  },
+  "reminder": {
+   "due": {
+    "body": "{{reg_number}} – {{title}}. See Fleet → To do.",
+    "title": "Due: {{title}}"
+   }
+  },
+  "rental": {
+   "created": {
+    "body": "{{lessor}} rents {{reg_number}} to you {{from}}–{{to}}.",
+    "title": "New rental"
+   }
+  },
+  "report_grant": {
+   "created": {
+    "body": "{{owner}} has given you read access to its fleet report.",
+    "title": "Shared fleet report"
    }
   },
   "transfer": {
@@ -1446,7 +1562,9 @@
   "hash_hint": "64 characters at the bottom of the receipt.",
   "invalid": "The receipt could not be confirmed",
   "invalid_body": "Check the receipt number and checksum. If they do not match the receipt may have been altered.",
-  "lead": "If you have received a check receipt from a financier or dealer you can confirm it is genuine. Enter the receipt number and the checksum printed on it.",
+  "lead": "If you have received a check receipt (K-…) or a fleet report (F-…) you can confirm it is genuine. Enter the number and the checksum printed on the document.",
+  "report_one": "Report generated {{date}} by {{org}}, {{count}} machine.",
+  "report_other": "Report generated {{date}} by {{org}}, {{count}} machines.",
   "submit": "Verify",
   "title": "Verify a receipt",
   "valid": "The receipt is genuine"
@@ -1455,6 +1573,19 @@
   "empty": "No checks yet",
   "lead": "Every check your organisation has made, with receipt number.",
   "title": "Check receipts"
+ },
+ "rentals": {
+  "direction": "Direction",
+  "empty": "No rentals",
+  "in": "Rented in",
+  "lead": "Machines you rent out and rent in. The rental shows in the register as a right of use but never affects the financing check.",
+  "lessee": "Lessee's org number",
+  "lessee_needs_account": "The lessee must be in the register. Invite them first.",
+  "new": "New rental",
+  "out": "Rented out by us",
+  "party": "Counterparty",
+  "register_note": "The lessee is notified and sees the machine during the rental period.",
+  "returned": "Mark returned"
  },
  "report_error": {
   "description": "What is wrong",
@@ -1507,6 +1638,62 @@
   "verified_bad": "Does not verify",
   "verified_ok": "Verified",
   "verify": "Verify"
+ },
+ "service": {
+  "add_entry": "Log service",
+  "add_inspection": "Record inspection",
+  "add_insurance": "Add insurance",
+  "add_reminder": "New reminder",
+  "at_hours": "At hours",
+  "attach": "Receipt or report",
+  "attached": "Attached",
+  "certificate_no": "Certificate number",
+  "chart_label": "Hour meter from {{from}} to {{to}} hours",
+  "coverage": {
+   "full": "Comprehensive",
+   "liability": "Liability",
+   "machine": "Machine damage",
+   "theft": "Theft"
+  },
+  "coverage_label": "Coverage",
+  "done": "Done",
+  "hours_correction": "Save anyway as a correction (meter replaced or typo)",
+  "hours_now": "Now {{hours}} h",
+  "hours_report": "Save",
+  "hours_saved": "The hours are saved.",
+  "hours_saved_due": "Saved. Coming up: {{title}}.",
+  "hours_title": "Hour meter",
+  "inspection_body": "Inspection body",
+  "inspection_required": "The machine has a lifting device and must be inspected by an accredited inspection body.",
+  "inspections": "Inspections",
+  "insurance": "Insurance",
+  "insurer": "Insurer",
+  "insurer_name": "Insurer's name",
+  "insurer_other": "Other insurer",
+  "log": "Service and repairs",
+  "next_due": "Next: {{when}}",
+  "next_due_at": "Next service, date",
+  "next_due_hint": "For example 2,000. We remind you when the hour meter gets close.",
+  "next_due_hours": "Next service, hours",
+  "no_entries": "Nothing logged yet.",
+  "no_inspections": "No inspections recorded.",
+  "no_insurance": "No insurance registered.",
+  "no_project": "No project",
+  "no_reminders": "No reminders.",
+  "overdue": "overdue",
+  "performed_by": "Performed by",
+  "policy_number": "Policy number",
+  "project": "Project or site",
+  "protocol": "Inspection report",
+  "remarks": "Remarks",
+  "reminder_title": "What",
+  "reminders": "Reminders",
+  "result": "Result",
+  "snooze_week": "In a week",
+  "valid_from": "Valid from",
+  "valid_to": "Valid to",
+  "valid_until": "valid until {{date}}",
+  "valid_until_label": "Valid until"
  },
  "share": {
   "owner_ordinal": "Number of owners: {{count}}",

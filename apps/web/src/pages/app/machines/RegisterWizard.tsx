@@ -475,7 +475,7 @@ function StepMachine({ d, set, patch, err, ensureDraft }: { d: WizardData; set: 
 function StepOwner({ d, set, err, orgName }: { d: WizardData; set: Setter; err(k: string): string | null; orgName: string }) {
   const { t } = useTranslation();
   const [company, setCompany] = useState<CompanyInfo | null>(null);
-  const financiers = useRpc<OrgBrief[]>("search_orgs", d.financing ? { p_query: "", p_type: "financier", p_limit: 50 } : null);
+  const financiers = useRpc<OrgBrief[]>("list_partner_orgs", d.financing ? { p_type: "financier" } : null);
   return (
     <div className="stack-4">
       <fieldset className="stack-2">

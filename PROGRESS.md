@@ -22,7 +22,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 9 | Frontend – publikt | ✅ | |
 | 10 | Frontend – kärnflöden | ✅ | Ägarbevis-PDF i steg 19 |
 | 11 | Import | ✅ | ADR 0012 (parsning i webbläsaren, en signatur per finansiärsimport) |
-| 12 | Flotta | ⬜ | |
+| 12 | Flotta | ✅ | Jobben schemaläggs i steg 26 (pg_cron) |
 | 13 | Handlare | ⬜ | |
 | 14 | Roller/portaler | ⬜ | |
 | 15 | API & webhooks | ⬜ | |
@@ -147,4 +147,19 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   Webb: `/import` i fyra steg (fil/klistra in, kolumnmappning via `import-map`, förhandsgranskning med fel,
   "Importera bara giltiga rader", felrapport-CSV, mall, tidigare importer), `lib/tabular.ts` (CSV-autodetektering,
   XLSX via read-excel-file). Webbläsartestat: handlare 20 rader (2 fel ⇒ 18 maskiner), finansiär med signering.
+- **Steg 12** – Flotta (§7.1, §4.6): migration `fleet` med projects/machine_assignments, maintenance_entries
+  (timavläsning endast uppåt utom som rättelse, event per avläsning), inspections (ackrediterat kontrollorgan skriver
+  direkt, ägaren med protokoll; historiken följer maskinen; publikt "Besiktigad t.o.m." bara om ägaren valt det),
+  reminders (service på datum/timmar, besiktning, försäkring, leasing-/förbehållsslut, uthyrningsslut; notiser
+  60/30/7/0 dagar via `app.run_reminder_notifications`, måndagsdigest via `app.enqueue_weekly_digest`),
+  insurance_policies (relation `insurer`, badge bara för ägare/försäkring/myndighet), rentals (nyttjanderätt av typ
+  rental i registret, påverkar aldrig finansieringskontrollen, relation `lessee`), flott-/upphandlingsrapport och
+  projektlista (live, delningslänk, ögonblicksbild med F-nummer + SHA-256 verifierbar på `/receipt`, PDF i
+  webbläsaren), `report_grants` (beställare/`client` följer rapporten read-only), `list_partner_orgs` (katalog för
+  finansiärer/försäkringsbolag/beställare i väljare – `search_orgs` gav tomt för tom sökning, vilket gjorde
+  finansiärsväljarna i steg 10 tomma). Webb: fliken Service på maskinsidan (timmar + graf, projekt, påminnelser,
+  servicelogg, besiktningar, försäkring), `/fleet` (att göra, projekt, rapport, beställare, publikt
+  besiktningsmärke, "Rapportera timmar" via skanning), `/rentals`, `/client-reports`, `/inspections/new`
+  (kontrollorgan), delad rapport på `/s/:token`, dokument som följer med vid ägarbyte, kolumnerna projekt och nästa
+  åtgärd i maskinlistan.
 

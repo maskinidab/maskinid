@@ -23,6 +23,10 @@ const ReportErrorPage = L(() => import("./pages/app/machines/ReportErrorPage"), 
 const TransferPage = L(() => import("./pages/app/transfers/TransferPage"), "TransferPage");
 const CheckPage = L(() => import("./pages/app/check/CheckPage"), "CheckPage");
 const ReceiptsPage = L(() => import("./pages/app/check/CheckPage"), "ReceiptsPage");
+const FleetPage = L(() => import("./pages/app/fleet/FleetPage"), "FleetPage");
+const RentalsPage = L(() => import("./pages/app/fleet/RentalsPage"), "RentalsPage");
+const ClientReportsPage = L(() => import("./pages/app/fleet/ClientReportsPage"), "ClientReportsPage");
+const InspectionNewPage = L(() => import("./pages/app/fleet/InspectionNewPage"), "InspectionNewPage");
 const ImportPage = L(() => import("./pages/app/import/ImportPage"), "ImportPage");
 const NewEncumbrancePage = L(() => import("./pages/app/encumbrances/NewEncumbrancePage"), "NewEncumbrancePage");
 
@@ -53,4 +57,8 @@ export const appRoutes: { path: string; element: ReactNode }[] = [
   { path: "receipts", element: <ReceiptsPage /> },
   { path: "encumbrances/new", element: <NewEncumbrancePage /> },
   { path: "import", element: <ImportPage /> },
+  { path: "fleet", element: <FleetPage /> },
+  { path: "rentals", element: <RentalsPage /> },
+  { path: "client-reports", element: <ClientReportsPage /> },
+  { path: "inspections/new", element: <InspectionNewPage /> },
 ];

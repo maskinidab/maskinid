@@ -49,7 +49,7 @@ export function navGroups(types: OrgType[], isAdmin: boolean, isOperator: boolea
     );
   }
   if (has("dealer") || has("inspector")) role.push({ to: "verify", label: "nav.verify", icon: "sigill" });
-  if (has("inspector")) role.push({ to: "bookings", label: "nav.bookings", icon: "tid" });
+  if (has("inspector")) role.push({ to: "inspections/new", label: "nav.inspection_new", icon: "sigill" }, { to: "bookings", label: "nav.bookings", icon: "tid" });
   if (has("manufacturer")) role.push({ to: "oem", label: "nav.oem", icon: "verktyg" });
   if (has("client")) role.push({ to: "client-reports", label: "nav.client_reports", icon: "diagram" });
   if (has("owner")) role.push({ to: "reports", label: "nav.reports", icon: "diagram" });

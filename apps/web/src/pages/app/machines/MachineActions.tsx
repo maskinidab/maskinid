@@ -10,7 +10,7 @@ import { Icon } from "../../../components/Icon";
 import { ScannerView, type ScanResult } from "../../../components/Scanner";
 import { useSign } from "../../../components/Signature";
 import { queryClient, rpc, useRpc } from "../../../lib/api/query";
-import type { Encumbrance, Flag, MachineView, OrgBrief, Transfer } from "../../../lib/api/types";
+import type { DocumentItem, Encumbrance, Flag, MachineView, OrgBrief, Transfer } from "../../../lib/api/types";
 import { formatDate, formatReg, todayIso } from "../../../lib/format";
 
 /** Thrown after an inline field error has been shown; the dialog shows nothing more. */
@@ -72,8 +72,11 @@ export function TransferDialog({ m, open, onClose }: { m: MachineView; open: boo
   const [finType, setFinType] = useState("ownership_reservation");
   const [finRef, setFinRef] = useState("");
   const [finEnd, setFinEnd] = useState("");
+  const [docIds, setDocIds] = useState<string[]>([]);
+  const docs = useRpc<DocumentItem[]>("list_documents", open ? { p_org_id: orgId, p_machine_id: m.id } : null);
+  const privateDocs = (docs.data ?? []).filter((d) => d.visibility === "owner" && d.status === "clean");
   const [err, setErr] = useState<string | null>(null);
-  const financiers = useRpc<OrgBrief[]>("search_orgs", open && withFin ? { p_query: "", p_type: "financier", p_limit: 50 } : null);
+  const financiers = useRpc<OrgBrief[]>("list_partner_orgs", open && withFin ? { p_type: "financier" } : null);
   const late = (Date.parse(todayIso()) - Date.parse(saleDate)) / 86_400_000 > 10;
   return (
     <ActionDialog open={open} onClose={onClose} title={t("actions.transfer.title")} submitLabel={t("actions.transfer.submit")} wide
@@ -88,6 +91,7 @@ export function TransferDialog({ m, open, onClose }: { m: MachineView; open: boo
           p_to_org_number: mode === "org" && !company?.existing_org ? company?.org_number : null,
           p_to_email: mode === "email" ? email : null,
           p_new_financing: withFin && finHolder ? { holder_org_id: finHolder, type: finType, contract_ref: finRef || null, end_date: finEnd || null } : null,
+          p_document_ids: docIds,
         });
         onClose();
         nav(path(`transfers/${r.transfer.id}`));
@@ -113,6 +117,17 @@ export function TransferDialog({ m, open, onClose }: { m: MachineView; open: boo
       <FormField label={t("actions.transfer.sale_date")} hint={late ? t("actions.transfer.late_hint") : t("actions.transfer.sale_date_hint")}>
         <input className="mid-input" type="date" value={saleDate} max={todayIso()} onChange={(e) => setSaleDate(e.target.value)} required />
       </FormField>
+      {privateDocs.length > 0 && (
+        <fieldset className="stack-2">
+          <legend className="mid-etikett">{t("actions.transfer.documents")}</legend>
+          <p className="mid-hjalp">{t("actions.transfer.documents_hint")}</p>
+          {privateDocs.map((d) => (
+            <label key={d.id} className="mid-kryss"><input type="checkbox" checked={docIds.includes(d.id)}
+              onChange={(e) => setDocIds((x) => (e.target.checked ? [...x, d.id] : x.filter((y) => y !== d.id)))} />
+              {d.filename} <span className="t-sekundar">· {t(`enum.document_type.${d.type}`)}</span></label>
+          ))}
+        </fieldset>
+      )}
       <label className="mid-kryss"><input type="checkbox" checked={withFin} onChange={(e) => setWithFin(e.target.checked)} /> {t("actions.transfer.with_financing")}</label>
       {withFin && (
         <div className="rutnat">

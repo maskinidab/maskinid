@@ -14,13 +14,14 @@ import { Timeline } from "../../../components/Timeline";
 import { rpc, useRpc, useRpcMutation } from "../../../lib/api/query";
 import type { DocumentItem, Encumbrance, Flag, HistoryEvent, MachineView } from "../../../lib/api/types";
 import { backend } from "../../../lib/backend";
-import { formatDate, formatDateTime, formatNumber } from "../../../lib/format";
+import { formatDate, formatDateTime, formatMonth, formatNumber } from "../../../lib/format";
+import { ServiceTab } from "./ServiceTab";
 import {
   BindLabelDialog, ClearFlagDialog, DeregisterDialog, EditMachineDialog, EncumbranceDialog, FlagDialog, ReleaseEncumbranceDialog,
   RequestReleaseDialog, ShareDialog, TransferDialog, VerificationDialog,
 } from "./MachineActions";
 
-type Tab = "overview" | "history" | "documents" | "financing" | "access";
+type Tab = "overview" | "history" | "documents" | "financing" | "service" | "access";
 type DialogId = "transfer" | "flag" | "deregister" | "share" | "encumbrance" | "label" | "verify" | "edit" | null;
 
 const READ_ONLY: MachineView["status"][] = ["scrapped", "exported", "deregistered"];
@@ -49,6 +50,7 @@ export function MachinePage() {
     { id: "overview", label: t("machine.tab_overview") },
     { id: "history", label: t("machine.tab_history") },
     ...(full || rel.includes("holder") ? [{ id: "documents" as Tab, label: t("machine.tab_documents") }] : []),
+    ...(full ? [{ id: "service" as Tab, label: t("machine.tab_service") }] : []),
     ...(m.encumbrances ? [{ id: "financing" as Tab, label: t("machine.tab_financing"), count: m.encumbrances.filter((e) => e.status === "active").length }] : []),
     ...(rel.includes("owner") || rel.includes("user") || has("authority") ? [{ id: "access" as Tab, label: t("machine.tab_access") }] : []),
   ];
@@ -88,10 +90,18 @@ export function MachinePage() {
             <MachineStatusBadge status={m.status} />
             <VerificationBadge level={m.verification_level} minTrusted={minTrustedLevel} />
             {m.financing && <FinancingBadge hasActive={m.financing.has_active} />}
+            {typeof m.inspection_valid_until === "string" && <StatusBadge kind="verifierad" icon="bock">{t("machine.inspected_until", { date: formatMonth(m.inspection_valid_until) })}</StatusBadge>}
+            {m.inspection_required === true && !m.inspection_valid_until && full && <StatusBadge kind="vantar">{t("machine.inspection_missing")}</StatusBadge>}
+            {m.insured === true && <StatusBadge kind="neutral" icon="skold">{t("machine.insured")}</StatusBadge>}
             {m.registration_type === "temporary" && <StatusBadge kind="vantar">{t("machine.temporary_until", { date: formatDate(m.valid_until) })}</StatusBadge>}
           </div>
           {m.owner && <p className="t-liten">{t("machine.owner")}: <strong>{m.owner.name}</strong>{m.owner.city ? ` · ${m.owner.city}` : ""}
             {m.access !== "basic" && <span className="t-sekundar"> · {t("share.owner_ordinal", { count: m.owner_ordinal })}</span>}</p>}
+          {m.rental != null && (
+            <p className="t-liten">{t(m.relations.includes("lessee") ? "machine.rented_from" : "machine.rented_to", {
+              org: (m.rental as { lessee: string; lessor: string })[m.relations.includes("lessee") ? "lessor" : "lessee"],
+              date: formatDate((m.rental as { to: string }).to) })}</p>
+          )}
           {m.open_transfer && (
             <Notice kind="info" title={t("machine.transfer_open_status", { status: t(`enum.transfer_status.${m.open_transfer.status}`) })}>
               <Link className="mid-lank" to={path(`transfers/${m.open_transfer.id}`)}>{t("common.open")}</Link>
@@ -119,6 +129,7 @@ export function MachinePage() {
           <FinancingTab m={m} onRelease={setRelease} onAskRelease={setAskRelease}
             onRegister={has("financier") && !active && canWrite && !readOnly ? () => setDialog("encumbrance") : undefined} />
         )}
+        {tab === "service" && <ServiceTab m={m} />}
         {tab === "access" && <Access m={m} />}
       </div>
 
