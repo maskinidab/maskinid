@@ -17,7 +17,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 4 | Events & audit (verify_chain, anchor-events) | ✅ | |
 | 5 | Förbehåll, ägarbyten, flaggor | ✅ | §16 p.3–5, 9, 10 (skanningsdelen i steg 6) |
 | 6 | Dokument, åtkomstlogg, delningslänkar | ✅ | §16 p.10 (skanning) och p.11 (rate limit) |
-| 7 | Verifiering & konflikter | ⬜ | |
+| 7 | Verifiering & konflikter | ✅ | + ägarrättelse (fyra ögon, 14 dagar), Inbox |
 | 8 | Frontend – skal | ⬜ | |
 | 9 | Frontend – publikt | ⬜ | |
 | 10 | Frontend – kärnflöden | ⬜ | |
@@ -93,3 +93,11 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   create/list/revoke_share_link, get_share_view (maskinrapport: historik, förbehåll ja/nej + holder, dokument ≥
   verifiers). Edge Functions: scan-log, share-view, document-url (5 min), av-scan (JPEG EXIF-strippning + VirusScanner
   ClamAV/mock). `packages/shared/image.ts` (EXIF-strippning), VirusScanner-adapter.
+- **Steg 7** – Migration `verification_conflicts`: verification_requests (nivå 1 kräver faktura/köpeavtal + skyltfoto,
+  nivå 2 kräver matchning skylt ↔ registrerat serienummer, märke knyts), partnerkö (dealer/inspector/financier ≤ nivå
+  1) och operatörskö, needs_info-rundgång, verify_on_site (inbyte), list_verification_partners ("Boka verifiering"),
+  konflikter (list/resolve: keep_existing/keep_new/dismiss, report_ownership_dispute), owner_corrections med fyra ögon
+  (två olika operatörer signerar) + 14 dagars invändningstid (disputed under tiden, jobb apply_due_corrections),
+  get_inbox ("Väntar på mig"). Säkerhetsfynd: NULL-osäkra behörighetskontroller i decide/claim_verification och i
+  committade get_transfer (e-postöverlåtelse läsbar för alla) ⇒ rättade + regressionstest + statisk kontroll i
+  99_function_exposure som stoppar mönstret `if not (… _org_id = …)`.

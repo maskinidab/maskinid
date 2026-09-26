@@ -58,6 +58,7 @@ export async function reset({ seed = true, fixtures = true, quiet = false } = {}
   const dbUrl = withDb(url, dbName);
   const c = new pg.Client({ connectionString: dbUrl });
   await c.connect();
+  try {
   await c.query("set client_min_messages = warning");
   await applySql(c, readFileSync(join(root, "tests/stubs/supabase-stubs.sql"), "utf8"), "supabase-stubs.sql");
   // The prototype migrations (20260926*) ran on the live project; replay them so the retirement migration is tested too.
@@ -73,7 +74,9 @@ export async function reset({ seed = true, fixtures = true, quiet = false } = {}
     await applySql(c, readFileSync(join(root, "tests/fixtures.sql"), "utf8"), "fixtures.sql");
     log("applied tests/fixtures.sql");
   }
-  await c.end();
+  } finally {
+    await c.end();
+  }
   return dbUrl;
 }
 

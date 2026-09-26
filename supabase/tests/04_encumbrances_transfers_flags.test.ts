@@ -444,3 +444,15 @@ describe("checks with receipts (SPEC §6.6)", () => {
     });
   });
 });
+
+describe("regressions", () => {
+  it("get_transfer of an e-mail transfer is not readable by unrelated orgs (NULL-safe check)", async () => {
+    await tx(async (t) => {
+      const m = await registerAs(t, "owner_a");
+      await t.as("owner_a");
+      const init = await t.rpc("initiate_transfer", { p_org_id: ORGS.owner_a, p_machine_id: m.id, p_to_email: "someone@else.se" });
+      await t.as("owner_b");
+      expect((await t.rpcError("get_transfer", { p_org_id: ORGS.owner_b, p_transfer_id: init.transfer.id })).code).toBe("NOT_FOUND");
+    });
+  });
+});

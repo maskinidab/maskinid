@@ -49,3 +49,17 @@ describe("function exposure", () => {
     });
   });
 });
+
+describe("authorisation NULL-safety", () => {
+  // `if not (x.org_id = actor or …)` is skipped when the comparison yields NULL (e.g. a nullable org column), which
+  // silently grants access. Use `if (…) is not true then` instead. Reviewed exceptions (non-null operands) are listed.
+  const REVIEWED = new Set(["get_org", "list_org_members", "get_check_receipt"]);
+  it("no negated org comparisons in authorisation checks", async () => {
+    await tx(async (t) => {
+      const rows = await t.q<{ f: string }>(`
+        select distinct p.proname as f from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+        where n.nspname in ('public', 'app') and p.prosrc ~ 'if not \\(([^;]*?_org_id[^;]*?)\\) then'`);
+      expect(rows.map((r) => r.f).filter((f) => !REVIEWED.has(f))).toEqual([]);
+    });
+  });
+});
