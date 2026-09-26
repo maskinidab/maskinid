@@ -1,0 +1,1186 @@
+{
+ "auth": {
+  "callback_title": "Loggar in",
+  "create_account": "Skapa konto",
+  "demo_accounts": "Demokonton",
+  "demo_accounts_hint": "Lösenord för alla: demo1234",
+  "demo_link": "Demoläge: e-post skickas inte. Öppna länken här.",
+  "email": "E-postadress",
+  "full_name": "Namn",
+  "have_account": "Har du redan ett konto?",
+  "invalid_email": "Skriv en giltig e-postadress.",
+  "link_sent": "Vi har skickat en inloggningslänk till {{email}}.",
+  "mfa_code": "Kod från din autentiseringsapp",
+  "mfa_title": "Tvåfaktorsinloggning",
+  "mfa_verify": "Verifiera",
+  "no_account": "Inget konto?",
+  "open_link": "Öppna inloggningslänken",
+  "or": "eller",
+  "password": "Lösenord",
+  "password_hint": "Minst 8 tecken.",
+  "required_email": "Skriv din e-postadress.",
+  "required_name": "Skriv ditt namn.",
+  "required_password": "Skriv ditt lösenord.",
+  "send_link": "Skicka inloggningslänk",
+  "sign_in": "Logga in",
+  "sign_in_lead": "Logga in med e-post och lösenord eller få en inloggningslänk.",
+  "sign_in_title": "Logga in",
+  "sign_up_lead": "Registrering är gratis. Du verifierar din identitet med BankID i nästa steg.",
+  "sign_up_title": "Skapa konto",
+  "signing_in": "Loggar in …"
+ },
+ "bankid": {
+  "demo_hint": "Det här är Demo-BankID. Ingen riktig signering görs.",
+  "demo_title": "Signera med Demo-BankID",
+  "open_app": "Öppna BankID-appen och bekräfta.",
+  "sign": "Signera",
+  "signed": "Signerat",
+  "signing": "Väntar på signering …",
+  "title": "Signera med BankID",
+  "you_sign": "Du signerar"
+ },
+ "check": {
+  "download_pdf": "Ladda ner kvitto (PDF)",
+  "listed_for_sale": "Maskinen ligger ute till försäljning i {{count}} annonser just nu.",
+  "not_found": "Ingen maskin hittades",
+  "result_financing": "Finansieringsförbehåll",
+  "result_owner": "Registrerad ägare",
+  "result_status": "Status och nivå"
+ },
+ "common": {
+  "actions": "Åtgärder",
+  "add": "Lägg till",
+  "address": "Adress",
+  "all": "Alla",
+  "back": "Tillbaka",
+  "cancel": "Avbryt",
+  "city": "Ort",
+  "close": "Stäng",
+  "confirm": "Bekräfta",
+  "continue": "Fortsätt",
+  "copied": "Kopierat",
+  "copy": "Kopiera",
+  "created": "Skapad",
+  "date": "Datum",
+  "demo_banner": "DEMO – exempeldata och Demo-BankID. Inga riktiga registeruppgifter.",
+  "demo_reset": "Återställ demodata",
+  "details": "Detaljer",
+  "done": "Klart",
+  "download": "Ladda ner",
+  "edit": "Ändra",
+  "email": "E-post",
+  "empty": "Inget att visa ännu.",
+  "error_title": "Något gick fel",
+  "excl_vat": "exkl. moms",
+  "export_csv": "Exportera CSV",
+  "filter": "Filtrera",
+  "from": "Från",
+  "hours": "{{count}} h",
+  "incl_vat": "inkl. moms",
+  "lang_en": "English",
+  "lang_sv": "Svenska",
+  "language": "Språk",
+  "loading": "Hämtar uppgifter",
+  "menu": "Meny",
+  "more": "Mer",
+  "name": "Namn",
+  "next": "Nästa",
+  "no": "Nej",
+  "none": "Ingen",
+  "not_found_body": "Kontrollera adressen eller gå till startsidan.",
+  "not_found_title": "Sidan finns inte",
+  "not_set": "Inte angivet",
+  "note": "Kommentar",
+  "open": "Öppna",
+  "optional": "valfritt",
+  "org_number": "Organisationsnummer",
+  "phone": "Telefon",
+  "print": "Skriv ut",
+  "remove": "Ta bort",
+  "required": "Obligatoriskt",
+  "results": "{{count}} träffar",
+  "retry": "Försök igen",
+  "save": "Spara",
+  "search": "Sök",
+  "select": "Välj",
+  "send": "Skicka",
+  "show_more": "Visa fler",
+  "signing_required": "Kräver signering",
+  "skip_to_content": "Hoppa till innehållet",
+  "sort": "Sortera",
+  "starting_demo": "Startar demodatabasen i webbläsaren …",
+  "status": "Status",
+  "theme_dark": "Byt till mörkt tema",
+  "theme_light": "Byt till ljust tema",
+  "to": "Till",
+  "to_start": "Till startsidan",
+  "today": "I dag",
+  "type": "Typ",
+  "unknown": "Okänt",
+  "updated": "Uppdaterad",
+  "view": "Visa",
+  "yes": "Ja"
+ },
+ "components": {
+  "company": {
+   "found": "{{name}}, {{city}}",
+   "invalid": "Skriv organisationsnumret som NNNNNN-NNNN.",
+   "lookup": "Slå upp",
+   "not_found": "Hittade inget företag med det numret."
+  },
+  "dropzone": {
+   "camera": "Ta foto",
+   "choose": "Välj fil",
+   "hint": "PDF, JPG, PNG eller HEIC, högst 25 MB. Platsdata tas bort från foton.",
+   "title": "Dra hit filer eller välj",
+   "too_large": "{{name}} är större än 25 MB.",
+   "uploaded": "{{name}} är uppladdad.",
+   "uploading": "Laddar upp {{name}} …",
+   "wrong_type": "{{name}} har ett filformat som inte stöds."
+  },
+  "financing": {
+   "login": "Finansieringsförbehåll: logga in för att se",
+   "no": "Ingen registrerad belåning",
+   "yes": "Belånad"
+  },
+  "loading_skeleton": "Laddar",
+  "machine_card": {
+   "hours": "{{hours}} h"
+  },
+  "receipt": {
+   "number": "Kvittonummer",
+   "performed": "Kontroll utförd {{date}} av {{org}}",
+   "title": "Kontrollkvitto"
+  },
+  "reg_copy": "Kopiera registreringsnumret",
+  "scan_button": "Skanna märke",
+  "scan_hint": "Håll kameran mot QR-koden på maskinens märke.",
+  "scan_invalid": "QR-koden är inte ett MaskinID-märke.",
+  "scan_manual": "Skriv regnr eller märkeskod",
+  "scan_no_camera": "Kameran kunde inte startas. Skriv in registreringsnumret i stället.",
+  "scan_title": "Skanna QR-märket",
+  "serial": {
+   "checking": "Kontrollerar mot registret …",
+   "exists_mine": "Maskinen finns redan hos er ({{reg}}).",
+   "exists_other": "Den här maskinen finns redan (regnr {{reg}}). Är det din?",
+   "free": "Finns inte i registret",
+   "oem": "Fabriksdata hittades: {{make}} {{model}} {{year}}",
+   "report_error": "Rapportera fel",
+   "request_transfer": "Begär ägarbyte"
+  },
+  "status_banner": {
+   "active_title": "AKTIV",
+   "blocked_body": "Maskinen är spärrad av myndighet eller registerhållare.",
+   "blocked_title": "SPÄRRAD",
+   "deregistered_title": "AVREGISTRERAD",
+   "disputed_body": "Uppgifterna om maskinen utreds.",
+   "disputed_title": "UNDER UTREDNING",
+   "draft_title": "UTKAST",
+   "exported_title": "EXPORTERAD",
+   "read_only": "Maskinen finns kvar i registret men kan inte ändras.",
+   "scrapped_title": "SKROTAD",
+   "stolen_body": "Ring polisen på 114 14 om du ser maskinen.",
+   "stolen_title": "ANMÄLD STULEN"
+  },
+  "timeline": {
+   "empty": "Inga händelser än.",
+   "load_more": "Visa äldre händelser"
+  }
+ },
+ "dashboard": {
+  "financed": "Belånade",
+  "greeting": "Hej {{name}}",
+  "level_breakdown": "Verifieringsnivåer",
+  "machines": "Maskiner",
+  "no_machines": "Ni har inga maskiner i registret än.",
+  "quick": "Snabbval",
+  "recent": "Senaste händelser",
+  "stolen": "Anmälda stulna",
+  "title": "Översikt",
+  "waiting": "Väntar på mig"
+ },
+ "enum": {
+  "access_via": {
+   "api": "API",
+   "check": "Kontroll",
+   "scan": "Skanning",
+   "share_link": "Delningslänk",
+   "web": "Webb"
+  },
+  "category": {
+   "attachment": "Redskap",
+   "backhoe": "Traktorgrävare",
+   "compressor": "Kompressor",
+   "crane_mobile": "Mobilkran",
+   "crusher": "Kross",
+   "dozer": "Bandschaktare",
+   "drill_rig": "Borrigg",
+   "dumper": "Dumper",
+   "excavator_tracked": "Grävmaskin, band",
+   "excavator_wheeled": "Grävmaskin, hjul",
+   "forestry_forwarder": "Skotare",
+   "forestry_harvester": "Skördare",
+   "forklift": "Truck",
+   "generator": "Elverk",
+   "grader": "Väghyvel",
+   "other": "Övrigt",
+   "paver": "Asfaltläggare",
+   "roller": "Vält",
+   "screener": "Sikt",
+   "skidder": "Skidder",
+   "telehandler": "Teleskoplastare",
+   "tractor": "Traktor",
+   "trailer_heavy": "Tung släpvagn",
+   "wheel_loader": "Hjullastare"
+  },
+  "conflict_status": {
+   "dismissed": "Avfärdad",
+   "open": "Öppen",
+   "resolved": "Löst"
+  },
+  "conflict_type": {
+   "double_encumbrance": "Dubbelt förbehåll",
+   "duplicate_identifier": "Dubblett av serienummer",
+   "label_reuse": "Återanvänt märke",
+   "market_anomaly": "Avvikelse på marknaden",
+   "ownership_dispute": "Ägartvist"
+  },
+  "deregistration_reason": {
+   "exported": "Varaktigt utförd (export)",
+   "military": "Militärt register",
+   "misregistered": "Felregistrerad",
+   "other": "Annan orsak",
+   "scrapped": "Skrotad",
+   "stolen_not_recovered": "Stulen och inte återfunnen"
+  },
+  "document_type": {
+   "buyer_report": "Maskinrapport",
+   "ce_declaration": "CE-försäkran",
+   "check_receipt": "Kontrollkvitto",
+   "climate_report": "Klimatrapport",
+   "financing_contract": "Finansieringsavtal",
+   "fleet_report": "Flottrapport",
+   "inspection_report": "Besiktningsprotokoll",
+   "insurance_policy": "Försäkringsbrev",
+   "invoice": "Faktura",
+   "manual": "Instruktionsbok",
+   "other": "Övrigt",
+   "ownership_certificate": "Ägarbevis",
+   "photo_label": "Foto av monterat märke",
+   "photo_machine": "Foto av maskinen",
+   "photo_nameplate": "Foto av typskylt",
+   "police_report": "Polisanmälan",
+   "power_of_attorney": "Fullmakt",
+   "purchase_agreement": "Köpeavtal",
+   "register_extract": "Registerutdrag"
+  },
+  "electric": {
+   "battery": "Batteri",
+   "battery_and_cable": "Batteri och kabel",
+   "cable": "Kabel",
+   "fuel_cell": "Bränslecell",
+   "plugin_hybrid": "Laddhybrid"
+  },
+  "emission": {
+   "pre_stage": "Före steg I",
+   "stage_i": "Steg I",
+   "stage_ii": "Steg II",
+   "stage_iiia": "Steg IIIA",
+   "stage_iiib": "Steg IIIB",
+   "stage_iv": "Steg IV",
+   "stage_v": "Steg V",
+   "unknown": "Okänt",
+   "zero_emission": "Nollutsläpp"
+  },
+  "encumbrance_status": {
+   "active": "Aktiv",
+   "pending": "Väntar på bekräftelse",
+   "rejected": "Avvisad",
+   "released": "Släppt",
+   "transferred": "Överlåten"
+  },
+  "encumbrance_type": {
+   "leasing": "Leasing",
+   "other": "Annan rättighet",
+   "ownership_reservation": "Äganderättsförbehåll",
+   "rental": "Uthyrning"
+  },
+  "flag_type": {
+   "blocked": "Spärrad",
+   "disputed": "Tvist",
+   "exported": "Exporterad",
+   "scrapped": "Skrotad",
+   "seized": "Beslag",
+   "stolen": "Stulen",
+   "under_investigation": "Under utredning"
+  },
+  "fuel": {
+   "diesel": "Diesel",
+   "electric": "El",
+   "gas": "Gas",
+   "hvo": "HVO",
+   "hybrid": "Hybrid",
+   "hydrogen": "Vätgas",
+   "other": "Annat",
+   "petrol": "Bensin",
+   "unknown": "Okänt"
+  },
+  "identifier_type": {
+   "chassis": "Chassinummer",
+   "engine_serial": "Motornummer",
+   "external_registry": "Annat registers nummer",
+   "other": "Annan identifierare",
+   "pin": "PIN",
+   "road_reg": "Registreringsnummer (vägtrafikregistret)",
+   "serial": "Serienummer",
+   "vin": "VIN"
+  },
+  "inspection_result": {
+   "approved": "Godkänd",
+   "approved_with_remarks": "Godkänd med anmärkning",
+   "rejected": "Underkänd"
+  },
+  "inspection_type": {
+   "extraordinary": "Extra besiktning",
+   "first": "Första besiktning",
+   "periodic": "Återkommande besiktning",
+   "revision": "Revisionsbesiktning"
+  },
+  "label_batch_status": {
+   "cancelled": "Avbruten",
+   "ordered": "Beställd",
+   "printed": "Tryckt",
+   "shipped": "Skickad"
+  },
+  "label_status": {
+   "assigned": "Tilldelad",
+   "bound": "Knuten",
+   "lost": "Förlorad",
+   "printed": "Tryckt",
+   "revoked": "Ersatt"
+  },
+  "machine_status": {
+   "active": "Aktiv",
+   "blocked": "Spärrad",
+   "deregistered": "Avregistrerad",
+   "disputed": "Under utredning",
+   "draft": "Utkast",
+   "exported": "Exporterad",
+   "scrapped": "Skrotad",
+   "stolen": "Anmäld stulen"
+  },
+  "maintenance_type": {
+   "hour_reading": "Timavläsning",
+   "inspection": "Kontroll",
+   "other": "Övrigt",
+   "repair": "Reparation",
+   "service": "Service"
+  },
+  "member_role": {
+   "admin": "Administratör",
+   "member": "Medlem",
+   "readonly": "Läsbehörighet"
+  },
+  "membership_status": {
+   "active": "Aktiv",
+   "invited": "Inbjuden",
+   "removed": "Borttagen"
+  },
+  "operator_role": {
+   "superadmin": "Superadministratör",
+   "support": "Support",
+   "verifier": "Granskare"
+  },
+  "org_status": {
+   "approved": "Godkänd",
+   "pending": "Väntar på granskning",
+   "suspended": "Avstängd"
+  },
+  "org_type": {
+   "authority": "Myndighet",
+   "client": "Beställare",
+   "dealer": "Maskinhandlare",
+   "financier": "Långivare",
+   "inspector": "Kontrollorgan",
+   "insurer": "Försäkringsgivare",
+   "manufacturer": "Tillverkare",
+   "marketplace": "Marknadsplats",
+   "operator": "Registerhållare",
+   "owner": "Maskinägare"
+  },
+  "org_type_desc": {
+   "authority": "Polis, Tull och andra myndigheter",
+   "client": "Beställare och upphandlare",
+   "dealer": "Säljer maskiner, lager och inbyten",
+   "financier": "Bank, finansbolag eller leasingbolag",
+   "inspector": "Ackrediterat kontrollorgan",
+   "insurer": "Försäkrar maskiner",
+   "manufacturer": "Tillverkare eller generalagent",
+   "marketplace": "Marknadsplats, auktion eller informationsförmedlare",
+   "operator": "",
+   "owner": "Äger eller brukar maskiner"
+  },
+  "origin": {
+   "import": "Import",
+   "new_sale": "Nyförsäljning",
+   "retro": "Efterregistrering",
+   "transfer_in": "Ägarbyte"
+  },
+  "power_standard": {
+   "ece_r120": "ECE R120",
+   "iso_14396": "ISO 14396",
+   "other": "Annan",
+   "sae_j1349": "SAE J1349"
+  },
+  "registration_type": {
+   "permanent": "Permanent",
+   "temporary": "Tillfällig"
+  },
+  "share_scope": {
+   "buyer_report": "Maskinrapport",
+   "fleet_report": "Flottrapport",
+   "project_list": "Projektlista",
+   "public_card": "Maskinkort"
+  },
+  "transfer_status": {
+   "awaiting_buyer": "Väntar på köparen",
+   "awaiting_financier": "Väntar på långivaren",
+   "cancelled": "Avbrutet",
+   "completed": "Genomfört",
+   "draft": "Väntar på ägaren",
+   "expired": "Har gått ut"
+  },
+  "verification_method": {
+   "documents": "Dokument",
+   "new_sale": "Nyförsäljning",
+   "physical": "Fysisk kontroll"
+  },
+  "verification_request_status": {
+   "approved": "Godkänd",
+   "in_review": "Granskas",
+   "needs_info": "Behöver komplettering",
+   "open": "Ny",
+   "rejected": "Avslagen"
+  },
+  "viewer_type": {
+   "api": "API",
+   "authority": "Myndighet",
+   "client": "Beställare",
+   "dealer": "Maskinhandlare",
+   "financier": "Långivare",
+   "inspector": "Kontrollorgan",
+   "insurer": "Försäkringsgivare",
+   "manufacturer": "Tillverkare",
+   "marketplace": "Marknadsplats",
+   "operator": "Registerhållaren",
+   "owner": "Maskinägare",
+   "public": "Publik skanning"
+  },
+  "visibility": {
+   "owner": "Bara ägaren",
+   "owner_and_financier": "Ägare och långivare",
+   "public": "Publik",
+   "verifiers": "Granskare och köpare med länk"
+  }
+ },
+ "errors": {
+  "ACTIVE_ENCUMBRANCE_EXISTS": "Maskinen har redan ett aktivt förbehåll hos {{holder}}. Ditt förbehåll registrerades inte och båda parter har fått en notis.",
+  "CHAIN_BROKEN": "Händelsekedjan stämmer inte.",
+  "CONFLICT_NOT_OPEN": "Konflikten är redan hanterad.",
+  "DEMO_DB_MISSING": "Demodatabasen saknas. Kör npm run demo-db.",
+  "DPA_REQUIRED": "Godkänn personuppgiftsbiträdesavtalet för att fortsätta.",
+  "EMAIL_IN_USE": "Det finns redan ett konto med den e-postadressen. Logga in i stället.",
+  "ENCUMBRANCE_BLOCKS_DEREGISTRATION": "Maskinen har ett aktivt förbehåll hos {{holder}}. Förbehållet måste släppas eller långivaren avregistrera.",
+  "ENCUMBRANCE_NOT_ACTIVE": "Förbehållet är inte aktivt.",
+  "ENCUMBRANCE_NOT_PENDING": "Förbehållet väntar inte på bekräftelse.",
+  "ENCUMBRANCE_TRANSFER_PENDING": "En överlåtelse av förbehållet pågår redan.",
+  "FLAG_ALREADY_ACTIVE": "Flaggan är redan aktiv.",
+  "FLAG_NOT_ACTIVE": "Flaggan är redan avslutad.",
+  "FORBIDDEN": "Din organisation har inte behörighet att göra det här.",
+  "FOUR_EYES_REQUIRED": "En annan granskare måste godkänna.",
+  "IDENTITY_IN_USE": "Personnumret är redan kopplat till ett annat konto. Kontakta support.",
+  "IDENTITY_NOT_VERIFIED": "Verifiera din identitet med BankID innan du gör ändringar i registret.",
+  "INVALID_CREDENTIALS": "Fel e-post eller lösenord.",
+  "INVALID_REG": "Ogiltigt registreringsnummer. Kontrollera tecknen.",
+  "INVITE_EMAIL_MISMATCH": "Inbjudan gäller en annan e-postadress. Logga in med den adressen.",
+  "INVITE_EXPIRED": "Inbjudan har gått ut. Be om en ny.",
+  "LABEL_ALREADY_USED": "Märket är redan använt. Registerhållaren har fått en notis.",
+  "LABEL_ASSIGNED_TO_OTHER_ORG": "Märket tillhör en annan organisation.",
+  "LABEL_NOT_FOUND": "Märket finns inte. Kontrollera QR-koden.",
+  "LAST_ADMIN": "Organisationen måste ha minst en administratör.",
+  "LINK_EXPIRED": "Länken har gått ut. Begär en ny.",
+  "LINK_INVALID": "Länken är ogiltig eller redan använd.",
+  "LOOKUP_REQUIRED": "Organisationsnumret behöver slås upp först.",
+  "MACHINE_BLOCKED": "Maskinen är spärrad av myndighet eller registerhållare.",
+  "MACHINE_READ_ONLY": "Maskinen är avregistrerad och kan inte ändras.",
+  "MACHINE_SEIZED": "Maskinen är i beslag. Ändringar är spärrade.",
+  "MACHINE_STOLEN": "Maskinen är anmäld stulen. Ägarbyten, förbehåll och avregistrering är spärrade.",
+  "MACHINE_UNDER_INVESTIGATION": "Maskinen är under utredning. Ändringar är spärrade.",
+  "MEMBER_EXISTS": "Personen är redan medlem.",
+  "MFA_FAILED": "Tvåfaktorsinloggningen kunde inte aktiveras.",
+  "MFA_INVALID_CODE": "Koden stämmer inte. Kontrollera appen och försök igen.",
+  "MFA_REQUIRED": "Din organisation kräver tvåfaktorsinloggning. Aktivera den under Min profil.",
+  "MOCK_PROVIDER_DISABLED": "Demo-BankID är avstängt. Använd BankID.",
+  "NAMEPLATE_MISMATCH": "Serienumret på skylten stämmer inte med registret. Maskinen kan inte verifieras.",
+  "NETWORK": "Det gick inte att nå registret. Kontrollera anslutningen.",
+  "NOT_AUTHENTICATED": "Du behöver logga in för att göra det här.",
+  "NOT_FOUND": "Uppgiften finns inte eller så har du inte behörighet att se den.",
+  "ORG_EXISTS": "Organisationen finns redan i registret. Be en administratör om en inbjudan.",
+  "ORG_NOT_APPROVED": "Organisationen är avstängd. Kontakta registerhållaren.",
+  "ORG_REQUIRED": "Välj en organisation först.",
+  "OTP_FAILED": "Inloggningslänken kunde inte skickas.",
+  "RATE_LIMITED": "För många uppslag på kort tid. Vänta en minut och försök igen.",
+  "SIGNATORY_REQUIRED": "Bara en firmatecknare kan ta över organisationen. Be en firmatecknare om en inbjudan.",
+  "SIGNATURE_ALREADY_USED": "Signaturen är redan använd. Signera igen.",
+  "SIGNATURE_EXPIRED": "Signaturen har gått ut. Signera igen.",
+  "SIGNATURE_INVALID": "Signaturen gäller inte den här åtgärden.",
+  "SIGNATURE_PARAMS_MISMATCH": "Uppgifterna ändrades efter signeringen. Signera igen.",
+  "SIGNATURE_PROVIDER_NOT_ALLOWED": "Bara BankID-signaturer gäller.",
+  "SIGNATURE_REQUIRED": "Signera med BankID för att fortsätta.",
+  "SIGNATURE_REQUIRES_USER": "Den här åtgärden måste signeras av en person.",
+  "SIGNUP_FAILED": "Kontot kunde inte skapas.",
+  "TRANSFER_ALREADY_OPEN": "Det finns redan ett pågående ägarbyte för maskinen.",
+  "TRANSFER_EXPIRED": "Ägarbytet har gått ut. Säljaren behöver starta om det.",
+  "TRANSFER_NOT_AWAITING_BUYER": "Ägarbytet väntar inte på köparen.",
+  "TRANSFER_NOT_AWAITING_FINANCIER": "Ägarbytet väntar inte på långivaren.",
+  "TRANSFER_NOT_OPEN": "Ägarbytet är redan avslutat.",
+  "UNKNOWN": "Något gick fel. Försök igen om en stund.",
+  "UNKNOWN_ARGUMENT": "Okänd parameter.",
+  "UNKNOWN_FUNCTION": "Funktionen finns inte.",
+  "UPLOAD_FAILED": "Filen kunde inte laddas upp.",
+  "UPLOAD_MISSING": "Filen laddades inte upp. Försök igen.",
+  "USE_BANKID_FLOW": "Använd BankID-inloggningen.",
+  "VALIDATION": "Kontrollera uppgifterna i formuläret.",
+  "WEAK_PASSWORD": "Lösenordet behöver minst 8 tecken."
+ },
+ "events": {
+  "api": "API",
+  "audit": {
+   "anchor_published": "Dagens ankare publicerades"
+  },
+  "conflict": {
+   "created": "En konflikt skapades",
+   "resolved": "Konflikten hanterades"
+  },
+  "correction": {
+   "approved": "Rättelsen godkändes av en andra granskare",
+   "cancelled": "Rättelsen avbröts",
+   "objected": "Invändning mot rättelsen",
+   "proposed": "Rättelse av ägare föreslogs"
+  },
+  "document": {
+   "archived": "{{actor}} arkiverade ett dokument",
+   "quarantined": "Ett dokument stoppades i virusskanningen",
+   "sanitized": "Platsuppgifter togs bort ur ett foto",
+   "uploaded": "{{actor}} laddade upp ett dokument",
+   "visibility_changed": "{{actor}} ändrade vem som ser ett dokument"
+  },
+  "encumbrance": {
+   "confirmed": "{{actor}} bekräftade förbehåll",
+   "conflict": "{{actor}} försökte registrera ett andra förbehåll – blockerat",
+   "counterparty_changed": "Förbehållet följde med till köparen",
+   "holder_transferred": "{{actor}} tog över förbehållet",
+   "registered": "{{actor}} registrerade förbehåll",
+   "rejected": "{{actor}} avvisade förbehåll",
+   "release_requested": "{{actor}} begärde frisläppning",
+   "released": "{{actor}} släppte förbehållet",
+   "requested": "{{actor}} begärde förbehåll",
+   "transfer_initiated": "{{actor}} började överlåta förbehållet"
+  },
+  "fallback": "Registerhändelse",
+  "flag": {
+   "cleared": "{{actor}} avslutade flaggan",
+   "raised": "{{actor}} flaggade maskinen"
+  },
+  "identity": {
+   "verified": "Identitet verifierad med {{payload.provider}}"
+  },
+  "label": {
+   "bound": "{{actor}} knöt märke …{{payload.label_serial}}",
+   "revoked": "{{actor}} spärrade märke …{{payload.label_serial}}"
+  },
+  "labels": {
+   "ordered": "{{actor}} beställde {{payload.quantity}} märken",
+   "printed": "{{payload.quantity}} märken trycktes"
+  },
+  "legacy": {
+   "imported": "Uppgift flyttad från tidigare version"
+  },
+  "machine": {
+   "checked": "{{actor}} kontrollerade maskinen",
+   "deregistered": "{{actor}} avregistrerade maskinen",
+   "factory_data_confirmed": "Fabriksdata bekräftade maskinens uppgifter",
+   "hours_reported": "{{actor}} rapporterade {{payload.hour_meter}} timmar",
+   "photo_set": "{{actor}} bytte foto",
+   "registered": "{{actor}} registrerade maskinen",
+   "sighting_reported": "Tips om den stulna maskinen",
+   "stolen_scanned": "Den stulna maskinen skannades",
+   "updated": "{{actor}} ändrade maskinuppgifter",
+   "verified": "{{actor}} verifierade maskinen till nivå {{payload.level}}"
+  },
+  "member": {
+   "invited": "{{actor}} bjöd in en medlem",
+   "joined": "En medlem gick med",
+   "removed": "En medlem togs bort",
+   "role_changed": "En medlems roll ändrades"
+  },
+  "org": {
+   "approved": "Organisationen godkändes",
+   "claimed": "{{actor}} tog över organisationen",
+   "created": "{{actor}} skapade organisationen",
+   "suspended": "Organisationen stängdes av",
+   "updated": "{{actor}} ändrade organisationens uppgifter"
+  },
+  "ownership": {
+   "corrected": "Registrerad ägare rättades",
+   "transferred": "{{actor}} blev registrerad ägare"
+  },
+  "share_link": {
+   "created": "{{actor}} skapade en delningslänk",
+   "revoked": "{{actor}} stängde en delningslänk"
+  },
+  "system": "MaskinID",
+  "transfer": {
+   "cancelled": "Ägarbytet avbröts",
+   "completed": "Ägarbytet genomfördes",
+   "expired": "Ägarbytet gick ut",
+   "financier_approved": "{{actor}} godkände ägarbytet",
+   "financier_rejected": "{{actor}} nekade ägarbytet",
+   "initiated": "{{actor}} startade ägarbyte",
+   "trade_in_requested": "{{actor}} begärde inbyte"
+  },
+  "verification": {
+   "cancelled": "Verifieringen återkallades",
+   "needs_info": "{{actor}} begärde komplettering",
+   "rejected": "{{actor}} avslog verifieringen",
+   "requested": "{{actor}} begärde verifiering",
+   "updated": "{{actor}} kompletterade verifieringen"
+  }
+ },
+ "fleet": {
+  "inspections": "Besiktningar",
+  "service": "Service"
+ },
+ "how": {
+  "disclaimer": "{{app}} är ett privat, frivilligt register och ingen myndighet.",
+  "financing_body": "En maskin kan ha högst ett aktivt finansieringsförbehåll. Ett andra försök stoppas och båda parter får besked. Belopp lagras aldrig.",
+  "financing_title": "Belåning och förbehåll",
+  "label_body": "Märket bryts om det tas bort och innehåller bara en länk. Skanningssidan visar de tre sista tecknen i serienumret så att du kan jämföra med typskylten.",
+  "label_title": "QR-märket",
+  "lead": "{{app}} ger varje maskin en identitet, en verifierad ägare och en historik som inte går att ändra i efterhand.",
+  "public_body": "Bara det som behövs för att bekräfta identitet och status: modell, status, verifieringsnivå och att en registrerad ägare finns. Aldrig ägarens namn.",
+  "public_title": "Vad visas publikt",
+  "regnr_body": "Sju tecken i formatet XXX-XXXX. Det sista tecknet är ett kontrolltecken, så felskrivningar upptäcks direkt. Numret liknar inte ett bilregistreringsnummer.",
+  "regnr_title": "Registreringsnummer",
+  "theft_body": "En stulen maskin visas med röd varning när den skannas. Ägaren får besked om var och när, och maskinen kan inte säljas eller belånas i registret.",
+  "theft_title": "Stöld"
+ },
+ "identity": {
+  "button": "Verifiera med BankID",
+  "demo_button": "Verifiera med Demo-BankID",
+  "demo_notice": "Demo-BankID: ingen riktig legitimering görs.",
+  "lead": "All skrivning i registret kräver att du har verifierat din identitet med BankID. Personnumret sparas aldrig i klartext.",
+  "title": "Verifiera din identitet",
+  "verified": "Identitet verifierad {{date}}",
+  "verified_title": "Din identitet är verifierad"
+ },
+ "inbox": {
+  "conflict": "Konflikt",
+  "correction_objection": "Rättelse av ägare",
+  "empty": "Inget väntar på er just nu.",
+  "encumbrance_confirm": "Förbehåll att bekräfta",
+  "encumbrance_takeover": "Förbehåll att ta över",
+  "handle": "Hantera",
+  "invitation": "Inbjudan",
+  "title": "Väntar på mig",
+  "trade_in_approve": "Inbyte att godkänna",
+  "transfer_accept": "Ta emot maskin",
+  "transfer_financier": "Ägarbyte att godkänna",
+  "verification_needs_info": "Komplettera verifiering",
+  "verification_review": "Verifiering att granska"
+ },
+ "level": {
+  "0": {
+   "desc": "Ägaren har lagt in maskinen utan granskat underlag.",
+   "name": "Självregistrerad"
+  },
+  "1": {
+   "desc": "Faktura eller köpeavtal och foton är granskade av en betrodd part.",
+   "name": "Dokumentverifierad"
+  },
+  "2": {
+   "desc": "En betrodd part har sett maskinen, jämfört serienumret med skylten och monterat märket.",
+   "name": "Fysiskt verifierad"
+  },
+  "below_trusted": "Under er lägsta betrodda nivå ({{level}})",
+  "label": "Verifieringsnivå"
+ },
+ "machine": {
+  "hours": "Timmätare",
+  "tab_documents": "Dokument",
+  "tab_history": "Historik"
+ },
+ "nav": {
+  "admin": "Administration",
+  "alerts": "Larm",
+  "api_docs": "API",
+  "bookings": "Bokningar",
+  "check": "Kontroll",
+  "client_reports": "Delade rapporter",
+  "customers": "Kunder",
+  "dashboard": "Översikt",
+  "encumbrances_new": "Registrera förbehåll",
+  "export_check": "Exportkontroll",
+  "exports": "Exporter",
+  "flags": "Flaggor",
+  "fleet": "Flotta",
+  "global_search": "Sök regnr eller serienummer",
+  "global_search_hint": "Ctrl+K",
+  "group_org": "Organisation",
+  "group_register": "Register",
+  "group_role": "Mina verktyg",
+  "help": "Hjälp",
+  "how_it_works": "Så fungerar det",
+  "import": "Importera",
+  "inbox": "Väntar på mig",
+  "labels": "Märken",
+  "leads": "Leads",
+  "machines": "Maskiner",
+  "main": "Huvudmeny",
+  "notifications": "Notiser",
+  "oem": "Leveransdata",
+  "org_switcher": "Byt organisation",
+  "portfolio": "Portfölj",
+  "pricing": "Priser",
+  "profile": "Min profil",
+  "receipts": "Kvitton",
+  "register": "Registrera maskin",
+  "rentals": "Uthyrning",
+  "reports": "Rapporter",
+  "sales_new": "Ny försäljning",
+  "scan": "Skanna",
+  "search": "Utökad sökning",
+  "security": "Säkerhet",
+  "settings": "Inställningar",
+  "sign_in": "Logga in",
+  "sign_out": "Logga ut",
+  "sign_up": "Skapa konto",
+  "stock": "Lager",
+  "trade_in": "Ta emot inbyte",
+  "verify": "Verifieringskö",
+  "watchlist": "Bevakning"
+ },
+ "notifications": {
+  "audit": {
+   "chain_broken": {
+    "body": "Kontrollera händelseloggen omedelbart.",
+    "title": "Händelsekedjan stämmer inte"
+   }
+  },
+  "conflict": {
+   "created": {
+    "body": "En konflikt av typen {{type}} behöver hanteras.",
+    "title": "Ny konflikt"
+   },
+   "duplicate_identifier": {
+    "body": "Någon försökte registrera en maskin med samma serienummer som {{reg_number}}.",
+    "title": "Serienumret finns på en ny registrering"
+   },
+   "ownership_dispute": {
+    "body": "{{by}} har anmält en ägartvist om {{reg_number}}.",
+    "title": "Ägartvist anmäld"
+   },
+   "resolved": {
+    "body": "Registerhållaren har hanterat konflikten.",
+    "title": "Konflikten är hanterad"
+   }
+  },
+  "correction": {
+   "applied": {
+    "body": "Registrerad ägare har ändrats.",
+    "title": "Ägaruppgiften är rättad"
+   },
+   "needs_second_approval": {
+    "body": "En rättelse av ägare för {{reg_number}} behöver en andra granskare.",
+    "title": "Rättelse att godkänna"
+   },
+   "objected": {
+    "body": "Den berörda organisationen har invänt.",
+    "title": "Invändning mot rättelse"
+   },
+   "objection_period": {
+    "body": "Registerhållaren vill ändra ägare för {{reg_number}} till {{to}}. Du kan invända senast {{effective_after}}.",
+    "title": "Rättelse av registrerad ägare"
+   },
+   "pending": {
+    "body": "Ni blir registrerad ägare till {{reg_number}} om ingen invänder före {{effective_after}}.",
+    "title": "Rättelse pågår"
+   }
+  },
+  "document": {
+   "infected": {
+    "body": "{{filename}} innehöll skadlig kod och sparades inte.",
+    "title": "En fil stoppades"
+   }
+  },
+  "empty": "Inga notiser.",
+  "encumbrance": {
+   "confirmed": {
+    "body": "{{holder}} bekräftade förbehållet på {{reg_number}}.",
+    "title": "Förbehållet är bekräftat"
+   },
+   "conflict": {
+    "body": "{{attempted_by}} försökte registrera ett förbehåll på {{reg_number}} där ni har ett aktivt förbehåll. Försöket blockerades.",
+    "title": "Försök till dubbelt förbehåll"
+   },
+   "conflict_owner": {
+    "body": "{{attempted_by}} försökte registrera ett förbehåll på {{reg_number}}, som redan är belånad. Försöket blockerades.",
+    "title": "Försök att belåna din maskin igen"
+   },
+   "holder_transferred": {
+    "body": "Förbehållet på {{reg_number}} har överlåtits från {{from}} till {{to}}.",
+    "title": "Förbehållet har bytt långivare"
+   },
+   "pending": {
+    "body": "{{requested_by}} anger er som långivare för {{reg_number}}. Bekräfta eller avvisa.",
+    "title": "Förbehåll att bekräfta"
+   },
+   "registered": {
+    "body": "{{holder}} registrerade {{type}} på {{reg_number}}.",
+    "title": "Förbehåll registrerat"
+   },
+   "rejected": {
+    "body": "{{holder}} avvisade förbehållet på {{reg_number}}.",
+    "title": "Förbehållet avvisades"
+   },
+   "release_requested": {
+    "body": "{{requested_by}} ber er släppa förbehållet på {{reg_number}}.",
+    "title": "Begäran om frisläppning"
+   },
+   "released": {
+    "body": "{{holder}} släppte förbehållet på {{reg_number}}.",
+    "title": "Förbehållet är släppt"
+   },
+   "transfer_accepted": {
+    "body": "{{to}} har tagit över förbehållet på {{reg_number}}.",
+    "title": "Överlåtelsen är klar"
+   },
+   "transfer_offered": {
+    "body": "{{from}} vill överlåta sitt förbehåll på {{reg_number}} till er.",
+    "title": "Förbehåll att ta över"
+   }
+  },
+  "fallback": {
+   "body": "",
+   "title": "Notis"
+  },
+  "flag": {
+   "cleared": {
+    "body": "Flaggan på {{reg_number}} är avslutad.",
+    "title": "Flaggan är avslutad"
+   },
+   "raised": {
+    "body": "{{reg_number}} flaggades: {{type}}.",
+    "title": "Maskinen har flaggats"
+   }
+  },
+  "labels": {
+   "ordered": {
+    "body": "{{org}} beställde {{quantity}} märken.",
+    "title": "Märken beställda"
+   },
+   "printed": {
+    "body": "{{quantity}} märken är tryckta och skickas till er.",
+    "title": "Märken tryckta"
+   }
+  },
+  "machine": {
+   "deregistered": {
+    "body": "{{by}} avregistrerade {{reg_number}}.",
+    "title": "Maskinen är avregistrerad"
+   },
+   "registered_for_you": {
+    "body": "{{by}} registrerade {{reg_number}} med er som ägare.",
+    "title": "Maskin registrerad för er"
+   },
+   "sighting_reported": {
+    "body": "Ett tips om {{reg_number}} har kommit in.",
+    "title": "Någon har sett din stulna maskin"
+   },
+   "stolen_scanned": {
+    "body": "{{reg_number}} skannades {{at}}. Plats: {{location.city}}.",
+    "title": "Din stulna maskin har skannats"
+   },
+   "verified": {
+    "body": "{{reg_number}} är nu på nivå {{level}} ({{by}}).",
+    "title": "Maskinen är verifierad"
+   }
+  },
+  "mark_all_read": "Markera alla som lästa",
+  "member": {
+   "access_requested": {
+    "body": "{{name}} ({{email}}) vill gå med i organisationen.",
+    "title": "Begäran om åtkomst"
+   },
+   "invited": {
+    "body": "Du är inbjuden att gå med i {{org_name}}.",
+    "title": "Inbjudan till {{org_name}}"
+   },
+   "joined": {
+    "body": "{{name}} har gått med i organisationen.",
+    "title": "Ny medlem"
+   }
+  },
+  "org": {
+   "approved": {
+    "body": "{{name}} är godkänd. Alla funktioner för er organisationstyp är nu öppna.",
+    "title": "Organisationen är godkänd"
+   },
+   "pending_approval": {
+    "body": "{{name}} väntar på godkännande.",
+    "title": "Ny organisation att granska"
+   },
+   "suspended": {
+    "body": "{{name}} är avstängd: {{reason}}",
+    "title": "Organisationen är avstängd"
+   }
+  },
+  "transfer": {
+   "awaiting_financier": {
+    "body": "{{seller}} vill sälja {{reg_number}}, där ni har ett förbehåll.",
+    "title": "Ägarbyte att godkänna"
+   },
+   "awaiting_you": {
+    "body": "{{seller}} vill överlåta {{reg_number}} till er. Granska och signera.",
+    "title": "Maskin att ta emot"
+   },
+   "cancelled": {
+    "body": "Ägarbytet av {{reg_number}} avbröts.",
+    "title": "Ägarbytet avbröts"
+   },
+   "completed": {
+    "body": "{{buyer}} är ny registrerad ägare till {{reg_number}}.",
+    "title": "Ägarbytet är klart"
+   },
+   "expired": {
+    "body": "Köparen accepterade inte inom 14 dagar.",
+    "title": "Ägarbytet gick ut"
+   },
+   "financier_approved": {
+    "body": "Ägarbytet av {{reg_number}} väntar nu på köparen.",
+    "title": "Långivaren godkände ägarbytet"
+   },
+   "financier_rejected": {
+    "body": "{{holder}} nekade ägarbytet av {{reg_number}}.",
+    "title": "Långivaren nekade ägarbytet"
+   },
+   "trade_in_requested": {
+    "body": "{{dealer}} vill ta emot {{reg_number}} som inbyte. Godkänn för att fortsätta.",
+    "title": "Inbyte att godkänna"
+   }
+  },
+  "unread": "{{count}} olästa",
+  "verification": {
+   "needs_info": {
+    "body": "Granskaren behöver mer underlag för {{reg_number}}: {{note}}",
+    "title": "Komplettering behövs"
+   },
+   "rejected": {
+    "body": "Granskaren avslog verifieringen av {{reg_number}}: {{note}}",
+    "title": "Verifieringen avslogs"
+   },
+   "requested": {
+    "body": "{{by}} begär nivå {{level}} för {{reg_number}}.",
+    "title": "Ny verifiering att granska"
+   },
+   "updated": {
+    "body": "Ägaren har kompletterat underlaget.",
+    "title": "Verifieringen är kompletterad"
+   }
+  }
+ },
+ "onboarding": {
+  "accept": "Gå med",
+  "access_requested": "Begäran skickad till organisationens administratörer.",
+  "check_api": "Koppla API",
+  "check_first_machine": "Lägg till första maskinen",
+  "check_import": "Importera lista",
+  "check_labels": "Beställ märken",
+  "checklist_title": "Kom igång",
+  "create": "Lägg till organisationen",
+  "create_org_lead": "Skriv organisationsnumret så hämtar vi namn och adress. Det tar under tre minuter.",
+  "create_org_title": "Lägg till din organisation",
+  "dealer_lead": "Lägg till företaget, bjud in säljarna, importera lagret och beställ startpaketet med märken – allt på en sida.",
+  "dealer_step_labels": "Beställ startpaket märken",
+  "dealer_step_org": "Företaget",
+  "dealer_step_stock": "Importera lager",
+  "dealer_step_team": "Bjud in kollegor",
+  "dealer_title": "Kom igång som handlare",
+  "dpa_label": "Jag godkänner personuppgiftsbiträdesavtalet (version {{version}}) för organisationen.",
+  "dpa_link": "Läs avtalet",
+  "existing": "{{name}} finns redan i registret. Be en administratör om en inbjudan eller begär åtkomst.",
+  "invitations": "Du har inbjudningar",
+  "invite_emails": "E-postadresser, en per rad",
+  "invites_sent": "{{count}} inbjudningar skickade.",
+  "lookup": "Hämta uppgifter",
+  "order_starter": "Beställ 50 märken",
+  "pending_body": "Vi granskar inom en arbetsdag. Ni kan redan nu lägga in era egna maskiner.",
+  "pending_title": "Vi granskar er organisation",
+  "request_access": "Begär åtkomst",
+  "send_invites": "Skicka inbjudningar",
+  "sole_trader": "Enskild firma – organisationsnumret är ett personnummer och visas maskerat.",
+  "starter_ordered": "Startpaketet är beställt.",
+  "suggested": "Kollegor med samma e-postdomän finns i",
+  "title": "Kom igång",
+  "types_hint": "Välj en eller flera. Andra typer än maskinägare granskas av oss inom en arbetsdag – under tiden kan ni lägga in maskiner.",
+  "types_legend": "Vad gör organisationen?"
+ },
+ "org": {
+  "authority_reads": "Visa våra läsningar för maskinägaren",
+  "claims_url": "Länk för skadeanmälan",
+  "create_new": "Lägg till ny organisation",
+  "current": "Du agerar för {{name}}",
+  "digest": "Sammanställning",
+  "digest_daily": "En gång per dag",
+  "digest_instant": "Direkt",
+  "digest_weekly": "Varje måndag",
+  "email_all": "E-post för alla notiser",
+  "email_important": "E-post bara för viktiga notiser",
+  "email_none": "Ingen e-post",
+  "identity_missing": "Ej verifierad",
+  "identity_ok": "Verifierad",
+  "invite": "Bjud in",
+  "invite_title": "Bjud in kollega",
+  "invited": "Inbjudan skickad till {{email}}.",
+  "leave": "Lämna organisationen",
+  "members_title": "Medlemmar",
+  "min_trusted_level": "Lägsta betrodda verifieringsnivå",
+  "min_trusted_level_hint": "Maskiner under nivån visas med en tydlig varning.",
+  "no_org_title": "Du är inte med i någon organisation",
+  "notifications_title": "Notiser och e-post",
+  "postal_code": "Postnummer",
+  "remove_member": "Ta bort ur organisationen",
+  "role": "Roll",
+  "saved": "Uppgifterna är sparade.",
+  "settings_title": "Organisationens uppgifter",
+  "street": "Gatuadress",
+  "switcher_label": "Organisation",
+  "vat_number": "Momsregistreringsnummer",
+  "website": "Webbplats"
+ },
+ "public": {
+  "actors_title": "Värde för alla i kedjan",
+  "are_you_owner": "Är du ägaren?",
+  "are_you_owner_body": "Logga in och se vem som har skannat maskinen.",
+  "call_police": "Ring polisen 114 14",
+  "check_financing": "Ska du köpa maskinen?",
+  "check_financing_body": "Logga in med BankID och se om den är belånad.",
+  "cta_dealer": "Kom igång som handlare",
+  "demo_active_level2": "Skanna en verifierad maskin",
+  "demo_financed": "Skanna en belånad maskin",
+  "demo_scrapped": "Slå upp en skrotad maskin",
+  "demo_stolen": "Skanna en stulen maskin",
+  "demo_title": "Prova demon",
+  "fact_free": "Registrering är gratis och tar under två minuter.",
+  "fact_history": "Historiken kan inte ändras i efterhand. Varje dag publiceras ett kontrollvärde.",
+  "fact_independent": "Fristående och oberoende – kompatibelt med andra registers id-nummer.",
+  "fact_no_amounts": "Inga belopp lagras: bara om maskinen är belånad och hos vem.",
+  "facts_label": "Om registret",
+  "facts_title": "Registret i korthet",
+  "financing_login": "Logga in med BankID för att se",
+  "footer_about": "{{app}} är ett fristående och oberoende register för tunga arbetsmaskiner: ägare, förbehåll, historik och stöldskydd.",
+  "footer_trust": "Förtroende",
+  "hero_lead": "Varje maskin får ett registreringsnummer och ett QR-märke. Registret visar verifierad ägare, historik och finansieringsförbehåll – och gör stulna maskiner svåra att sälja.",
+  "hero_title": "Vem äger maskinen – och är den belånad?",
+  "how_title": "Så fungerar det",
+  "inspected_until": "Besiktigad t.o.m. {{date}}",
+  "label_replaced": "Märket är ersatt",
+  "label_replaced_link": "Visa maskinen",
+  "lookup_button": "Slå upp",
+  "lookup_hint": "Numret står på maskinens QR-märke. Serienummer söks efter inloggning.",
+  "lookup_label": "Registreringsnummer",
+  "lookup_placeholder": "Till exempel ABC-1234",
+  "not_in_register": "Maskinen finns inte i registret",
+  "not_in_register_body": "Kontrollera numret på märket. Är det din maskin kan du registrera den gratis.",
+  "offline": "Ingen anslutning. Visar senast kända status från {{date}}.",
+  "owner": "Registrerad ägare",
+  "owner_exists": "Registrerad ägare finns (organisation)",
+  "owner_missing": "Ingen registrerad ägare",
+  "privacy": "Integritet",
+  "register_free": "Registrera gratis",
+  "serial": "Serienummer",
+  "serial_hint": "Jämför de sista tecknen med typskylten på maskinen.",
+  "sighting_consent": "Din ungefärliga plats delas bara om du väljer det. Den skickas till ägaren och den som anmälde stölden.",
+  "sighting_message": "Var och när såg du maskinen? (valfritt)",
+  "sighting_sent": "Tack. Ägaren har fått ditt tips.",
+  "sighting_with_location": "Jag har sett maskinen – dela min plats",
+  "sighting_without_location": "Skicka utan plats",
+  "step1_body": "Fota typskylten eller skriv in serienumret. Maskinen får ett registreringsnummer direkt.",
+  "step1_title": "Registrera maskinen",
+  "step2_body": "QR-märket knyts till maskinen. Vem som helst kan skanna det och se status.",
+  "step2_title": "Sätt på märket",
+  "step3_body": "En betrodd part verifierar underlag eller maskinen. Banker, köpare och försäkringsgivare litar på uppgifterna.",
+  "step3_title": "Verifiera och använd",
+  "stolen_list": "Stulna maskiner",
+  "terms": "Villkor",
+  "value_authority": "Sökning på serienummer och regnr, efterlysning och beslag, exportkontroll och historik.",
+  "value_client": "Följ upp maskinkrav i upphandling med flottrapporter från entreprenörerna.",
+  "value_dealer": "Lager med QR-märkning, försäljning med ägarbyte och förbehåll i ett svep, inbyteskontroll och leads från annons-QR.",
+  "value_financier": "Sök på serienummer, registrera förbehåll, tidsstämplat kontrollkvitto, portfölj och webhooks.",
+  "value_inspector": "Verifiera maskiner fysiskt, montera märken och registrera besiktningar.",
+  "value_insurer": "Portfölj, stöldflaggor och verifierade maskiner som premiegrund.",
+  "value_marketplace": "Verifierad-märkning via API och kontroll innan annonsering.",
+  "value_owner": "Gratis flottöversikt, ägarbevis, stöldskydd, dokumentvalv, timmar och service, delningslänk vid försäljning.",
+  "verify_lead": "Som privatperson kan du se om en maskin är belånad, men inte hos vem. Kontrollen loggas och syns för ägaren.",
+  "verify_logged": "Kontrollen är loggad och syns för ägaren.",
+  "verify_title": "Kontrollera belåning"
+ },
+ "search": {
+  "no_hits": "Inget resultat för {{q}}. Kontrollera numret på typskylten."
+ },
+ "security": {
+  "mfa_disable": "Stäng av tvåfaktorsinloggning",
+  "mfa_enable": "Aktivera tvåfaktorsinloggning",
+  "mfa_enabled": "Tvåfaktorsinloggning är aktiverad.",
+  "mfa_lead": "Krävs för långivare, myndigheter och registerhållaren. Använd en autentiseringsapp.",
+  "mfa_on": "Aktiverad",
+  "mfa_qr_alt": "QR-kod för autentiseringsappen",
+  "mfa_scan": "Skanna koden med din autentiseringsapp och skriv in koden som visas.",
+  "mfa_session_ok": "verifierad för den här inloggningen",
+  "mfa_title": "Tvåfaktorsinloggning"
+ },
+ "securitypage": {
+  "anchor_body": "Varje natt räknas ett gemensamt kontrollvärde (Merkle-rot) för dagens händelser fram. Det publiceras här och i ett publikt GitHub-repo. Den som har ett gammalt värde kan se om något har ändrats.",
+  "anchors_title": "Publicerade ankare",
+  "commit": "Visa på GitHub",
+  "data_backups": "Dagliga säkerhetskopior med återställning till valfri tidpunkt.",
+  "data_eu": "All data lagras inom EU.",
+  "data_exit": "Om bolaget upphör lämnas registerdata över till en neutral part.",
+  "data_pentest": "Penetrationstest görs innan första bankintegration och därefter årligen.",
+  "data_pnr": "Personnummer lagras aldrig i klartext.",
+  "data_rls": "Varje tabell skyddas med radnivåbehörighet och all skrivning går genom kontrollerade funktioner.",
+  "data_sla": "Mål för tillgänglighet: 99,9 %.",
+  "data_title": "Data och drift",
+  "disclosure_body": "Har du hittat en säkerhetsbrist? Mejla oss. Vi svarar inom två arbetsdagar och polisanmäler inte den som rapporterar i god tro.",
+  "disclosure_title": "Rapportera en sårbarhet",
+  "events": "Händelser",
+  "history_body": "Varje ändring i registret är en händelse i en logg som bara kan läggas till. Varje händelse innehåller ett kontrollvärde som bygger på föregående händelse.",
+  "history_title": "Historik som inte går att ändra",
+  "lead": "Så skyddar {{app}} registrets uppgifter, och så kan du själv kontrollera att historiken inte har ändrats.",
+  "published": "Publicerat",
+  "root": "Merkle-rot",
+  "title": "Säkerhet",
+  "verified_bad": "Stämmer inte",
+  "verified_ok": "Stämmer",
+  "verify": "Kontrollera"
+ },
+ "share": {
+  "owner_ordinal": "Antal ägare: {{count}}",
+  "reason_expired": "Länken har gått ut.",
+  "reason_max_views": "Länken har visats så många gånger som ägaren tillät.",
+  "reason_not_found": "Länken finns inte.",
+  "reason_revoked": "Länken är stängd av ägaren.",
+  "shared_by": "Delad av {{org}}. Länken gäller till {{date}}.",
+  "views_left": "{{count}} visningar kvar."
+ }
+}
