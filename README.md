@@ -9,8 +9,8 @@ Det här repot innehåller hela frontenden (React + TypeScript + Vite) byggd eft
 Kräver [Node.js](https://nodejs.org) 20.19 eller senare.
 
 ```bash
-git clone https://github.com/Pierrenordstrom/maskin-id.git
-cd maskin-id
+git clone https://github.com/maskinidab/maskinid.git
+cd maskinid
 npm install
 npm run dev          # öppna http://localhost:5173
 ```
