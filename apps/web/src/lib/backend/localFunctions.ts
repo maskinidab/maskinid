@@ -35,6 +35,7 @@ export const localFunctions: Record<string, Handler> = {
   },
 
   async "share-view"(ctx, _body, opts) {
+    if (opts.query?.report === "1") return ctx.rpcAs("service_role", "create_shared_machine_report", { p_token: opts.query?.token ?? "", p_ip_hash: LOCAL_IP });
     const r = await ctx.rpcAs<{ ok: boolean }>("service_role", "get_share_view", { p_token: opts.query?.token ?? "", p_ip_hash: LOCAL_IP });
     return r;
   },

@@ -28,7 +28,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 15 | API & webhooks | ✅ | ADR 0013 |
 | 16 | Marknadsbevakning | ✅ | §16 p.16, ADR 0014; operatörsdashboard i steg 17 |
 | 17 | Operatörsadmin | ✅ | ADR 0015 |
-| 18 | PDF:er & e-post | ⬜ | |
+| 18 | PDF:er & e-post | ✅ | §10, §13 |
 | 19 | Seed & demo | ⬜ | |
 | 20 | Redskap, förare, daglig kontroll, bränsle/klimat | ⬜ | tolkas från CLAUDE.md (ADR 0003) |
 | 21 | Fullmakter, kommission, risksignaler, koncern | ⬜ | tolkas från CLAUDE.md |
@@ -207,3 +207,12 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   Webb under `/o/<operatör>/admin/*` (+ `/admin/*`-omdirigering): översikt, organisationer, verifieringskö,
   konflikter, rättelser (fyra ögon med BankID), märkesbatcher, händelselogg + ankarverifiering, marknadsbevakning
   (larm, källor med kill switch, körningar), API-användning, supportsök, flaggor, systemhälsa + operatörslogg.
+- **Steg 18** – PDF:er & e-post (§10, §13): migration `documents_email` – numrerade, hashade ögonblicksbilder för
+  ägarbevis (B-, ägare eller säljande handlare inom 30 dagar) och maskinrapport (R-, ägare eller via delningslänk
+  `buyer_report`), `verify_report` för alla typer inkl. "ersatt" när ägaren bytts, nytt ägarbevis + e-post vid varje
+  genomfört ägarbyte, köparrapporten får timmar/service/besiktningar och döljer interna händelser,
+  `claim_email_outbox`/`record_email_result` (lease, backoff, 5 försök). Delad e-postrenderare
+  (`packages/shared/src/email`) med mallar sv/en för notis, inbjudan, ägarinbjudan, ägarbyte, veckodigest, ägarbevis
+  och SMS-text; Edge Function `email-send`. Webb: gemensam PDF-layout (ID-band, dokumentnummer, QR, kontrolltext +
+  SHA-256 på varje sida), ägarbevis/maskinrapport på maskinsidan, efter registrering och efter ägarbyte, maskinrapport
+  på delningssidan, `/verify-document`, e-postingångar `/go?to=` och `/transfer/:id` (även för köpare utan konto).

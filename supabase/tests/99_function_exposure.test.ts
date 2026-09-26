@@ -22,6 +22,7 @@ const SERVICE_ONLY = [
   "public.record_identity_verification", "public.record_signature", "public.record_vtr_lookup", "public.rate_limit_check", "public.submit_lead", "public.resolve_api_key", "public.log_api_request",
   "public.api_idempotency_get", "public.api_idempotency_put", "public.claim_webhook_deliveries", "public.record_webhook_result",
   "public.start_market_run", "public.finish_market_run", "public.ingest_observations", "public.record_listing_serial", "public.claim_ocr_candidates",
+  "public.create_shared_machine_report", "public.claim_email_outbox", "public.record_email_result",
 ];
 
 describe("function exposure", () => {

@@ -21,3 +21,12 @@ Frågor som kräver affärsbeslut. Bygget stannar inte för dem; det säkraste a
    `market_sources.config` utan ny release (ADR 0014).
 6. **Annonspris.** Annonsens utropspris lagras bara i `market_observations` (för `price_anomaly`) och visas aldrig på
    maskinsidan eller i kontrollkvitton. *Antagande:* det är förenligt med regeln "inga belopp i registret". *Bekräfta.*
+
+## PDF:er och e-post (steg 18)
+7. **Ägarbevis i e-post.** SPEC §6.3 säger att ägarbeviset "mejlas till köparen". *Antagande:* e-posten innehåller
+   ägarbevisets nummer, kontrollänk och länk till maskinsidan där PDF:en laddas ner – ingen bilaga, så att dokumentet
+   bara lämnar registret till inloggad ägare. *Bekräfta om PDF-bilaga önskas.*
+8. **SMS-leverantör.** Twilio eller 46elks (SPEC §13). *Antagande:* SMS-rader i utkorgen markeras "skipped" tills en
+   `Sms`-adapter och leverantör är valda; flaggan `FEATURE_SMS` är av.
+9. **Dokumentnummer.** B-/R-/U-/F-/K-nummer är unika men kan hoppa över värden (databassekvenser). *Antagande:* det är
+   acceptabelt eftersom nummer + kontrollsumma verifieras mot registret.

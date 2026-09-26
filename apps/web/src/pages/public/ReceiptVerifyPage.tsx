@@ -9,9 +9,12 @@ import { useRpc } from "../../lib/api/query";
 import { formatDateTime } from "../../lib/format";
 
 interface Verified { valid: boolean; receipt_number?: string; report_number?: string; created_at?: string; performed_by?: string; org_name?: string;
-  machines?: number; reg_number?: string | null; found?: boolean; has_active_financing?: boolean | null }
+  machines?: number; reg_number?: string | null; found?: boolean; has_active_financing?: boolean | null; kind?: string; superseded?: string | null }
 
-/** /receipt – anyone holding a check receipt confirms it with receipt number + checksum (printed on the PDF). */
+/**
+ * /receipt and /verify-document – anyone holding one of our PDFs confirms it with its number + checksum (SPEC §10):
+ * K- check receipts, and snapshots F- fleet report, U- register extract, B- ownership certificate, R- machine report.
+ */
 export function ReceiptVerifyPage() {
   const { t } = useTranslation();
   const [params, setParams] = useSearchParams();
@@ -19,8 +22,7 @@ export function ReceiptVerifyPage() {
   const [hash, setHash] = useState(params.get("hash") ?? "");
   const qn = params.get("nr");
   const qh = params.get("hash");
-  // Check receipts are K-…, fleet/procurement reports F-… (SPEC §6.6, §7.1).
-  const report = !!qn && /^F-/i.test(qn.trim());
+  const report = !!qn && /^[FUBR]-/i.test(qn.trim());
   const q = useRpc<Verified>(report ? "verify_report" : "verify_check_receipt",
     qn && qh ? (report ? { p_report_number: qn, p_result_hash: qh } : { p_receipt_number: qn, p_result_hash: qh }) : null, { retry: false });
   return (
@@ -40,9 +42,12 @@ export function ReceiptVerifyPage() {
       {q.data && (q.data.valid ? (
         <Notice kind="ok" title={t("receipt_verify.valid")}>
           {q.data.report_number ? (
-            <p className="t-liten">{t("receipt_verify.report", { date: formatDateTime(q.data.created_at), org: q.data.org_name, count: q.data.machines })}</p>
+            <p className="t-liten">{q.data.kind && q.data.kind !== "fleet_report" && q.data.kind !== "project_list"
+              ? t(`receipt_verify.kind.${q.data.kind}`, { date: formatDateTime(q.data.created_at), org: q.data.org_name })
+              : t("receipt_verify.report", { date: formatDateTime(q.data.created_at), org: q.data.org_name, count: q.data.machines })}</p>
           ) : <p className="t-liten">{t("components.receipt.performed", { date: formatDateTime(q.data.created_at), org: q.data.performed_by })}</p>}
-          {q.data.report_number ? null : q.data.reg_number ? (
+          {q.data.superseded === "owner_changed" && <p className="mid-fel">{t("receipt_verify.superseded")}</p>}
+          {q.data.report_number ? (q.data.reg_number ? <p><RegNumber value={q.data.reg_number} /></p> : null) : q.data.reg_number ? (
             <p className="mid-rad"><RegNumber value={q.data.reg_number} />{q.data.has_active_financing != null && <FinancingBadge hasActive={q.data.has_active_financing} />}</p>
           ) : <p className="t-liten">{t("check.not_found")}</p>}
         </Notice>

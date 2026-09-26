@@ -519,6 +519,23 @@
   "title": "Signera med BankID",
   "you_sign": "Du signerar"
  },
+ "certificate": {
+  "download": "Ägarbevis (PDF)",
+  "downloaded": "Ägarbeviset är nedladdat.",
+  "financing": "Registrerad finansiering",
+  "label": "QR-märke",
+  "lead": "{{org}} är registrerad ägare till maskinen med registreringsnummer {{reg}} i MaskinID.",
+  "legal": "Ägarbeviset visar vem som är registrerad ägare i MaskinID vid utfärdandet. Det är inte ett bevis om äganderätt i civilrättslig mening och ersätter inte köpeavtal. Registrerad finansiering anges utan belopp. Kontrollera alltid aktuell status med QR-koden eller på maskinid.se.",
+  "level": "Verifieringsnivå",
+  "owner": "Registrerad ägare",
+  "owner_ordinal": "Antal ägare i registret",
+  "owner_since": "Ägare sedan",
+  "power": "Motoreffekt",
+  "ready": "Ägarbytet är klart – ägarbeviset kan laddas ner",
+  "sold_new_by": "Såld ny av",
+  "title": "Ägarbevis",
+  "weight": "Tjänstevikt"
+ },
  "check": {
   "batch_count_one": "{{count}} rad att kontrollera",
   "batch_count_other": "{{count}} rader att kontrollera",
@@ -779,6 +796,56 @@
   "trade_in_own": "Maskinen ägs redan av er.",
   "trade_in_sent": "Ägaren har fått en förfrågan om inbyte.",
   "trade_in_verify": "Maskinen är inte fysiskt verifierad. Ni kan verifiera den på plats när kunden har godkänt inbytet."
+ },
+ "email": {
+  "footer": "Du får det här meddelandet från {{app}} ({{legal}}). Frågor? Svara inte på mejlet – skriv till {{support}}.",
+  "invite": {
+   "bankid": "Du loggar in med e-post och bekräftar din identitet med BankID innan du kan göra ändringar i registret.",
+   "body": "{{inviter}} har bjudit in dig som {{role}} i {{org_name}}.",
+   "button": "Acceptera inbjudan",
+   "expires": "Länken gäller i 14 dagar. Om du inte väntade dig inbjudan kan du bortse från den.",
+   "heading": "Inbjudan till {{org_name}}",
+   "subject": "{{inviter}} bjuder in dig till {{org_name}} i {{app}}"
+  },
+  "invite_owner": {
+   "body": "{{registered_by}} har registrerat en maskin med {{org_name}} som ägare i {{app}}. Logga in för att se maskinen, dess historik och eventuella förbehåll.",
+   "button": "Logga in och ta över",
+   "free": "Det kostar inget för ägare att använda registret.",
+   "heading": "En maskin är registrerad på {{org_name}}",
+   "subject": "{{registered_by}} har registrerat en maskin åt {{org_name}}"
+  },
+  "notification": {
+   "fallback_title": "Du har en ny notis",
+   "open": "Öppna",
+   "preferences": "Du kan välja vilka notiser som skickas som e-post under Inställningar → Notiser: {{url}}",
+   "subject_critical": "Viktigt: {{title}}"
+  },
+  "ownership_certificate": {
+   "body": "Ägarbytet från {{seller}} är genomfört och {{make}} {{model}} ({{reg_number}}) är registrerad på {{org_name}}. Ägarbeviset finns att ladda ner som PDF på maskinsidan.",
+   "button": "Öppna maskinen",
+   "heading": "{{org_name}} är registrerad ägare",
+   "number": "Ägarbevis nummer {{certificate_number}}.",
+   "subject": "Ägarbevis för {{make}} {{model}} ({{reg_number}})",
+   "verify": "Vem som helst kan kontrollera att ägarbeviset är äkta: {{url}}"
+  },
+  "transfer_invite": {
+   "bankid": "Ni accepterar med BankID. Först därefter blir ni registrerad ägare.",
+   "body": "{{seller}} har påbörjat ett ägarbyte av {{make}} {{model}} med registreringsnummer {{reg_number}}. Granska maskinkortet, historiken och om maskinen har förbehåll innan ni accepterar.",
+   "button": "Granska och acceptera",
+   "heading": "Ägarbyte väntar på er",
+   "not_expected": "Har ni inte köpt maskinen? Acceptera inte, utan kontakta säljaren eller oss.",
+   "subject": "{{seller}} vill överlåta {{make}} {{model}} ({{reg_number}}) till er"
+  },
+  "weekly_digest": {
+   "body_one": "Det här förfaller inom två veckor eller 100 drifttimmar:",
+   "body_other": "De här {{count}} sakerna förfaller inom två veckor eller 100 drifttimmar:",
+   "button": "Öppna flottan",
+   "due_date": "senast {{date}}",
+   "due_hours": "vid {{hours}} h (nu {{now}} h)",
+   "heading": "Veckans påminnelser för {{org_name}}",
+   "subject_one": "{{org_name}}: 1 påminnelse den här veckan",
+   "subject_other": "{{org_name}}: {{count}} påminnelser den här veckan"
+  }
  },
  "encumbrance_new": {
   "done": "Förbehållet är registrerat",
@@ -1170,8 +1237,19 @@
  },
  "events": {
   "api": "API",
+  "api_key": {
+   "created": "{{actor}} skapade en API-nyckel",
+   "revoked": "{{actor}} spärrade en API-nyckel"
+  },
   "audit": {
    "anchor_published": "Dagens ankare publicerades"
+  },
+  "authority": {
+   "preparedness_export": "{{actor}} tog fram en beredskapsexport",
+   "search": "{{actor}} sökte i registret"
+  },
+  "config": {
+   "changed": "{{actor}} ändrade en funktionsflagga"
   },
   "conflict": {
    "created": "En konflikt skapades",
@@ -1210,18 +1288,31 @@
   "identity": {
    "verified": "Identitet verifierad med {{payload.provider}}"
   },
+  "import": {
+   "committed": "{{actor}} importerade maskiner"
+  },
+  "inspection": {
+   "recorded": "{{actor}} registrerade en besiktning"
+  },
+  "insurance": {
+   "registered": "{{actor}} registrerade en försäkring",
+   "requirement_set": "{{actor}} satte krav på verifieringsnivå"
+  },
   "label": {
    "bound": "{{actor}} knöt märke …{{payload.label_serial}}",
    "revoked": "{{actor}} spärrade märke …{{payload.label_serial}}"
   },
   "labels": {
+   "cancelled": "Märkesbeställning avbruten",
    "ordered": "{{actor}} beställde {{payload.quantity}} märken",
-   "printed": "{{payload.quantity}} märken trycktes"
+   "printed": "{{payload.quantity}} märken trycktes",
+   "shipped": "{{actor}} fick märken skickade"
   },
   "legacy": {
    "imported": "Uppgift flyttad från tidigare version"
   },
   "machine": {
+   "assigned": "{{actor}} placerade maskinen i ett projekt",
    "checked": "{{actor}} kontrollerade maskinen",
    "deregistered": "{{actor}} avregistrerade maskinen",
    "factory_data_confirmed": "Fabriksdata bekräftade maskinens uppgifter",
@@ -1229,9 +1320,23 @@
    "photo_set": "{{actor}} bytte foto",
    "registered": "{{actor}} registrerade maskinen",
    "sighting_reported": "Tips om den stulna maskinen",
+   "stock_status_changed": "{{actor}} ändrade lagerstatus",
    "stolen_scanned": "Den stulna maskinen skannades",
+   "unassigned": "{{actor}} tog maskinen från ett projekt",
    "updated": "{{actor}} ändrade maskinuppgifter",
    "verified": "{{actor}} verifierade maskinen till nivå {{payload.level}}"
+  },
+  "machine_report": {
+   "created": "{{actor}} tog fram en maskinrapport"
+  },
+  "maintenance": {
+   "logged": "{{actor}} registrerade service"
+  },
+  "market": {
+   "alert": "Marknadslarm skapat",
+   "alert_reviewed": "{{actor}} granskade ett marknadslarm",
+   "listed": "Maskinen sågs i en annons",
+   "source_changed": "{{actor}} ändrade en marknadskälla"
   },
   "member": {
    "invited": "{{actor}} bjöd in en medlem",
@@ -1239,16 +1344,38 @@
    "removed": "En medlem togs bort",
    "role_changed": "En medlems roll ändrades"
   },
+  "oem": {
+   "records_submitted": "{{actor}} lämnade leveransdata"
+  },
   "org": {
    "approved": "Organisationen godkändes",
    "claimed": "{{actor}} tog över organisationen",
    "created": "{{actor}} skapade organisationen",
    "suspended": "Organisationen stängdes av",
+   "types_changed": "{{actor}} ändrade organisationens roller",
    "updated": "{{actor}} ändrade organisationens uppgifter"
   },
   "ownership": {
    "corrected": "Registrerad ägare rättades",
    "transferred": "{{actor}} blev registrerad ägare"
+  },
+  "ownership_certificate": {
+   "issued": "Ägarbevis utfärdat"
+  },
+  "register_extract": {
+   "created": "{{actor}} tog fram ett registerutdrag"
+  },
+  "rental": {
+   "created": "{{actor}} registrerade en uthyrning",
+   "returned": "{{actor}} registrerade att maskinen lämnats tillbaka"
+  },
+  "report": {
+   "created": "{{actor}} tog fram en rapport",
+   "viewed": "En delad rapport visades"
+  },
+  "report_grant": {
+   "created": "{{actor}} delade en rapport",
+   "revoked": "{{actor}} slutade dela en rapport"
   },
   "share_link": {
    "created": "{{actor}} skapade en delningslänk",
@@ -1270,6 +1397,10 @@
    "rejected": "{{actor}} avslog verifieringen",
    "requested": "{{actor}} begärde verifiering",
    "updated": "{{actor}} kompletterade verifieringen"
+  },
+  "webhook": {
+   "created": "{{actor}} skapade en webhook",
+   "deleted": "{{actor}} tog bort en webhook"
   }
  },
  "extract": {
@@ -1587,6 +1718,15 @@
   "viewer": "Vem",
   "visibility": "Synlighet",
   "where": "Ungefärlig plats"
+ },
+ "machine_report": {
+  "documents": "Dokument",
+  "download": "Maskinrapport (PDF)",
+  "history": "Historik",
+  "inspections": "Besiktningar och kontroller",
+  "legal": "Rapporten visar registrets uppgifter vid utfärdandet. Finansiering anges utan belopp. Serienummer visas maskerat. Kontrollera aktuell status med QR-koden.",
+  "service": "Service",
+  "title": "Maskinrapport"
  },
  "machines": {
   "col_machine": "Maskin",
@@ -2072,15 +2212,19 @@
   "website": "Webbplats"
  },
  "pdf": {
+  "document_number": "Dokumentnummer",
   "flags": "Flaggor",
+  "issued_by": "Utfärdad för",
   "market": "Marknadsobservationer",
   "no_amounts": "Registret innehåller aldrig belopp. Kvittot visar registrets innehåll vid kontrolltillfället.",
   "no_caps": "NEJ – inget aktivt förbehåll",
+  "page": "Sida {{page}} av {{pages}}",
   "performed_at": "Kontroll utförd",
   "performed_by": "Utförd av",
   "reg_number": "Registreringsnummer",
   "snapshot": "Kvittot är en ögonblicksbild och ersätter inte en ny kontroll vid ett senare tillfälle.",
   "verify_at": "Kontrollera kvittot på {{url}} med kvittonummer och kontrollsumma.",
+  "verify_document": "Kontrollera att dokumentet är äkta på {{url}} med dokumentnummer {{number}} och kontrollsumman nedan.",
   "yes_caps": "JA – aktivt förbehåll finns"
  },
  "portfolio": {
@@ -2168,10 +2312,16 @@
   "hash_hint": "64 tecken längst ner på kvittot.",
   "invalid": "Kvittot kunde inte bekräftas",
   "invalid_body": "Kontrollera kvittonummer och kontrollsumma. Stämmer de inte kan kvittot vara ändrat.",
+  "kind": {
+   "machine_report": "Äkta maskinrapport, utfärdad {{date}} för {{org}}.",
+   "ownership_certificate": "Äkta ägarbevis, utfärdat {{date}} för {{org}}.",
+   "register_extract": "Äkta registerutdrag, utfärdat {{date}} för {{org}}."
+  },
   "lead": "Har du fått ett kontrollkvitto (K-…) eller en flottrapport (F-…) kan du bekräfta att det är äkta. Ange numret och kontrollsumman som står på dokumentet.",
   "report_one": "Rapport skapad {{date}} av {{org}}, {{count}} maskin.",
   "report_other": "Rapport skapad {{date}} av {{org}}, {{count}} maskiner.",
   "submit": "Kontrollera",
+  "superseded": "Maskinen har bytt ägare sedan dokumentet utfärdades. Det visar inte längre aktuell ägare.",
   "title": "Kontrollera ett kvitto",
   "valid": "Kvittot är äkta"
  },

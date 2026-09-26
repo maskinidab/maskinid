@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { downloadCertificate } from "../../../lib/pdf/downloads";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useOrg } from "../../../auth/OrgContext";
 import { CompanyLookupField, type CompanyInfo } from "../../../components/CompanyLookupField";
@@ -114,7 +115,7 @@ export function validateStep(d: WizardData, step: number, dup: IdentifierCheck |
   return e;
 }
 
-type Result = { id: string; reg_number: string; status: string; existing_reg_number: string | null; warnings: { code: string }[]; factory_data: boolean };
+type Result = { id: string; reg_number: string; status: string; owner_org_id?: string; existing_reg_number: string | null; warnings: { code: string }[]; factory_data: boolean };
 
 /** Register machine wizard (SPEC §6.2): 4 steps, autosaved draft, < 2 minutes on mobile. */
 export function RegisterWizard() {
@@ -564,9 +565,10 @@ function StepLabel({ d, set }: { d: WizardData; set: Setter }) {
 
 function Done({ r, withLabel, onNext }: { r: Result; withLabel: boolean; onNext(): void }) {
   const { t } = useTranslation();
-  const { path, has } = useOrg();
+  const { path, has, orgId } = useOrg();
   const nav = useNavigate();
   const heading = useRef<HTMLHeadingElement>(null);
+  const [pdfError, setPdfError] = useState<unknown>(null);
   useEffect(() => { heading.current?.focus(); }, []);
   return (
     <div className="stack-6 smal smal-bred">
@@ -580,10 +582,15 @@ function Done({ r, withLabel, onNext }: { r: Result; withLabel: boolean; onNext(
         {r.warnings.some((w) => w.code === "vtr_owner_mismatch") && <Notice kind="info" title={t("wizard.vtr_mismatch")} />}
         {r.factory_data && <p className="t-liten"><Icon name="bock" className="ikon-inline" /> {t("wizard.done_factory")}</p>}
         {!withLabel && <p className="t-liten t-sekundar">{t("wizard.label_reminder")}</p>}
+        {!!pdfError && <ErrorNotice error={pdfError} />}
         <div className="mid-rad">
           <button type="button" className="mid-knapp mid-knapp-primar" onClick={() => nav(path(`machines/${r.id}?tab=documents`))}><Icon name="uppladdning" />{t("wizard.done_upload")}</button>
           {has("dealer") && <Link className="mid-knapp mid-knapp-kontur" to={path(`sales/new?machine=${r.id}`)}>{t("dealer.sell")}</Link>}
           <Link className="mid-knapp mid-knapp-kontur" to={path(`machines/${r.id}`)}>{t("wizard.done_open")}</Link>
+          {r.owner_org_id === orgId && r.status !== "disputed" && (
+            <button type="button" className="mid-knapp mid-knapp-kontur" onClick={() => { setPdfError(null); downloadCertificate(orgId, r.id, t).catch(setPdfError); }}>
+              <Icon name="nedladdning" />{t("certificate.download")}</button>
+          )}
           <button type="button" className="mid-knapp mid-knapp-kontur" onClick={onNext}><Icon name="plus" />{t("wizard.done_next")}</button>
         </div>
       </section>

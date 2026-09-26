@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { eventText } from "../../lib/pdf/certificate";
+import { downloadSharedMachineReport } from "../../lib/pdf/downloads";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
@@ -27,6 +30,8 @@ interface ShareResponse { ok: boolean; reason?: string; scope?: string; expires_
 export function SharePage() {
   const { t, i18n } = useTranslation();
   const { token } = useParams();
+  const [pdfBusy, setPdfBusy] = useState(false);
+  const [pdfError, setPdfError] = useState<unknown>(null);
   const q = useQuery({
     queryKey: ["share", token],
     queryFn: () => backend.invoke<ShareResponse>("share-view", undefined, { method: "GET", query: { token: token ?? "" }, anonymous: true }).catch((e) => {
@@ -52,6 +57,10 @@ export function SharePage() {
     <div className="behallare sektion stack-6 smal-bred">
       <Notice title={t("share.shared_by", { org: s.shared_by, date: formatDate(s.expires_at) })}>
         {s.views_left !== null && s.views_left !== undefined && <p className="t-liten">{t("share.views_left", { count: s.views_left })}</p>}
+        <p><button type="button" className="mid-knapp mid-knapp-kontur mid-knapp-liten" disabled={pdfBusy}
+          onClick={() => { setPdfBusy(true); setPdfError(null); downloadSharedMachineReport(token ?? "", t).catch(setPdfError).finally(() => setPdfBusy(false)); }}>
+          <Icon name="nedladdning" />{t("machine_report.download")}</button></p>
+        {!!pdfError && <ErrorNotice error={pdfError} />}
       </Notice>
       <article className="mid-post">
         <div className="mid-post-huvud">
@@ -103,7 +112,7 @@ export function SharePage() {
           {r.history.map((h, i) => (
             <li key={i}>
               <time>{formatDateTime(h.created_at)}</time>
-              <p>{i18n.exists(`events.${h.type}`) ? t(`events.${h.type}`, { actor: h.actor_org ?? t("events.system"), payload: {} }) : h.type}</p>
+              <p>{i18n.exists(`events.${h.type}`) ? eventText(t, h) : h.type}</p>
             </li>
           ))}
         </ol>

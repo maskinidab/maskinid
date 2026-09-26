@@ -14,14 +14,16 @@ export function OnboardingPage() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const suggested = useRpc<OrgBrief[]>("suggested_orgs", context ? {} : null);
-  if (ready && !session) return <Navigate to="/login?next=/onboarding" replace />;
+  // Only our own e-mail entry points may be continued after onboarding (no open redirect).
+  const next = /^\/(transfer\/[\w-]+(\?token=[\w-]+)?|go\?to=[\w%./-]+)$/.test(params.get("next") ?? "") ? params.get("next")! : null;
+  if (ready && !session) return <Navigate to={`/login?next=${encodeURIComponent(`/onboarding${next ? `?next=${encodeURIComponent(next)}` : ""}`)}`} replace />;
   if (!context) return <div className="behallare sektion"><Skeleton lines={5} /></div>;
   if (context.memberships.length && !params.get("new") && context.identity_verified_at) {
-    return <Navigate to={`/o/${context.memberships[0]!.org.slug}/dashboard`} replace />;
+    return <Navigate to={next ?? `/o/${context.memberships[0]!.org.slug}/dashboard`} replace />;
   }
   const created = async (org: OrgBrief) => {
     await refresh();
-    navigate(`/o/${org.slug}/dashboard`, { replace: true });
+    navigate(next ?? `/o/${org.slug}/dashboard`, { replace: true });
   };
   return (
     <div className="behallare sektion stack-6 smal-bred">

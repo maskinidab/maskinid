@@ -16,6 +16,7 @@ import type { DocumentItem, Encumbrance, Flag, HistoryEvent, MachineView, Market
 import { backend } from "../../../lib/backend";
 import { formatDate, formatDateTime, formatMonth, formatNumber } from "../../../lib/format";
 import { extractPdf } from "../../../lib/pdf/extract";
+import { downloadCertificate, downloadMachineReport } from "../../../lib/pdf/downloads";
 import { downloadBytes } from "../../../lib/pdf/receipt";
 import { ServiceTab } from "./ServiceTab";
 import {
@@ -39,6 +40,7 @@ export function MachinePage() {
   const [clearFlag, setClearFlag] = useState<Flag | null>(null);
   const [release, setRelease] = useState<Encumbrance | null>(null);
   const [askRelease, setAskRelease] = useState<Encumbrance | null>(null);
+  const [pdfError, setPdfError] = useState<unknown>(null);
 
   if (q.isLoading) return <Skeleton lines={8} height={28} />;
   if (q.error || !q.data) return <ErrorNotice error={q.error} />;
@@ -58,9 +60,18 @@ export function MachinePage() {
   ];
   const tab: Tab = tabs.some((x) => x.id === tabParam) ? (tabParam as Tab) : "overview";
   const active = m.financing?.active ?? null;
-  async function extract() {
-    const x = await rpc<{ report_number: string; result_hash: string; result: never }>("create_register_extract", { p_org_id: orgId, p_machine_id: m.id });
-    downloadBytes(await extractPdf(x.result, x, t), `registerutdrag-${x.report_number}.pdf`);
+  async function pdf(kind: "extract" | "certificate" | "report") {
+    setPdfError(null);
+    try {
+      if (kind === "certificate") await downloadCertificate(orgId, m.id, t);
+      else if (kind === "report") await downloadMachineReport(orgId, m.id, t);
+      else {
+        const x = await rpc<{ report_number: string; result_hash: string; result: never }>("create_register_extract", { p_org_id: orgId, p_machine_id: m.id });
+        downloadBytes(await extractPdf(x.result, x, t), `registerutdrag-${x.report_number}.pdf`);
+      }
+    } catch (e) {
+      setPdfError(e);
+    }
   }
   const flags = m.flags.filter((f) => f.status === "active");
 
@@ -120,10 +131,13 @@ export function MachinePage() {
           )}
           {(isOwner || has("authority")) && m.status !== "draft" && (
             <div className="mid-rad">
-              <button type="button" className="mid-knapp mid-knapp-text mid-knapp-liten" onClick={() => void extract()}><Icon name="dokument" />{t("extract.create")}</button>
+              {isOwner && <button type="button" className="mid-knapp mid-knapp-text mid-knapp-liten" onClick={() => void pdf("certificate")}><Icon name="sigill" />{t("certificate.download")}</button>}
+              {isOwner && <button type="button" className="mid-knapp mid-knapp-text mid-knapp-liten" onClick={() => void pdf("report")}><Icon name="lista" />{t("machine_report.download")}</button>}
+              <button type="button" className="mid-knapp mid-knapp-text mid-knapp-liten" onClick={() => void pdf("extract")}><Icon name="dokument" />{t("extract.create")}</button>
               {typeof m.claim_url === "string" && <a className="mid-knapp mid-knapp-text mid-knapp-liten" href={m.claim_url} target="_blank" rel="noopener noreferrer"><Icon name="extern" />{t("machine.claim")}</a>}
             </div>
           )}
+          {!!pdfError && <ErrorNotice error={pdfError} />}
           {actions.length > 0 && (
             <div className="mid-rad">
               {actions.map((a, i) => (

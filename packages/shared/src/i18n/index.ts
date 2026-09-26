@@ -21,7 +21,9 @@ export function translator(locale: Locale) {
   const dict = flatten((locale === "en" ? en : sv) as Record<string, unknown>);
   const fallback = flatten(sv as Record<string, unknown>);
   return (key: string, vars: Record<string, unknown> = {}): string => {
-    const s = dict[key] ?? fallback[key] ?? key;
+    // i18next-style plurals: key_one / key_other chosen by vars.count.
+    const plural = typeof vars.count === "number" ? `${key}_${vars.count === 1 ? "one" : "other"}` : null;
+    const s = (plural && (dict[plural] ?? fallback[plural])) ?? dict[key] ?? fallback[key] ?? key;
     return s.replace(/\{\{\s*([\w.]+)\s*\}\}/g, (_, path: string) => {
       const v = path.split(".").reduce<unknown>((o, p) => (o && typeof o === "object" ? (o as Record<string, unknown>)[p] : undefined), vars);
       return v === undefined || v === null ? "" : String(v);

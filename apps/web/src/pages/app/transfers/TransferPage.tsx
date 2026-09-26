@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { downloadCertificate } from "../../../lib/pdf/downloads";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { useOrg } from "../../../auth/OrgContext";
 import { ErrorNotice, Notice, PageHeader, Skeleton } from "../../../components/Feedback";
@@ -27,7 +28,7 @@ export function TransferPage() {
   const [params] = useSearchParams();
   const token = params.get("token");
   const { t } = useTranslation();
-  const { orgId, path, canWrite } = useOrg();
+  const { orgId, path, canWrite, has } = useOrg();
   const sign = useSign();
   const q = useRpc<TransferDetail>("get_transfer", { p_org_id: orgId, p_transfer_id: id, p_token: token });
   const [busy, setBusy] = useState(false);
@@ -75,6 +76,12 @@ export function TransferPage() {
       <div className="badge-rad"><StatusBadge kind={statusKind}>{t(`enum.transfer_status.${tr.status}`)}</StatusBadge>
         {tr.is_trade_in && <StatusBadge kind="neutral">{t("transfer.trade_in")}</StatusBadge>}</div>
       {done && <Notice kind="ok" title={t(done)} />}
+      {tr.status === "completed" && (tr.to?.id === orgId || (isSeller && has("dealer"))) && (
+        <Notice kind="ok" title={t("certificate.ready")}>
+          <button type="button" className="mid-knapp mid-knapp-primar mid-knapp-liten" disabled={busy}
+            onClick={() => void act(() => downloadCertificate(orgId, m.id, t), "certificate.downloaded")}><Icon name="nedladdning" />{t("certificate.download")}</button>
+        </Notice>
+      )}
       <section className="panel maskin-huvud" aria-label={t("machine.summary")}>
         <MachinePhoto path={m.primary_photo_path} category={m.category} size={112} />
         <div className="stack-2">

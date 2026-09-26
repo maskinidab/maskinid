@@ -519,6 +519,23 @@
   "title": "Sign with BankID",
   "you_sign": "You sign"
  },
+ "certificate": {
+  "download": "Ownership certificate (PDF)",
+  "downloaded": "The ownership certificate has been downloaded.",
+  "financing": "Registered financing",
+  "label": "QR label",
+  "lead": "{{org}} is the registered owner of the machine with registration number {{reg}} in MaskinID.",
+  "legal": "The certificate shows who is the registered owner in MaskinID when it was issued. It is not proof of title in a civil-law sense and does not replace a purchase agreement. Registered financing is stated without amounts. Always check the current status with the QR code or at maskinid.se.",
+  "level": "Verification level",
+  "owner": "Registered owner",
+  "owner_ordinal": "Owners in the register",
+  "owner_since": "Owner since",
+  "power": "Engine power",
+  "ready": "The transfer is complete – the ownership certificate can be downloaded",
+  "sold_new_by": "Sold new by",
+  "title": "Ownership certificate",
+  "weight": "Operating weight"
+ },
  "check": {
   "batch_count_one": "{{count}} line to check",
   "batch_count_other": "{{count}} lines to check",
@@ -779,6 +796,56 @@
   "trade_in_own": "The machine is already yours.",
   "trade_in_sent": "The owner has received a trade-in request.",
   "trade_in_verify": "The machine is not physically verified. You can verify it on site once the customer has approved the trade-in."
+ },
+ "email": {
+  "footer": "You receive this message from {{app}} ({{legal}}). Questions? Do not reply – write to {{support}}.",
+  "invite": {
+   "bankid": "You sign in with e-mail and confirm your identity with BankID before you can make changes in the register.",
+   "body": "{{inviter}} has invited you as {{role}} in {{org_name}}.",
+   "button": "Accept invitation",
+   "expires": "The link is valid for 14 days. If you did not expect the invitation you can ignore it.",
+   "heading": "Invitation to {{org_name}}",
+   "subject": "{{inviter}} invites you to {{org_name}} in {{app}}"
+  },
+  "invite_owner": {
+   "body": "{{registered_by}} has registered a machine with {{org_name}} as owner in {{app}}. Sign in to see the machine, its history and any encumbrances.",
+   "button": "Sign in and take over",
+   "free": "Using the register is free for owners.",
+   "heading": "A machine is registered to {{org_name}}",
+   "subject": "{{registered_by}} has registered a machine for {{org_name}}"
+  },
+  "notification": {
+   "fallback_title": "You have a new notification",
+   "open": "Open",
+   "preferences": "You can choose which notifications are e-mailed under Settings → Notifications: {{url}}",
+   "subject_critical": "Important: {{title}}"
+  },
+  "ownership_certificate": {
+   "body": "The transfer from {{seller}} is complete and {{make}} {{model}} ({{reg_number}}) is registered to {{org_name}}. The ownership certificate can be downloaded as a PDF on the machine page.",
+   "button": "Open the machine",
+   "heading": "{{org_name}} is the registered owner",
+   "number": "Ownership certificate number {{certificate_number}}.",
+   "subject": "Ownership certificate for {{make}} {{model}} ({{reg_number}})",
+   "verify": "Anyone can check that the certificate is genuine: {{url}}"
+  },
+  "transfer_invite": {
+   "bankid": "You accept with BankID. Only then do you become the registered owner.",
+   "body": "{{seller}} has started a transfer of {{make}} {{model}} with registration number {{reg_number}}. Review the machine card, history and any encumbrances before you accept.",
+   "button": "Review and accept",
+   "heading": "A transfer is waiting for you",
+   "not_expected": "Did you not buy the machine? Do not accept – contact the seller or us.",
+   "subject": "{{seller}} wants to transfer {{make}} {{model}} ({{reg_number}}) to you"
+  },
+  "weekly_digest": {
+   "body_one": "This is due within two weeks or 100 operating hours:",
+   "body_other": "These {{count}} items are due within two weeks or 100 operating hours:",
+   "button": "Open fleet",
+   "due_date": "by {{date}}",
+   "due_hours": "at {{hours}} h (now {{now}} h)",
+   "heading": "This week's reminders for {{org_name}}",
+   "subject_one": "{{org_name}}: 1 reminder this week",
+   "subject_other": "{{org_name}}: {{count}} reminders this week"
+  }
  },
  "encumbrance_new": {
   "done": "The encumbrance is registered",
@@ -1170,8 +1237,19 @@
  },
  "events": {
   "api": "API",
+  "api_key": {
+   "created": "{{actor}} created an API key",
+   "revoked": "{{actor}} revoked an API key"
+  },
   "audit": {
    "anchor_published": "Daily anchor published"
+  },
+  "authority": {
+   "preparedness_export": "{{actor}} produced a preparedness export",
+   "search": "{{actor}} searched the register"
+  },
+  "config": {
+   "changed": "{{actor}} changed a feature flag"
   },
   "conflict": {
    "created": "A conflict was created",
@@ -1210,18 +1288,31 @@
   "identity": {
    "verified": "Identity verified with {{payload.provider}}"
   },
+  "import": {
+   "committed": "{{actor}} imported machines"
+  },
+  "inspection": {
+   "recorded": "{{actor}} recorded an inspection"
+  },
+  "insurance": {
+   "registered": "{{actor}} registered an insurance policy",
+   "requirement_set": "{{actor}} set a verification level requirement"
+  },
   "label": {
    "bound": "{{actor}} bound label …{{payload.label_serial}}",
    "revoked": "{{actor}} revoked label …{{payload.label_serial}}"
   },
   "labels": {
+   "cancelled": "Label order cancelled",
    "ordered": "{{actor}} ordered {{payload.quantity}} labels",
-   "printed": "{{payload.quantity}} labels were printed"
+   "printed": "{{payload.quantity}} labels were printed",
+   "shipped": "Labels shipped to {{actor}}"
   },
   "legacy": {
    "imported": "Data moved from the previous version"
   },
   "machine": {
+   "assigned": "{{actor}} assigned the machine to a project",
    "checked": "{{actor}} checked the machine",
    "deregistered": "{{actor}} deregistered the machine",
    "factory_data_confirmed": "Factory data confirmed the machine details",
@@ -1229,9 +1320,23 @@
    "photo_set": "{{actor}} changed the photo",
    "registered": "{{actor}} registered the machine",
    "sighting_reported": "Tip about the stolen machine",
+   "stock_status_changed": "{{actor}} changed stock status",
    "stolen_scanned": "The stolen machine was scanned",
+   "unassigned": "{{actor}} removed the machine from a project",
    "updated": "{{actor}} updated machine details",
    "verified": "{{actor}} verified the machine to level {{payload.level}}"
+  },
+  "machine_report": {
+   "created": "{{actor}} produced a machine report"
+  },
+  "maintenance": {
+   "logged": "{{actor}} logged maintenance"
+  },
+  "market": {
+   "alert": "Market alert raised",
+   "alert_reviewed": "{{actor}} reviewed a market alert",
+   "listed": "The machine was seen in a listing",
+   "source_changed": "{{actor}} changed a market source"
   },
   "member": {
    "invited": "{{actor}} invited a member",
@@ -1239,16 +1344,38 @@
    "removed": "A member was removed",
    "role_changed": "A member's role changed"
   },
+  "oem": {
+   "records_submitted": "{{actor}} submitted delivery data"
+  },
   "org": {
    "approved": "The organisation was approved",
    "claimed": "{{actor}} claimed the organisation",
    "created": "{{actor}} created the organisation",
    "suspended": "The organisation was suspended",
+   "types_changed": "{{actor}} changed the organisation's roles",
    "updated": "{{actor}} updated the organisation"
   },
   "ownership": {
    "corrected": "Registered owner corrected",
    "transferred": "{{actor}} became registered owner"
+  },
+  "ownership_certificate": {
+   "issued": "Ownership certificate issued"
+  },
+  "register_extract": {
+   "created": "{{actor}} produced a register extract"
+  },
+  "rental": {
+   "created": "{{actor}} registered a rental",
+   "returned": "{{actor}} registered the machine as returned"
+  },
+  "report": {
+   "created": "{{actor}} produced a report",
+   "viewed": "A shared report was viewed"
+  },
+  "report_grant": {
+   "created": "{{actor}} shared a report",
+   "revoked": "{{actor}} stopped sharing a report"
   },
   "share_link": {
    "created": "{{actor}} created a share link",
@@ -1270,6 +1397,10 @@
    "rejected": "{{actor}} rejected the verification",
    "requested": "{{actor}} requested verification",
    "updated": "{{actor}} added documents"
+  },
+  "webhook": {
+   "created": "{{actor}} created a webhook",
+   "deleted": "{{actor}} deleted a webhook"
   }
  },
  "extract": {
@@ -1587,6 +1718,15 @@
   "viewer": "Who",
   "visibility": "Visibility",
   "where": "Approximate location"
+ },
+ "machine_report": {
+  "documents": "Documents",
+  "download": "Machine report (PDF)",
+  "history": "History",
+  "inspections": "Inspections",
+  "legal": "The report shows the register's data when it was issued. Financing is stated without amounts. The serial number is masked. Check the current status with the QR code.",
+  "service": "Service",
+  "title": "Machine report"
  },
  "machines": {
   "col_machine": "Machine",
@@ -2072,15 +2212,19 @@
   "website": "Website"
  },
  "pdf": {
+  "document_number": "Document number",
   "flags": "Flags",
+  "issued_by": "Issued for",
   "market": "Market observations",
   "no_amounts": "The register never contains amounts. The receipt shows the register content at the time of the check.",
   "no_caps": "NO – no active encumbrance",
+  "page": "Page {{page}} of {{pages}}",
   "performed_at": "Check performed",
   "performed_by": "Performed by",
   "reg_number": "Registration number",
   "snapshot": "The receipt is a snapshot and does not replace a new check at a later time.",
   "verify_at": "Verify the receipt at {{url}} with the receipt number and checksum.",
+  "verify_document": "Check that the document is genuine at {{url}} with document number {{number}} and the checksum below.",
   "yes_caps": "YES – active encumbrance"
  },
  "portfolio": {
@@ -2168,10 +2312,16 @@
   "hash_hint": "64 characters at the bottom of the receipt.",
   "invalid": "The receipt could not be confirmed",
   "invalid_body": "Check the receipt number and checksum. If they do not match the receipt may have been altered.",
+  "kind": {
+   "machine_report": "Genuine machine report, issued {{date}} for {{org}}.",
+   "ownership_certificate": "Genuine ownership certificate, issued {{date}} for {{org}}.",
+   "register_extract": "Genuine register extract, issued {{date}} for {{org}}."
+  },
   "lead": "If you have received a check receipt (K-…) or a fleet report (F-…) you can confirm it is genuine. Enter the number and the checksum printed on the document.",
   "report_one": "Report generated {{date}} by {{org}}, {{count}} machine.",
   "report_other": "Report generated {{date}} by {{org}}, {{count}} machines.",
   "submit": "Verify",
+  "superseded": "The machine has changed owner since the document was issued. It no longer shows the current owner.",
   "title": "Verify a receipt",
   "valid": "The receipt is genuine"
  },

@@ -118,6 +118,216 @@
   "sent": "Thank you. The seller has received your message.",
   "serial": "Serial number {{serial}}"
  },
+ "admin": {
+  "api": {
+   "days_one": "{{count}} day",
+   "days_other": "{{count}} days",
+   "empty": "No API requests in the period",
+   "errors": "Errors",
+   "last": "Last",
+   "lead": "Requests per organisation, errors, rate limits and webhook deliveries.",
+   "per_day": "Requests per day",
+   "per_org": "Per organisation",
+   "period": "Period",
+   "rate_limited_one": "{{count}} rate limited",
+   "rate_limited_other": "{{count}} rate limited",
+   "requests": "Requests",
+   "title": "API usage",
+   "top_endpoints": "Most used endpoints",
+   "webhooks_delivered": "Webhooks delivered",
+   "webhooks_failed": "Webhooks failed"
+  },
+  "conflicts": {
+   "empty": "No conflicts here",
+   "involved": "Involved",
+   "lead": "Duplicate serial numbers, ownership disputes and market anomalies. Every decision needs a note and is logged in the event chain.",
+   "related": "Existing machine",
+   "res": {
+    "dismiss": "Dismiss",
+    "keep_existing": "Keep existing registration {{existing}} – deregister {{new}}",
+    "keep_new": "Keep new registration {{new}} – deregister {{existing}}",
+    "resolved": "Resolved without register change"
+   },
+   "resolution": "Decision",
+   "resolve": "Resolve",
+   "title": "Conflicts"
+  },
+  "corrections": {
+   "approve": "Approve and sign",
+   "change": "Change",
+   "empty": "No corrections",
+   "lead": "Four eyes: one verifier proposes and another approves, both with BankID. The affected organisation gets 14 days to object, except for obvious typos.",
+   "not_found": "Could not find the machine or the organisation.",
+   "obvious_typo": "Obvious typo (no objection period)",
+   "propose": "Propose correction",
+   "propose_lead": "Only use when the registered owner is demonstrably wrong. Another verifier must approve.",
+   "propose_sign": "Propose and sign",
+   "status": {
+    "applied": "Applied",
+    "cancelled": "Cancelled",
+    "objected": "Objection received",
+    "objection_period": "Objection period",
+    "proposed": "Awaiting second verifier"
+   },
+   "title": "Owner corrections",
+   "to_org": "Correct owner",
+   "to_org_hint": "Organisation number or name",
+   "until": "Objection period until {{date}}"
+  },
+  "events": {
+   "all_for_org": "All events for the organisation",
+   "anchor_bad": "Does not match",
+   "anchor_events_one": "{{count}} event",
+   "anchor_events_other": "{{count}} events",
+   "anchor_ok": "Matches",
+   "anchors": "Daily anchors",
+   "chain_broken": "The chain is broken at event #{{seq}} ({{reason}}). Follow the incident runbook.",
+   "chain_ok_one": "The chain is intact ({{count}} event checked).",
+   "chain_ok_other": "The chain is intact ({{count}} events checked).",
+   "clear": "Clear filters",
+   "hash": "Hash",
+   "lead": "All hash-chained register events. The chain and the daily anchors can be verified here.",
+   "no_anchors": "No anchors yet.",
+   "payload": "Payload",
+   "published": "Published",
+   "title": "Event log",
+   "type_filter": "Event type",
+   "type_hint": "Start of the type, e.g. encumbrance or market.",
+   "verify_anchor": "Verify",
+   "verify_chain": "Verify the whole chain"
+  },
+  "flags": {
+   "changed": "Changed by {{who}} {{at}}",
+   "desc": {
+    "DEMO_MODE": "Mock services everywhere and a visible DEMO banner",
+    "FEATURE_MARKET": "Market surveillance",
+    "FEATURE_NFC": "NFC labels",
+    "FEATURE_PAYMENTS": "Payments (Stripe, test mode)",
+    "FEATURE_PUSH": "Browser push notifications",
+    "FEATURE_SMS": "SMS for critical notifications",
+    "FEATURE_TELEMATICS": "Telematics integrations",
+    "FEATURE_THEFT_SYNC": "Theft flag sync with the stolen goods register",
+    "FEATURE_VALUATION": "Market value index"
+   },
+   "lead": "Switch features on and off without a release. Changes are logged in the event chain.",
+   "read_only": "Only superadmins can change flags.",
+   "title": "Feature flags"
+  },
+  "health": {
+   "action": "Action",
+   "anchors": "Daily anchors",
+   "anchors_detail": "Latest {{day}} · {{missing}} missing days last week · {{unpublished}} unpublished",
+   "attention": "Needs attention",
+   "audit": "Operator log",
+   "audit_lead": "Every operator lookup and change. The log cannot be altered.",
+   "chain": "Event chain (last 2,000)",
+   "email": "E-mail",
+   "email_detail": "{{pending}} queued · {{overdue}} overdue",
+   "events_24h": "Events last 24 h",
+   "events_total": "Events in total",
+   "lead": "Checked {{at}}.",
+   "market": "Market surveillance",
+   "market_detail": "{{errors}} errors (24 h) · {{stuck}} stuck runs",
+   "ok": "OK",
+   "title": "System health",
+   "webhooks": "Webhooks",
+   "webhooks_detail": "{{pending}} queued · {{overdue}} overdue · {{failed_24h}} failed (24 h)",
+   "when": "When",
+   "who": "Who"
+  },
+  "home": {
+   "api_requests": "API requests (24 h)",
+   "conflicts_open": "open conflicts",
+   "corrections_pending": "corrections in progress",
+   "labels_ordered": "label orders to print",
+   "last_anchor": "Latest anchor",
+   "lead": "What is waiting for the register keeper right now. Your role: {{role}}.",
+   "market_alerts": "open market alerts",
+   "orgs": "Approved organisations",
+   "orgs_pending": "organisations awaiting approval",
+   "verifications_open": "verifications in queue",
+   "webhooks_failed": "failed webhooks (24 h)"
+  },
+  "labels": {
+   "address": "Shipping address",
+   "bound_one": "{{count}} bound",
+   "bound_other": "{{count}} bound",
+   "empty": "No batches here",
+   "lead": "Orders from dealers and other organisations. \"Print\" creates the codes; the print file holds code and URL for every label.",
+   "mark_shipped": "Mark shipped",
+   "org": "Organisation",
+   "print": "Print",
+   "print_file": "Print file (CSV)",
+   "quantity": "Quantity",
+   "title": "Label batches",
+   "unassigned": "Unassigned"
+  },
+  "market": {
+   "alerts": "Alerts",
+   "alerts_open": "Open alerts",
+   "counts": "Result",
+   "dismiss": "Dismiss",
+   "enabled": "Active",
+   "error": "Error",
+   "escalate": "Escalate to conflict",
+   "inactive": "no longer active",
+   "last_run": "Last run",
+   "lead": "Sources, runs and alerts. A source can only be switched on once its terms are reviewed; restricted sources never run.",
+   "listing": "Listing",
+   "no_alerts": "No open alerts",
+   "no_runs": "No runs yet",
+   "off": "Off",
+   "on": "On",
+   "run_counts": "{{fetched}} listings · {{new}} new · {{matched}} matched · {{alerts}} alerts",
+   "run_status": {
+    "error": "Error",
+    "ok": "Done",
+    "running": "Running"
+   },
+   "runs": "Runs",
+   "source": "Source",
+   "sources": "Sources",
+   "title": "Market surveillance",
+   "tos": "Terms",
+   "tos_hint": "Terms status changes after legal review. \"Restricted by terms\" switches the source off until an agreement exists.",
+   "volume": "{{matched}} matched · {{serial}} with serial"
+  },
+  "note": "Note",
+  "orgs": {
+   "api_keys": "Active API keys",
+   "approve": "Approve",
+   "change_types": "Change roles",
+   "created": "Created",
+   "dpa": "DPA accepted",
+   "empty": "No organisations here",
+   "identity": "BankID",
+   "lead": "Approval queue and search across all organisations. Dealers, lenders, insurers, authorities, inspection bodies and marketplaces are approved manually.",
+   "lookup": "Lookup",
+   "members": "Members",
+   "not_looked_up": "Not looked up",
+   "reactivate": "Reactivate",
+   "role": "Permission",
+   "search": "Name or organisation number",
+   "suspend": "Suspend",
+   "suspend_lead": "{{name}} cannot sign in or make changes until the organisation is reactivated. Its administrators are notified with the reason.",
+   "suspended_reason": "Suspended: {{reason}}",
+   "title": "Organisations",
+   "types": "Roles"
+  },
+  "reason": "Reason",
+  "support": {
+   "bankid_no": "Not verified",
+   "bankid_yes": "BankID verified",
+   "hint": "Name, organisation number, e-mail, registration number or serial number (at least 3 characters).",
+   "lead": "Find an organisation, user or machine to help a customer.",
+   "logged": "Every search is recorded in the operator log.",
+   "no_orgs": "No organisation",
+   "nothing": "No results",
+   "query": "Search",
+   "title": "Support search",
+   "users": "Users"
+  }
+ },
  "alerts": {
   "empty": "No alerts",
   "lead": "What others have done to machines in your portfolio: flags, transfers, encumbrances and double-encumbrance attempts.",
@@ -308,6 +518,23 @@
   "signing": "Waiting for signature …",
   "title": "Sign with BankID",
   "you_sign": "You sign"
+ },
+ "certificate": {
+  "download": "Ownership certificate (PDF)",
+  "downloaded": "The ownership certificate has been downloaded.",
+  "financing": "Registered financing",
+  "label": "QR label",
+  "lead": "{{org}} is the registered owner of the machine with registration number {{reg}} in MaskinID.",
+  "legal": "The certificate shows who is the registered owner in MaskinID when it was issued. It is not proof of title in a civil-law sense and does not replace a purchase agreement. Registered financing is stated without amounts. Always check the current status with the QR code or at maskinid.se.",
+  "level": "Verification level",
+  "owner": "Registered owner",
+  "owner_ordinal": "Owners in the register",
+  "owner_since": "Owner since",
+  "power": "Engine power",
+  "ready": "The transfer is complete – the ownership certificate can be downloaded",
+  "sold_new_by": "Sold new by",
+  "title": "Ownership certificate",
+  "weight": "Operating weight"
  },
  "check": {
   "batch_count_one": "{{count}} line to check",
@@ -570,6 +797,56 @@
   "trade_in_sent": "The owner has received a trade-in request.",
   "trade_in_verify": "The machine is not physically verified. You can verify it on site once the customer has approved the trade-in."
  },
+ "email": {
+  "footer": "You receive this message from {{app}} ({{legal}}). Questions? Do not reply – write to {{support}}.",
+  "invite": {
+   "bankid": "You sign in with e-mail and confirm your identity with BankID before you can make changes in the register.",
+   "body": "{{inviter}} has invited you as {{role}} in {{org_name}}.",
+   "button": "Accept invitation",
+   "expires": "The link is valid for 14 days. If you did not expect the invitation you can ignore it.",
+   "heading": "Invitation to {{org_name}}",
+   "subject": "{{inviter}} invites you to {{org_name}} in {{app}}"
+  },
+  "invite_owner": {
+   "body": "{{registered_by}} has registered a machine with {{org_name}} as owner in {{app}}. Sign in to see the machine, its history and any encumbrances.",
+   "button": "Sign in and take over",
+   "free": "Using the register is free for owners.",
+   "heading": "A machine is registered to {{org_name}}",
+   "subject": "{{registered_by}} has registered a machine for {{org_name}}"
+  },
+  "notification": {
+   "fallback_title": "You have a new notification",
+   "open": "Open",
+   "preferences": "You can choose which notifications are e-mailed under Settings → Notifications: {{url}}",
+   "subject_critical": "Important: {{title}}"
+  },
+  "ownership_certificate": {
+   "body": "The transfer from {{seller}} is complete and {{make}} {{model}} ({{reg_number}}) is registered to {{org_name}}. The ownership certificate can be downloaded as a PDF on the machine page.",
+   "button": "Open the machine",
+   "heading": "{{org_name}} is the registered owner",
+   "number": "Ownership certificate number {{certificate_number}}.",
+   "subject": "Ownership certificate for {{make}} {{model}} ({{reg_number}})",
+   "verify": "Anyone can check that the certificate is genuine: {{url}}"
+  },
+  "transfer_invite": {
+   "bankid": "You accept with BankID. Only then do you become the registered owner.",
+   "body": "{{seller}} has started a transfer of {{make}} {{model}} with registration number {{reg_number}}. Review the machine card, history and any encumbrances before you accept.",
+   "button": "Review and accept",
+   "heading": "A transfer is waiting for you",
+   "not_expected": "Did you not buy the machine? Do not accept – contact the seller or us.",
+   "subject": "{{seller}} wants to transfer {{make}} {{model}} ({{reg_number}}) to you"
+  },
+  "weekly_digest": {
+   "body_one": "This is due within two weeks or 100 operating hours:",
+   "body_other": "These {{count}} items are due within two weeks or 100 operating hours:",
+   "button": "Open fleet",
+   "due_date": "by {{date}}",
+   "due_hours": "at {{hours}} h (now {{now}} h)",
+   "heading": "This week's reminders for {{org_name}}",
+   "subject_one": "{{org_name}}: 1 reminder this week",
+   "subject_other": "{{org_name}}: {{count}} reminders this week"
+  }
+ },
  "encumbrance_new": {
   "done": "The encumbrance is registered",
   "lead": "Find the machine and register your encumbrance. The register never contains amounts.",
@@ -752,6 +1029,26 @@
    "other": "Other",
    "repair": "Repair",
    "service": "Service"
+  },
+  "market_alert_status": {
+   "dismissed": "Dismissed",
+   "escalated": "Escalated",
+   "open": "Open",
+   "reviewed": "Reviewed"
+  },
+  "market_alert_type": {
+   "duplicate_serial_in_market": "Duplicate serial",
+   "listed_after_transfer": "Listed after transfer",
+   "listed_with_active_financing": "Financed machine listed",
+   "price_anomaly": "Price anomaly",
+   "seller_not_owner": "Seller is not owner",
+   "stolen_machine_listed": "Stolen machine listed"
+  },
+  "market_tos_status": {
+   "allowed": "Allowed",
+   "partner_feed": "Partner feed",
+   "restricted": "Restricted by terms",
+   "unknown": "Not reviewed"
   },
   "member_role": {
    "admin": "Administrator",
@@ -1317,6 +1614,12 @@
   "insurer_requires": "{{insurer}} requires the machine to be {{level}}.",
   "label": "Label",
   "last_transfer": "Latest change of ownership",
+  "market_listed_one": "The machine appears in a listing",
+  "market_listed_other": "The machine appears in {{count}} listings",
+  "market_open": "View listing",
+  "market_seen_at": "Last seen for sale at {{where}} on {{date}}",
+  "market_stolen_listed_one": "Stolen machine appears in a listing – contact the police",
+  "market_stolen_listed_other": "Stolen machine appears in {{count}} listings – contact the police",
   "no_access": "Nobody has looked yet",
   "no_documents": "No documents yet",
   "no_label": "No attached label",
@@ -1352,6 +1655,15 @@
   "visibility": "Visibility",
   "where": "Approximate location"
  },
+ "machine_report": {
+  "documents": "Documents",
+  "download": "Machine report (PDF)",
+  "history": "History",
+  "inspections": "Inspections",
+  "legal": "The report shows the register's data when it was issued. Financing is stated without amounts. The serial number is masked. Check the current status with the QR code.",
+  "service": "Service",
+  "title": "Machine report"
+ },
  "machines": {
   "col_machine": "Machine",
   "col_next": "Next action",
@@ -1375,8 +1687,30 @@
   "title": "Machines",
   "transfer_open": "Transfer in progress"
  },
+ "market": {
+  "candidate_seen": "seen on {{source}} {{date}}",
+  "candidates_create_one": "Create one draft",
+  "candidates_create_other": "Create {{count}} drafts",
+  "candidates_created_one": "One draft has been created under Drafts.",
+  "candidates_created_other": "{{count}} drafts have been created under Drafts.",
+  "candidates_lead": "They appear in listings with your organisation number but are not registered. Choose which ones become prefilled drafts – you review and sign each registration.",
+  "candidates_review": "Show machines",
+  "candidates_title_one": "We found a machine you have advertised",
+  "candidates_title_other": "We found {{count}} machines you have advertised"
+ },
  "nav": {
   "admin": "Administration",
+  "admin_api": "API usage",
+  "admin_conflicts": "Conflicts",
+  "admin_corrections": "Corrections",
+  "admin_events": "Event log",
+  "admin_flags": "Feature flags",
+  "admin_health": "System health",
+  "admin_home": "Overview",
+  "admin_labels": "Label batches",
+  "admin_market": "Market surveillance",
+  "admin_orgs": "Organisations",
+  "admin_support": "Support search",
   "alerts": "Alerts",
   "api_docs": "API",
   "bookings": "Bookings",
@@ -1553,6 +1887,10 @@
    }
   },
   "labels": {
+   "cancelled": {
+    "body": "Contact support if you have questions.",
+    "title": "Label order cancelled"
+   },
    "ordered": {
     "body": "{{org}} ordered {{quantity}} labels.",
     "title": "Labels ordered"
@@ -1560,6 +1898,10 @@
    "printed": {
     "body": "{{quantity}} labels are printed and on their way.",
     "title": "Labels printed"
+   },
+   "shipped": {
+    "body": "{{quantity}} labels are on their way.",
+    "title": "Your labels have been shipped"
    }
   },
   "lead": {
@@ -1591,6 +1933,32 @@
    }
   },
   "mark_all_read": "Mark all as read",
+  "market": {
+   "duplicate_serial_in_market": {
+    "body": "The serial number of {{reg_number}} appears with several sellers.",
+    "title": "Same serial number in several listings"
+   },
+   "listed_after_transfer": {
+    "body": "{{reg_number}} has changed owner but the listing on {{source}} is still active.",
+    "title": "Listing still active after transfer"
+   },
+   "listed_with_active_financing": {
+    "body": "{{reg_number}} has an active encumbrance and appears in a listing on {{source}}.",
+    "title": "Financed machine listed for sale"
+   },
+   "price_anomaly": {
+    "body": "A listing for {{reg_number}} is far below comparable machines.",
+    "title": "Unusually low price in listing"
+   },
+   "seller_not_owner": {
+    "body": "{{reg_number}} is listed on {{source}} by a company that is not the registered owner.",
+    "title": "Listed by someone other than the owner"
+   },
+   "stolen_machine_listed": {
+    "body": "{{reg_number}} is reported stolen but appears in a listing on {{source}}.",
+    "title": "Stolen machine listed for sale"
+   }
+  },
   "member": {
    "access_requested": {
     "body": "{{name}} ({{email}}) wants to join the organisation.",
@@ -1780,15 +2148,19 @@
   "website": "Website"
  },
  "pdf": {
+  "document_number": "Document number",
   "flags": "Flags",
+  "issued_by": "Issued for",
   "market": "Market observations",
   "no_amounts": "The register never contains amounts. The receipt shows the register content at the time of the check.",
   "no_caps": "NO – no active encumbrance",
+  "page": "Page {{page}} of {{pages}}",
   "performed_at": "Check performed",
   "performed_by": "Performed by",
   "reg_number": "Registration number",
   "snapshot": "The receipt is a snapshot and does not replace a new check at a later time.",
   "verify_at": "Verify the receipt at {{url}} with the receipt number and checksum.",
+  "verify_document": "Check that the document is genuine at {{url}} with document number {{number}} and the checksum below.",
   "yes_caps": "YES – active encumbrance"
  },
  "portfolio": {
@@ -1876,10 +2248,16 @@
   "hash_hint": "64 characters at the bottom of the receipt.",
   "invalid": "The receipt could not be confirmed",
   "invalid_body": "Check the receipt number and checksum. If they do not match the receipt may have been altered.",
+  "kind": {
+   "machine_report": "Genuine machine report, issued {{date}} for {{org}}.",
+   "ownership_certificate": "Genuine ownership certificate, issued {{date}} for {{org}}.",
+   "register_extract": "Genuine register extract, issued {{date}} for {{org}}."
+  },
   "lead": "If you have received a check receipt (K-…) or a fleet report (F-…) you can confirm it is genuine. Enter the number and the checksum printed on the document.",
   "report_one": "Report generated {{date}} by {{org}}, {{count}} machine.",
   "report_other": "Report generated {{date}} by {{org}}, {{count}} machines.",
   "submit": "Verify",
+  "superseded": "The machine has changed owner since the document was issued. It no longer shows the current owner.",
   "title": "Verify a receipt",
   "valid": "The receipt is genuine"
  },

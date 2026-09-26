@@ -29,6 +29,28 @@ function AppEntry() {
   return <Navigate to={m ? `/o/${m.org.slug}/dashboard` : "/onboarding"} replace />;
 }
 
+/**
+ * Entry points for links in e-mail: /go?to=/machines/… opens an org-relative path in the user's last active org;
+ * /transfer/:id?token=… opens a transfer invitation (the buyer may still need an account or an organisation).
+ */
+function EmailEntry({ transfer = false }: { transfer?: boolean }) {
+  const { ready, session, context } = useAuth();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  if (!ready || (session && !context)) return <div className="behallare sektion"><Skeleton lines={4} /></div>;
+  if (!session) return <Navigate to={`/login?next=${encodeURIComponent(location.pathname + location.search)}`} replace />;
+  const m = context!.memberships.find((x) => x.org.id === context!.last_active_org_id) ?? context!.memberships[0];
+  if (!m) return <Navigate to={`/onboarding?next=${encodeURIComponent(location.pathname + location.search)}`} replace />;
+  if (transfer) {
+    const id = location.pathname.split("/")[2] ?? "";
+    return <Navigate to={`/o/${m.org.slug}/transfers/${encodeURIComponent(id)}${location.search}`} replace />;
+  }
+  const to = params.get("to") ?? "/dashboard";
+  // Only app-relative paths; never an external redirect.
+  const safe = /^\/[a-z0-9/_\-?=&%.]*$/i.test(to) && !to.startsWith("//") ? to : "/dashboard";
+  return <Navigate to={`/o/${m.org.slug}${safe}`} replace />;
+}
+
 /** /admin/* (links in notifications and e-mail) → the operator org's admin area. */
 function AdminRedirect() {
   const { ready, session, context } = useAuth();
@@ -67,6 +89,8 @@ export function AppRoutes() {
         <Route path="app" element={<AppEntry />} />
         <Route path="dashboard" element={<AppEntry />} />
         <Route path="admin/*" element={<AdminRedirect />} />
+        <Route path="go" element={<EmailEntry />} />
+        <Route path="transfer/:id" element={<EmailEntry transfer />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
       <Route path="o/:orgSlug" element={<AppLayout />}>

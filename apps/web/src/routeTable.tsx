@@ -70,6 +70,7 @@ export const publicRoutes: { path: string; element: ReactNode }[] = [
   { path: "security", element: <SecurityPage /> },
   { path: "how", element: <HowPage /> },
   { path: "receipt", element: <ReceiptVerifyPage /> },
+  { path: "verify-document", element: <ReceiptVerifyPage /> },
   { path: "ad/:reg", element: <AdPage /> },
   { path: "api-docs", element: <ApiDocsPage /> },
 ];
