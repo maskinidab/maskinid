@@ -5,10 +5,11 @@ export type IconName =
   | "bock" | "hanglas" | "varning" | "sok" | "nedladdning" | "pil-vanster" | "pil-hoger" | "plus" | "skrivare" | "sol" | "mane"
   | "meny" | "stang" | "dokument" | "byt" | "skold" | "logga-ut" | "qr" | "inkorg" | "klocka" | "hem" | "maskin" | "installningar"
   | "personer" | "flagga" | "diagram" | "lank" | "kamera" | "uppladdning" | "nyckel" | "plats" | "tid" | "oga" | "chevron-ned"
-  | "chevron-hoger" | "extern" | "filter" | "lista" | "bank" | "verktyg" | "bygg" | "tagg" | "kvitto" | "sigill" | "info" | "kopiera";
+  | "chevron-hoger" | "extern" | "filter" | "lista" | "bank" | "verktyg" | "bygg" | "tagg" | "kvitto" | "sigill" | "info" | "kopiera" | "penna";
 
 const PATHS: Record<IconName, React.ReactNode> = {
   bock: <path d="M5 12.5l4.5 4.5L19 7.5" />,
+  penna: <path d="M4 20l1-4L16 5l3 3L8 19zM14 7l3 3" />,
   hanglas: (<><rect x="5" y="11" width="14" height="9" /><path d="M8.5 11V8a3.5 3.5 0 0 1 7 0v3" /></>),
   varning: (<><path d="M12 3.5L21 20H3z" /><path d="M12 10v4.5M12 17v.5" /></>),
   sok: (<><circle cx="10.5" cy="10.5" r="6" /><path d="M15 15l5 5" /></>),

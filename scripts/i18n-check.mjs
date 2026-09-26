@@ -28,7 +28,7 @@ const used = new Map();
 const re = [/\bt\(\s*"([a-z][\w.]*[\w])"/g, /\bt\(\s*'([a-z][\w.]*[\w])'/g, /label:\s*"((?:nav|common)\.[\w.]+)"/g, /i18nKey="([\w.]+)"/g];
 for (const f of files(join(root, "apps/web/src"))) {
   const src = readFileSync(f, "utf8");
-  for (const r of re) for (const m of src.matchAll(r)) if (!(m[1] in flat)) used.set(m[1], f.replace(root, ""));
+  for (const r of re) for (const m of src.matchAll(r)) if (!(m[1] in flat) && !(`${m[1]}_other` in flat)) used.set(m[1], f.replace(root, ""));
 }
 if (used.size) {
   for (const [k, f] of used) console.log(`${k}\t${f}`);

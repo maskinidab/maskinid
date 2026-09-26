@@ -22,8 +22,6 @@ enable_signup = true
 enable_signup = true
 enable_confirmations = false
 
-[functions.invite-user]
-verify_jwt = true
 
 # Public Edge Functions (no user JWT): they authorise internally (rate limits, share tokens, cron secret).
 [functions.scan-log]
@@ -33,4 +31,9 @@ verify_jwt = false
 [functions.anchor-events]
 verify_jwt = false
 [functions.av-scan]
+verify_jwt = false
+# OIDC callbacks arrive without a Supabase JWT; the POST side authenticates the user itself.
+[functions.bankid-identify]
+verify_jwt = false
+[functions.bankid-sign]
 verify_jwt = false

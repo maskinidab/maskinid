@@ -20,7 +20,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 7 | Verifiering & konflikter | ✅ | + ägarrättelse (fyra ögon, 14 dagar), Inbox |
 | 8 | Frontend – skal | ✅ | lokalt läge = PGlite i webbläsaren (ADR 0011) |
 | 9 | Frontend – publikt | ✅ | |
-| 10 | Frontend – kärnflöden | ⬜ | |
+| 10 | Frontend – kärnflöden | ✅ | Ägarbevis-PDF i steg 19 |
 | 11 | Import | ⬜ | |
 | 12 | Flotta | ⬜ | |
 | 13 | Handlare | ⬜ | |
@@ -119,3 +119,23 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   stöld med 114 14, "Jag har sett maskinen" med samtycke till plats, offline: senast kända status), `/s/:token`
   (maskinrapport, dokumentnedladdning med token), `/scan`, `/verify` (privatperson med BankID ser bara ja/nej),
   `/security` (hashformel, ankare med verifiering, drift/utträdesklausul, ansvarsfull rapportering, security.txt), `/how`.
+- **Steg 10** – Kärnflöden i appen: maskinlista (omfång ägda/brukade/registrerade åt kund/tidigare, sök, filter,
+  CSV, påbörjade utkast), maskinsida med flikar (Översikt, Historik, Dokument, Förbehåll, Åtkomst) och rollstyrda
+  åtgärder: sälj/överlåt (orgnr-uppslag eller e-post, ny finansiering), dela (länk visas en gång, stäng), uppdatera
+  uppgifter, höj verifieringsnivå (partnerlista), koppla märke (skanna), registrera/släpp/bekräfta förbehåll, begär
+  frisläppning, anmäl stöld/flagga (myndighet: beslag/spärr/utredning), ta bort flagga, avregistrera (signering).
+  Registreringswizard i fyra steg (§6.2): foto av skylt ⇒ `ocr-nameplate` (Claude, fält för fält), live
+  dubblettkoll + fabriksdata, modellkatalog, maskinfoto, ägare/annan ägare med inbjudan, förbehållsförfrågan,
+  märke, autosparat utkast, klar-sida. Ägarbytessida `/transfers/:id` (köpare signerar, finansiär släpper/överför/nekar,
+  säljare avbryter, inbyte godkänns). Finansieringskontroll (en eller CSV ≤500, skannat märke ⇒ regnr), kvitto-PDF
+  (pdf-lib), kvittoarkiv, "Registrera förbehåll" från resultatet, `/encumbrances/new`, `/report-error` och
+  `/transfer-request` (dubblettträff i SerialInput). Publik `/receipt`: vem som helst med kvitto bekräftar det med
+  kvittonummer + SHA-256 (`verify_check_receipt`). Edge Functions: `bankid-identify` och `bankid-sign` (OIDC-broker,
+  HMAC-signerad state, ingen öppen redirect), `company-lookup` (Roaring, rate limit per användare, signatärer hashas),
+  `ocr-nameplate`/`ocr-listing-images`/`import-map` (Claude med strukturerad JSON-utdata, mock i DEMO_MODE).
+  Migration `frontend_flows`: kontroll med typ "any" matchar även MaskinID-regnr, `verify_check_receipt`,
+  `rate_limit_check`. Fynd: lokalt demoläge tappade skrivningar vid omladdning (databasen skrevs aldrig klart till
+  IndexedDB) ⇒ fullständig synk efter laddning + efter varje transaktion, markör för komplett kopia.
+  Webbläsartestat: registrering (mobil), sälj → köpare signerar (Demo-BankID), finansiär kontrollerar + registrerar
+  förbehåll, kvitto-PDF.
+

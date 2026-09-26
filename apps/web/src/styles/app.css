@@ -36,8 +36,8 @@ a { color: var(--id-text); }
 .sektion-liten { padding-block: var(--space-7); }
 .sektion-yta2 { background: var(--yta-2); }
 .rutnat { display: grid; gap: var(--space-5); grid-template-columns: repeat(12, minmax(0, 1fr)); }
-.kol-4 { grid-column: span 4; } .kol-5 { grid-column: span 5; } .kol-6 { grid-column: span 6; } .kol-7 { grid-column: span 7; } .kol-8 { grid-column: span 8; } .kol-12 { grid-column: span 12; }
-@media (max-width: 900px) { .kol-4, .kol-5, .kol-6, .kol-7, .kol-8 { grid-column: span 12; } }
+.kol-3 { grid-column: span 3; } .kol-9 { grid-column: span 9; } .kol-4 { grid-column: span 4; } .kol-5 { grid-column: span 5; } .kol-6 { grid-column: span 6; } .kol-7 { grid-column: span 7; } .kol-8 { grid-column: span 8; } .kol-12 { grid-column: span 12; }
+@media (max-width: 900px) { .kol-3, .kol-9, .kol-4, .kol-5, .kol-6, .kol-7, .kol-8 { grid-column: span 12; } }
 .brodsmulor { font-size: 14px; line-height: 20px; color: var(--text-sekundar); display: flex; gap: var(--space-2); flex-wrap: wrap; margin-bottom: var(--space-5); }
 .brodsmulor a { color: var(--text-sekundar); }
 
@@ -160,3 +160,32 @@ a { color: var(--id-text); }
 .stack-6 > * + * { margin-top: var(--space-6); }
 .stack-7 > * + * { margin-top: var(--space-7); }
 .ikon-inline { width: 14px; height: 14px; vertical-align: -2px; }
+
+/* ---------- Step 10: machine flows ---------- */
+.mid-knapp-text { background: transparent; color: var(--text); border-color: transparent; text-decoration: underline; text-underline-offset: 3px; }
+.mid-knapp-fara { background: var(--status-sparr); color: #fff; }
+.mid-knapp-fara:hover { background-image: linear-gradient(rgba(0,0,0,.12), rgba(0,0,0,.12)); }
+.mid-rad-slut { justify-content: flex-end; }
+.mid-rad-mellan { justify-content: space-between; }
+.mid-kryss { display: flex; gap: var(--space-2); align-items: flex-start; font-size: 15px; line-height: 20px; cursor: pointer; }
+.mid-kryss input { accent-color: var(--text); margin: 2px 0 0; width: 18px; height: 18px; flex: none; }
+.maskin-huvud { display: grid; gap: var(--space-5); grid-template-columns: auto 1fr; align-items: start; }
+.maskin-huvud .badge-rad { margin-top: var(--space-2); }
+@media (max-width: 640px) { .maskin-huvud { grid-template-columns: 1fr; } }
+.faktarutnat { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-3) var(--space-5); margin: 0; }
+.faktarutnat div { border-top: 1px solid var(--linje); padding-top: var(--space-2); }
+.faktarutnat dt { font-size: 13px; line-height: 18px; color: var(--text-sekundar); }
+.faktarutnat dd { margin: 2px 0 0; font-size: 15px; line-height: 22px; overflow-wrap: anywhere; }
+.guide-steg { display: flex; gap: var(--space-2); list-style: none; padding: 0; margin: 0; counter-reset: steg; flex-wrap: wrap; }
+.guide-steg li { counter-increment: steg; display: flex; align-items: center; gap: var(--space-2); font-size: 14px; color: var(--text-sekundar); }
+.guide-steg li::before { content: counter(steg); display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--linje-stark); font-weight: 600; }
+.guide-steg li[aria-current="step"] { color: var(--text); font-weight: 600; }
+.guide-steg li[aria-current="step"]::before { background: var(--id-gul); color: var(--pa-gul); border-color: var(--id-gul); }
+.guide-steg li.is-klar::before { content: "✓"; background: var(--text); color: var(--pa-svart); border-color: var(--text); }
+.guide-steg li + li::after { content: none; }
+@media (max-width: 640px) { .guide-steg li:not([aria-current="step"]) span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); } }
+.foto-forhand { width: 100%; max-width: 360px; border-radius: var(--radius-1); border: 1px solid var(--linje); }
+.radlista { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--linje); }
+.radlista > li { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; justify-content: space-between; padding: var(--space-3) 0; border-bottom: 1px solid var(--linje); }
+.radlista > li > a { color: var(--text); }
+.maskin-huvud .badge-rad, .maskin-huvud .mid-rad { display: flex; }

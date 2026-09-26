@@ -52,6 +52,33 @@ function toParam(v: unknown, type: string): unknown {
   return v;
 }
 
+const READY_KEY = `maskinid.local.ready.${__DEMO_DB_VERSION__}`;
+const IDB_NAME = `/pglite/maskinid-${__DEMO_DB_VERSION__}`;
+
+function deleteIdb(name: string): Promise<void> {
+  return new Promise((resolve) => {
+    try {
+      const req = indexedDB.deleteDatabase(name);
+      req.onsuccess = req.onerror = req.onblocked = () => resolve();
+    } catch {
+      resolve();
+    }
+  });
+}
+
+function readyMarker(): boolean {
+  try {
+    return localStorage.getItem(READY_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Opens the browser database. The first time, the prebuilt demo data directory is loaded and flushed completely to
+ * IndexedDB; a marker in localStorage records that the copy is complete. Without the marker any partial copy is
+ * discarded, so an interrupted first load never leaves an empty or half-written database behind.
+ */
 async function openDatabase(): Promise<PGlite> {
   const [{ PGlite }, { pgcrypto }, { pg_trgm }] = await Promise.all([
     import("@electric-sql/pglite"),
@@ -60,23 +87,33 @@ async function openDatabase(): Promise<PGlite> {
   ]);
   const extensions = { pgcrypto, pg_trgm };
   const dataDir = `idb://maskinid-${__DEMO_DB_VERSION__}`;
-  try {
-    const existing = new PGlite(dataDir, { extensions });
-    await existing.waitReady;
-    const r = await existing.query<{ ok: boolean }>("select to_regclass('public.machines') is not null as ok");
-    if (r.rows[0]?.ok) return existing;
-    await existing.close();
-  } catch {
-    /* IndexedDB unavailable (private mode) – fall back to memory below */
+  if (readyMarker()) {
+    try {
+      const existing = new PGlite(dataDir, { extensions });
+      await existing.waitReady;
+      const r = await existing.query<{ ok: boolean }>("select to_regclass('public.machines') is not null as ok");
+      if (r.rows[0]?.ok) return existing;
+      await existing.close();
+    } catch {
+      /* fall through to a fresh load */
+    }
   }
   const res = await fetch(`${import.meta.env.BASE_URL}demo-db/maskinid-${__DEMO_DB_VERSION__}.tar.gz`);
   if (!res.ok) throw new ApiError("DEMO_DB_MISSING", { status: res.status }, 500);
   const blob = await res.blob();
   try {
+    await deleteIdb(IDB_NAME);
     const db = new PGlite(dataDir, { extensions, loadDataDir: blob });
     await db.waitReady;
+    await db.syncToFs();
+    try {
+      localStorage.setItem(READY_KEY, "1");
+    } catch {
+      /* private mode: the database still works for this tab */
+    }
     return db;
   } catch {
+    // IndexedDB unavailable (private mode): keep the database in memory for this tab.
     const db = new PGlite({ extensions, loadDataDir: blob });
     await db.waitReady;
     return db;
@@ -118,7 +155,7 @@ export function createLocalBackend(): Backend {
 
   async function withRole<T>(role: Role, fn: (tx: Transaction) => Promise<T>): Promise<T> {
     const d = await db();
-    return d.transaction(async (tx) => {
+    const result = await d.transaction(async (tx) => {
       const claims = role === "authenticated" && session
         ? { sub: session.userId, role: "authenticated", email: session.email, aal: session.aal ?? "aal1" }
         : { role };
@@ -127,6 +164,9 @@ export function createLocalBackend(): Backend {
       await tx.exec(`set local role ${role}`);
       return fn(tx);
     });
+    // Flush to IndexedDB before resolving so a write survives an immediate page reload.
+    await d.syncToFs();
+    return result;
   }
 
   async function rpcAs<T>(role: Role, fn: string, args: Record<string, unknown> = {}): Promise<T> {
@@ -298,10 +338,12 @@ export function createLocalBackend(): Backend {
       dbPromise = null;
       sigs.clear();
       setSession(null);
-      await new Promise<void>((resolve) => {
-        const req = indexedDB.deleteDatabase(`/pglite/maskinid-${__DEMO_DB_VERSION__}`);
-        req.onsuccess = req.onerror = req.onblocked = () => resolve();
-      });
+      try {
+        localStorage.removeItem(READY_KEY);
+      } catch {
+        /* ignore */
+      }
+      await deleteIdb(IDB_NAME);
       await idbDelete("*");
     },
   };

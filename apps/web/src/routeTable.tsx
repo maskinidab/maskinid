@@ -11,10 +11,19 @@ const ScanPage = L(() => import("./pages/public/ScanPage"), "ScanPage");
 const VerifyPage = L(() => import("./pages/public/VerifyPage"), "VerifyPage");
 const SecurityPage = L(() => import("./pages/public/SecurityPage"), "SecurityPage");
 const HowPage = L(() => import("./pages/public/HowPage"), "HowPage");
+const ReceiptVerifyPage = L(() => import("./pages/public/ReceiptVerifyPage"), "ReceiptVerifyPage");
 const DashboardPage = L(() => import("./pages/app/DashboardPage"), "DashboardPage");
 const InboxPage = L(() => import("./pages/app/InboxPage"), "InboxPage");
 const NotificationsPage = L(() => import("./pages/app/NotificationsPage"), "NotificationsPage");
 const SettingsPage = L(() => import("./pages/app/SettingsPage"), "SettingsPage");
+const MachinesPage = L(() => import("./pages/app/machines/MachinesPage"), "MachinesPage");
+const MachinePage = L(() => import("./pages/app/machines/MachinePage"), "MachinePage");
+const RegisterWizard = L(() => import("./pages/app/machines/RegisterWizard"), "RegisterWizard");
+const ReportErrorPage = L(() => import("./pages/app/machines/ReportErrorPage"), "ReportErrorPage");
+const TransferPage = L(() => import("./pages/app/transfers/TransferPage"), "TransferPage");
+const CheckPage = L(() => import("./pages/app/check/CheckPage"), "CheckPage");
+const ReceiptsPage = L(() => import("./pages/app/check/CheckPage"), "ReceiptsPage");
+const NewEncumbrancePage = L(() => import("./pages/app/encumbrances/NewEncumbrancePage"), "NewEncumbrancePage");
 
 export const publicRoutes: { path: string; element: ReactNode }[] = [
   { path: "/", element: <HomePage /> },
@@ -25,6 +34,7 @@ export const publicRoutes: { path: string; element: ReactNode }[] = [
   { path: "verify", element: <VerifyPage /> },
   { path: "security", element: <SecurityPage /> },
   { path: "how", element: <HowPage /> },
+  { path: "receipt", element: <ReceiptVerifyPage /> },
 ];
 
 export const appRoutes: { path: string; element: ReactNode }[] = [
@@ -32,4 +42,13 @@ export const appRoutes: { path: string; element: ReactNode }[] = [
   { path: "inbox", element: <InboxPage /> },
   { path: "notifications", element: <NotificationsPage /> },
   { path: "settings", element: <SettingsPage /> },
+  { path: "machines", element: <MachinesPage /> },
+  { path: "machines/new", element: <RegisterWizard /> },
+  { path: "machines/:id", element: <MachinePage /> },
+  { path: "transfers/:id", element: <TransferPage /> },
+  { path: "transfer-request", element: <ReportErrorPage /> },
+  { path: "report-error", element: <ReportErrorPage /> },
+  { path: "check", element: <CheckPage /> },
+  { path: "receipts", element: <ReceiptsPage /> },
+  { path: "encumbrances/new", element: <NewEncumbrancePage /> },
 ];

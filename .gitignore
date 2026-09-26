@@ -33,3 +33,4 @@ apps/web/dist-demo
 apps/web/public/demo-db
 supabase/.temp
 supabase/.branches
+.smoke/
