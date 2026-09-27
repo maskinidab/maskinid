@@ -46,3 +46,13 @@ Frågor som kräver affärsbeslut. Bygget stannar inte för dem; det säkraste a
 14. **Risksignalernas trösklar** (t.ex. 3 ägarbyten på 2 år, 3 kreditgivare på 30 dagar, ägarbyte inom 90 dagar)
     är antaganden och bör stämmas av med finansiärer.
 15. **Koncern.** *Antagande:* en nivå (moderbolag–dotterbolag) och endast läsbehörighet för moderbolaget.
+
+## Tips, support, juridik, "Visa som" (steg 22, tolkat – SPEC §20.8, 20.10, 20.11 saknas)
+16. **Juridiska texter.** Villkor, integritetspolicy, biträdesavtal och kakpolicy (v1) är utkast skrivna utifrån
+    produktens funktion. *Måste granskas av jurist* innan lansering; nya versioner publiceras under Admin → Juridiska dokument.
+17. **Säkerhetsloggen** skrivs av klienten efter inloggning/MFA-ändring och är därför informativ. *Antagande:* en
+    server-side-logg via Supabase Auth hooks ersätter den när projektet körs på Supabase Pro.
+18. **"Visa som organisation"** är skrivskyddad, 30 minuter och kräver skäl. *Antagande:* ingen förhandsgodkänning från
+    kunden krävs; organisationens administratörer meddelas direkt i stället.
+19. **Tips till polisen.** *Antagande:* vi vidarebefordrar bara till den myndighet som flaggat maskinen i registret, inte
+    till polisens allmänna tipsfunktion.

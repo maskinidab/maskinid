@@ -16,7 +16,10 @@ export interface OrgBrief {
 }
 
 export interface Membership {
-  membership_id: string;
+  membership_id: string | null;
+  /** Operator support viewing this organisation read-only (step 22). */
+  view_as?: boolean;
+  view_as_expires_at?: string;
   role: MemberRole;
   org: OrgBrief;
   effective_types: OrgType[];
@@ -36,6 +39,7 @@ export interface MyContext {
   memberships: Membership[];
   pending_invites: { membership_id: string; org: OrgBrief; role: MemberRole }[];
   unread_notifications: number;
+  legal_pending?: { key: string; version: number }[];
   demo_mode: boolean;
 }
 
@@ -134,6 +138,7 @@ export interface MachineView {
   flags: Flag[];
   last_transfer_date: string | null;
   open_transfer?: Transfer | null;
+  stolen_public?: { flag_id: string; published: boolean };
   [extra: string]: unknown;
 }
 

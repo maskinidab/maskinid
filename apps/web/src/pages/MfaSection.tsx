@@ -5,6 +5,7 @@ import { useAuth } from "../auth/AuthProvider";
 import { ErrorNotice, Notice } from "../components/Feedback";
 import { FormField } from "../components/FormField";
 import { backend } from "../lib/backend";
+import { recordSecurityEvent } from "../lib/security";
 
 /** TOTP two-factor sign-in (SPEC §11.1: required for financier/authority/operator outside DEMO_MODE). */
 export function MfaSection() {
@@ -36,12 +37,12 @@ export function MfaSection() {
               <button className="mid-knapp mid-knapp-sekundar" type="submit">{t("auth.mfa_verify")}</button>
             </form>
           )}
-          <button type="button" className="mid-knapp mid-knapp-kontur mid-knapp-liten" onClick={async () => { await backend.auth.mfa.unenroll(verified.id); setDone(false); setFactors([]); }}>{t("security.mfa_disable")}</button>
+          <button type="button" className="mid-knapp mid-knapp-kontur mid-knapp-liten" onClick={async () => { await backend.auth.mfa.unenroll(verified.id); void recordSecurityEvent("mfa_removed"); setDone(false); setFactors([]); }}>{t("security.mfa_disable")}</button>
         </div>
       ) : enroll ? (
         <form className="stack-3" onSubmit={async (e) => {
           e.preventDefault();
-          try { await backend.auth.mfa.verify(enroll.factorId, code); setEnroll(null); setDone(true); await refresh(); } catch (x) { setError(x); }
+          try { await backend.auth.mfa.verify(enroll.factorId, code); void recordSecurityEvent("mfa_enrolled"); setEnroll(null); setDone(true); await refresh(); } catch (x) { setError(x); }
         }}>
           <p>{t("security.mfa_scan")}</p>
           {enroll.img && <img src={enroll.img} alt={t("security.mfa_qr_alt")} width={180} height={180} />}

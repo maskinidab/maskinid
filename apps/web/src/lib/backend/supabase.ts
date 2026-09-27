@@ -58,8 +58,8 @@ export function createSupabaseBackend(url: string, key: string): Backend {
       async completeLink() {
         return toSession((await sb.auth.getSession()).data.session);
       },
-      async signOut() {
-        await sb.auth.signOut();
+      async signOut(opts) {
+        await sb.auth.signOut({ scope: opts?.everywhere ? "global" : "local" });
       },
       onChange(cb) {
         const { data } = sb.auth.onAuthStateChange((_e, s) => cb(toSession(s)));

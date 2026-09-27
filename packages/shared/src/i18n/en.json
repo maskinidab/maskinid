@@ -262,6 +262,20 @@
    "title": "Label batches",
    "unassigned": "Unassigned"
   },
+  "legal": {
+   "body_en": "Text (English)",
+   "body_sv": "Text (Swedish)",
+   "document": "Document",
+   "lead": "Publish new versions. Documents that require acceptance are shown to all users at their next sign-in.",
+   "new_version": "New version",
+   "publish": "Publish",
+   "published": "Version {{version}} has been published.",
+   "requires": "Requires acceptance",
+   "requires_hint": "Users must accept the new version before they continue.",
+   "title": "Legal documents",
+   "title_en": "Title (English)",
+   "title_sv": "Title (Swedish)"
+  },
   "market": {
    "alerts": "Alerts",
    "alerts_open": "Open alerts",
@@ -326,6 +340,26 @@
    "query": "Search",
    "title": "Support search",
    "users": "Users"
+  },
+  "tickets": {
+   "empty": "No cases",
+   "from": "From",
+   "lead": "Cases from signed-in users and the contact form. Replies are logged.",
+   "title": "Support cases"
+  },
+  "tips": {
+   "close": "Close",
+   "contact": "Contact: {{contact}}",
+   "empty": "No tips",
+   "forward": "Forward to authority",
+   "lead": "Tips from the public. Forward to the authority that flagged the machine, or close.",
+   "no_match": "No machine matched",
+   "status": {
+    "closed": "Closed",
+    "forwarded": "Forwarded",
+    "new": "New"
+   },
+   "title": "Tips"
   }
  },
  "alerts": {
@@ -915,6 +949,11 @@
    "subject": "Ownership certificate for {{make}} {{model}} ({{reg_number}})",
    "verify": "Anyone can check that the certificate is genuine: {{url}}"
   },
+  "support_reply": {
+   "heading": "Reply to case {{number}}",
+   "how_to_answer": "Reply to this e-mail or write through the contact form and quote the case number.",
+   "subject": "Reply to case {{number}}: {{subject}}"
+  },
   "transfer_invite": {
    "bankid": "You accept with BankID. Only then do you become the registered owner.",
    "body": "{{seller}} has started a transfer of {{make}} {{model}} with registration number {{reg_number}}. Review the machine card, history and any encumbrances before you accept.",
@@ -1437,7 +1476,9 @@
   "fallback": "Register event",
   "flag": {
    "cleared": "{{actor}} cleared the flag",
-   "raised": "{{actor}} flagged the machine"
+   "published": "{{actor}} showed the machine on the stolen list",
+   "raised": "{{actor}} flagged the machine",
+   "unpublished": "{{actor}} removed the machine from the stolen list"
   },
   "fuel": {
    "logged": "{{actor}} logged fuel"
@@ -1467,6 +1508,9 @@
   },
   "legacy": {
    "imported": "Data moved from the previous version"
+  },
+  "legal": {
+   "published": "New version of a legal document"
   },
   "machine": {
    "assigned": "{{actor}} assigned the machine to a project",
@@ -1552,6 +1596,9 @@
    "revoked": "{{actor}} closed a share link"
   },
   "system": "MaskinID",
+  "tip": {
+   "received": "A tip was received about the machine"
+  },
   "transfer": {
    "cancelled": "The transfer was cancelled",
    "completed": "The transfer was completed",
@@ -1671,6 +1718,14 @@
    "active": "Active",
    "pending": "Awaiting approval"
   }
+ },
+ "help": {
+  "contact": "Contact support",
+  "lead": "Answers to common questions about the register.",
+  "none": "No articles match the search",
+  "not_found_title": "Cannot find the answer?",
+  "search": "Search help",
+  "title": "Help centre"
  },
  "how": {
   "disclaimer": "{{app}} is a private, voluntary register and not a public authority.",
@@ -1829,6 +1884,23 @@
   "role_primary": "Primary",
   "role_secondary": "Hidden secondary",
   "serial": "Label number"
+ },
+ "legal": {
+  "gate_accept": "Accept and continue",
+  "gate_confirm": "I have read and accept the documents above",
+  "gate_lead": "We have updated the following documents. Read them and accept to continue using the service.",
+  "gate_title": "Updated terms",
+  "keys": {
+   "cookies": "Cookies",
+   "dpa": "Data processing agreement",
+   "privacy": "Privacy policy",
+   "terms": "Terms of use"
+  },
+  "old_version": "This is an earlier version. The current version is available through the link below.",
+  "other": "Other documents",
+  "version": "Version {{version}}, published {{date}}",
+  "version_short": "version {{version}}",
+  "versions": "Earlier versions"
  },
  "level": {
   "0": {
@@ -2012,9 +2084,12 @@
   "admin_health": "System health",
   "admin_home": "Overview",
   "admin_labels": "Label batches",
+  "admin_legal": "Legal documents",
   "admin_market": "Market surveillance",
   "admin_orgs": "Organisations",
   "admin_support": "Support search",
+  "admin_tickets": "Support cases",
+  "admin_tips": "Tips",
   "alerts": "Alerts",
   "api_docs": "API",
   "attachments": "Attachments",
@@ -2066,6 +2141,7 @@
   "sign_out": "Sign out",
   "sign_up": "Create account",
   "stock": "Stock",
+  "support": "Support",
   "trade_in": "Receive trade-in",
   "verify": "Verification queue",
   "watchlist": "Watchlist"
@@ -2353,6 +2429,38 @@
    "created": {
     "body": "{{owner}} has given you read access to its fleet report.",
     "title": "Shared fleet report"
+   }
+  },
+  "support": {
+   "customer_reply": {
+    "body": "",
+    "title": "The customer replied in case {{number}}"
+   },
+   "reply": {
+    "body": "{{subject}}",
+    "title": "Reply to case {{number}}"
+   },
+   "ticket": {
+    "body": "{{subject}}",
+    "title": "New support case {{number}}"
+   },
+   "viewed_as": {
+    "body": "Read-only for at most 30 minutes. Reason: {{reason}}",
+    "title": "Support has viewed your organisation"
+   }
+  },
+  "tip": {
+   "forwarded": {
+    "body": "{{message}} Contact: {{contact}}",
+    "title": "Tip about {{reg_number}} forwarded"
+   },
+   "received": {
+    "body": "{{reg_number}}",
+    "title": "New tip"
+   },
+   "stolen_machine": {
+    "body": "{{message}}",
+    "title": "Tip about stolen machine {{reg_number}}"
    }
   },
   "transfer": {
@@ -2680,6 +2788,17 @@
   "no_hits": "No result for {{q}}. Check the number on the nameplate."
  },
  "security": {
+  "event": {
+   "identity_verified": "Identity confirmed with BankID",
+   "legal_accepted": "Terms accepted",
+   "mfa_enrolled": "Two-factor sign-in enabled",
+   "mfa_removed": "Two-factor sign-in disabled",
+   "sign_in": "Sign-in",
+   "sign_out": "Sign-out",
+   "sign_out_everywhere": "Signed out of all devices",
+   "view_as_started": "View as organisation"
+  },
+  "lead": "Your recent sign-ins and security changes.",
   "mfa_disable": "Disable two-factor sign-in",
   "mfa_enable": "Enable two-factor sign-in",
   "mfa_enabled": "Two-factor sign-in is enabled.",
@@ -2688,7 +2807,11 @@
   "mfa_qr_alt": "QR code for the authenticator app",
   "mfa_scan": "Scan the code with your authenticator app and enter the code it shows.",
   "mfa_session_ok": "verified for this session",
-  "mfa_title": "Two-factor sign-in"
+  "mfa_title": "Two-factor sign-in",
+  "none": "No events yet",
+  "sign_out_everywhere": "Sign out of all devices",
+  "suspicious": "Do you not recognise a sign-in? Sign out of all devices and contact support.",
+  "title": "Sign-ins and security"
  },
  "securitypage": {
   "anchor_body": "Every night a combined checksum (Merkle root) of the day's events is computed. It is published here and in a public GitHub repository. Anyone holding an old value can see if anything changed.",
@@ -2785,6 +2908,70 @@
   "shared_by": "Shared by {{org}}. The link is valid until {{date}}.",
   "views_left": "{{count}} views left."
  },
+ "stolen": {
+  "has_label": "Has QR label",
+  "lead": "Machines reported stolen where the owner or the police chose to show them here. If you see one: call the police on 114 14 or leave a tip.",
+  "none": "No machines on the list right now",
+  "privacy": "The list never shows owners or contact details.",
+  "publish_hint": "The list shows make, model, registration number and county – never the owner.",
+  "publish_toggle": "Show on the public stolen list",
+  "since": "Stolen since {{date}}",
+  "title": "Stolen machines"
+ },
+ "support": {
+  "categories": {
+   "account": "Account and sign-in",
+   "api": "API and integrations",
+   "billing": "Billing",
+   "financing": "Encumbrances",
+   "labels": "QR labels",
+   "machine": "Machine and details",
+   "other": "Other",
+   "privacy": "Personal data",
+   "transfer": "Ownership transfer"
+  },
+  "category": "Category",
+  "close": "Close the case",
+  "contact_lead": "Cannot find the answer in the help centre? Write to us and we normally reply within one working day.",
+  "contact_title": "Contact us",
+  "lead": "Your support cases. Replies also arrive as notifications.",
+  "message": "Message",
+  "new": "New case",
+  "reopen": "Reopen",
+  "reply": "Reply",
+  "send": "Send",
+  "sent": "Case {{number}} has been created. The reply will go to your e-mail.",
+  "status": {
+   "closed": "Closed",
+   "open": "Open",
+   "waiting_customer": "Waiting for you"
+  },
+  "status_waiting_customer_admin": "Waiting for customer",
+  "subject": "Subject"
+ },
+ "tips": {
+  "city": "Town",
+  "contact": "Phone or e-mail",
+  "contact_hint": "Optional. Only shown to us and may be passed on to the police.",
+  "emergency": "Is a crime in progress? Call 112.",
+  "kind": {
+   "other": "Other",
+   "seen_machine": "I have seen a machine",
+   "suspicious_listing": "Suspicious listing",
+   "suspicious_sale": "Suspicious sale"
+  },
+  "kind_label": "What is the tip about?",
+  "lead": "Have you seen a machine that may be stolen, or a suspicious listing? The tip goes to us and, if the machine is reported stolen, to the owner. You can remain anonymous.",
+  "link": "Report a tip",
+  "listing_url": "Link to the listing",
+  "message": "Describe what you have seen",
+  "reg_hint": "Found on the QR label or the nameplate. Leave empty if you do not know.",
+  "reg_or_serial": "Registration or serial number",
+  "sent": "Thank you for the tip",
+  "sent_body": "We will review it and contact the police if needed.",
+  "submit": "Send the tip",
+  "title": "Report a tip about a machine"
+ },
  "transfer": {
   "accept": "Sign and approve",
   "buyer": "Buyer",
@@ -2838,6 +3025,12 @@
   "review_title": "Review: {{level}}",
   "site": "Site: {{address}}, preferred date {{date}}.",
   "when_where": "When and where"
+ },
+ "viewas": {
+  "banner": "You are viewing {{org}} as the organisation sees it, read-only, until {{until}}. The view is logged.",
+  "end": "End view",
+  "lead": "You view {{name}} read-only for 30 minutes. The organisation's admins are notified and the reason is logged.",
+  "start": "View as organisation"
  },
  "watch": {
   "add": "Watch",

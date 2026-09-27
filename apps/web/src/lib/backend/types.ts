@@ -36,7 +36,8 @@ export interface Backend {
     signInWithOtp(email: string, redirectTo: string): Promise<{ demoLink?: string }>;
     /** Completes a local-mode magic link (no-op for Supabase, which handles the redirect itself). */
     completeLink(params: URLSearchParams): Promise<Session | null>;
-    signOut(): Promise<void>;
+    /** everywhere: end all sessions of the user (all devices). */
+    signOut(opts?: { everywhere?: boolean }): Promise<void>;
     onChange(cb: (s: Session | null) => void): () => void;
     mfa: {
       enroll(): Promise<{ factorId: string; qr: string; secret: string }>;

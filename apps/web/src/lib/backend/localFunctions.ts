@@ -27,6 +27,20 @@ export const localFunctions: Record<string, Handler> = {
     });
   },
 
+  async tip(ctx, body) {
+    return ctx.rpcAs("service_role", "submit_tip", {
+      p_kind: String(body?.kind ?? "other"), p_reg_or_serial: body?.reg_or_serial ?? null, p_message: String(body?.message ?? ""),
+      p_location: body?.location ?? null, p_listing_url: body?.listing_url ?? null, p_contact: body?.contact ?? null, p_ip_hash: LOCAL_IP,
+    });
+  },
+
+  async support(ctx, body) {
+    return ctx.rpcAs("service_role", "submit_public_support", {
+      p_email: String(body?.email ?? ""), p_category: String(body?.category ?? "other"), p_subject: String(body?.subject ?? ""),
+      p_body: String(body?.body ?? ""), p_ip_hash: LOCAL_IP,
+    });
+  },
+
   async lead(ctx, body) {
     return ctx.rpcAs("service_role", "submit_lead", {
       p_reg: String(body?.reg ?? ""), p_name: String(body?.name ?? ""), p_contact: String(body?.contact ?? ""),

@@ -23,3 +23,4 @@ the product owner decided otherwise. Format: context → decision → consequenc
 | [0016](0016-demo-timeline-in-seed.md) | Demo seed spreads events over 30 days and anchors them |
 | [0017](0017-fleet-operations.md) | Attachments, operators, daily checks and fuel as fleet data |
 | [0018](0018-mandates-risk-groups.md) | Mandates (fullmakt/kommission), risk signals, monitoring after check, groups and departments |
+| [0019](0019-support-legal-view-as.md) | Tips, public stolen list, support, versioned legal documents, security log, read-only "view as" |

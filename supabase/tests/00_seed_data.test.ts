@@ -48,6 +48,10 @@ describe("demo seed", () => {
       expect(await n("select count(*) from public.projects p join public.organizations o on o.id = p.org_id where o.slug = 'bergs-schakt-entreprenad-ab'")).toBe(2);
       expect(await n("select count(*) from public.memberships m join public.organizations o on o.id = m.org_id where o.slug = 'nordmaskin-ab' and m.status = 'active'")).toBe(3);
       expect(await t.val("select is_sole_trader and org_number is null from public.organizations where slug = 'lena-gravmaskin'")).toBe(true);
+      expect((await t.rpc<any[]>("public_stolen_list", {})).length).toBe(2);
+      expect(await n("select count(*) from public.tips where machine_id is not null")).toBe(1);
+      expect(await n("select count(*) from public.support_tickets where status = 'waiting_customer'")).toBe(1);
+      expect(await n(`select count(*) from public.memberships m where m.status = 'active' and m.org_id in ${demo} and app.legal_pending(m.user_id) <> '[]'::jsonb`)).toBe(0);
     });
   });
 });

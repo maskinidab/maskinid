@@ -188,8 +188,26 @@ function Fact({ label, children }: { label: string; children: React.ReactNode })
   return <div><dt>{label}</dt><dd>{children ?? "–"}</dd></div>;
 }
 
+/** Owner, flagging org or authority chooses whether a stolen machine is shown on the public stolen list (/stolen). */
+function StolenPublicToggle({ orgId, sp }: { orgId: string; sp: { flag_id: string; published: boolean } }) {
+  const { t } = useTranslation();
+  const m = useRpcMutation<{ p_org_id: string; p_flag_id: string; p_public: boolean }>("set_flag_public");
+  return (
+    <div className="stack-2">
+      <label className="mid-kryss">
+        <input type="checkbox" checked={sp.published} disabled={m.isPending}
+          onChange={(e) => m.mutate({ p_org_id: orgId, p_flag_id: sp.flag_id, p_public: e.target.checked })} />
+        {t("stolen.publish_toggle")}
+      </label>
+      <p className="t-liten t-sekundar">{t("stolen.publish_hint")}</p>
+      {m.error && <ErrorNotice error={m.error} />}
+    </div>
+  );
+}
+
 function Overview({ m, flags, onClearFlag }: { m: MachineView; flags: Flag[]; onClearFlag(f: Flag): void }) {
   const { t } = useTranslation();
+  const { orgId, canWrite } = useOrg();
   const tech = m.technical;
   const labels = Array.isArray(m.labels) ? m.labels : null;
   return (
@@ -205,6 +223,7 @@ function Overview({ m, flags, onClearFlag }: { m: MachineView; flags: Flag[]; on
               {f.can_clear && f.id && <button type="button" className="mid-knapp mid-knapp-kontur mid-knapp-liten" onClick={() => onClearFlag(f)}>{t("actions.clear_flag.title")}</button>}
             </Notice>
           ))}
+          {m.stolen_public && canWrite && <StolenPublicToggle orgId={orgId} sp={m.stolen_public} />}
         </section>
       )}
       <section className="stack-3" aria-labelledby="identitet">

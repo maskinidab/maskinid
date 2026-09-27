@@ -17,7 +17,7 @@ interface OrgEvent { seq: number; type: string; created_at: string; machine_id: 
 export function DashboardPage() {
   const { t, i18n } = useTranslation();
   const { context } = useAuth();
-  const { org, orgId, path, has } = useOrg();
+  const { org, orgId, path, has, canWrite } = useOrg();
   const machines = useRpc<{ total: number; items: MachineListItem[] }>("list_machines", { p_org_id: orgId, p_scope: "all", p_limit: 500 });
   const inbox = useRpc<{ count: number; items: InboxItem[] }>("get_inbox", { p_org_id: orgId });
   const events = useRpc<OrgEvent[]>("list_org_events", { p_org_id: orgId, p_limit: 8 });
@@ -28,7 +28,7 @@ export function DashboardPage() {
   return (
     <div className="stack-6">
       <PageHeader title={t("dashboard.greeting", { name: context?.full_name?.split(" ")[0] ?? "" })} lead={org.name}
-        actions={has("owner") || has("dealer") ? <Link className="mid-knapp mid-knapp-primar" to={path("machines/new")}><Icon name="plus" />{t("nav.register")}</Link> : undefined} />
+        actions={canWrite && (has("owner") || has("dealer")) ? <Link className="mid-knapp mid-knapp-primar" to={path("machines/new")}><Icon name="plus" />{t("nav.register")}</Link> : undefined} />
       {org.status === "pending" && <Notice title={t("onboarding.pending_title")}><p className="t-liten">{t("onboarding.pending_body")}</p></Notice>}
       {!context?.identity_verified_at && <IdentityStep />}
       {machines.isLoading ? <Skeleton lines={2} height={40} /> : (
@@ -39,7 +39,7 @@ export function DashboardPage() {
           <div><dt>{t("dashboard.waiting")}</dt><dd>{inbox.data?.count ?? 0}</dd></div>
         </dl>
       )}
-      {!hideChecklist && (items.length < 3) && (
+      {canWrite && !hideChecklist && (items.length < 3) && (
         <section className="panel stack-3" aria-labelledby="checklista">
           <div className="panel-huvud">
             <h2 id="checklista" className="t-rubrik-4">{t("onboarding.checklist_title")}</h2>

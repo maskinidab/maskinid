@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useAuth } from "../../../auth/AuthProvider";
 import { useOrg } from "../../../auth/OrgContext";
 import { DataTable } from "../../../components/DataTable";
 import { Dialog } from "../../../components/Dialog";
 import { EmptyState, ErrorNotice, Notice, PageHeader, Skeleton, Tabs } from "../../../components/Feedback";
 import { FormField } from "../../../components/FormField";
 import { StatusBadge } from "../../../components/StatusBadge";
-import { useRpc, useRpcMutation } from "../../../lib/api/query";
+import { rpc, useRpc, useRpcMutation } from "../../../lib/api/query";
 import type { OrgType } from "../../../lib/api/types";
 import { formatDate, formatDateTime } from "../../../lib/format";
 import { useAdmin } from "./useAdmin";
@@ -75,7 +76,7 @@ export function AdminOrgPage() {
   const { id } = useParams();
   const { atLeast } = useAdmin();
   const q = useRpc<OrgDetail>("admin_get_org", { p_org_id: id });
-  const [dialog, setDialog] = useState<"types" | "suspend" | null>(null);
+  const [dialog, setDialog] = useState<"types" | "suspend" | "viewas" | null>(null);
   const approve = useRpcMutation<{ p_org_id: string }>("approve_org");
   if (q.isLoading) return <Skeleton lines={8} />;
   if (q.error) return <ErrorNotice error={q.error} />;
@@ -95,16 +96,19 @@ export function AdminOrgPage() {
         </dl>
         {org.suspended_reason && <Notice kind="fel" title={t("admin.orgs.suspended_reason", { reason: org.suspended_reason })} />}
         {approve.error && <ErrorNotice error={approve.error} />}
-        {atLeast("verifier") && (
+        {atLeast("support") && (
           <div className="mid-rad">
-            {org.status !== "approved" && (
+            {atLeast("verifier") && org.status !== "approved" && (
               <button type="button" className="mid-knapp mid-knapp-primar" disabled={approve.isPending} onClick={() => approve.mutate({ p_org_id: org.id })}>
                 {org.status === "suspended" ? t("admin.orgs.reactivate") : t("admin.orgs.approve")}
               </button>
             )}
-            {!org.types.includes("operator") && <button type="button" className="mid-knapp mid-knapp-kontur" onClick={() => setDialog("types")}>{t("admin.orgs.change_types")}</button>}
+            {atLeast("verifier") && !org.types.includes("operator") && <button type="button" className="mid-knapp mid-knapp-kontur" onClick={() => setDialog("types")}>{t("admin.orgs.change_types")}</button>}
             {atLeast("superadmin") && org.status !== "suspended" && !org.types.includes("operator") && (
               <button type="button" className="mid-knapp mid-knapp-kontur" onClick={() => setDialog("suspend")}>{t("admin.orgs.suspend")}</button>
+            )}
+            {org.status === "approved" && !org.types.includes("operator") && (
+              <button type="button" className="mid-knapp mid-knapp-kontur" onClick={() => setDialog("viewas")}>{t("viewas.start")}</button>
             )}
           </div>
         )}
@@ -128,6 +132,7 @@ export function AdminOrgPage() {
       </section>
       {dialog === "types" && <TypesDialog org={org} onClose={() => setDialog(null)} />}
       {dialog === "suspend" && <SuspendDialog org={org} onClose={() => setDialog(null)} />}
+      {dialog === "viewas" && <ViewAsDialog org={org} onClose={() => setDialog(null)} />}
     </div>
   );
 }
@@ -172,6 +177,41 @@ function SuspendDialog({ org, onClose }: { org: AdminOrg; onClose(): void }) {
         {m.error && <ErrorNotice error={m.error} />}
         <div className="mid-rad">
           <button type="submit" className="mid-knapp mid-knapp-fara" disabled={!reason.trim() || m.isPending}>{t("admin.orgs.suspend")}</button>
+          <button type="button" className="mid-knapp mid-knapp-text" onClick={onClose}>{t("common.cancel")}</button>
+        </div>
+      </form>
+    </Dialog>
+  );
+}
+
+/** "Visa som organisation": read-only, time-limited, logged and announced to the org's admins. */
+function ViewAsDialog({ org, onClose }: { org: AdminOrg; onClose(): void }) {
+  const { t } = useTranslation();
+  const { refresh } = useAuth();
+  const nav = useNavigate();
+  const [reason, setReason] = useState("");
+  const [error, setError] = useState<unknown>(null);
+  const [busy, setBusy] = useState(false);
+  async function start() {
+    setBusy(true);
+    setError(null);
+    try {
+      const r = await rpc<{ slug: string }>("admin_start_view_as", { p_org_id: org.id, p_reason: reason.trim() });
+      await refresh();
+      nav(`/o/${r.slug}/dashboard`);
+    } catch (e) {
+      setError(e);
+      setBusy(false);
+    }
+  }
+  return (
+    <Dialog open onClose={onClose} title={t("viewas.start")}>
+      <form className="stack-4" onSubmit={(e) => { e.preventDefault(); void start(); }}>
+        <p>{t("viewas.lead", { name: org.name })}</p>
+        <FormField label={t("admin.reason")}><textarea className="mid-input" rows={3} value={reason} onChange={(e) => setReason(e.target.value)} required /></FormField>
+        {!!error && <ErrorNotice error={error} />}
+        <div className="mid-rad">
+          <button type="submit" className="mid-knapp mid-knapp-primar" disabled={reason.trim().length < 5 || busy}>{t("viewas.start")}</button>
           <button type="button" className="mid-knapp mid-knapp-text" onClick={onClose}>{t("common.cancel")}</button>
         </div>
       </form>

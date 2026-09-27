@@ -13,6 +13,7 @@ import { useRpc } from "../lib/api/query";
 import type { MachineView } from "../lib/api/types";
 import { backend } from "../lib/backend";
 import { DemoBanner, LanguageSwitch, LogoLink, SkipLink, ThemeSwitch } from "./Chrome";
+import { LegalGate, ViewAsBanner } from "../components/AccountGuards";
 import { bottomNav, navGroups, type NavItem } from "./nav";
 
 /** Guards the /o/:orgSlug area: signed in, member of the org; otherwise redirects sensibly. */
@@ -46,9 +47,9 @@ function Badge({ kind }: { kind: NavItem["badge"] }) {
 
 function SideNav({ onNavigate }: { onNavigate?: () => void }) {
   const { t } = useTranslation();
-  const { types, isAdmin, path } = useOrg();
+  const { types, isAdmin, path, canWrite } = useOrg();
   const { context } = useAuth();
-  const groups = navGroups(types, isAdmin, !!context?.operator_role);
+  const groups = navGroups(types, isAdmin, !!context?.operator_role, canWrite);
   return (
     <nav className="sidomeny" aria-label={t("nav.main")} onClick={(e) => { if ((e.target as HTMLElement).closest("a")) onNavigate?.(); }}>
       {groups.map((g) => (
@@ -170,6 +171,8 @@ function Shell() {
     <div className="app">
       <SkipLink />
       <DemoBanner />
+      <ViewAsBanner />
+      <LegalGate />
       <header className="app-huvud">
         <LogoLink to={path("dashboard")} />
         <OrgSwitcher />

@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { recordSecurityEvent } from "../../lib/security";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { z } from "zod";
@@ -40,6 +41,7 @@ export function LoginPage() {
     setError(null);
     try {
       await backend.auth.signInWithPassword(v.email, v.password);
+      await recordSecurityEvent("sign_in");
       navigate(next, { replace: true });
     } catch (e) {
       setError(e);

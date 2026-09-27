@@ -10,6 +10,7 @@ const samples: Record<string, Record<string, unknown>> = {
   transfer_invite: { token: "t2", transfer_id: "tr1", reg_number: "ABC-123", make: "Volvo", model: "EC220E", seller: "Nordmaskin AB" },
   weekly_digest: { org_name: "Bergs", items: [{ title: "Service 500 h", reg_number: "ABC-123", make: "Volvo", model: "L60H", due_at: "2026-10-01", due_hours: 500, hour_meter: 450 }] },
   ownership_certificate: { certificate_number: "B-2026-000001", result_hash: "ab", reg_number: "ABC-123", make: "Volvo", model: "L60H", org_name: "Bergs", seller: "Nordmaskin AB", machine_id: "m1" },
+  support_reply: { number: 42, subject: "Kan inte logga in", body: "Prova länken igen." },
   sms: { type: "flag.stolen", data: { reg_number: "ABC-123" }, link: "/machines/1" },
 };
 

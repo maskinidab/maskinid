@@ -217,3 +217,16 @@ a { color: var(--id-text); }
 .checklista-rad { display: flex; gap: var(--space-3); align-items: center; justify-content: space-between; flex-wrap: wrap; }
 .checklista-val { display: flex; gap: var(--space-2); }
 .checklista-val .mid-knapp { min-height: 44px; min-width: 88px; }
+
+/* Support threads, help lists, stolen list (step 22) */
+.trad { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
+.trad > li { padding: var(--space-3) var(--space-4); border: 1px solid var(--linje); background: var(--yta-kort); }
+.trad > li.fran-support { border-left: 4px solid var(--id-gul); }
+.trad-text { white-space: pre-wrap; margin: 0; }
+.radlista-knapp { background: none; border: 0; padding: 0; text-align: left; cursor: pointer; font: inherit; color: inherit; }
+.lista-punkter { margin: 0 0 var(--space-3); padding-left: 1.2em; }
+.lista-punkter li + li { margin-top: var(--space-1); }
+.stold-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.stold-lista a { display: grid; gap: var(--space-1); padding: var(--space-4); border: 1px solid var(--linje); border-top: 4px solid var(--status-sparr);
+  background: var(--yta-kort); color: var(--text); text-decoration: none; }
+.stold-lista a:hover { border-color: var(--text); }

@@ -7,6 +7,7 @@ import { FormField } from "../components/FormField";
 import { useRpcMutation } from "../lib/api/query";
 import { IdentityStep } from "./onboarding/IdentityStep";
 import { MfaSection } from "./MfaSection";
+import { SecuritySection } from "./SecuritySection";
 
 /** The signed-in user's own profile: name, phone, language, identity, two-factor sign-in. */
 export function ProfilePage() {
@@ -36,6 +37,7 @@ export function ProfilePage() {
       </form>
       <section className="panel stack-3"><IdentityStep compact /></section>
       <MfaSection />
+      <SecuritySection />
     </div>
   );
 }

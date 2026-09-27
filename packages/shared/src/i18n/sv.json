@@ -262,6 +262,20 @@
    "title": "Märkesbatcher",
    "unassigned": "Otilldelad"
   },
+  "legal": {
+   "body_en": "Text (engelska)",
+   "body_sv": "Text (svenska)",
+   "document": "Dokument",
+   "lead": "Publicera nya versioner. Dokument som kräver godkännande visas för alla användare vid nästa inloggning.",
+   "new_version": "Ny version",
+   "publish": "Publicera",
+   "published": "Version {{version}} är publicerad.",
+   "requires": "Kräver godkännande",
+   "requires_hint": "Användarna måste godkänna den nya versionen innan de fortsätter.",
+   "title": "Juridiska dokument",
+   "title_en": "Rubrik (engelska)",
+   "title_sv": "Rubrik (svenska)"
+  },
   "market": {
    "alerts": "Larm",
    "alerts_open": "Öppna larm",
@@ -326,6 +340,26 @@
    "query": "Sök",
    "title": "Supportsök",
    "users": "Användare"
+  },
+  "tickets": {
+   "empty": "Inga ärenden",
+   "from": "Från",
+   "lead": "Ärenden från inloggade användare och kontaktformuläret. Svar loggas.",
+   "title": "Supportärenden"
+  },
+  "tips": {
+   "close": "Stäng",
+   "contact": "Kontakt: {{contact}}",
+   "empty": "Inga tips",
+   "forward": "Vidarebefordra till myndighet",
+   "lead": "Tips från allmänheten. Vidarebefordra till myndigheten som efterlyst maskinen eller stäng.",
+   "no_match": "Ingen maskin matchad",
+   "status": {
+    "closed": "Stängt",
+    "forwarded": "Vidarebefordrat",
+    "new": "Nytt"
+   },
+   "title": "Tips"
   }
  },
  "alerts": {
@@ -915,6 +949,11 @@
    "subject": "Ägarbevis för {{make}} {{model}} ({{reg_number}})",
    "verify": "Vem som helst kan kontrollera att ägarbeviset är äkta: {{url}}"
   },
+  "support_reply": {
+   "heading": "Svar på ärende {{number}}",
+   "how_to_answer": "Svara på det här mejlet eller skriv via kontaktformuläret och ange ärendenumret.",
+   "subject": "Svar på ärende {{number}}: {{subject}}"
+  },
   "transfer_invite": {
    "bankid": "Ni accepterar med BankID. Först därefter blir ni registrerad ägare.",
    "body": "{{seller}} har påbörjat ett ägarbyte av {{make}} {{model}} med registreringsnummer {{reg_number}}. Granska maskinkortet, historiken och om maskinen har förbehåll innan ni accepterar.",
@@ -1437,7 +1476,9 @@
   "fallback": "Registerhändelse",
   "flag": {
    "cleared": "{{actor}} avslutade flaggan",
-   "raised": "{{actor}} flaggade maskinen"
+   "published": "{{actor}} visade maskinen i stöldlistan",
+   "raised": "{{actor}} flaggade maskinen",
+   "unpublished": "{{actor}} tog bort maskinen från stöldlistan"
   },
   "fuel": {
    "logged": "{{actor}} registrerade tankning"
@@ -1467,6 +1508,9 @@
   },
   "legacy": {
    "imported": "Uppgift flyttad från tidigare version"
+  },
+  "legal": {
+   "published": "Ny version av juridiskt dokument"
   },
   "machine": {
    "assigned": "{{actor}} placerade maskinen i ett projekt",
@@ -1552,6 +1596,9 @@
    "revoked": "{{actor}} stängde en delningslänk"
   },
   "system": "MaskinID",
+  "tip": {
+   "received": "Tips inkom om maskinen"
+  },
   "transfer": {
    "cancelled": "Ägarbytet avbröts",
    "completed": "Ägarbytet genomfördes",
@@ -1671,6 +1718,14 @@
    "active": "Aktiv",
    "pending": "Väntar på godkännande"
   }
+ },
+ "help": {
+  "contact": "Kontakta supporten",
+  "lead": "Svar på vanliga frågor om registret.",
+  "none": "Inga artiklar matchar sökningen",
+  "not_found_title": "Hittar du inte svaret?",
+  "search": "Sök i hjälpen",
+  "title": "Hjälpcenter"
  },
  "how": {
   "disclaimer": "{{app}} är ett privat, frivilligt register och ingen myndighet.",
@@ -1829,6 +1884,23 @@
   "role_primary": "Huvudmärke",
   "role_secondary": "Dolt märke",
   "serial": "Märkesnummer"
+ },
+ "legal": {
+  "gate_accept": "Godkänn och fortsätt",
+  "gate_confirm": "Jag har läst och godkänner dokumenten ovan",
+  "gate_lead": "Vi har uppdaterat följande dokument. Läs igenom dem och godkänn för att fortsätta använda tjänsten.",
+  "gate_title": "Uppdaterade villkor",
+  "keys": {
+   "cookies": "Kakor",
+   "dpa": "Personuppgiftsbiträdesavtal",
+   "privacy": "Integritetspolicy",
+   "terms": "Användarvillkor"
+  },
+  "old_version": "Det här är en äldre version. Den gällande versionen finns via länken nedan.",
+  "other": "Andra dokument",
+  "version": "Version {{version}}, publicerad {{date}}",
+  "version_short": "version {{version}}",
+  "versions": "Tidigare versioner"
  },
  "level": {
   "0": {
@@ -2012,9 +2084,12 @@
   "admin_health": "Systemhälsa",
   "admin_home": "Översikt",
   "admin_labels": "Märkesbatcher",
+  "admin_legal": "Juridiska dokument",
   "admin_market": "Marknadsbevakning",
   "admin_orgs": "Organisationer",
   "admin_support": "Supportsök",
+  "admin_tickets": "Supportärenden",
+  "admin_tips": "Tips",
   "alerts": "Larm",
   "api_docs": "API",
   "attachments": "Redskap",
@@ -2066,6 +2141,7 @@
   "sign_out": "Logga ut",
   "sign_up": "Skapa konto",
   "stock": "Lager",
+  "support": "Support",
   "trade_in": "Ta emot inbyte",
   "verify": "Verifieringskö",
   "watchlist": "Bevakning"
@@ -2353,6 +2429,38 @@
    "created": {
     "body": "{{owner}} har gett er läsrätt till sin flottrapport.",
     "title": "Delad flottrapport"
+   }
+  },
+  "support": {
+   "customer_reply": {
+    "body": "",
+    "title": "Kunden har svarat i ärende {{number}}"
+   },
+   "reply": {
+    "body": "{{subject}}",
+    "title": "Svar på ärende {{number}}"
+   },
+   "ticket": {
+    "body": "{{subject}}",
+    "title": "Nytt supportärende {{number}}"
+   },
+   "viewed_as": {
+    "body": "Skrivskyddat i högst 30 minuter. Anledning: {{reason}}",
+    "title": "Supporten har visat er organisation"
+   }
+  },
+  "tip": {
+   "forwarded": {
+    "body": "{{message}} Kontakt: {{contact}}",
+    "title": "Tips om {{reg_number}} vidarebefordrat"
+   },
+   "received": {
+    "body": "{{reg_number}}",
+    "title": "Nytt tips"
+   },
+   "stolen_machine": {
+    "body": "{{message}}",
+    "title": "Tips om stulen maskin {{reg_number}}"
    }
   },
   "transfer": {
@@ -2680,6 +2788,17 @@
   "no_hits": "Inget resultat för {{q}}. Kontrollera numret på typskylten."
  },
  "security": {
+  "event": {
+   "identity_verified": "Identitet bekräftad med BankID",
+   "legal_accepted": "Villkor godkända",
+   "mfa_enrolled": "Tvåfaktorsinloggning aktiverad",
+   "mfa_removed": "Tvåfaktorsinloggning avstängd",
+   "sign_in": "Inloggning",
+   "sign_out": "Utloggning",
+   "sign_out_everywhere": "Utloggning från alla enheter",
+   "view_as_started": "Visa som organisation"
+  },
+  "lead": "Dina senaste inloggningar och säkerhetsändringar.",
   "mfa_disable": "Stäng av tvåfaktorsinloggning",
   "mfa_enable": "Aktivera tvåfaktorsinloggning",
   "mfa_enabled": "Tvåfaktorsinloggning är aktiverad.",
@@ -2688,7 +2807,11 @@
   "mfa_qr_alt": "QR-kod för autentiseringsappen",
   "mfa_scan": "Skanna koden med din autentiseringsapp och skriv in koden som visas.",
   "mfa_session_ok": "verifierad för den här inloggningen",
-  "mfa_title": "Tvåfaktorsinloggning"
+  "mfa_title": "Tvåfaktorsinloggning",
+  "none": "Inga händelser än",
+  "sign_out_everywhere": "Logga ut från alla enheter",
+  "suspicious": "Känner du inte igen en inloggning? Logga ut från alla enheter och kontakta support.",
+  "title": "Inloggningar och säkerhet"
  },
  "securitypage": {
   "anchor_body": "Varje natt räknas ett gemensamt kontrollvärde (Merkle-rot) för dagens händelser fram. Det publiceras här och i ett publikt GitHub-repo. Den som har ett gammalt värde kan se om något har ändrats.",
@@ -2785,6 +2908,70 @@
   "shared_by": "Delad av {{org}}. Länken gäller till {{date}}.",
   "views_left": "{{count}} visningar kvar."
  },
+ "stolen": {
+  "has_label": "Har QR-märke",
+  "lead": "Maskiner som är anmälda stulna och där ägaren eller polisen har valt att visa dem här. Ser du någon av dem: ring polisen på 114 14 eller lämna ett tips.",
+  "none": "Inga maskiner i listan just nu",
+  "privacy": "Listan visar aldrig ägare eller kontaktuppgifter.",
+  "publish_hint": "Listan visar märke, modell, registreringsnummer och län – aldrig ägaren.",
+  "publish_toggle": "Visa i den publika stöldlistan",
+  "since": "Stulen sedan {{date}}",
+  "title": "Stulna maskiner"
+ },
+ "support": {
+  "categories": {
+   "account": "Konto och inloggning",
+   "api": "API och integrationer",
+   "billing": "Betalning",
+   "financing": "Förbehåll",
+   "labels": "QR-märken",
+   "machine": "Maskin och uppgifter",
+   "other": "Annat",
+   "privacy": "Personuppgifter",
+   "transfer": "Ägarbyte"
+  },
+  "category": "Kategori",
+  "close": "Stäng ärendet",
+  "contact_lead": "Hittar du inte svaret i hjälpcentret? Skriv till oss så svarar vi normalt inom en arbetsdag.",
+  "contact_title": "Kontakta oss",
+  "lead": "Dina ärenden hos supporten. Svar kommer även som notis.",
+  "message": "Meddelande",
+  "new": "Nytt ärende",
+  "reopen": "Öppna igen",
+  "reply": "Svara",
+  "send": "Skicka",
+  "sent": "Ärende {{number}} är skapat. Svaret kommer till din e-post.",
+  "status": {
+   "closed": "Stängd",
+   "open": "Öppen",
+   "waiting_customer": "Väntar på dig"
+  },
+  "status_waiting_customer_admin": "Väntar på kund",
+  "subject": "Ämne"
+ },
+ "tips": {
+  "city": "Ort",
+  "contact": "Telefon eller e-post",
+  "contact_hint": "Frivilligt. Visas bara för oss och kan lämnas till polisen.",
+  "emergency": "Pågår ett brott just nu? Ring 112.",
+  "kind": {
+   "other": "Annat",
+   "seen_machine": "Jag har sett en maskin",
+   "suspicious_listing": "Misstänkt annons",
+   "suspicious_sale": "Misstänkt försäljning"
+  },
+  "kind_label": "Vad gäller tipset?",
+  "lead": "Har du sett en maskin som kan vara stulen eller en misstänkt annons? Tipset går till oss och, om maskinen är efterlyst, till ägaren. Du kan vara anonym.",
+  "link": "Tipsa om en maskin",
+  "listing_url": "Länk till annonsen",
+  "message": "Beskriv vad du har sett",
+  "reg_hint": "Står på QR-märket eller typskylten. Lämna tomt om du inte vet.",
+  "reg_or_serial": "Registreringsnummer eller serienummer",
+  "sent": "Tack för tipset",
+  "sent_body": "Vi går igenom det och kontaktar polisen om det behövs.",
+  "submit": "Skicka tipset",
+  "title": "Tipsa om en maskin"
+ },
  "transfer": {
   "accept": "Signera och godkänn",
   "buyer": "Köpare",
@@ -2838,6 +3025,12 @@
   "review_title": "Granska: {{level}}",
   "site": "Plats: {{address}}, önskat datum {{date}}.",
   "when_where": "När och var"
+ },
+ "viewas": {
+  "banner": "Du ser {{org}} som organisationen ser det, skrivskyddat, till {{until}}. Visningen loggas.",
+  "end": "Avsluta visning",
+  "lead": "Du ser {{name}} skrivskyddat i 30 minuter. Organisationens administratörer meddelas och anledningen loggas.",
+  "start": "Visa som organisation"
  },
  "watch": {
   "add": "Bevaka",

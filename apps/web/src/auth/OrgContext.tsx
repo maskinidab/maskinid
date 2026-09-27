@@ -12,6 +12,9 @@ export interface OrgState {
   canWrite: boolean;
   /** Path inside the org context: path("machines") ⇒ /o/<slug>/machines */
   path(sub?: string): string;
+  /** Operator support viewing the organisation read-only (step 22). */
+  viewAs: boolean;
+  viewAsExpiresAt: string | null;
 }
 
 const Ctx = createContext<OrgState | null>(null);
@@ -28,6 +31,8 @@ export function OrgProvider({ membership, children }: { membership: Membership; 
       has: (t) => types.includes(t),
       isAdmin: membership.role === "admin",
       canWrite: membership.role !== "readonly",
+      viewAs: !!membership.view_as,
+      viewAsExpiresAt: membership.view_as_expires_at ?? null,
       path: (sub = "") => `/o/${membership.org.slug}${sub ? `/${sub.replace(/^\//, "")}` : ""}`,
     };
   }, [membership]);

@@ -14,7 +14,7 @@ export interface NavGroup {
 }
 
 /** Sidebar grouped per role (SPEC §9.2, §9.3). Only the org's effective types are shown. */
-export function navGroups(types: OrgType[], isAdmin: boolean, isOperator: boolean): NavGroup[] {
+export function navGroups(types: OrgType[], isAdmin: boolean, isOperator: boolean, canWrite = true): NavGroup[] {
   const has = (t: OrgType) => types.includes(t);
   const register: NavItem[] = [
     { to: "dashboard", label: "nav.dashboard", icon: "hem" },
@@ -22,7 +22,7 @@ export function navGroups(types: OrgType[], isAdmin: boolean, isOperator: boolea
     { to: "inbox", label: "nav.inbox", icon: "inkorg", badge: "inbox" },
     { to: "notifications", label: "nav.notifications", icon: "klocka", badge: "notifications" },
   ];
-  if (has("owner") || has("dealer") || has("financier") || has("inspector")) {
+  if (canWrite && (has("owner") || has("dealer") || has("financier") || has("inspector"))) {
     register.splice(2, 0, { to: "machines/new", label: "nav.register", icon: "plus" });
   }
   const role: NavItem[] = [];
@@ -63,6 +63,7 @@ export function navGroups(types: OrgType[], isAdmin: boolean, isOperator: boolea
     { to: "labels", label: "nav.labels", icon: "qr" },
     { to: "watchlist", label: "nav.watchlist", icon: "oga" },
     { to: "mandates", label: "nav.mandates", icon: "sigill" },
+    { to: "support", label: "nav.support", icon: "info" },
     { to: "settings", label: "nav.settings", icon: "installningar" },
   ];
   if (!isAdmin) org.splice(0, 1);
@@ -82,6 +83,9 @@ export function navGroups(types: OrgType[], isAdmin: boolean, isOperator: boolea
       { to: "admin/market", label: "nav.admin_market", icon: "sok" },
       { to: "admin/api", label: "nav.admin_api", icon: "diagram" },
       { to: "admin/support", label: "nav.admin_support", icon: "info" },
+      { to: "admin/support-tickets", label: "nav.admin_tickets", icon: "inkorg" },
+      { to: "admin/tips", label: "nav.admin_tips", icon: "flagga" },
+      { to: "admin/legal", label: "nav.admin_legal", icon: "dokument" },
       { to: "admin/flags", label: "nav.admin_flags", icon: "installningar" },
       { to: "admin/health", label: "nav.admin_health", icon: "bock" },
     ] });

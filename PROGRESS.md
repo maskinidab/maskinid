@@ -32,7 +32,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 19 | Seed & demo | ✅ | §17, ADR 0016 |
 | 20 | Redskap, förare, daglig kontroll, bränsle/klimat | ✅ | tolkat, ADR 0017 |
 | 21 | Fullmakter, kommission, risksignaler, koncern | ✅ | tolkat, ADR 0018 |
-| 22 | Tips, stöldlista, hjälpcenter, support, juridik, kontosäkerhet, "Visa som" | ⬜ | tolkas från CLAUDE.md |
+| 22 | Tips, stöldlista, hjälpcenter, support, juridik, kontosäkerhet, "Visa som" | ✅ | tolkat, ADR 0019 |
 | 23 | Betalning (Stripe testläge) | ⬜ | tolkas från CLAUDE.md |
 | 24 | Statistik, dataexport, push, sandbox, partial search, merge | ⬜ | tolkas från CLAUDE.md |
 | 25 | Integrationsadaptrar (NFC, telematik, TS, Larmtjänst), publika sidor | ⬜ | |
@@ -236,3 +236,10 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   avdelningar med filter. Webb: Fullmakter-sida + dialog från maskinsidan, Kommission-flik i lagret, risksignaler och
   "Bevaka maskinen" på kontrollen, Inställningar → Koncern/Avdelningar, Koncernöversikt. Seed: kommission
   Bergs → Nordmaskin, avdelningar hos Bergs, Skogsmaskiner Norr som dotterbolag till Nordmaskin.
+- **Steg 22** – Migration `support_legal`: tips (Edge Function `tip`, anonymt, rate limit, notis till ägare/flaggare,
+  operatören vidarebefordrar till myndighet), publik stöldlista `/stolen` (opt-in per stöldflagga, `set_flag_public`,
+  inga ägaruppgifter), hjälpcenter `/help` (10 artiklar sv/en i `packages/shared/src/help`), support (ärenden i appen
+  `/o/:slug/support`, kontaktformulär `/contact` via Edge Function `support`, operatörskö, e-postmall `support_reply`),
+  versionerade juridiska dokument `/legal/:key` med acceptansspärr (LegalGate) och admin-publicering, säkerhetslogg och
+  "logga ut från alla enheter" på profilen, "Visa som organisation" (skrivskyddat 30 min, skäl, audit, notis till
+  kundens admin, banner). Seed `50_support.sql`. Tester: `18_support_legal` + seedkontroller. ADR 0019, öppna frågor 16–19.

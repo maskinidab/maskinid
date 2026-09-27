@@ -54,6 +54,7 @@ export function Footer() {
             <li><Link to="/how">{t("nav.how_it_works")}</Link></li>
             <li><Link to="/pricing">{t("nav.pricing")}</Link></li>
             <li><Link to="/stolen">{t("public.stolen_list")}</Link></li>
+            <li><Link to="/tips">{t("tips.link")}</Link></li>
             <li><Link to="/api-docs">{t("nav.api_docs")}</Link></li>
           </ul>
         </div>
@@ -64,6 +65,8 @@ export function Footer() {
             <li><Link to="/legal/terms">{t("public.terms")}</Link></li>
             <li><Link to="/legal/privacy">{t("public.privacy")}</Link></li>
             <li><Link to="/help">{t("nav.help")}</Link></li>
+            <li><Link to="/contact">{t("support.contact_title")}</Link></li>
+            <li><Link to="/legal/dpa">{t("legal.keys.dpa")}</Link></li>
           </ul>
         </div>
       </div>

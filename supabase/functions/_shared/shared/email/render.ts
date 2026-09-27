@@ -6,7 +6,7 @@
 import { APP_LEGAL_NAME, APP_NAME, SUPPORT_EMAIL } from "../config.ts";
 import { translator, type Locale } from "../i18n/index.ts";
 
-export const EMAIL_TEMPLATES = ["notification", "invite", "invite_owner", "transfer_invite", "weekly_digest", "ownership_certificate", "sms"] as const;
+export const EMAIL_TEMPLATES = ["notification", "invite", "invite_owner", "transfer_invite", "weekly_digest", "ownership_certificate", "support_reply", "sms"] as const;
 export type EmailTemplate = (typeof EMAIL_TEMPLATES)[number];
 
 export interface OutboxMessage {
@@ -103,6 +103,10 @@ export function renderEmail(msg: OutboxMessage, opts: { baseUrl: string }): Rend
         button: { label: t("email.weekly_digest.button"), url: absolute(base, "/fleet") } };
       break;
     }
+    case "support_reply":
+      subject = t("email.support_reply.subject", vars);
+      block = { heading: t("email.support_reply.heading", vars), paragraphs: [str(d.body)], footnote: t("email.support_reply.how_to_answer") };
+      break;
     case "ownership_certificate":
       subject = t("email.ownership_certificate.subject", vars);
       block = { heading: t("email.ownership_certificate.heading", vars),

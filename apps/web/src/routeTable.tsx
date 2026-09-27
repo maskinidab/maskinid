@@ -14,6 +14,12 @@ const HowPage = L(() => import("./pages/public/HowPage"), "HowPage");
 const ApiDocsPage = L(() => import("./pages/public/ApiDocsPage"), "ApiDocsPage");
 const AdPage = L(() => import("./pages/public/AdPage"), "AdPage");
 const ReceiptVerifyPage = L(() => import("./pages/public/ReceiptVerifyPage"), "ReceiptVerifyPage");
+const StolenListPage = L(() => import("./pages/public/InfoPages"), "StolenListPage");
+const TipPage = L(() => import("./pages/public/InfoPages"), "TipPage");
+const HelpPage = L(() => import("./pages/public/InfoPages"), "HelpPage");
+const HelpArticlePage = L(() => import("./pages/public/InfoPages"), "HelpArticlePage");
+const ContactPage = L(() => import("./pages/public/InfoPages"), "ContactPage");
+const LegalPage = L(() => import("./pages/public/InfoPages"), "LegalPage");
 const DashboardPage = L(() => import("./pages/app/DashboardPage"), "DashboardPage");
 const InboxPage = L(() => import("./pages/app/InboxPage"), "InboxPage");
 const NotificationsPage = L(() => import("./pages/app/NotificationsPage"), "NotificationsPage");
@@ -65,6 +71,10 @@ const AdminApiPage = L(() => import("./pages/app/admin/AdminTools"), "AdminApiPa
 const AdminSupportPage = L(() => import("./pages/app/admin/AdminTools"), "AdminSupportPage");
 const AdminFlagsPage = L(() => import("./pages/app/admin/AdminTools"), "AdminFlagsPage");
 const AdminHealthPage = L(() => import("./pages/app/admin/AdminTools"), "AdminHealthPage");
+const SupportPage = L(() => import("./pages/app/org/SupportPages"), "SupportPage");
+const AdminTicketsPage = L(() => import("./pages/app/org/SupportPages"), "AdminTicketsPage");
+const AdminTipsPage = L(() => import("./pages/app/org/SupportPages"), "AdminTipsPage");
+const AdminLegalPage = L(() => import("./pages/app/org/SupportPages"), "AdminLegalPage");
 
 export const publicRoutes: { path: string; element: ReactNode }[] = [
   { path: "/", element: <HomePage /> },
@@ -77,6 +87,12 @@ export const publicRoutes: { path: string; element: ReactNode }[] = [
   { path: "how", element: <HowPage /> },
   { path: "receipt", element: <ReceiptVerifyPage /> },
   { path: "verify-document", element: <ReceiptVerifyPage /> },
+  { path: "stolen", element: <StolenListPage /> },
+  { path: "tips", element: <TipPage /> },
+  { path: "help", element: <HelpPage /> },
+  { path: "help/:slug", element: <HelpArticlePage /> },
+  { path: "contact", element: <ContactPage /> },
+  { path: "legal/:key", element: <LegalPage /> },
   { path: "ad/:reg", element: <AdPage /> },
   { path: "api-docs", element: <ApiDocsPage /> },
 ];
@@ -136,4 +152,8 @@ export const appRoutes: { path: string; element: ReactNode }[] = [
   { path: "admin/support", element: <AdminSupportPage /> },
   { path: "admin/flags", element: <AdminFlagsPage /> },
   { path: "admin/health", element: <AdminHealthPage /> },
+  { path: "support", element: <SupportPage /> },
+  { path: "admin/support-tickets", element: <AdminTicketsPage /> },
+  { path: "admin/tips", element: <AdminTipsPage /> },
+  { path: "admin/legal", element: <AdminLegalPage /> },
 ];
