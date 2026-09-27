@@ -56,3 +56,10 @@ Frågor som kräver affärsbeslut. Bygget stannar inte för dem; det säkraste a
     kunden krävs; organisationens administratörer meddelas direkt i stället.
 19. **Tips till polisen.** *Antagande:* vi vidarebefordrar bara till den myndighet som flaggat maskinen i registret, inte
     till polisens allmänna tipsfunktion.
+
+## Betalning (steg 23, tolkat – SPEC §20.9 saknas)
+20. **Prisnivåer.** Planer och priser (t.ex. Handlare 990 kr/mån, Finansiär 4 900 kr/mån, kontroll 49 kr, QR-märke 20 kr,
+    alla exkl. moms) är *antaganden* och ändras under Admin → Betalning utan release.
+21. **Säljaruppgifter på fakturan** (org.nr, momsreg.nr, adress, bankgiro) saknas och måste fyllas i `BILLING_SELLER`
+    innan riktig fakturering. Omvänd skattskyldighet för kunder utanför Sverige hanteras inte (alla kunder antas svenska).
+22. **Kortbetalning** är avstängd (`FEATURE_PAYMENTS=false`, SPEC §18) utom i demo; Stripe körs bara i testläge.

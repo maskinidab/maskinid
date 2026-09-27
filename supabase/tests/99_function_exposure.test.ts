@@ -5,7 +5,7 @@ import { tx } from "./helpers.ts";
 // add it here – a missing entry means a function was exposed (or hidden) by accident.
 const ANON = [
   "public.authorize_document_download",
-  "public.public_stolen_list", "public.list_legal_documents", "public.get_legal_document",
+  "public.public_stolen_list", "public.list_legal_documents", "public.get_legal_document", "public.list_plans",
   "public.demo_shortcuts",
   "public.get_app_config",
   "public.list_event_anchors",
@@ -24,7 +24,8 @@ const SERVICE_ONLY = [
   "public.api_idempotency_get", "public.api_idempotency_put", "public.claim_webhook_deliveries", "public.record_webhook_result",
   "public.start_market_run", "public.finish_market_run", "public.ingest_observations", "public.record_listing_serial", "public.claim_ocr_candidates",
   "public.create_shared_machine_report", "public.claim_email_outbox", "public.record_email_result",
-  "public.submit_tip", "public.submit_public_support",
+  "public.submit_tip", "public.submit_public_support", "public.billing_apply_subscription", "public.billing_record_event",
+  "public.close_billing_period", "public.billing_set_invoice_provider", "public.billing_pending_invoices",
 ];
 
 describe("function exposure", () => {

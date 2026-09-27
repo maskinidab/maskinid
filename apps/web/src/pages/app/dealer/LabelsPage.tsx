@@ -1,3 +1,4 @@
+import { formatSek, vatOf } from "@maskinid/shared/billing.ts";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -9,6 +10,7 @@ import { RegNumber } from "../../../components/RegNumber";
 import { StatusBadge } from "../../../components/StatusBadge";
 import { queryClient, rpc, useRpc } from "../../../lib/api/query";
 import { formatDate } from "../../../lib/format";
+import { currentLocale } from "../../../i18n";
 
 interface Labels {
   batches: { id: string; quantity: number; status: string; created_at: string; shipping_address: Record<string, string> | null }[];
@@ -18,8 +20,10 @@ interface Labels {
 /** Labels (SPEC §5.2): order tamper-proof labels ("Beställ 50 märken"), see assigned/bound labels. */
 export function LabelsPage() {
   const { t } = useTranslation();
-  const { orgId, org, path, canWrite } = useOrg();
+  const { orgId, org, path, canWrite, has } = useOrg();
   const q = useRpc<Labels>("list_labels", { p_org_id: orgId });
+  const prices = useRpc<{ price_items: Record<string, number>; vat_rate: number }>("list_plans", {});
+  const billed = !(has("authority") || has("inspector") || has("operator"));
   const [qty, setQty] = useState(50);
   const [addr, setAddr] = useState({ street: "", postal_code: "", city: org.city ?? "" });
   const [done, setDone] = useState(false);
@@ -48,6 +52,11 @@ export function LabelsPage() {
             <FormField className="kol-4" label={t("labels.postal_code")}><input className="mid-input" inputMode="numeric" value={addr.postal_code} onChange={(e) => setAddr({ ...addr, postal_code: e.target.value })} /></FormField>
             <FormField className="kol-8" label={t("common.city")}><input className="mid-input" value={addr.city} onChange={(e) => setAddr({ ...addr, city: e.target.value })} /></FormField>
           </div>
+          {billed && prices.data && (
+            <p className="t-liten">{t("labels.price", {
+              price: formatSek(qty * prices.data.price_items.label_qr, currentLocale()),
+              incl: formatSek(vatOf(qty * prices.data.price_items.label_qr, prices.data.vat_rate).total, currentLocale()) })}</p>
+          )}
           {done && <Notice kind="ok" title={t("labels.ordered")} />}
           {error != null && <ErrorNotice error={error} />}
           <div><button type="submit" className="mid-knapp mid-knapp-primar" disabled={!addr.street || !addr.city}>{t("labels.order", { count: qty })}</button></div>

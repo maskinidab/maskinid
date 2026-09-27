@@ -46,3 +46,13 @@ verify_jwt = false
 verify_jwt = false
 [functions.webhook-dispatch]
 verify_jwt = false
+# Step 22: public tip and contact form (rate limited per IP inside).
+[functions.tip]
+verify_jwt = false
+[functions.support]
+verify_jwt = false
+# Step 23: Stripe sends no JWT – the signature is verified in the function; billing-sync accepts CRON_SECRET.
+[functions.stripe-webhook]
+verify_jwt = false
+[functions.billing-sync]
+verify_jwt = false

@@ -5,6 +5,11 @@
  */
 export const APP_NAME = "MaskinID";
 export const APP_LEGAL_NAME = "MaskinID Sverige AB";
+/**
+ * Seller details printed on invoices (step 23). Must be filled in before real invoicing – an invoice needs the
+ * seller's organisation and VAT number (mervärdesskattelagen 17 kap.). Empty values are left out of the PDF.
+ */
+export const BILLING_SELLER = { name: APP_LEGAL_NAME, orgNumber: "", vatNumber: "", address: "", bankgiro: "" };
 export const APP_DOMAIN = "maskinid.se";
 export const APP_BASE_URL = `https://${APP_DOMAIN}`;
 export const API_BASE_URL = `https://api.${APP_DOMAIN}/v1`;

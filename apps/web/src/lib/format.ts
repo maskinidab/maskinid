@@ -35,6 +35,16 @@ export function formatMonth(iso: string | Date | null | undefined): string {
   return `${p.year}-${String(p.month).padStart(2, "0")}`;
 }
 
+/** "september 2026" – headings. */
+export function formatMonthName(iso: string | Date | null | undefined, locale = currentLocale()): string {
+  if (!iso) return "";
+  const p = parts(iso);
+  const names = locale === "en"
+    ? ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    : ["januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti", "september", "oktober", "november", "december"];
+  return `${names[p.month - 1]} ${p.year}`;
+}
+
 /** "2026-09-26" – tables and forms. */
 export function formatDateIso(iso: string | Date | null | undefined): string {
   if (!iso) return "";

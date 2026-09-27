@@ -51,6 +51,9 @@ describe("demo seed", () => {
       expect((await t.rpc<any[]>("public_stolen_list", {})).length).toBe(2);
       expect(await n("select count(*) from public.tips where machine_id is not null")).toBe(1);
       expect(await n("select count(*) from public.support_tickets where status = 'waiting_customer'")).toBe(1);
+      expect(await n(`select count(*) from public.subscriptions where plan_key in ('financier', 'dealer') and org_id in ${demo}`)).toBe(2);
+      expect(Object.fromEntries((await t.q<any>(`select status, count(*)::int n from public.invoices where org_id in ${demo} group by 1`)).map((r) => [r.status, r.n])))
+        .toEqual({ paid: 1, open: 2 });
       expect(await n(`select count(*) from public.memberships m where m.status = 'active' and m.org_id in ${demo} and app.legal_pending(m.user_id) <> '[]'::jsonb`)).toBe(0);
     });
   });

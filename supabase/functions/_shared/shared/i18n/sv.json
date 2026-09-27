@@ -137,6 +137,23 @@
    "webhooks_delivered": "Webhooks levererade",
    "webhooks_failed": "Webhooks misslyckade"
   },
+  "billing": {
+   "close": "Skapa fakturor",
+   "close_lead": "Skapar fakturor för månaden. Körs automatiskt den första varje månad; en organisation som redan fakturerats för perioden hoppas över.",
+   "close_title": "Stäng period",
+   "closed": "{{count}} fakturor skapade för {{month}}.",
+   "fee": "Månadsavgift",
+   "lead": "Prislista, planer, förbrukning och fakturor. Alla belopp exkl. moms om inget annat anges.",
+   "mark_paid": "Markera betald",
+   "new_price": "Nytt pris (kr)",
+   "new_price_for": "Nytt pris för {{name}}",
+   "open_total": "Obetalt inkl. moms",
+   "plans": "Planer",
+   "subscribers": "Kunder",
+   "title": "Betalning",
+   "updated": "Ändrat",
+   "void": "Makulera"
+  },
   "conflicts": {
    "empty": "Inga konflikter här",
    "involved": "Berörda",
@@ -553,6 +570,133 @@
   "title": "Signera med BankID",
   "you_sign": "Du signerar"
  },
+ "billing": {
+  "all_excl_vat": "Alla priser är exklusive moms. Moms (25 %) tillkommer och redovisas separat på fakturan.",
+  "amount_excl_vat": "Belopp exkl. moms",
+  "checkout_done": "Ni har nu {{plan}}.",
+  "choose_free": "Byt till denna",
+  "choose_paid": "Välj och betala",
+  "contact_sales": "Offert",
+  "contact_us": "Kontakta oss",
+  "current_plan": "Nuvarande plan",
+  "details": "Faktureringsuppgifter",
+  "download_pdf": "PDF",
+  "enterprise_points": "Volympriser, avtal och fakturering enligt överenskommelse",
+  "estimate_total": "Beräknat att betala inkl. moms",
+  "excl_vat_note": "exkl. moms – moms {{vat}}, totalt {{total}}",
+  "faq_invoice": "Abonnemang betalas med kort. Förbrukning faktureras månadsvis i efterskott med 30 dagars betalningsvillkor.",
+  "faq_no_amounts": "Priserna gäller våra tjänster. Registret innehåller aldrig belopp för köp, lån eller leasing.",
+  "faq_title": "Bra att veta",
+  "feature_registration": "Registrering av maskiner ingår alltid",
+  "free": "Gratis",
+  "get_started": "Kom igång",
+  "included": "Ingår",
+  "included_n": "{{n}} {{name}} ingår per månad",
+  "included_name": {
+   "api_call": "API-anrop",
+   "check": "kontroller",
+   "label_nfc": "NFC-märken",
+   "label_qr": "QR-märken",
+   "register_extract": "registerutdrag"
+  },
+  "invoice_email": "E-post för fakturor",
+  "invoice_number": "Fakturanummer",
+  "invoice_status": {
+   "open": "Obetald",
+   "paid": "Betald",
+   "void": "Makulerad"
+  },
+  "invoices": "Fakturor",
+  "item": "Tjänst",
+  "line": {
+   "above_included": "{{name}} ({{used}} använda, {{included}} ingår)",
+   "plan": "Abonnemang {{plan}}"
+  },
+  "manage_payment": "Hantera betalning",
+  "metric": {
+   "api_call": "API-anrop",
+   "check": "Kontroller",
+   "label_nfc": "NFC-märken",
+   "label_qr": "QR-märken",
+   "register_extract": "Registerutdrag"
+  },
+  "no_invoices": "Inga fakturor än",
+  "overdue": "Förfallen",
+  "past_due": "Senaste betalningen gick inte igenom. Uppdatera kortet under Hantera betalning.",
+  "pay": "Betala",
+  "pay_demo": "Betala (demo)",
+  "payments_disabled": "Kortbetalning är inte aktiverad. Fakturor skickas med e-post och betalas till bankgiro.",
+  "pdf": {
+   "bankgiro": "Bankgiro {{nr}}",
+   "buyer": "Kund",
+   "due": "Förfallodatum",
+   "issued": "Fakturadatum",
+   "org_number": "org.nr {{nr}}",
+   "paid": "Betald {{date}}.",
+   "pay_online": "Betala med kort eller via bank: {{url}}",
+   "period": "Period",
+   "questions": "Frågor om fakturan: {{email}}",
+   "specification": "Specifikation",
+   "title": "Faktura",
+   "vat_number": "momsreg.nr {{nr}}"
+  },
+  "per_month": "{{price}}/mån",
+  "per_unit": "{{price}} per {{unit}}",
+  "plan": {
+   "dealer": {
+    "for": "För handlare som kontrollerar inbyten och säljer med ägarbevis",
+    "name": "Handlare"
+   },
+   "enterprise": {
+    "for": "För stora volymer och egna avtal",
+    "name": "Företag"
+   },
+   "financier": {
+    "for": "För banker och finansbolag med förbehåll och portfölj",
+    "name": "Finansiär"
+   },
+   "free": {
+    "for": "För ägare, beställare och mindre handlare",
+    "name": "Gratis"
+   },
+   "insurer": {
+    "for": "För försäkringsgivare med portfölj och skadekontroll",
+    "name": "Försäkring"
+   },
+   "marketplace": {
+    "for": "För annonsplatser som kontrollerar maskiner i annonser",
+    "name": "Marknadsplats"
+   },
+   "public_sector": {
+    "for": "Myndigheter och besiktningsorgan",
+    "name": "Offentlig"
+   }
+  },
+  "price_excl_vat": "Pris exkl. moms",
+  "price_list": "Prislista",
+  "pricing_lead": "Att registrera maskiner är gratis. Den som kontrollerar maskiner, använder API:et eller beställer märken betalar för det.",
+  "pricing_title": "Priser",
+  "public_sector_note": "Myndigheter, besiktningsorgan och registerhållaren debiteras inte.",
+  "reference": "Er referens",
+  "reference_hint": "Till exempel kostnadsställe eller inköpsordernummer. Skrivs ut på fakturan.",
+  "start_free": "Börja gratis",
+  "subtotal_excl_vat": "Summa exkl. moms",
+  "then_price": "Därefter {{price}} per {{name}}",
+  "total_incl_vat": "Att betala inkl. moms",
+  "unit": {
+   "api_call": "anrop",
+   "check": "kontroll",
+   "label_nfc": "märke",
+   "label_qr": "märke",
+   "register_extract": "utdrag"
+  },
+  "unit_price": "Styckpris",
+  "usage_hint": "Förbrukningen faktureras i efterskott den första i nästa månad. Registrering av maskiner är alltid gratis.",
+  "usage_title": "Förbrukning {{month}}",
+  "used": "Använt",
+  "vat_amount": "Moms {{rate}} %",
+  "your_plan": "Er plan"
+ },
  "certificate": {
   "download": "Ägarbevis (PDF)",
   "downloaded": "Ägarbeviset är nedladdat.",
@@ -697,6 +841,7 @@
   "results": "{{count}} träffar",
   "retry": "Försök igen",
   "save": "Spara",
+  "saved": "Sparat",
   "search": "Sök",
   "select": "Välj",
   "send": "Skicka",
@@ -934,6 +1079,12 @@
    "free": "Det kostar inget för ägare att använda registret.",
    "heading": "En maskin är registrerad på {{org_name}}",
    "subject": "{{registered_by}} har registrerat en maskin åt {{org_name}}"
+  },
+  "invoice": {
+   "body": "Fakturan till {{org_name}} är på {{total}} inkl. moms och förfaller {{due_date}}. Specifikation och PDF finns under Inställningar → Betalning.",
+   "button": "Visa fakturan",
+   "heading": "Faktura för {{period}}",
+   "subject": "Faktura {{number}} från {{app}}"
   },
   "notification": {
    "fallback_title": "Du har en ny notis",
@@ -1395,10 +1546,13 @@
   "NETWORK": "Det gick inte att nå registret. Kontrollera anslutningen.",
   "NOT_AUTHENTICATED": "Du behöver logga in för att göra det här.",
   "NOT_FOUND": "Uppgiften finns inte eller så har du inte behörighet att se den.",
+  "NO_PAYMENT_METHOD": "Det finns inget betalkort registrerat.",
   "ORG_EXISTS": "Organisationen finns redan i registret. Be en administratör om en inbjudan.",
   "ORG_NOT_APPROVED": "Organisationen är avstängd. Kontakta registerhållaren.",
   "ORG_REQUIRED": "Välj en organisation först.",
   "OTP_FAILED": "Inloggningslänken kunde inte skickas.",
+  "PAYMENTS_DISABLED": "Kortbetalning är inte aktiverad. Kontakta oss för att byta plan.",
+  "PAYMENT_REQUIRED": "Planen kostar och väljs med kortbetalning.",
   "RATE_LIMITED": "För många uppslag på kort tid. Vänta en minut och försök igen.",
   "RENTAL_OVERLAP": "Maskinen är redan uthyrd under den perioden.",
   "SIGNATORY_REQUIRED": "Bara en firmatecknare kan ta över organisationen. Be en firmatecknare om en inbjudan.",
@@ -1440,6 +1594,9 @@
   "authority": {
    "preparedness_export": "{{actor}} tog fram en beredskapsexport",
    "search": "{{actor}} sökte i registret"
+  },
+  "billing": {
+   "plan_changed": "Plan ändrad till {{plan}}"
   },
   "config": {
    "changed": "{{actor}} ändrade en funktionsflagga"
@@ -1879,6 +2036,7 @@
   "ordered": "Beställningen är mottagen. Vi skickar märkena inom fem arbetsdagar.",
   "orders": "Beställningar",
   "postal_code": "Postnummer",
+  "price": "Pris {{price}} exkl. moms ({{incl}} inkl. moms). Faktureras med månadens faktura.",
   "quantity": "Antal",
   "role": "Typ",
   "role_primary": "Huvudmärke",
@@ -2077,6 +2235,7 @@
  "nav": {
   "admin": "Administration",
   "admin_api": "API-användning",
+  "admin_billing": "Betalning",
   "admin_conflicts": "Konflikter",
   "admin_corrections": "Rättelser",
   "admin_events": "Händelselogg",
@@ -2151,6 +2310,28 @@
    "chain_broken": {
     "body": "Kontrollera händelseloggen omedelbart.",
     "title": "Händelsekedjan stämmer inte"
+   }
+  },
+  "billing": {
+   "invoice_issued": {
+    "body": "Fakturan för {{period}} finns under Inställningar → Betalning.",
+    "title": "Faktura {{number}}"
+   },
+   "payment_failed": {
+    "body": "Uppdatera kortet under Inställningar → Betalning.",
+    "title": "Betalningen av {{number}} gick inte igenom"
+   },
+   "plan_changed": {
+    "body": "Ni har nu planen {{plan}}.",
+    "title": "Planen är ändrad"
+   },
+   "subscription_canceled": {
+    "body": "Ni har nu gratisplanen.",
+    "title": "Abonnemanget är avslutat"
+   },
+   "subscription_past_due": {
+    "body": "Uppdatera kortet under Inställningar → Betalning.",
+    "title": "Abonnemanget har en obetald avgift"
    }
   },
   "conflict": {
@@ -2896,6 +3077,7 @@
  },
  "settings": {
   "tab_api": "API och webhooks",
+  "tab_billing": "Betalning",
   "tab_departments": "Avdelningar",
   "tab_group": "Koncern"
  },

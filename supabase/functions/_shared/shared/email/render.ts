@@ -5,8 +5,9 @@
  */
 import { APP_LEGAL_NAME, APP_NAME, SUPPORT_EMAIL } from "../config.ts";
 import { translator, type Locale } from "../i18n/index.ts";
+import { formatSek } from "../billing.ts";
 
-export const EMAIL_TEMPLATES = ["notification", "invite", "invite_owner", "transfer_invite", "weekly_digest", "ownership_certificate", "support_reply", "sms"] as const;
+export const EMAIL_TEMPLATES = ["notification", "invite", "invite_owner", "transfer_invite", "weekly_digest", "ownership_certificate", "support_reply", "invoice", "sms"] as const;
 export type EmailTemplate = (typeof EMAIL_TEMPLATES)[number];
 
 export interface OutboxMessage {
@@ -107,6 +108,13 @@ export function renderEmail(msg: OutboxMessage, opts: { baseUrl: string }): Rend
       subject = t("email.support_reply.subject", vars);
       block = { heading: t("email.support_reply.heading", vars), paragraphs: [str(d.body)], footnote: t("email.support_reply.how_to_answer") };
       break;
+    case "invoice": {
+      const v = { ...vars, total: formatSek(Number(d.total_ore ?? 0), locale) };
+      subject = t("email.invoice.subject", v);
+      block = { heading: t("email.invoice.heading", v), paragraphs: [t("email.invoice.body", v)],
+        button: { label: t("email.invoice.button"), url: absolute(base, "/settings?tab=billing") } };
+      break;
+    }
     case "ownership_certificate":
       subject = t("email.ownership_certificate.subject", vars);
       block = { heading: t("email.ownership_certificate.heading", vars),

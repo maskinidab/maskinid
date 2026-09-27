@@ -33,7 +33,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 20 | Redskap, förare, daglig kontroll, bränsle/klimat | ✅ | tolkat, ADR 0017 |
 | 21 | Fullmakter, kommission, risksignaler, koncern | ✅ | tolkat, ADR 0018 |
 | 22 | Tips, stöldlista, hjälpcenter, support, juridik, kontosäkerhet, "Visa som" | ✅ | tolkat, ADR 0019 |
-| 23 | Betalning (Stripe testläge) | ⬜ | tolkas från CLAUDE.md |
+| 23 | Betalning (Stripe testläge) | ✅ | tolkat, ADR 0020 |
 | 24 | Statistik, dataexport, push, sandbox, partial search, merge | ⬜ | tolkas från CLAUDE.md |
 | 25 | Integrationsadaptrar (NFC, telematik, TS, Larmtjänst), publika sidor | ⬜ | |
 | 26 | Drift | ⬜ | |
@@ -243,3 +243,11 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   versionerade juridiska dokument `/legal/:key` med acceptansspärr (LegalGate) och admin-publicering, säkerhetslogg och
   "logga ut från alla enheter" på profilen, "Visa som organisation" (skrivskyddat 30 min, skäl, audit, notis till
   kundens admin, banner). Seed `50_support.sql`. Tester: `18_support_legal` + seedkontroller. ADR 0019, öppna frågor 16–19.
+- **Steg 23** – Migration `billing`: prislista och planer (gratis, handlare, finansiär, försäkring, marknadsplats, offert,
+  icke-publik offentlig plan), förbrukning mäts med triggers på kontroller, API-anrop, registerutdrag och märkesbeställningar,
+  månadsfakturor i efterskott (`close_billing_period`, idempotent) med moms separat, notis + e-postmall `invoice`.
+  `Payments`-adapter (Stripe testläge | mock) med Checkout, kundportal, fakturaposter och signaturverifierade webhooks;
+  Edge Functions `billing`, `stripe-webhook`, `billing-sync`. Webb: `/pricing`, Inställningar → Betalning (plan,
+  förbrukning, faktureringsuppgifter, fakturor med PDF och demobetalning), Admin → Betalning (priser, planer, stäng
+  period, markera betald/makulera), pris vid märkesbeställning. Seed `55_billing.sql`. Tester `19_billing`, adapter- och
+  hjälpfunktionstester. ADR 0020, öppna frågor 20–22.

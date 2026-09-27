@@ -42,6 +42,8 @@ export async function createDoc(opts: {
   title: string; number: string; hash: string; generatedAt: string; issuer?: string; t: TFunction;
   /** Public page for the QR code (label page or /r/<reg>). */
   qrUrl?: string;
+  /** Replaces the verification footer (documents that are not register snapshots, e.g. invoices). */
+  footer?: string;
 }): Promise<Doc> {
   const { t } = opts;
   const doc = await PDFDocument.create();
@@ -88,13 +90,13 @@ export async function createDoc(opts: {
     rule() { ensure(10); page.drawLine({ start: { x: 56, y: y + 4 }, end: { x: W - 56, y: y + 4 }, thickness: 0.5, color: LINE }); y -= 10; },
     async save() {
       // Footer on every page: verification + hash + page numbers; QR on the first page.
-      const verify = t("pdf.verify_document", { url: `https://${APP_DOMAIN}/verify-document`, number: opts.number });
+      const verify = opts.footer ?? t("pdf.verify_document", { url: `https://${APP_DOMAIN}/verify-document`, number: opts.number });
       for (const [i, p] of pages.entries()) {
         p.drawLine({ start: { x: 56, y: 92 }, end: { x: W - 56, y: 92 }, thickness: 0.5, color: LINE });
         const textW = qr && i === 0 ? W - 112 - 80 : W - 112;
         let fy = 78;
         for (const l of wrap(verify, font, 8, textW)) { p.drawText(l, { x: 56, y: fy, size: 8, font, color: GREY }); fy -= 11; }
-        p.drawText(`SHA-256 ${opts.hash}`, { x: 56, y: fy - 2, size: 6.5, font: mono, color: GREY });
+        if (opts.hash) p.drawText(`SHA-256 ${opts.hash}`, { x: 56, y: fy - 2, size: 6.5, font: mono, color: GREY });
         const issued = [opts.issuer, opts.generatedAt].filter(Boolean).join(" · ");
         p.drawText(`${issued}  ·  ${t("pdf.page", { page: i + 1, pages: pages.length })}`, { x: 56, y: 36, size: 8, font, color: GREY });
         if (qr && i === 0) p.drawImage(qr, { x: W - 56 - 70, y: 18, width: 70, height: 70 });

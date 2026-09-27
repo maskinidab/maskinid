@@ -230,3 +230,12 @@ a { color: var(--id-text); }
 .stold-lista a { display: grid; gap: var(--space-1); padding: var(--space-4); border: 1px solid var(--linje); border-top: 4px solid var(--status-sparr);
   background: var(--yta-kort); color: var(--text); text-decoration: none; }
 .stold-lista a:hover { border-color: var(--text); }
+
+/* Step 23: pricing and billing */
+.plan-rutnat { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.plan-kort { display: flex; flex-direction: column; }
+.plan-kort > :last-child { margin-top: auto; }
+.plan-kort-aktiv { border-color: var(--text); box-shadow: inset 0 0 0 1px var(--text); }
+.plan-pris { font-size: 24px; line-height: 30px; font-weight: 700; margin: 0; }
+.mid-tabell .tal, .mid-tabell th.tal { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.mid-tabell tfoot td { font-weight: 600; border-bottom: 0; }

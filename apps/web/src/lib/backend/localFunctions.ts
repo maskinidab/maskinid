@@ -4,6 +4,7 @@
  * same mock adapters from @maskinid/shared.
  */
 import { heuristicColumnMapping, mockOcr } from "@maskinid/shared/adapters/mock.ts";
+import { mockPayments } from "@maskinid/shared/adapters/payments.ts";
 import { ApiError } from "./errors";
 import { idbGet } from "./idb";
 import type { LocalContext } from "./local";
@@ -39,6 +40,19 @@ export const localFunctions: Record<string, Handler> = {
       p_email: String(body?.email ?? ""), p_category: String(body?.category ?? "other"), p_subject: String(body?.subject ?? ""),
       p_body: String(body?.body ?? ""), p_ip_hash: LOCAL_IP,
     });
+  },
+
+  async billing(ctx, body) {
+    if (body?.action !== "checkout") throw new ApiError("NO_PAYMENT_METHOD", undefined, 409);
+    const c = await ctx.rpcAs<{ org_id: string; org_slug: string; plan: { key: string }; email: string | null; customer_id: string | null }>(
+      "authenticated", "billing_checkout_context", { p_org_id: body.org_id, p_plan_key: body.plan });
+    const back = `/o/${c.org_slug}/settings?tab=billing`;
+    const s = await mockPayments.createCheckout({ orgId: c.org_id, planKey: c.plan.key, email: c.email, customerId: c.customer_id, successUrl: back, cancelUrl: back });
+    await ctx.rpcAs("service_role", "billing_apply_subscription", {
+      p_org_id: c.org_id, p_plan_key: c.plan.key, p_status: "active", p_provider: "mock", p_customer_id: `cus_mock_${c.org_id.slice(0, 8)}`,
+      p_subscription_id: s.sessionId, p_period_end: null,
+    });
+    return { url: s.url, provider: "mock" };
   },
 
   async lead(ctx, body) {

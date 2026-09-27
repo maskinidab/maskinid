@@ -137,6 +137,23 @@
    "webhooks_delivered": "Webhooks delivered",
    "webhooks_failed": "Webhooks failed"
   },
+  "billing": {
+   "close": "Create invoices",
+   "close_lead": "Creates invoices for the month. Runs automatically on the first of each month; an organisation already invoiced for the period is skipped.",
+   "close_title": "Close period",
+   "closed": "{{count}} invoices created for {{month}}.",
+   "fee": "Monthly fee",
+   "lead": "Price list, plans, usage and invoices. All amounts excl. VAT unless stated.",
+   "mark_paid": "Mark paid",
+   "new_price": "New price (SEK)",
+   "new_price_for": "New price for {{name}}",
+   "open_total": "Unpaid incl. VAT",
+   "plans": "Plans",
+   "subscribers": "Customers",
+   "title": "Billing",
+   "updated": "Changed",
+   "void": "Void"
+  },
   "conflicts": {
    "empty": "No conflicts here",
    "involved": "Involved",
@@ -553,6 +570,133 @@
   "title": "Sign with BankID",
   "you_sign": "You sign"
  },
+ "billing": {
+  "all_excl_vat": "All prices exclude VAT. VAT (25%) is added and shown separately on the invoice.",
+  "amount_excl_vat": "Amount excl. VAT",
+  "checkout_done": "You are now on {{plan}}.",
+  "choose_free": "Switch to this",
+  "choose_paid": "Choose and pay",
+  "contact_sales": "Custom quote",
+  "contact_us": "Contact us",
+  "current_plan": "Current plan",
+  "details": "Billing details",
+  "download_pdf": "PDF",
+  "enterprise_points": "Volume pricing, contract and invoicing by agreement",
+  "estimate_total": "Estimated total incl. VAT",
+  "excl_vat_note": "excl. VAT – VAT {{vat}}, total {{total}}",
+  "faq_invoice": "Subscriptions are paid by card. Usage is invoiced monthly in arrears with 30 days' payment terms.",
+  "faq_no_amounts": "The prices are for our services. The register never contains purchase, loan or leasing amounts.",
+  "faq_title": "Good to know",
+  "feature_registration": "Registering machines is always included",
+  "free": "Free",
+  "get_started": "Get started",
+  "included": "Included",
+  "included_n": "{{n}} {{name}} included per month",
+  "included_name": {
+   "api_call": "API calls",
+   "check": "checks",
+   "label_nfc": "NFC labels",
+   "label_qr": "QR labels",
+   "register_extract": "register extracts"
+  },
+  "invoice_email": "E-mail for invoices",
+  "invoice_number": "Invoice number",
+  "invoice_status": {
+   "open": "Unpaid",
+   "paid": "Paid",
+   "void": "Void"
+  },
+  "invoices": "Invoices",
+  "item": "Service",
+  "line": {
+   "above_included": "{{name}} ({{used}} used, {{included}} included)",
+   "plan": "Subscription {{plan}}"
+  },
+  "manage_payment": "Manage payment",
+  "metric": {
+   "api_call": "API calls",
+   "check": "Checks",
+   "label_nfc": "NFC labels",
+   "label_qr": "QR labels",
+   "register_extract": "Register extracts"
+  },
+  "no_invoices": "No invoices yet",
+  "overdue": "Overdue",
+  "past_due": "The latest payment failed. Update the card under Manage payment.",
+  "pay": "Pay",
+  "pay_demo": "Pay (demo)",
+  "payments_disabled": "Card payment is not enabled. Invoices are sent by e-mail and paid by bank transfer.",
+  "pdf": {
+   "bankgiro": "Bankgiro {{nr}}",
+   "buyer": "Customer",
+   "due": "Due date",
+   "issued": "Invoice date",
+   "org_number": "reg. no. {{nr}}",
+   "paid": "Paid {{date}}.",
+   "pay_online": "Pay by card or bank transfer: {{url}}",
+   "period": "Period",
+   "questions": "Questions about the invoice: {{email}}",
+   "specification": "Specification",
+   "title": "Invoice",
+   "vat_number": "VAT no. {{nr}}"
+  },
+  "per_month": "{{price}}/month",
+  "per_unit": "{{price}} per {{unit}}",
+  "plan": {
+   "dealer": {
+    "for": "For dealers who check trade-ins and sell with ownership certificates",
+    "name": "Dealer"
+   },
+   "enterprise": {
+    "for": "For large volumes and own agreements",
+    "name": "Enterprise"
+   },
+   "financier": {
+    "for": "For banks and finance companies with encumbrances and a portfolio",
+    "name": "Lender"
+   },
+   "free": {
+    "for": "For owners, clients and smaller dealers",
+    "name": "Free"
+   },
+   "insurer": {
+    "for": "For insurers with a portfolio and claims checks",
+    "name": "Insurer"
+   },
+   "marketplace": {
+    "for": "For listing sites that check machines in listings",
+    "name": "Marketplace"
+   },
+   "public_sector": {
+    "for": "Authorities and inspection bodies",
+    "name": "Public sector"
+   }
+  },
+  "price_excl_vat": "Price excl. VAT",
+  "price_list": "Price list",
+  "pricing_lead": "Registering machines is free. Those who check machines, use the API or order labels pay for it.",
+  "pricing_title": "Pricing",
+  "public_sector_note": "Authorities, inspection bodies and the register keeper are not charged.",
+  "reference": "Your reference",
+  "reference_hint": "For example cost centre or purchase order number. Printed on the invoice.",
+  "start_free": "Start for free",
+  "subtotal_excl_vat": "Subtotal excl. VAT",
+  "then_price": "Then {{price}} per {{name}}",
+  "total_incl_vat": "Total incl. VAT",
+  "unit": {
+   "api_call": "call",
+   "check": "check",
+   "label_nfc": "label",
+   "label_qr": "label",
+   "register_extract": "extract"
+  },
+  "unit_price": "Unit price",
+  "usage_hint": "Usage is invoiced in arrears on the first of next month. Registering machines is always free.",
+  "usage_title": "Usage {{month}}",
+  "used": "Used",
+  "vat_amount": "VAT {{rate}}%",
+  "your_plan": "Your plan"
+ },
  "certificate": {
   "download": "Ownership certificate (PDF)",
   "downloaded": "The ownership certificate has been downloaded.",
@@ -697,6 +841,7 @@
   "results": "{{count}} results",
   "retry": "Try again",
   "save": "Save",
+  "saved": "Saved",
   "search": "Search",
   "select": "Select",
   "send": "Send",
@@ -934,6 +1079,12 @@
    "free": "Using the register is free for owners.",
    "heading": "A machine is registered to {{org_name}}",
    "subject": "{{registered_by}} has registered a machine for {{org_name}}"
+  },
+  "invoice": {
+   "body": "The invoice to {{org_name}} is {{total}} incl. VAT and due on {{due_date}}. Specification and PDF are under Settings → Billing.",
+   "button": "View the invoice",
+   "heading": "Invoice for {{period}}",
+   "subject": "Invoice {{number}} from {{app}}"
   },
   "notification": {
    "fallback_title": "You have a new notification",
@@ -1395,10 +1546,13 @@
   "NETWORK": "Could not reach the register. Check your connection.",
   "NOT_AUTHENTICATED": "You need to sign in to do this.",
   "NOT_FOUND": "Not found, or you are not allowed to see it.",
+  "NO_PAYMENT_METHOD": "There is no payment card on file.",
   "ORG_EXISTS": "The organisation already exists. Ask an administrator for an invitation.",
   "ORG_NOT_APPROVED": "The organisation is suspended. Contact the register operator.",
   "ORG_REQUIRED": "Choose an organisation first.",
   "OTP_FAILED": "The sign-in link could not be sent.",
+  "PAYMENTS_DISABLED": "Card payment is not enabled. Contact us to change plan.",
+  "PAYMENT_REQUIRED": "This plan has a fee and is chosen with card payment.",
   "RATE_LIMITED": "Too many lookups in a short time. Wait a minute and try again.",
   "RENTAL_OVERLAP": "The machine is already rented out in that period.",
   "SIGNATORY_REQUIRED": "Only a signatory can take over the organisation. Ask a signatory for an invitation.",
@@ -1440,6 +1594,9 @@
   "authority": {
    "preparedness_export": "{{actor}} produced a preparedness export",
    "search": "{{actor}} searched the register"
+  },
+  "billing": {
+   "plan_changed": "Plan changed to {{plan}}"
   },
   "config": {
    "changed": "{{actor}} changed a feature flag"
@@ -1879,6 +2036,7 @@
   "ordered": "The order is received. We send the labels within five working days.",
   "orders": "Orders",
   "postal_code": "Postal code",
+  "price": "Price {{price}} excl. VAT ({{incl}} incl. VAT). Billed on the monthly invoice.",
   "quantity": "Quantity",
   "role": "Type",
   "role_primary": "Primary",
@@ -2077,6 +2235,7 @@
  "nav": {
   "admin": "Administration",
   "admin_api": "API usage",
+  "admin_billing": "Billing",
   "admin_conflicts": "Conflicts",
   "admin_corrections": "Corrections",
   "admin_events": "Event log",
@@ -2151,6 +2310,28 @@
    "chain_broken": {
     "body": "Check the event log immediately.",
     "title": "Event chain does not verify"
+   }
+  },
+  "billing": {
+   "invoice_issued": {
+    "body": "The invoice for {{period}} is under Settings → Billing.",
+    "title": "Invoice {{number}}"
+   },
+   "payment_failed": {
+    "body": "Update the card under Settings → Billing.",
+    "title": "Payment of {{number}} failed"
+   },
+   "plan_changed": {
+    "body": "You are now on plan {{plan}}.",
+    "title": "The plan has changed"
+   },
+   "subscription_canceled": {
+    "body": "You are now on the free plan.",
+    "title": "The subscription has ended"
+   },
+   "subscription_past_due": {
+    "body": "Update the card under Settings → Billing.",
+    "title": "The subscription has an unpaid fee"
    }
   },
   "conflict": {
@@ -2896,6 +3077,7 @@
  },
  "settings": {
   "tab_api": "API and webhooks",
+  "tab_billing": "Billing",
   "tab_departments": "Departments",
   "tab_group": "Group"
  },

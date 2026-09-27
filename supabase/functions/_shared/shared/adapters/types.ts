@@ -127,6 +127,8 @@ export interface VirusScanner {
   scan(bytes: Uint8Array, filename: string): Promise<{ clean: boolean; signature?: string }>;
 }
 
+import type { Payments } from "./payments.ts";
+
 export interface Adapters {
   identity: IdentityProvider;
   signature: SignatureProvider;
@@ -136,4 +138,5 @@ export interface Adapters {
   ocr: Ocr;
   email: Email;
   virusScanner: VirusScanner;
+  payments: Payments;
 }
