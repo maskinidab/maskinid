@@ -72,3 +72,11 @@ Frågor som kräver affärsbeslut. Bygget stannar inte för dem; det säkraste a
 25. **Sandlådan** svarar från fasta testdata i gatewayn i stället för ett eget sandlådeprojekt. Ett separat
     Supabase-projekt kan läggas till för fullständiga tester.
 26. **Sammanslagning** kräver samma ägare; olika ägare hanteras som ägartvist (SPEC §6.7).
+
+## Integrationer och publika sidor (steg 25, tolkat – SPEC §20.17 saknas)
+27. **Partneravtal.** Transportstyrelsen (fordonsuppgifter via API) och Larmtjänst kräver avtal; adaptrarnas
+    endpoints är konfigurerbara tills formatet är känt.
+28. **NFC-skydd.** Kopieringsskyddet bygger på chipets serienummer, som kan förfalskas med specialutrustning.
+    *Antagande:* tillräckligt för v1; NTAG 424 DNA med SUN-meddelanden kan införas senare.
+29. **Telematikposition.** *Antagande:* endast senaste position sparas och myndighet ser den bara vid stöldflagga.
+30. **Publika sidor.** Innehållet på `/for/*`, `/about` och `/integrations` är utkast och bör granskas av produkt/marknad.

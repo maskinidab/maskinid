@@ -5,8 +5,9 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Dialog } from "./Dialog";
 import { Icon } from "./Icon";
+import { nfcSupported, readNfcOnce } from "../lib/nfc";
 
-export type ScanResult = { kind: "label"; code: string } | { kind: "reg"; reg: string };
+export type ScanResult = { kind: "label"; code: string; nfcUid?: string } | { kind: "reg"; reg: string };
 
 /** Parses camera or manual input: a MaskinID QR URL/label code, or a registration number. */
 export function parseScan(text: string): ScanResult | null {
@@ -91,7 +92,7 @@ export function ScanButton({ variant = "knapp", tone = "kontur", onResult }: {
   const handle = (r: ScanResult) => {
     setOpen(false);
     if (onResult) onResult(r);
-    else navigate(r.kind === "label" ? `/m/${r.code}` : `/r/${r.reg}`);
+    else navigate(r.kind === "label" ? `/m/${r.code}` : `/r/${r.reg}`, { state: r.kind === "label" && r.nfcUid ? { nfcUid: r.nfcUid } : undefined });
   };
   return (
     <>
@@ -101,8 +102,31 @@ export function ScanButton({ variant = "knapp", tone = "kontur", onResult }: {
       </button>
       <Dialog open={open} onClose={() => setOpen(false)} title={t("components.scan_title")}>
         <ScannerView onResult={handle} active={open} />
+        {open && nfcSupported() && <NfcRead onResult={handle} />}
         <button type="button" className="mid-knapp mid-knapp-kontur" onClick={() => setOpen(false)}>{t("common.close")}</button>
       </Dialog>
     </>
+  );
+}
+
+/** "Läs NFC-märke" (Web NFC, Android): the tag holds the same URL as the QR code; its chip serial goes along. */
+function NfcRead({ onResult }: { onResult(r: ScanResult): void }) {
+  const { t } = useTranslation();
+  const [state, setState] = useState<"idle" | "waiting" | "error">("idle");
+  async function read() {
+    setState("waiting");
+    try {
+      const { text, serial } = await readNfcOnce();
+      const r = parseScan(text);
+      if (!r) { setState("error"); return; }
+      onResult(r.kind === "label" ? { ...r, nfcUid: serial } : r);
+    } catch { setState("error"); }
+  }
+  return (
+    <div className="stack-2">
+      <button type="button" className="mid-knapp mid-knapp-sekundar" disabled={state === "waiting"} onClick={() => void read()}>
+        <Icon name="qr" />{state === "waiting" ? t("nfc.hold") : t("nfc.read")}</button>
+      {state === "error" && <p className="t-liten" role="alert">{t("nfc.error")}</p>}
+    </div>
   );
 }

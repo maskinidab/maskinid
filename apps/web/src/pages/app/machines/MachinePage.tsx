@@ -20,6 +20,7 @@ import { downloadCertificate, downloadMachineReport } from "../../../lib/pdf/dow
 import { downloadBytes } from "../../../lib/pdf/receipt";
 import { GrantMandateDialog } from "../org/MandatesPage";
 import { OperationalNotice } from "./OperationsSection";
+import { PositionBox } from "./PositionBox";
 import { ServiceTab } from "./ServiceTab";
 import {
   BindLabelDialog, ClearFlagDialog, DeregisterDialog, EditMachineDialog, EncumbranceDialog, FlagDialog, ReleaseEncumbranceDialog,
@@ -162,6 +163,7 @@ export function MachinePage() {
 
       <Tabs label={t("machine.tabs")} tabs={tabs} value={tab} onChange={(x) => setParams({ tab: x }, { replace: true })} />
       <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`flik-${tab}`} className="stack-5">
+        {tab === "overview" && (has("owner") || (has("authority") && m.status === "stolen")) && <PositionBox machineId={m.id} stolen={m.status === "stolen"} />}
         {tab === "overview" && <Overview m={m} flags={flags} onClearFlag={setClearFlag} />}
         {tab === "history" && <History machineId={m.id} />}
         {tab === "documents" && <Documents m={m} />}

@@ -59,3 +59,8 @@ verify_jwt = false
 # Step 24: scheduled push delivery accepts CRON_SECRET.
 [functions.push-send]
 verify_jwt = false
+# Step 25: scheduled integration jobs accept CRON_SECRET.
+[functions.telematics-sync]
+verify_jwt = false
+[functions.theft-sync]
+verify_jwt = false

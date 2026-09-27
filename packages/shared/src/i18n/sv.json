@@ -1,4 +1,18 @@
 {
+ "about": {
+  "continuity_body": "Registerdata lämnas då till en neutral part så att ägare och finansiärer inte förlorar sina uppgifter.",
+  "continuity_title": "Om bolaget upphör",
+  "history_body": "Varje händelse kedjas med en kontrollsumma och ett kontrollvärde publiceras varje dag.",
+  "history_title": "Historik som inte kan ändras",
+  "independent_body": "Vi är inte en myndighet och inte knutna till någon tillverkare, bank eller handlare. Maskiner kan bära andra registers id-nummer.",
+  "independent_title": "Fristående",
+  "lead": "{{app}} drivs av {{legal}} och är ett fristående register för tunga arbetsmaskiner: vem som äger dem, om de är belånade och om de är stulna.",
+  "no_amounts_body": "Registret visar om en maskin är belånad och hos vem – aldrig köpeskilling, lånebelopp eller restskuld.",
+  "no_amounts_title": "Inga belopp",
+  "privacy_body": "Personnummer lagras aldrig i klartext. Den som skannar en maskin ser dess status, aldrig ägarens kontaktuppgifter.",
+  "privacy_title": "Så lite personuppgifter som möjligt",
+  "title": "Om {{app}}"
+ },
  "actions": {
   "clear_flag": {
    "reason": "Orsak",
@@ -1546,6 +1560,7 @@
   "ENCUMBRANCE_NOT_ACTIVE": "Förbehållet är inte aktivt.",
   "ENCUMBRANCE_NOT_PENDING": "Förbehållet väntar inte på bekräftelse.",
   "ENCUMBRANCE_TRANSFER_PENDING": "En överlåtelse av förbehållet pågår redan.",
+  "FEATURE_DISABLED": "Funktionen är inte aktiverad.",
   "FLAG_ALREADY_ACTIVE": "Flaggan är redan aktiv.",
   "FLAG_NOT_ACTIVE": "Flaggan är redan avslutad.",
   "FORBIDDEN": "Din organisation har inte behörighet att göra det här.",
@@ -1564,6 +1579,7 @@
   "LINK_EXPIRED": "Länken har gått ut. Begär en ny.",
   "LINK_INVALID": "Länken är ogiltig eller redan använd.",
   "LOOKUP_REQUIRED": "Organisationsnumret behöver slås upp först.",
+  "LOOKUP_UNAVAILABLE": "Uppslaget svarar inte just nu. Försök igen om en stund.",
   "MACHINE_BLOCKED": "Maskinen är spärrad av myndighet eller registerhållare.",
   "MACHINE_READ_ONLY": "Maskinen är avregistrerad och kan inte ändras.",
   "MACHINE_SEIZED": "Maskinen är i beslag. Ändringar är spärrade.",
@@ -1687,6 +1703,8 @@
   },
   "label": {
    "bound": "{{actor}} knöt märke …{{payload.label_serial}}",
+   "nfc_mismatch": "NFC-märket skannades med ett annat chip än det registrerade",
+   "nfc_registered": "{{actor}} registrerade NFC-märkets chip",
    "revoked": "{{actor}} spärrade märke …{{payload.label_serial}}"
   },
   "labels": {
@@ -1708,7 +1726,7 @@
    "department_set": "{{actor}} ändrade avdelning",
    "deregistered": "{{actor}} avregistrerade maskinen",
    "factory_data_confirmed": "Fabriksdata bekräftade maskinens uppgifter",
-   "hours_reported": "{{actor}} rapporterade {{payload.hour_meter}} timmar",
+   "hours_reported": "{{actor}} rapporterade {{payload.hours}} timmar",
    "merged": "Post {{payload.merged_reg_number}} slogs ihop med maskinen",
    "merged_into": "Posten slogs ihop med {{payload.keep_reg_number}}",
    "operational_status_changed": "{{actor}} ändrade driftstatus",
@@ -1789,6 +1807,14 @@
    "revoked": "{{actor}} stängde en delningslänk"
   },
   "system": "MaskinID",
+  "telematics": {
+   "connected": "{{actor}} kopplade in telematik",
+   "disconnected": "{{actor}} kopplade bort telematik",
+   "stolen_position": "Den stulna maskinen rapporterade position via telematik"
+  },
+  "theft": {
+   "external_match": "Maskinen finns i ett externt stöldregister"
+  },
   "tip": {
    "received": "Tips inkom om maskinen"
   },
@@ -2070,12 +2096,83 @@
   "no_lifting": "Maskinen är inte markerad med lyftanordning.",
   "title": "Registrera besiktning"
  },
+ "integrations": {
+  "add": "Koppla in telematik",
+  "auth": "Inloggning",
+  "auth_basic": "Användarnamn och lösenord",
+  "auth_bearer": "API-nyckel (token)",
+  "auth_oauth": "OAuth-klient (t.ex. Trackunit)",
+  "base_url": "Adress till AEMP-flödet",
+  "base_url_hint": "Adressen ni fått från tillverkaren, t.ex. https://…/aemp. Måste börja med https.",
+  "client_id": "Klient-id",
+  "client_secret": "Klienthemlighet",
+  "connect": "Koppla in",
+  "counts": "{{matched}} matchade, {{unmatched}} okända, {{hours}} timmätare uppdaterade",
+  "credential_note": "Inloggningen lagras krypterad och visas aldrig igen. Skapa gärna en läsbehörig användare för just MaskinID.",
+  "error": "Senaste fel: {{error}}",
+  "last_sync": "Synkad {{at}}",
+  "linked": "{{count}} maskiner kopplade",
+  "mock_note": "Demotelematiken rapporterar timmar och plats för era egna maskiner.",
+  "name": "Namn",
+  "never_synced": "Inte synkad än",
+  "none": "Ingen telematik inkopplad",
+  "none_body": "Volvo CareTrack, Komatsu Komtrax och Trackunit stöds via standarden ISO 15143-3 (AEMP 2.0).",
+  "password": "Lösenord",
+  "pause": "Pausa",
+  "privacy": "Endast senast rapporterade plats sparas, ingen körhistorik. Platsen visas för er och för en eventuell brukare. Myndigheter ser den bara medan maskinen är anmäld stulen.",
+  "privacy_title": "Om positioner",
+  "provider": {
+   "caretrack": "Volvo CareTrack",
+   "iso15143": "Annat (ISO 15143-3 / AEMP 2.0)",
+   "komtrax": "Komatsu Komtrax",
+   "mock": "Demotelematik",
+   "trackunit": "Trackunit"
+  },
+  "provider_label": "System",
+  "resume": "Återuppta",
+  "status": {
+   "active": "Aktiv",
+   "error": "Fel",
+   "paused": "Pausad"
+  },
+  "sync": "Synka nu",
+  "telematics_lead": "Koppla in maskinernas telematik så uppdateras timmätaren automatiskt och ni ser senast rapporterade plats. Maskinerna matchas på serienummer, PIN eller VIN.",
+  "telematics_title": "Telematik",
+  "token": "Token",
+  "token_url": "Token-adress",
+  "username": "Användarnamn"
+ },
+ "integrations_page": {
+  "api_body": "REST-API med nycklar per organisation, behörigheter, idempotens och signerade webhooks. Sandlåda för test.",
+  "api_title": "API och webhooks",
+  "import_body": "Läs in maskinlistor från Excel eller CSV; kolumnerna mappas automatiskt.",
+  "import_title": "Import",
+  "lead": "{{app}} fungerar med de system ni redan har.",
+  "nfc_body": "Märken med både QR och NFC-chip. Chipet registreras på maskinen så att kopierade märken upptäcks.",
+  "nfc_title": "NFC-märken",
+  "read_more": "Läs mer",
+  "telematics_body": "Volvo CareTrack, Komatsu Komtrax, Trackunit och andra via ISO 15143-3 (AEMP 2.0): timmätare och senaste plats uppdateras automatiskt.",
+  "telematics_title": "Telematik",
+  "theft_body": "Stöldanmälningar synkas med försäkringsbranschens stöldregister.",
+  "theft_title": "Larmtjänst",
+  "title": "Integrationer",
+  "vtr_body": "Traktorer och motorredskap med vägtrafikregistrering slås upp vid registrering – utan att personuppgifter sparas.",
+  "vtr_title": "Transportstyrelsen"
+ },
  "labels": {
   "batch_one": "{{count}} märke, beställt {{date}}",
   "batch_other": "{{count}} märken, beställda {{date}}",
   "bound_at": "Kopplat",
   "labels": "Märken",
   "lead": "Manipuleringssäkra märken med QR-kod. Ett märke blir aktivt när det kopplas till en maskin och kan bara kopplas en gång.",
+  "medium": "Typ",
+  "medium_nfc": "NFC-märke",
+  "medium_nfc_hint": "QR-kod och NFC-chip i samma märke. Chipet registreras när märket sitter på maskinen.",
+  "medium_qr": "QR-märke",
+  "nfc_android_only": "Registreras med Chrome på Android",
+  "nfc_register": "Registrera chip",
+  "nfc_registered": "NFC, chip registrerat",
+  "nfc_wrong_tag": "Det var ett annat märke. Håll telefonen mot just det här märket.",
   "none": "Inga märken ännu",
   "none_body": "Beställ märken ovan. De dyker upp här när de har skickats.",
   "order_one": "Beställ {{count}} märke",
@@ -2283,6 +2380,7 @@
   "candidates_title_other": "Vi hittade {{count}} maskiner som ni annonserat"
  },
  "nav": {
+  "about": "Om oss",
   "admin": "Administration",
   "admin_api": "API-användning",
   "admin_billing": "Betalning",
@@ -2298,6 +2396,7 @@
   "admin_orgs": "Organisationer",
   "admin_statistics": "Statistik",
   "admin_support": "Supportsök",
+  "admin_theft_reports": "Stöldregister",
   "admin_tickets": "Supportärenden",
   "admin_tips": "Tips",
   "alerts": "Larm",
@@ -2326,6 +2425,7 @@
   "import": "Importera",
   "inbox": "Väntar på mig",
   "inspection_new": "Registrera besiktning",
+  "integrations": "Integrationer",
   "labels": "Märken",
   "leads": "Leads",
   "machines": "Maskiner",
@@ -2351,11 +2451,19 @@
   "sign_out": "Logga ut",
   "sign_up": "Skapa konto",
   "statistics": "Statistik",
+  "status": "Driftstatus",
   "stock": "Lager",
   "support": "Support",
   "trade_in": "Ta emot inbyte",
   "verify": "Verifieringskö",
   "watchlist": "Bevakning"
+ },
+ "nfc": {
+  "error": "Märket kunde inte läsas. Försök igen eller skanna QR-koden.",
+  "hold": "Håll telefonen mot märket…",
+  "mismatch_body": "Chipet i det här NFC-märket är inte det som registrerades för maskinen. Kontrollera maskinen extra noga och kontakta ägaren eller polisen vid misstanke.",
+  "mismatch_title": "Märket kan vara kopierat",
+  "read": "Läs NFC-märke"
  },
  "notifications": {
   "audit": {
@@ -2517,6 +2625,12 @@
    "requires_verification": {
     "body": "{{insurer}} kräver högre verifieringsnivå för {{reg_number}}.",
     "title": "Försäkringen kräver verifiering"
+   }
+  },
+  "label": {
+   "nfc_mismatch": {
+    "body": "Märket skannades med ett annat chip än det ni registrerade. Kontrollera märket på maskinen.",
+    "title": "NFC-märket på {{reg_number}} kan vara kopierat"
    }
   },
   "labels": {
@@ -2684,6 +2798,22 @@
    "viewed_as": {
     "body": "Skrivskyddat i högst 30 minuter. Anledning: {{reason}}",
     "title": "Supporten har visat er organisation"
+   }
+  },
+  "telematics": {
+   "error": {
+    "body": "Kontrollera adress och inloggning under Inställningar → Integrationer.",
+    "title": "Telematikkopplingen {{name}} fungerar inte"
+   },
+   "stolen_position": {
+    "body": "Position {{lat}}, {{lon}}. Kontakta polisen innan du åker dit.",
+    "title": "Stulen maskin {{reg_number}} har rapporterat position"
+   }
+  },
+  "theft": {
+   "external_match": {
+    "body": "Maskinen är inte anmäld stulen här. Registerhållaren granskar uppgiften.",
+    "title": "{{reg_number}} finns i stöldregistret hos {{source}}"
    }
   },
   "tip": {
@@ -2901,6 +3031,12 @@
   "pending": "Att bekräfta",
   "requirement": "Krav"
  },
+ "position": {
+  "open_map": "Öppna i OpenStreetMap",
+  "reported": "{{at}} via {{provider}}. Endast senaste punkten sparas.",
+  "stolen_hint": "Maskinen är anmäld stulen. Åk inte dit själv – kontakta polisen på 114 14.",
+  "title": "Senast rapporterad plats"
+ },
  "public": {
   "actors_title": "Värde för alla i kedjan",
   "are_you_owner": "Är du ägaren?",
@@ -3114,6 +3250,79 @@
   "verified_ok": "Stämmer",
   "verify": "Kontrollera"
  },
+ "segments": {
+  "agare": {
+   "cta": "Registrera gratis",
+   "lead": "Registrera maskinerna gratis, märk dem med QR och få ett ägarbevis som gör dem lättare att sälja och svårare att stjäla.",
+   "p1_body": "Varje maskin får ett registreringsnummer och ett ägarbevis som köpare, banker och försäkringsbolag kan kontrollera.",
+   "p1_title": "Bevis på vem som äger",
+   "p2_body": "En stulen maskin visar rött när någon skannar den, och du får en notis med ungefärlig plats.",
+   "p2_title": "Svårare att sälja stulet",
+   "p3_body": "Timmätare, service, besiktning, förare, daglig kontroll och klimatrapport – med telematik uppdateras timmarna själva.",
+   "p3_title": "Flottan på ett ställe",
+   "p4_body": "Flottrapporten visar utsläppssteg, drivmedel och besiktning – det beställare frågar efter.",
+   "p4_title": "Underlag för upphandling",
+   "short": "Ägare",
+   "title": "För maskinägare"
+  },
+  "finansiarer": {
+   "cta": "Boka genomgång",
+   "lead": "Stoppa dubbelfinansiering: en maskin kan bara ha ett aktivt förbehåll och varje kontroll ger ett verifierbart kvitto.",
+   "p1_body": "Sök på regnr, serienummer eller PIN – en i taget eller tusentals via API – och spara kvittot i kreditakten.",
+   "p1_title": "Kontroll med kvitto",
+   "p2_body": "Ett andra förbehåll blockeras och båda parter meddelas. Registret innehåller aldrig belopp.",
+   "p2_title": "Ett förbehåll per maskin",
+   "p3_body": "Larm om en maskin flaggas, byter ägare eller dyker upp i annonser – med risksignaler i varje kontroll.",
+   "p3_title": "Bevakning av portföljen",
+   "p4_body": "BankID-signering, tvåstegsverifiering, händelsekedja med dagliga kontrollvärden och personuppgiftsbiträdesavtal.",
+   "p4_title": "Byggt för bankens krav",
+   "short": "Finansiärer",
+   "title": "För banker och finansbolag"
+  },
+  "forsakring": {
+   "cta": "Kontakta oss",
+   "lead": "Se att maskinen finns, vem som äger den och hur väl uppgifterna är kontrollerade – före teckning och vid skada.",
+   "p1_body": "Koppla försäkringar till maskiner och ställ krav på verifieringsnivå.",
+   "p1_title": "Portfölj och krav",
+   "p2_body": "Stöldflaggor kan synkas med Larmtjänsts stöldregister.",
+   "p2_title": "Stöldsamarbete",
+   "p3_body": "Dubbla serienummer, ägartvister och avvikande annonser upptäcks och hanteras i registret.",
+   "p3_title": "Mindre bedrägeri",
+   "p4_body": "Kontroller och bevakning via API med sandlåda för test.",
+   "p4_title": "API",
+   "short": "Försäkring",
+   "title": "För försäkringsbolag"
+  },
+  "handlare": {
+   "cta": "Kom igång som handlare",
+   "lead": "Kontrollera inbyten på sekunder, sälj med ägarbevis och ge köparen en maskin med historik.",
+   "p1_body": "Skanna märket och se direkt om maskinen är belånad, efterlyst eller har en tvist.",
+   "p1_title": "Inbyten utan överraskningar",
+   "p2_body": "Ett flöde för ägarbyte, ny finansiering och ägarbevis. Nyförsäljning ger högsta verifieringsnivån.",
+   "p2_title": "Sälj med ägarbevis",
+   "p3_body": "Lager, kommission, annons-QR och leads i samma verktyg – med API och webhooks till ert affärssystem.",
+   "p3_title": "Lager och leads",
+   "p4_body": "Beställ märken och sätt dem vid leverans, så följer registreringen med maskinen.",
+   "p4_title": "Märk kundernas maskiner",
+   "short": "Handlare",
+   "title": "För maskinhandlare"
+  },
+  "myndigheter": {
+   "cta": "Begär anslutning",
+   "lead": "Sök på delar av serienummer, se flaggor och åtkomstlogg, efterlys och spärra – utan kostnad.",
+   "p1_body": "En efterlyst maskin visar rött vid skanning och blockerar ägarbyte, förbehåll och avregistrering.",
+   "p1_title": "Efterlysning och beslag",
+   "p2_body": "Slå upp en maskin vid gränsen och se om den är belånad.",
+   "p2_title": "Exportkontroll",
+   "p3_body": "Formellt utdrag som PDF med utdragsnummer och kontrollsumma.",
+   "p3_title": "Registerutdrag",
+   "p4_body": "Aggregerad statistik utan ägaruppgifter för beredskapsplanering och miljöuppföljning.",
+   "p4_title": "Beredskap och miljö",
+   "short": "Myndigheter",
+   "title": "För polis, tull och andra myndigheter"
+  },
+  "nav": "För"
+ },
  "service": {
   "add_entry": "Logga service",
   "add_inspection": "Registrera besiktning",
@@ -3175,7 +3384,8 @@
   "tab_billing": "Betalning",
   "tab_data": "Data och export",
   "tab_departments": "Avdelningar",
-  "tab_group": "Koncern"
+  "tab_group": "Koncern",
+  "tab_integrations": "Integrationer"
  },
  "share": {
   "owner_ordinal": "Antal ägare: {{count}}",
@@ -3234,6 +3444,32 @@
   "transfers_12m": "Ägarbyten senaste 12 mån",
   "unknown": "Okänt"
  },
+ "status": {
+  "anchor_body": "Kontrollvärdet för {{day}} sammanfattar alla händelser den dagen.",
+  "anchor_ref": "Publicerat som {{ref}}",
+  "anchor_title": "Senaste kontrollvärde",
+  "checked": "Kontrollerad",
+  "down": "Registret svarar inte just nu",
+  "events_24h": "Händelser senaste dygnet",
+  "how_verify": "Så kontrollerar du historiken",
+  "integration": {
+   "nfc": "NFC-märken",
+   "payments": "Kortbetalning",
+   "push": "Push-notiser",
+   "telematics": "Telematik",
+   "theft_sync": "Stöldregister (Larmtjänst)"
+  },
+  "integrations": "Integrationer",
+  "lead": "Aktuell status för registret och dess integrationer.",
+  "mode": "Läge",
+  "no_anchor": "Inget kontrollvärde publicerat än.",
+  "off": "Av",
+  "ok": "Fungerar",
+  "on": "På",
+  "operational": "Alla system fungerar",
+  "register": "Registret",
+  "title": "Driftstatus"
+ },
  "stolen": {
   "has_label": "Har QR-märke",
   "lead": "Maskiner som är anmälda stulna och där ägaren eller polisen har valt att visa dem här. Ser du någon av dem: ring polisen på 114 14 eller lämna ett tips.",
@@ -3274,6 +3510,34 @@
   },
   "status_waiting_customer_admin": "Väntar på kund",
   "subject": "Ämne"
+ },
+ "theftsync": {
+  "confirm": "Bekräfta",
+  "disabled": "Synkningen är avstängd (FEATURE_THEFT_SYNC).",
+  "empty": "Inga anmälningar här",
+  "ignore": "Avfärda",
+  "lead": "Stöldanmälda maskiner skickas till försäkringsbranschens stöldregister (Larmtjänst) och deras anmälningar matchas mot registret.",
+  "match": "Maskin i registret",
+  "never_auto": "En extern anmälan flaggar aldrig en maskin automatiskt. Ägaren meddelas och flaggan sätts av ägaren eller polisen.",
+  "no_match": "Ingen träff",
+  "queue": {
+   "failed": "Misslyckade",
+   "pending": "Väntar på att skickas",
+   "sent": "Skickade"
+  },
+  "received": "Mottagen",
+  "report": "Anmälan",
+  "report_status": {
+   "recovered": "Återfunnen",
+   "stolen": "Stulen"
+  },
+  "review": {
+   "confirmed": "Bekräftade",
+   "ignored": "Avfärdade",
+   "new": "Nya"
+  },
+  "sync_now": "Synka nu (demo)",
+  "title": "Stöldregister"
  },
  "tips": {
   "city": "Ort",
@@ -3357,6 +3621,30 @@
   "end": "Avsluta visning",
   "lead": "Du ser {{name}} skrivskyddat i 30 minuter. Organisationens administratörer meddelas och anledningen loggas.",
   "start": "Visa som organisation"
+ },
+ "vtr": {
+  "class": {
+   "motorredskap_klass_i": "Motorredskap klass I",
+   "motorredskap_klass_ii": "Motorredskap klass II",
+   "traktor_a": "Traktor a",
+   "traktor_b": "Traktor b"
+  },
+  "last_owner_change": "Senaste ägarbyte",
+  "lookup": "Hämta från Transportstyrelsen",
+  "owner": {
+   "legal_person": "Företag",
+   "natural_person": "Privatperson (visas inte)",
+   "unknown": "Okänt"
+  },
+  "owner_category": "Ägare i vägtrafikregistret",
+  "source": "Källa",
+  "source_mock": "Demodata",
+  "status": {
+   "deregistered": "Avregistrerad",
+   "in_traffic": "I trafik",
+   "off_road": "Avställd"
+  },
+  "vehicle_class": "Fordonsslag"
  },
  "watch": {
   "add": "Bevaka",

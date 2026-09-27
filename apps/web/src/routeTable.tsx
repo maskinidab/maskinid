@@ -17,8 +17,13 @@ const ReceiptVerifyPage = L(() => import("./pages/public/ReceiptVerifyPage"), "R
 const StolenListPage = L(() => import("./pages/public/InfoPages"), "StolenListPage");
 const PricingPage = L(() => import("./pages/public/PricingPage"), "PricingPage");
 const StatisticsPage = L(() => import("./pages/public/StatisticsPage"), "StatisticsPage");
+const SegmentPage = L(() => import("./pages/public/MorePages"), "SegmentPage");
+const AboutPage = L(() => import("./pages/public/MorePages"), "AboutPage");
+const IntegrationsPage = L(() => import("./pages/public/MorePages"), "IntegrationsPage");
+const StatusPage = L(() => import("./pages/public/MorePages"), "StatusPage");
 const AdminStatisticsPage = L(() => import("./pages/public/StatisticsPage"), "AdminStatisticsPage");
 const AdminBillingPage = L(() => import("./pages/app/admin/AdminBilling"), "AdminBillingPage");
+const AdminTheftReportsPage = L(() => import("./pages/app/admin/AdminTheftReports"), "AdminTheftReportsPage");
 const TipPage = L(() => import("./pages/public/InfoPages"), "TipPage");
 const HelpPage = L(() => import("./pages/public/InfoPages"), "HelpPage");
 const HelpArticlePage = L(() => import("./pages/public/InfoPages"), "HelpArticlePage");
@@ -94,6 +99,10 @@ export const publicRoutes: { path: string; element: ReactNode }[] = [
   { path: "stolen", element: <StolenListPage /> },
   { path: "pricing", element: <PricingPage /> },
   { path: "statistics", element: <StatisticsPage /> },
+  { path: "for/:segment", element: <SegmentPage /> },
+  { path: "about", element: <AboutPage /> },
+  { path: "integrations", element: <IntegrationsPage /> },
+  { path: "status", element: <StatusPage /> },
   { path: "tips", element: <TipPage /> },
   { path: "help", element: <HelpPage /> },
   { path: "help/:slug", element: <HelpArticlePage /> },
@@ -164,4 +173,5 @@ export const appRoutes: { path: string; element: ReactNode }[] = [
   { path: "admin/legal", element: <AdminLegalPage /> },
   { path: "admin/billing", element: <AdminBillingPage /> },
   { path: "admin/statistics", element: <AdminStatisticsPage /> },
+  { path: "admin/theft-reports", element: <AdminTheftReportsPage /> },
 ];

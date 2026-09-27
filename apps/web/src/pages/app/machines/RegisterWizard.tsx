@@ -343,6 +343,7 @@ function StepIdentity({ d, set, patch, err, onDup, ensureDraft }: {
         <FormField className="kol-6" label={t("enum.identifier_type.road_reg")} optional hint={t("wizard.road_reg_hint")}>
           <input className="mid-input is-id" value={d.road_reg} onChange={(e) => set("road_reg", e.target.value.toUpperCase())} maxLength={7} autoCapitalize="characters" />
         </FormField>
+        {/^[A-Z]{3}\s?[0-9]{2}[0-9A-Z]$/.test(d.road_reg.trim()) && <div className="kol-12"><VtrLookup roadReg={d.road_reg.trim()} /></div>}
       </div>
     </div>
   );
@@ -594,6 +595,35 @@ function Done({ r, withLabel, onNext }: { r: Result; withLabel: boolean; onNext(
           <button type="button" className="mid-knapp mid-knapp-kontur" onClick={onNext}><Icon name="plus" />{t("wizard.done_next")}</button>
         </div>
       </section>
+    </div>
+  );
+}
+
+interface VtrSnapshot { road_reg: string; vehicle_class: string; owner_category: string; status: string; last_owner_change?: string; source: string }
+
+/** Transportstyrelsen lookup for a road registration number (step 25): vehicle class and status, never the owner. */
+function VtrLookup({ roadReg }: { roadReg: string }) {
+  const { t } = useTranslation();
+  const [snap, setSnap] = useState<VtrSnapshot | null>(null);
+  const [error, setError] = useState<unknown>(null);
+  const [busy, setBusy] = useState(false);
+  async function run() {
+    setBusy(true); setError(null);
+    try { setSnap(await backend.invoke<VtrSnapshot>("vtr-lookup", { road_reg: roadReg })); } catch (e) { setError(e); } finally { setBusy(false); }
+  }
+  return (
+    <div className="stack-2">
+      <div><button type="button" className="mid-knapp mid-knapp-liten mid-knapp-kontur" disabled={busy} onClick={() => void run()}><Icon name="sok" />{t("vtr.lookup")}</button></div>
+      {!!error && <ErrorNotice error={error} />}
+      {snap && (
+        <dl className="faktarutnat t-liten">
+          <div><dt>{t("vtr.vehicle_class")}</dt><dd>{t(`vtr.class.${snap.vehicle_class}`, { defaultValue: snap.vehicle_class })}</dd></div>
+          <div><dt>{t("common.status")}</dt><dd>{t(`vtr.status.${snap.status}`, { defaultValue: snap.status })}</dd></div>
+          <div><dt>{t("vtr.owner_category")}</dt><dd>{t(`vtr.owner.${snap.owner_category}`)}</dd></div>
+          {snap.last_owner_change && <div><dt>{t("vtr.last_owner_change")}</dt><dd>{snap.last_owner_change}</dd></div>}
+          <div><dt>{t("vtr.source")}</dt><dd>{snap.source === "mock" ? t("vtr.source_mock") : "Transportstyrelsen"}</dd></div>
+        </dl>
+      )}
     </div>
   );
 }

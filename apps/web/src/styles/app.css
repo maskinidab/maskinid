@@ -69,7 +69,7 @@ a { color: var(--id-text); }
 /* ---------- Sidfot ---------- */
 .sidfot { background: var(--maskin-svart); color: var(--vit); padding: var(--space-7) 0 var(--space-6); margin-top: var(--space-8); border-top: 1px solid var(--linje); }
 .sidfot a { color: var(--vit); }
-.sidfot-inre { display: grid; gap: var(--space-6); grid-template-columns: 2fr 1fr 1fr; }
+.sidfot-inre { display: grid; gap: var(--space-6); grid-template-columns: 2fr 1fr 1fr 1fr; }
 .sidfot img { height: 24px; width: auto; }
 .sidfot p, .sidfot li { font-size: 14px; line-height: 20px; color: #c9ced3; margin: 0; }
 .sidfot h2 { font-size: 13px; line-height: 16px; font-weight: 600; margin: 0 0 var(--space-3); color: var(--vit); }
@@ -266,3 +266,4 @@ a { color: var(--id-text); }
 .stolpe-kolumn .diagram-tips { top: -2rem; right: auto; }
 .diagram-tabell summary { cursor: pointer; }
 .diagram-rutnat { display: grid; gap: var(--space-6); grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); }
+.panel-fara { border-color: var(--status-sparr); box-shadow: inset 4px 0 0 var(--status-sparr); }

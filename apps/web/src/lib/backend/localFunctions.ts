@@ -6,6 +6,8 @@
 import { heuristicColumnMapping, mockOcr } from "@maskinid/shared/adapters/mock.ts";
 import { mockPayments } from "@maskinid/shared/adapters/payments.ts";
 import { renderPush } from "@maskinid/shared/email/render.ts";
+import { createMockTelematics, type TelematicsConnection } from "@maskinid/shared/adapters/telematics.ts";
+import { createMockTheftRegistry } from "@maskinid/shared/adapters/mock.ts";
 import { ApiError } from "./errors";
 import { idbGet } from "./idb";
 import type { LocalContext } from "./local";
@@ -24,9 +26,36 @@ export const localFunctions: Record<string, Handler> = {
         p_code: code, p_reg: reg, p_ip_hash: LOCAL_IP, p_location: body.location ?? null, p_message: body.message ?? null, p_contact: body.contact ?? null,
       });
     }
-    return ctx.rpcAs("service_role", "log_public_scan", {
+    const card = await ctx.rpcAs<Record<string, unknown>>("service_role", "log_public_scan", {
       p_code: code, p_reg: reg, p_ip_hash: LOCAL_IP, p_user_agent_family: "browser", p_location: body?.location ?? null,
     });
+    if (code && typeof body?.nfc_uid === "string") {
+      const r = await ctx.rpcAs<{ result: string }>("service_role", "check_nfc_tag", { p_code: code, p_uid: body.nfc_uid, p_ip_hash: LOCAL_IP });
+      return { ...card, nfc: r.result };
+    }
+    return card;
+  },
+
+  // telematics-sync: in the demo only mock connections exist; "Synka nu" runs the same ingest as the scheduled job.
+  async "telematics-sync"(ctx) {
+    const due = await ctx.rpcAs<(TelematicsConnection & { id: string })[]>("service_role", "telematics_due_connections", { p_limit: 20 });
+    const mock = createMockTelematics();
+    for (const c of due) {
+      await ctx.rpcAs("service_role", "telematics_ingest", c.provider === "mock"
+        ? { p_connection_id: c.id, p_readings: JSON.stringify(await mock.fetch(c)) }
+        : { p_connection_id: c.id, p_readings: "[]", p_error: "DEMO: only demo connections can sync in the browser" });
+    }
+    return { synced: due.length };
+  },
+
+  async "theft-sync"(ctx) {
+    const registry = createMockTheftRegistry();
+    const claimed = await ctx.rpcAs<{ id: string; report: Parameters<typeof registry.push>[0] }[]>("service_role", "claim_theft_sync", { p_limit: 50 });
+    for (const q of claimed) {
+      const r = await registry.push(q.report);
+      await ctx.rpcAs("service_role", "record_theft_sync_result", { p_id: q.id, p_ok: true, p_external_ref: r.externalRef, p_error: null });
+    }
+    return { pushed: claimed.length, pulled: 0 };
   },
 
   async tip(ctx, body) {

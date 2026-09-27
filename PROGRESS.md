@@ -35,7 +35,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 22 | Tips, stöldlista, hjälpcenter, support, juridik, kontosäkerhet, "Visa som" | ✅ | tolkat, ADR 0019 |
 | 23 | Betalning (Stripe testläge) | ✅ | tolkat, ADR 0020 |
 | 24 | Statistik, dataexport, push, sandbox, partial search, merge | ✅ | tolkat, ADR 0021 |
-| 25 | Integrationsadaptrar (NFC, telematik, TS, Larmtjänst), publika sidor | ⬜ | |
+| 25 | Integrationsadaptrar (NFC, telematik, TS, Larmtjänst), publika sidor | ✅ | ADR 0022 |
 | 26 | Drift | ⬜ | |
 | 27 | Kvalitet | ⬜ | |
 
@@ -260,3 +260,12 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   `/statistics` och Admin → Statistik (diagram enligt dataviz-metoden), Inställningar → Data och export, Profil →
   Push-notiser och Mina uppgifter, Kontroll → Delsökning, sammanslagning i konfliktkön, sandlådeavsnitt på `/api-docs`.
   Seed `95_statistics.sql`. Tester `20_stats_export_push_merge`, sandlåde-, webpush- och push-texttester. ADR 0021.
+- **Steg 25** – Migration `integrations`: NFC-märken (beställning, chipregistrering via Web NFC, varning för kopierat
+  märke vid skanning), telematik (ISO 15143-3/AEMP 2.0 för CareTrack, Komtrax, Trackunit; krypterade inloggningar,
+  matchning på serienummer, timmätare uppåt, senaste position, larm när stulen maskin rapporterar position),
+  Transportstyrelsen (Edge Function `vtr-lookup` + uppslag i registreringsguiden), Larmtjänst (utkö från stöldflaggor,
+  inkommande anmälningar matchas men flaggar aldrig automatiskt, granskning i Admin → Stöldregister), `/status`.
+  Edge Functions `telematics-sync`, `theft-sync`, `vtr-lookup`; `scan-log` kontrollerar NFC-chip. Webb: Inställningar →
+  Integrationer, position på maskinsidan, NFC i skanning och märkessidan, publika sidor `/for/:segment`, `/about`,
+  `/integrations`, `/status`. Rättning: tidslinjetexten för rapporterade timmar. Runbook `docs/runbooks/integrations.md`.
+  Seed `60_integrations.sql`. Tester `21_integrations`, telematikadapter. ADR 0022, öppna frågor 27–30.

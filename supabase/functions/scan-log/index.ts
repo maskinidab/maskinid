@@ -5,7 +5,8 @@
 // Rate limit: 30/min and 300/day per IP (hashed) ⇒ 429. Also handles "Jag har sett maskinen" (POST {sighting:true}).
 //
 //   GET  /scan-log?code=<label code>   or   ?reg=<reg number>
-//   POST /scan-log  { code | reg, location?: {lat,lng,city}, sighting?: true, message?, contact? }
+//   POST /scan-log  { code | reg, location?: {lat,lng,city}, sighting?: true, message?, contact?, nfc_uid? }
+// With nfc_uid (Web NFC chip serial, step 25) the response also carries nfc: match | mismatch | unknown.
 import { serviceClient } from "../_shared/db.ts";
 import { ipHash, json, preflight, rpcError } from "../_shared/http.ts";
 
@@ -39,5 +40,10 @@ Deno.serve(async (req) => {
     if (res.status === 429) res.headers.set("Retry-After", "60");
     return res;
   }
-  return json(200, data, { "Cache-Control": "no-store", "X-Robots-Tag": "noindex, nofollow" });
+  let nfc: string | undefined;
+  if (code && typeof body.nfc_uid === "string") {
+    const r = await db.rpc("check_nfc_tag", { p_code: code, p_uid: body.nfc_uid, p_ip_hash: ip });
+    nfc = (r.data as { result?: string } | null)?.result;
+  }
+  return json(200, nfc ? { ...(data as Record<string, unknown>), nfc } : data, { "Cache-Control": "no-store", "X-Robots-Tag": "noindex, nofollow" });
 });

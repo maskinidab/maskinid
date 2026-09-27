@@ -1,4 +1,5 @@
 import { formatSek, vatOf } from "@maskinid/shared/billing.ts";
+import { labelCodeFromScan } from "@maskinid/shared/identifiers.ts";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -11,10 +12,12 @@ import { StatusBadge } from "../../../components/StatusBadge";
 import { queryClient, rpc, useRpc } from "../../../lib/api/query";
 import { formatDate } from "../../../lib/format";
 import { currentLocale } from "../../../i18n";
+import { nfcSupported, readNfcOnce } from "../../../lib/nfc";
 
 interface Labels {
   batches: { id: string; quantity: number; status: string; created_at: string; shipping_address: Record<string, string> | null }[];
-  labels: { id: string; code: string; serial: string; status: string; role: string; machine_id: string | null; reg_number: string | null; bound_at: string | null }[];
+  labels: { id: string; code: string; serial: string; status: string; role: string; machine_id: string | null; reg_number: string | null; bound_at: string | null;
+    medium?: "qr" | "nfc"; nfc_registered?: boolean }[];
 }
 
 /** Labels (SPEC §5.2): order tamper-proof labels ("Beställ 50 märken"), see assigned/bound labels. */
@@ -25,6 +28,7 @@ export function LabelsPage() {
   const prices = useRpc<{ price_items: Record<string, number>; vat_rate: number }>("list_plans", {});
   const billed = !(has("authority") || has("inspector") || has("operator"));
   const [qty, setQty] = useState(50);
+  const [medium, setMedium] = useState<"qr" | "nfc">("qr");
   const [addr, setAddr] = useState({ street: "", postal_code: "", city: org.city ?? "" });
   const [done, setDone] = useState(false);
   const [error, setError] = useState<unknown>(null);
@@ -36,7 +40,7 @@ export function LabelsPage() {
           e.preventDefault();
           setError(null);
           try {
-            await rpc("order_labels", { p_org_id: orgId, p_quantity: qty, p_shipping_address: addr });
+            await rpc("order_labels", { p_org_id: orgId, p_quantity: qty, p_shipping_address: addr, p_medium: medium });
             setDone(true);
             await queryClient.invalidateQueries({ queryKey: ["rpc"] });
           } catch (err) { setError(err); }
@@ -48,14 +52,19 @@ export function LabelsPage() {
                 {[10, 25, 50, 100, 250, 500].map((n) => <option key={n} value={n}>{n}</option>)}
               </select>
             </FormField>
-            <FormField className="kol-8" label={t("common.address")}><input className="mid-input" value={addr.street} onChange={(e) => setAddr({ ...addr, street: e.target.value })} /></FormField>
+            <FormField className="kol-4" label={t("labels.medium")} hint={medium === "nfc" ? t("labels.medium_nfc_hint") : undefined}>
+              <select className="mid-select" value={medium} onChange={(e) => setMedium(e.target.value as "qr" | "nfc")}>
+                <option value="qr">{t("labels.medium_qr")}</option><option value="nfc">{t("labels.medium_nfc")}</option>
+              </select>
+            </FormField>
+            <FormField className="kol-4" label={t("common.address")}><input className="mid-input" value={addr.street} onChange={(e) => setAddr({ ...addr, street: e.target.value })} /></FormField>
             <FormField className="kol-4" label={t("labels.postal_code")}><input className="mid-input" inputMode="numeric" value={addr.postal_code} onChange={(e) => setAddr({ ...addr, postal_code: e.target.value })} /></FormField>
             <FormField className="kol-8" label={t("common.city")}><input className="mid-input" value={addr.city} onChange={(e) => setAddr({ ...addr, city: e.target.value })} /></FormField>
           </div>
           {billed && prices.data && (
             <p className="t-liten">{t("labels.price", {
-              price: formatSek(qty * prices.data.price_items.label_qr, currentLocale()),
-              incl: formatSek(vatOf(qty * prices.data.price_items.label_qr, prices.data.vat_rate).total, currentLocale()) })}</p>
+              price: formatSek(qty * prices.data.price_items[medium === "nfc" ? "label_nfc" : "label_qr"], currentLocale()),
+              incl: formatSek(vatOf(qty * prices.data.price_items[medium === "nfc" ? "label_nfc" : "label_qr"], prices.data.vat_rate).total, currentLocale()) })}</p>
           )}
           {done && <Notice kind="ok" title={t("labels.ordered")} />}
           {error != null && <ErrorNotice error={error} />}
@@ -84,9 +93,38 @@ export function LabelsPage() {
               { id: "role", header: t("labels.role"), value: (l) => l.role, cell: (l) => t(`labels.role_${l.role}`), hideOnMobile: true },
               { id: "machine", header: t("machines.col_machine"), value: (l) => l.reg_number, cell: (l) => l.machine_id && l.reg_number ? <Link to={path(`machines/${l.machine_id}`)}><RegNumber value={l.reg_number} /></Link> : "–" },
               { id: "bound", header: t("labels.bound_at"), value: (l) => l.bound_at, cell: (l) => formatDate(l.bound_at) || "–", hideOnMobile: true },
+              { id: "medium", header: t("labels.medium"), value: (l) => l.medium ?? "qr", hideOnMobile: true,
+                cell: (l) => (l.medium === "nfc"
+                  ? (l.nfc_registered ? t("labels.nfc_registered") : l.status === "bound" && canWrite ? <RegisterChip code={l.code} /> : t("labels.medium_nfc"))
+                  : t("labels.medium_qr")) },
             ]} />
         </>
       )}
     </div>
+  );
+}
+
+/** Registers the chip serial of a bound NFC label with Web NFC (Android); later scans with another chip are flagged. */
+function RegisterChip({ code }: { code: string }) {
+  const { t } = useTranslation();
+  const { orgId } = useOrg();
+  const [state, setState] = useState<"idle" | "waiting" | "error" | "wrong">("idle");
+  if (!nfcSupported()) return <span className="t-liten t-sekundar">{t("labels.nfc_android_only")}</span>;
+  async function go() {
+    setState("waiting");
+    try {
+      const { text, serial } = await readNfcOnce();
+      if (labelCodeFromScan(text) !== code) { setState("wrong"); return; }
+      await rpc("register_nfc_tag", { p_org_id: orgId, p_code: code, p_uid: serial });
+      await queryClient.invalidateQueries({ queryKey: ["rpc"] });
+    } catch { setState("error"); }
+  }
+  return (
+    <span className="stack-1">
+      <button type="button" className="mid-knapp mid-knapp-liten mid-knapp-kontur" disabled={state === "waiting"} onClick={() => void go()}>
+        {state === "waiting" ? t("nfc.hold") : t("labels.nfc_register")}</button>
+      {state === "wrong" && <span className="t-liten" role="alert">{t("labels.nfc_wrong_tag")}</span>}
+      {state === "error" && <span className="t-liten" role="alert">{t("nfc.error")}</span>}
+    </span>
   );
 }

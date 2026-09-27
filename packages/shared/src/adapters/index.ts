@@ -13,6 +13,7 @@ export * from "./mock.ts";
 export * from "./real.ts";
 export * from "./payments.ts";
 export * from "./webpush.ts";
+export * from "./telematics.ts";
 import { createMockPushSender, createWebPushSender } from "./webpush.ts";
 import { createStripePayments, mockPayments } from "./payments.ts";
 

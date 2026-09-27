@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider";
 import { ErrorNotice, Notice, Skeleton } from "../../components/Feedback";
 import { Icon } from "../../components/Icon";
@@ -13,7 +13,7 @@ import type { PublicCard } from "../../lib/api/types";
 import { ApiError, backend } from "../../lib/backend";
 import { formatDate, formatDateTime } from "../../lib/format";
 
-type ScanResponse = { found: boolean; reason?: string; card?: PublicCard };
+type ScanResponse = { found: boolean; reason?: string; card?: PublicCard; nfc?: "match" | "mismatch" | "unknown" };
 const CACHE = "maskinid.lastseen.";
 
 function useNoIndex() {
@@ -33,11 +33,12 @@ export function MachinePublicPage() {
   const { session, context } = useAuth();
   useNoIndex();
   const key = code ? `c:${code}` : `r:${reg}`;
+  const nfcUid = (useLocation().state as { nfcUid?: string } | null)?.nfcUid;
   const q = useQuery<ScanResponse & { offline?: string }, ApiError>({
     queryKey: ["public-card", key],
     queryFn: async () => {
       try {
-        const r = await backend.invoke<ScanResponse>("scan-log", code ? { code } : { reg }, { anonymous: true });
+        const r = await backend.invoke<ScanResponse>("scan-log", code ? { code, ...(nfcUid ? { nfc_uid: nfcUid } : {}) } : { reg }, { anonymous: true });
         if (r.found) localStorage.setItem(CACHE + key, JSON.stringify({ at: new Date().toISOString(), r }));
         return r;
       } catch (e) {
@@ -77,6 +78,7 @@ export function MachinePublicPage() {
       )}
       <div className="behallare sektion stack-6 smal-bred">
         {r.offline && <Notice title={t("public.offline", { date: formatDateTime(r.offline) })} />}
+        {r.nfc === "mismatch" && <Notice kind="fel" title={t("nfc.mismatch_title")}><p>{t("nfc.mismatch_body")}</p></Notice>}
         {c.label_status === "replaced" && <Notice title={t("public.label_replaced")}><p><Link className="mid-lank" to={`/r/${c.reg_number}`}>{t("public.label_replaced_link")}</Link></p></Notice>}
         <article className="mid-post">
           <div className="mid-post-huvud">

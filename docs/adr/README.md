@@ -26,3 +26,4 @@ the product owner decided otherwise. Format: context → decision → consequenc
 | [0019](0019-support-legal-view-as.md) | Tips, public stolen list, support, versioned legal documents, security log, read-only "view as" |
 | [0020](0020-billing.md) | Billing: free registration, metered checks/API/labels, plans, monthly invoices with VAT separately, Stripe test mode behind an adapter |
 | [0021](0021-stats-export-push-sandbox-merge.md) | Suppressed public statistics, JSON data export, web push (VAPID), fixed-data API sandbox, masked partial search, merging duplicates |
+| [0022](0022-integrations.md) | NFC chip check, ISO 15143-3 telematics, Transportstyrelsen lookup, Larmtjänst sync without auto-flagging, public segment/about/integrations/status pages |

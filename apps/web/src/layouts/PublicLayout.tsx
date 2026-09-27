@@ -57,6 +57,14 @@ export function Footer() {
             <li><Link to="/stolen">{t("public.stolen_list")}</Link></li>
             <li><Link to="/tips">{t("tips.link")}</Link></li>
             <li><Link to="/api-docs">{t("nav.api_docs")}</Link></li>
+            <li><Link to="/integrations">{t("nav.integrations")}</Link></li>
+          </ul>
+        </div>
+        <div>
+          <h2>{t("segments.nav")}</h2>
+          <ul>
+            {(["agare", "handlare", "finansiarer", "forsakring", "myndigheter"] as const).map((x) => <li key={x}><Link to={`/for/${x}`}>{t(`segments.${x}.short`)}</Link></li>)}
+            <li><Link to="/about">{t("nav.about")}</Link></li>
           </ul>
         </div>
         <div>
@@ -68,6 +76,7 @@ export function Footer() {
             <li><Link to="/help">{t("nav.help")}</Link></li>
             <li><Link to="/contact">{t("support.contact_title")}</Link></li>
             <li><Link to="/legal/dpa">{t("legal.keys.dpa")}</Link></li>
+            <li><Link to="/status">{t("nav.status")}</Link></li>
           </ul>
         </div>
       </div>

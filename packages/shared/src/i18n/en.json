@@ -1,4 +1,18 @@
 {
+ "about": {
+  "continuity_body": "The register data is then handed to a neutral party so owners and lenders do not lose their records.",
+  "continuity_title": "If the company ceases",
+  "history_body": "Every event is chained with a checksum and an anchor value is published every day.",
+  "history_title": "History that cannot be changed",
+  "independent_body": "We are not an authority and not tied to any manufacturer, bank or dealer. Machines can carry other registers' ID numbers.",
+  "independent_title": "Independent",
+  "lead": "{{app}} is run by {{legal}} and is an independent register for heavy work machines: who owns them, whether they are financed and whether they are stolen.",
+  "no_amounts_body": "The register shows whether a machine is financed and by whom – never purchase price, loan amount or outstanding debt.",
+  "no_amounts_title": "No amounts",
+  "privacy_body": "Personal identity numbers are never stored in clear text. Whoever scans a machine sees its status, never the owner's contact details.",
+  "privacy_title": "As little personal data as possible",
+  "title": "About {{app}}"
+ },
  "actions": {
   "clear_flag": {
    "reason": "Reason",
@@ -1546,6 +1560,7 @@
   "ENCUMBRANCE_NOT_ACTIVE": "The encumbrance is not active.",
   "ENCUMBRANCE_NOT_PENDING": "The encumbrance is not awaiting confirmation.",
   "ENCUMBRANCE_TRANSFER_PENDING": "A transfer of the encumbrance is already in progress.",
+  "FEATURE_DISABLED": "This feature is not enabled.",
   "FLAG_ALREADY_ACTIVE": "The flag is already active.",
   "FLAG_NOT_ACTIVE": "The flag is already cleared.",
   "FORBIDDEN": "Your organisation is not allowed to do this.",
@@ -1564,6 +1579,7 @@
   "LINK_EXPIRED": "The link has expired. Request a new one.",
   "LINK_INVALID": "The link is invalid or already used.",
   "LOOKUP_REQUIRED": "Look up the organisation number first.",
+  "LOOKUP_UNAVAILABLE": "The lookup is not responding right now. Try again shortly.",
   "MACHINE_BLOCKED": "The machine is blocked by an authority or the register operator.",
   "MACHINE_READ_ONLY": "The machine is deregistered and cannot be changed.",
   "MACHINE_SEIZED": "The machine is seized. Changes are blocked.",
@@ -1687,6 +1703,8 @@
   },
   "label": {
    "bound": "{{actor}} bound label …{{payload.label_serial}}",
+   "nfc_mismatch": "The NFC label was scanned with a different chip than the registered one",
+   "nfc_registered": "{{actor}} registered the NFC label's chip",
    "revoked": "{{actor}} revoked label …{{payload.label_serial}}"
   },
   "labels": {
@@ -1708,7 +1726,7 @@
    "department_set": "{{actor}} changed department",
    "deregistered": "{{actor}} deregistered the machine",
    "factory_data_confirmed": "Factory data confirmed the machine details",
-   "hours_reported": "{{actor}} reported {{payload.hour_meter}} hours",
+   "hours_reported": "{{actor}} reported {{payload.hours}} hours",
    "merged": "Record {{payload.merged_reg_number}} was merged into the machine",
    "merged_into": "The record was merged into {{payload.keep_reg_number}}",
    "operational_status_changed": "{{actor}} changed the operational status",
@@ -1789,6 +1807,14 @@
    "revoked": "{{actor}} closed a share link"
   },
   "system": "MaskinID",
+  "telematics": {
+   "connected": "{{actor}} connected telematics",
+   "disconnected": "{{actor}} disconnected telematics",
+   "stolen_position": "The stolen machine reported a position via telematics"
+  },
+  "theft": {
+   "external_match": "The machine appears in an external theft register"
+  },
   "tip": {
    "received": "A tip was received about the machine"
   },
@@ -2070,12 +2096,83 @@
   "no_lifting": "The machine is not marked as having a lifting device.",
   "title": "Record inspection"
  },
+ "integrations": {
+  "add": "Connect telematics",
+  "auth": "Authentication",
+  "auth_basic": "Username and password",
+  "auth_bearer": "API key (token)",
+  "auth_oauth": "OAuth client (e.g. Trackunit)",
+  "base_url": "AEMP feed address",
+  "base_url_hint": "The address you got from the manufacturer, e.g. https://…/aemp. Must start with https.",
+  "client_id": "Client ID",
+  "client_secret": "Client secret",
+  "connect": "Connect",
+  "counts": "{{matched}} matched, {{unmatched}} unknown, {{hours}} hour meters updated",
+  "credential_note": "The credentials are stored encrypted and never shown again. Preferably create a read-only user just for MaskinID.",
+  "error": "Last error: {{error}}",
+  "last_sync": "Synced {{at}}",
+  "linked": "{{count}} machines linked",
+  "mock_note": "Demo telematics reports hours and location for your own machines.",
+  "name": "Name",
+  "never_synced": "Not synced yet",
+  "none": "No telematics connected",
+  "none_body": "Volvo CareTrack, Komatsu Komtrax and Trackunit are supported through the ISO 15143-3 (AEMP 2.0) standard.",
+  "password": "Password",
+  "pause": "Pause",
+  "privacy": "Only the last reported location is stored, no track history. You and any user of the machine see it. Authorities see it only while the machine is reported stolen.",
+  "privacy_title": "About positions",
+  "provider": {
+   "caretrack": "Volvo CareTrack",
+   "iso15143": "Other (ISO 15143-3 / AEMP 2.0)",
+   "komtrax": "Komatsu Komtrax",
+   "mock": "Demo telematics",
+   "trackunit": "Trackunit"
+  },
+  "provider_label": "System",
+  "resume": "Resume",
+  "status": {
+   "active": "Active",
+   "error": "Error",
+   "paused": "Paused"
+  },
+  "sync": "Sync now",
+  "telematics_lead": "Connect your machines' telematics so the hour meter updates automatically and you see the last reported location. Machines are matched on serial number, PIN or VIN.",
+  "telematics_title": "Telematics",
+  "token": "Token",
+  "token_url": "Token URL",
+  "username": "Username"
+ },
+ "integrations_page": {
+  "api_body": "REST API with keys per organisation, scopes, idempotency and signed webhooks. Sandbox for testing.",
+  "api_title": "API and webhooks",
+  "import_body": "Import machine lists from Excel or CSV; the columns are mapped automatically.",
+  "import_title": "Import",
+  "lead": "{{app}} works with the systems you already have.",
+  "nfc_body": "Labels with both QR and an NFC chip. The chip is registered to the machine so copied labels are detected.",
+  "nfc_title": "NFC labels",
+  "read_more": "Read more",
+  "telematics_body": "Volvo CareTrack, Komatsu Komtrax, Trackunit and others via ISO 15143-3 (AEMP 2.0): hour meters and last location update automatically.",
+  "telematics_title": "Telematics",
+  "theft_body": "Theft reports are synced with the insurance industry's theft register.",
+  "theft_title": "Larmtjänst",
+  "title": "Integrations",
+  "vtr_body": "Tractors and motor implements with road registration are looked up at registration – without storing personal data.",
+  "vtr_title": "Transportstyrelsen"
+ },
  "labels": {
   "batch_one": "{{count}} label, ordered {{date}}",
   "batch_other": "{{count}} labels, ordered {{date}}",
   "bound_at": "Attached",
   "labels": "Labels",
   "lead": "Tamper-proof labels with a QR code. A label becomes active when it is attached to a machine and can only be attached once.",
+  "medium": "Type",
+  "medium_nfc": "NFC label",
+  "medium_nfc_hint": "QR code and NFC chip in one label. The chip is registered once the label is on the machine.",
+  "medium_qr": "QR label",
+  "nfc_android_only": "Registered with Chrome on Android",
+  "nfc_register": "Register chip",
+  "nfc_registered": "NFC, chip registered",
+  "nfc_wrong_tag": "That was a different label. Hold the phone to this particular label.",
   "none": "No labels yet",
   "none_body": "Order labels above. They appear here when they have been shipped.",
   "order_one": "Order {{count}} label",
@@ -2283,6 +2380,7 @@
   "candidates_title_other": "We found {{count}} machines you have advertised"
  },
  "nav": {
+  "about": "About us",
   "admin": "Administration",
   "admin_api": "API usage",
   "admin_billing": "Billing",
@@ -2298,6 +2396,7 @@
   "admin_orgs": "Organisations",
   "admin_statistics": "Statistics",
   "admin_support": "Support search",
+  "admin_theft_reports": "Theft register",
   "admin_tickets": "Support cases",
   "admin_tips": "Tips",
   "alerts": "Alerts",
@@ -2326,6 +2425,7 @@
   "import": "Import",
   "inbox": "Waiting for me",
   "inspection_new": "Record inspection",
+  "integrations": "Integrations",
   "labels": "Labels",
   "leads": "Leads",
   "machines": "Machines",
@@ -2351,11 +2451,19 @@
   "sign_out": "Sign out",
   "sign_up": "Create account",
   "statistics": "Statistics",
+  "status": "System status",
   "stock": "Stock",
   "support": "Support",
   "trade_in": "Receive trade-in",
   "verify": "Verification queue",
   "watchlist": "Watchlist"
+ },
+ "nfc": {
+  "error": "The label could not be read. Try again or scan the QR code.",
+  "hold": "Hold the phone to the label…",
+  "mismatch_body": "The chip in this NFC label is not the one registered for the machine. Check the machine carefully and contact the owner or the police if in doubt.",
+  "mismatch_title": "The label may have been copied",
+  "read": "Read NFC label"
  },
  "notifications": {
   "audit": {
@@ -2517,6 +2625,12 @@
    "requires_verification": {
     "body": "{{insurer}} requires a higher verification level for {{reg_number}}.",
     "title": "The insurance requires verification"
+   }
+  },
+  "label": {
+   "nfc_mismatch": {
+    "body": "The label was scanned with a different chip than the one you registered. Check the label on the machine.",
+    "title": "The NFC label on {{reg_number}} may have been copied"
    }
   },
   "labels": {
@@ -2684,6 +2798,22 @@
    "viewed_as": {
     "body": "Read-only for at most 30 minutes. Reason: {{reason}}",
     "title": "Support has viewed your organisation"
+   }
+  },
+  "telematics": {
+   "error": {
+    "body": "Check the address and credentials under Settings → Integrations.",
+    "title": "The telematics connection {{name}} is failing"
+   },
+   "stolen_position": {
+    "body": "Position {{lat}}, {{lon}}. Contact the police before going there.",
+    "title": "Stolen machine {{reg_number}} has reported a position"
+   }
+  },
+  "theft": {
+   "external_match": {
+    "body": "The machine is not reported stolen here. The register keeper reviews the report.",
+    "title": "{{reg_number}} appears in the theft register at {{source}}"
    }
   },
   "tip": {
@@ -2901,6 +3031,12 @@
   "pending": "To confirm",
   "requirement": "Requirement"
  },
+ "position": {
+  "open_map": "Open in OpenStreetMap",
+  "reported": "{{at}} via {{provider}}. Only the latest point is stored.",
+  "stolen_hint": "The machine is reported stolen. Do not go there yourself – contact the police on 114 14.",
+  "title": "Last reported location"
+ },
  "public": {
   "actors_title": "Value for everyone in the chain",
   "are_you_owner": "Are you the owner?",
@@ -3114,6 +3250,79 @@
   "verified_ok": "Verified",
   "verify": "Verify"
  },
+ "segments": {
+  "agare": {
+   "cta": "Register for free",
+   "lead": "Register your machines for free, label them with QR and get an ownership certificate that makes them easier to sell and harder to steal.",
+   "p1_body": "Every machine gets a registration number and an ownership certificate that buyers, banks and insurers can check.",
+   "p1_title": "Proof of who owns",
+   "p2_body": "A stolen machine shows red when someone scans it, and you get a notification with an approximate location.",
+   "p2_title": "Harder to sell stolen goods",
+   "p3_body": "Hour meters, service, inspection, operators, daily checks and climate report – with telematics the hours update themselves.",
+   "p3_title": "The fleet in one place",
+   "p4_body": "The fleet report shows emission stage, fuel and inspection – what clients ask for.",
+   "p4_title": "Input for tenders",
+   "short": "Owners",
+   "title": "For machine owners"
+  },
+  "finansiarer": {
+   "cta": "Book a walkthrough",
+   "lead": "Stop double financing: a machine can have only one active encumbrance and every check gives a verifiable receipt.",
+   "p1_body": "Search by reg number, serial or PIN – one at a time or thousands via API – and keep the receipt in the credit file.",
+   "p1_title": "Check with receipt",
+   "p2_body": "A second encumbrance is blocked and both parties are notified. The register never contains amounts.",
+   "p2_title": "One encumbrance per machine",
+   "p3_body": "Alerts if a machine is flagged, changes owner or appears in listings – with risk signals in every check.",
+   "p3_title": "Portfolio monitoring",
+   "p4_body": "BankID signing, two-step verification, an event chain with daily anchors and a data processing agreement.",
+   "p4_title": "Built for the bank's requirements",
+   "short": "Lenders",
+   "title": "For banks and finance companies"
+  },
+  "forsakring": {
+   "cta": "Contact us",
+   "lead": "See that the machine exists, who owns it and how well its data is checked – before underwriting and at a claim.",
+   "p1_body": "Link policies to machines and require a verification level.",
+   "p1_title": "Portfolio and requirements",
+   "p2_body": "Theft flags can be synced with Larmtjänst's theft register.",
+   "p2_title": "Theft cooperation",
+   "p3_body": "Duplicate serials, ownership disputes and anomalous listings are detected and handled in the register.",
+   "p3_title": "Less fraud",
+   "p4_body": "Checks and monitoring via API with a sandbox for testing.",
+   "p4_title": "API",
+   "short": "Insurers",
+   "title": "For insurers"
+  },
+  "handlare": {
+   "cta": "Get started as a dealer",
+   "lead": "Check trade-ins in seconds, sell with an ownership certificate and give the buyer a machine with a history.",
+   "p1_body": "Scan the label and see at once whether the machine is financed, wanted or disputed.",
+   "p1_title": "Trade-ins without surprises",
+   "p2_body": "One flow for transfer, new financing and ownership certificate. A new sale gives the highest verification level.",
+   "p2_title": "Sell with an ownership certificate",
+   "p3_body": "Stock, consignment, listing QR and leads in one tool – with API and webhooks to your business system.",
+   "p3_title": "Stock and leads",
+   "p4_body": "Order labels and attach them on delivery, so the registration follows the machine.",
+   "p4_title": "Label your customers' machines",
+   "short": "Dealers",
+   "title": "For machine dealers"
+  },
+  "myndigheter": {
+   "cta": "Request access",
+   "lead": "Search on parts of serial numbers, see flags and access log, issue wanted notices and blocks – free of charge.",
+   "p1_body": "A wanted machine shows red when scanned and blocks transfer, encumbrance and deregistration.",
+   "p1_title": "Wanted notices and seizure",
+   "p2_body": "Look up a machine at the border and see whether it is financed.",
+   "p2_title": "Export control",
+   "p3_body": "A formal extract as PDF with extract number and checksum.",
+   "p3_title": "Register extract",
+   "p4_body": "Aggregated statistics without owner data for preparedness planning and environmental follow-up.",
+   "p4_title": "Preparedness and environment",
+   "short": "Authorities",
+   "title": "For police, customs and other authorities"
+  },
+  "nav": "For"
+ },
  "service": {
   "add_entry": "Log service",
   "add_inspection": "Record inspection",
@@ -3175,7 +3384,8 @@
   "tab_billing": "Billing",
   "tab_data": "Data and export",
   "tab_departments": "Departments",
-  "tab_group": "Group"
+  "tab_group": "Group",
+  "tab_integrations": "Integrations"
  },
  "share": {
   "owner_ordinal": "Number of owners: {{count}}",
@@ -3234,6 +3444,32 @@
   "transfers_12m": "Transfers last 12 months",
   "unknown": "Unknown"
  },
+ "status": {
+  "anchor_body": "The anchor for {{day}} summarises all events that day.",
+  "anchor_ref": "Published as {{ref}}",
+  "anchor_title": "Latest anchor",
+  "checked": "Checked",
+  "down": "The register is not responding right now",
+  "events_24h": "Events last 24 hours",
+  "how_verify": "How to verify the history",
+  "integration": {
+   "nfc": "NFC labels",
+   "payments": "Card payment",
+   "push": "Push notifications",
+   "telematics": "Telematics",
+   "theft_sync": "Theft register (Larmtjänst)"
+  },
+  "integrations": "Integrations",
+  "lead": "Current status of the register and its integrations.",
+  "mode": "Mode",
+  "no_anchor": "No anchor published yet.",
+  "off": "Off",
+  "ok": "Operational",
+  "on": "On",
+  "operational": "All systems operational",
+  "register": "The register",
+  "title": "System status"
+ },
  "stolen": {
   "has_label": "Has QR label",
   "lead": "Machines reported stolen where the owner or the police chose to show them here. If you see one: call the police on 114 14 or leave a tip.",
@@ -3274,6 +3510,34 @@
   },
   "status_waiting_customer_admin": "Waiting for customer",
   "subject": "Subject"
+ },
+ "theftsync": {
+  "confirm": "Confirm",
+  "disabled": "Sync is turned off (FEATURE_THEFT_SYNC).",
+  "empty": "No reports here",
+  "ignore": "Dismiss",
+  "lead": "Machines reported stolen are sent to the insurance industry's theft register (Larmtjänst) and its reports are matched against the register.",
+  "match": "Machine in the register",
+  "never_auto": "An external report never flags a machine automatically. The owner is notified and the flag is set by the owner or the police.",
+  "no_match": "No match",
+  "queue": {
+   "failed": "Failed",
+   "pending": "Waiting to be sent",
+   "sent": "Sent"
+  },
+  "received": "Received",
+  "report": "Report",
+  "report_status": {
+   "recovered": "Recovered",
+   "stolen": "Stolen"
+  },
+  "review": {
+   "confirmed": "Confirmed",
+   "ignored": "Dismissed",
+   "new": "New"
+  },
+  "sync_now": "Sync now (demo)",
+  "title": "Theft register"
  },
  "tips": {
   "city": "Town",
@@ -3357,6 +3621,30 @@
   "end": "End view",
   "lead": "You view {{name}} read-only for 30 minutes. The organisation's admins are notified and the reason is logged.",
   "start": "View as organisation"
+ },
+ "vtr": {
+  "class": {
+   "motorredskap_klass_i": "Motor implement class I",
+   "motorredskap_klass_ii": "Motor implement class II",
+   "traktor_a": "Tractor a",
+   "traktor_b": "Tractor b"
+  },
+  "last_owner_change": "Last change of owner",
+  "lookup": "Look up at Transportstyrelsen",
+  "owner": {
+   "legal_person": "Company",
+   "natural_person": "Private person (not shown)",
+   "unknown": "Unknown"
+  },
+  "owner_category": "Owner in the road traffic register",
+  "source": "Source",
+  "source_mock": "Demo data",
+  "status": {
+   "deregistered": "Deregistered",
+   "in_traffic": "In traffic",
+   "off_road": "Off road"
+  },
+  "vehicle_class": "Vehicle class"
  },
  "watch": {
   "add": "Watch",
