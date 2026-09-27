@@ -106,6 +106,7 @@ För att köra webbappen mot ett Supabase-projekt: kopiera `.env.example` till `
 
 ## Dokumentation
 
+- [docs/WORKFLOW.md](docs/WORKFLOW.md) – så arbetar du lokalt, mot staging och mot produktion (pipeline, tester, miljöer)
 - [docs/SPEC.md](docs/SPEC.md) – kravspecifikationen
 - [docs/adr/](docs/adr/) – arkitekturbeslut, ett per vägval
 - [docs/OPEN_QUESTIONS.md](docs/OPEN_QUESTIONS.md) – antaganden som bör bekräftas
