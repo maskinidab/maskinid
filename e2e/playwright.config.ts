@@ -10,7 +10,9 @@ const executablePath = process.env.CHROMIUM_PATH || undefined;
 export default defineConfig({
   testDir: ".",
   testMatch: /.*\.spec\.ts/,
-  timeout: 300_000,
+  // dealer.spec.ts walks a whole dealer flow in one test (registration, import, labels, sale with financier,
+  // ownership certificate) and lands right on 300s, so it times out on a loaded two-core runner. Give it room.
+  timeout: 600_000,
   expect: { timeout: 30_000 },
   fullyParallel: false,
   workers: process.env.CI ? 2 : 1,
