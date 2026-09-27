@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, staging]
   pull_request:
 
 concurrency:
@@ -118,8 +118,11 @@ jobs:
         env:
           LIGHTHOUSE_REG: ${{ vars.LIGHTHOUSE_REG }}
         run: |
-          (npm run preview -- --port 4173 &) && npx --yes wait-on http://localhost:4173 --timeout 60000
-          npm run lighthouse -- --url http://localhost:4173 ${{ vars.VITE_SUPABASE_URL && ' ' || '--no-performance' }}
+          # Bind explicitly to 127.0.0.1: "localhost" resolves to ::1 first on the runners, which vite preview does
+          # not listen on. Pass the flags through -w so npm does not swallow --port before vite sees it.
+          npm run preview -w @maskinid/web -- --host 127.0.0.1 --port 4173 --strictPort > preview.log 2>&1 &
+          npx --yes wait-on http://127.0.0.1:4173 --timeout 120000 || { echo "preview did not start:"; cat preview.log; exit 1; }
+          npm run lighthouse -- --url http://127.0.0.1:4173 ${{ vars.VITE_SUPABASE_URL && ' ' || '--no-performance' }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:

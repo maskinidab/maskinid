@@ -23,7 +23,8 @@ export function inputs() {
 
 export function demoDbVersion() {
   const h = createHash("sha256");
-  for (const { name, sql } of inputs()) h.update(name.split("/supabase/")[1]).update(sql);
+  // Hash the path relative to supabase/ with forward slashes, so the version is the same on Windows.
+  for (const { name, sql } of inputs()) h.update(name.replaceAll("\\", "/").split("/supabase/")[1]).update(sql);
   return h.digest("hex").slice(0, 12);
 }
 

@@ -1,7 +1,9 @@
 import type { KeyboardEvent, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { ApiError } from "../lib/backend";
+// Import from the leaf module, not the barrel: the barrel statically pulls in both backends (including the
+// in-browser PGlite one), and Feedback is imported by almost every page, so the barrel lands on the critical path.
+import { ApiError } from "../lib/backend/errors";
 import { Icon, type IconName } from "./Icon";
 
 /** Message after an action – confirmation or error. Says what happened and what to do. */
