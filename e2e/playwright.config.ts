@@ -15,7 +15,9 @@ export default defineConfig({
   timeout: 600_000,
   expect: { timeout: 30_000 },
   fullyParallel: false,
-  workers: process.env.CI ? 2 : 1,
+  // One worker. Every test boots a full Postgres (WASM) in the browser, and two of those on a two-core runner
+  // thrash: the suite failed a different test on each run and took 17-23 min. Serially it passes in 5.
+  workers: 1,
   // These tests drive a real database in the browser, so a slow runner can push a whole test past its budget.
   // Retry on CI rather than let a timing blip turn the pipeline red; a test that fails every attempt is a real bug.
   retries: process.env.CI ? 2 : 0,
