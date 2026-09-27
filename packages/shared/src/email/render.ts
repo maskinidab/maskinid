@@ -152,3 +152,21 @@ ${b.footnote ? `<p style="margin:16px 0 0;font-size:13px;line-height:18px;color:
 <tr><td style="padding:16px 28px;border-top:1px solid #d5d9dd;font-size:12px;line-height:18px;color:#4e565e">${esc(footer)}</td></tr>
 </table></td></tr></table></body></html>`;
 }
+
+/** Title/body for a web push message (step 24), same texts as the in-app notification. Links are app-relative. */
+export function renderPush(n: { type: string; data?: Record<string, unknown>; link?: string | null; locale?: string | null }):
+  { title: string; body: string; url: string; tag: string } {
+  const t = translator(n.locale === "en" ? "en" : "sv");
+  const inner: Record<string, unknown> = { app: APP_NAME, ...(n.data ?? {}) };
+  if (typeof inner.type === "string") inner.type = t(`enum.flag_type.${inner.type}`);
+  const key = n.type === "push.test" ? "push.test_message" : `notifications.${n.type}`;
+  const title = t(`${key}.title`, inner);
+  const body = t(`${key}.body`, inner);
+  const known = title !== `${key}.title`;
+  return {
+    title: known ? title : t("email.notification.fallback_title"),
+    body: known && body !== `${key}.body` ? body : "",
+    url: absolute("", n.link).replace(/^\/app$/, "/"),
+    tag: n.type,
+  };
+}

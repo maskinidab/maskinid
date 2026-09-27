@@ -28,6 +28,7 @@ export function Timeline({ events, onLoadMore, hasMore }: { events: HistoryEvent
                 <small>
                   <time dateTime={e.created_at}>{formatDateTime(e.created_at)}</time>
                   {e.actor_name && ` · ${e.actor_name}`}
+                  {e.from_merged_record && ` · ${t("components.timeline.from_merged", { reg: e.from_merged_record })}`}
                 </small>
               </div>
             </li>

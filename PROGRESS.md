@@ -34,7 +34,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 21 | Fullmakter, kommission, risksignaler, koncern | ✅ | tolkat, ADR 0018 |
 | 22 | Tips, stöldlista, hjälpcenter, support, juridik, kontosäkerhet, "Visa som" | ✅ | tolkat, ADR 0019 |
 | 23 | Betalning (Stripe testläge) | ✅ | tolkat, ADR 0020 |
-| 24 | Statistik, dataexport, push, sandbox, partial search, merge | ⬜ | tolkas från CLAUDE.md |
+| 24 | Statistik, dataexport, push, sandbox, partial search, merge | ✅ | tolkat, ADR 0021 |
 | 25 | Integrationsadaptrar (NFC, telematik, TS, Larmtjänst), publika sidor | ⬜ | |
 | 26 | Drift | ⬜ | |
 | 27 | Kvalitet | ⬜ | |
@@ -251,3 +251,12 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   förbrukning, faktureringsuppgifter, fakturor med PDF och demobetalning), Admin → Betalning (priser, planer, stäng
   period, markera betald/makulera), pris vid märkesbeställning. Seed `55_billing.sql`. Tester `19_billing`, adapter- och
   hjälpfunktionstester. ADR 0020, öppna frågor 20–22.
+- **Steg 24** – Migration `stats_export_push_merge`: publik statistik med undertryckta små celler + daglig ögonblicksbild,
+  exakt statistik för operatören, miljötabell som CSV; export av organisationens data och av egna personuppgifter (JSON,
+  utan hemligheter); webbpush (VAPID + aes128gcm med Web Crypto, `PushSender`-adapter, kö via trigger på notiser,
+  Edge Function `push-send`, service worker, lokal pump i demon, push-inställning per org); rättning: "alla notiser"
+  (`['*']`) skickade ingen e-post; API-sandlåda med fasta testmaskiner i gatewayn, ej debiterad; delsökning (≥ 5 tecken,
+  maskerat, `GET /machines/search`); sammanslagning av dubbletter med flytt av data och sammanslagen historik. Webb:
+  `/statistics` och Admin → Statistik (diagram enligt dataviz-metoden), Inställningar → Data och export, Profil →
+  Push-notiser och Mina uppgifter, Kontroll → Delsökning, sammanslagning i konfliktkön, sandlådeavsnitt på `/api-docs`.
+  Seed `95_statistics.sql`. Tester `20_stats_export_push_merge`, sandlåde-, webpush- och push-texttester. ADR 0021.

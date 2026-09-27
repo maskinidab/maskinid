@@ -16,6 +16,8 @@ const AdPage = L(() => import("./pages/public/AdPage"), "AdPage");
 const ReceiptVerifyPage = L(() => import("./pages/public/ReceiptVerifyPage"), "ReceiptVerifyPage");
 const StolenListPage = L(() => import("./pages/public/InfoPages"), "StolenListPage");
 const PricingPage = L(() => import("./pages/public/PricingPage"), "PricingPage");
+const StatisticsPage = L(() => import("./pages/public/StatisticsPage"), "StatisticsPage");
+const AdminStatisticsPage = L(() => import("./pages/public/StatisticsPage"), "AdminStatisticsPage");
 const AdminBillingPage = L(() => import("./pages/app/admin/AdminBilling"), "AdminBillingPage");
 const TipPage = L(() => import("./pages/public/InfoPages"), "TipPage");
 const HelpPage = L(() => import("./pages/public/InfoPages"), "HelpPage");
@@ -91,6 +93,7 @@ export const publicRoutes: { path: string; element: ReactNode }[] = [
   { path: "verify-document", element: <ReceiptVerifyPage /> },
   { path: "stolen", element: <StolenListPage /> },
   { path: "pricing", element: <PricingPage /> },
+  { path: "statistics", element: <StatisticsPage /> },
   { path: "tips", element: <TipPage /> },
   { path: "help", element: <HelpPage /> },
   { path: "help/:slug", element: <HelpArticlePage /> },
@@ -160,4 +163,5 @@ export const appRoutes: { path: string; element: ReactNode }[] = [
   { path: "admin/tips", element: <AdminTipsPage /> },
   { path: "admin/legal", element: <AdminLegalPage /> },
   { path: "admin/billing", element: <AdminBillingPage /> },
+  { path: "admin/statistics", element: <AdminStatisticsPage /> },
 ];

@@ -158,11 +158,14 @@
    "empty": "No conflicts here",
    "involved": "Involved",
    "lead": "Duplicate serial numbers, ownership disputes and market anomalies. Every decision needs a note and is logged in the event chain.",
+   "merge_hint": "Merging moves identifiers, labels, documents, service, flags and encumbrances to the machine that is kept. The other record becomes read-only and points to it; the history follows.",
    "related": "Existing machine",
    "res": {
     "dismiss": "Dismiss",
     "keep_existing": "Keep existing registration {{existing}} – deregister {{new}}",
     "keep_new": "Keep new registration {{new}} – deregister {{existing}}",
+    "merge_into_existing": "Merge – keep {{existing}}",
+    "merge_into_new": "Merge – keep {{new}}",
     "resolved": "Resolved without register change"
    },
    "resolution": "Decision",
@@ -470,6 +473,13 @@
   "endpoints": "Endpoints",
   "errors_body": "Errors are returned as { code, detail } with HTTP status 401, 403, 404, 409 (conflict, e.g. double encumbrance), 422 (validation) or 429 (too many calls). Accepting a transfer always needs a person with BankID: the response is 202 with signing_url.",
   "errors_title": "Errors",
+  "expect": {
+   "clean": "Check without encumbrance; new encumbrance 201.",
+   "disputed": "Disputed flag; transfer 409.",
+   "financed": "Check shows the lender; new encumbrance 409 ACTIVE_ENCUMBRANCE_EXISTS.",
+   "scrapped": "Read-only; changes 409 MACHINE_READ_ONLY.",
+   "stolen": "Stolen flag; transfer and encumbrance 409 MACHINE_STOLEN."
+  },
   "lead": "REST and JSON. The same permissions as in the app: a key acts as its organisation and is limited by its scopes. Every change becomes an event in the register's hash chain.",
   "method": "Method",
   "op": {
@@ -496,6 +506,18 @@
    "POST_register_machine": "Register a machine. Returns reg_number.",
    "POST_release_encumbrance": "Release (holder only).",
    "POST_submit_oem_records": "Manufacturer delivery data (up to 10 000 rows)."
+  },
+  "sandbox_body": "Keys created as sandbox keys (mk_test_…) answer from fixed test machines and never affect the register: nothing is stored, no webhooks are sent and calls are not billed. Responses carry \"sandbox\": true and the header MaskinID-Sandbox: true.",
+  "sandbox_expect": "Expected response",
+  "sandbox_scenario": "Scenario",
+  "sandbox_serial": "Serial number",
+  "sandbox_title": "Sandbox",
+  "scenario": {
+   "clean": "Clean",
+   "disputed": "Disputed",
+   "financed": "Financed",
+   "scrapped": "Scrapped",
+   "stolen": "Stolen"
   },
   "title": "MaskinID API",
   "webhooks_body": "Every delivery is signed with HMAC-SHA256. Check the signature and that the timestamp is fresh. We retry five times with increasing intervals; failed deliveries can be sent again from Settings.",
@@ -714,6 +736,13 @@
   "title": "Ownership certificate",
   "weight": "Operating weight"
  },
+ "charts": {
+  "category": "Category",
+  "month": "Month",
+  "share": "{{n}} {{unit}} ({{pct}}%)",
+  "show_table": "Show as table",
+  "suppressed": "Fewer than 5 – not shown for privacy"
+ },
  "check": {
   "batch_count_one": "{{count}} line to check",
   "batch_count_other": "{{count}} lines to check",
@@ -736,6 +765,7 @@
   "submit": "Check",
   "submit_batch": "Check all",
   "tab_batch": "Several (CSV)",
+  "tab_partial": "Partial search",
   "tab_single": "One machine",
   "title": "Financing check",
   "type_any": "Any identifier",
@@ -925,6 +955,7 @@
   },
   "timeline": {
    "empty": "No events yet.",
+   "from_merged": "from merged record {{reg}}",
    "load_more": "Show older events"
   }
  },
@@ -1677,8 +1708,11 @@
    "deregistered": "{{actor}} deregistered the machine",
    "factory_data_confirmed": "Factory data confirmed the machine details",
    "hours_reported": "{{actor}} reported {{payload.hour_meter}} hours",
+   "merged": "Record {{payload.merged_reg_number}} was merged into the machine",
+   "merged_into": "The record was merged into {{payload.keep_reg_number}}",
    "operational_status_changed": "{{actor}} changed the operational status",
    "operator_assigned": "{{actor}} changed the operator",
+   "partial_search": "{{actor}} made a partial search",
    "photo_set": "{{actor}} changed the photo",
    "registered": "{{actor}} registered the machine",
    "sighting_reported": "Tip about the stolen machine",
@@ -1720,6 +1754,7 @@
    "approved": "The organisation was approved",
    "claimed": "{{actor}} claimed the organisation",
    "created": "{{actor}} created the organisation",
+   "data_exported": "{{actor}} exported the organisation's data",
    "group_linked": "Linked to a group",
    "group_unlinked": "Group link ended",
    "suspended": "The organisation was suspended",
@@ -1776,6 +1811,18 @@
    "created": "{{actor}} created a webhook",
    "deleted": "{{actor}} deleted a webhook"
   }
+ },
+ "export": {
+  "my_download": "Download my data",
+  "my_lead": "Download everything we hold about you: profile, memberships, notifications, sign-ins, accepted terms and support cases (JSON).",
+  "my_title": "My data",
+  "org_contents": "Included: machines, identifiers, ownership periods, encumbrances, checks, document list, service, fuel, projects, operators, customers, invoices, members and events.",
+  "org_done": "The export is ready: {{machines}} machines and {{events}} events.",
+  "org_download": "Export (JSON)",
+  "org_lead": "One file with everything the organisation has in the register, in a machine-readable format (JSON) that other systems can import.",
+  "org_limit": "At most 5 exports per day. The export is logged in the event log.",
+  "org_not_included": "Not included: keys, secrets and data about other organisations. Document files are downloaded one by one.",
+  "org_title": "Export the organisation's data"
  },
  "extract": {
   "create": "Register extract (PDF)",
@@ -2104,6 +2151,8 @@
   "market_seen_at": "Last seen for sale at {{where}} on {{date}}",
   "market_stolen_listed_one": "Stolen machine appears in a listing – contact the police",
   "market_stolen_listed_other": "Stolen machine appears in {{count}} listings – contact the police",
+  "merged_into": "This record has been merged into {{reg}}",
+  "merged_open": "Open the machine",
   "no_access": "Nobody has looked yet",
   "no_documents": "No documents yet",
   "no_label": "No attached label",
@@ -2246,6 +2295,7 @@
   "admin_legal": "Legal documents",
   "admin_market": "Market surveillance",
   "admin_orgs": "Organisations",
+  "admin_statistics": "Statistics",
   "admin_support": "Support search",
   "admin_tickets": "Support cases",
   "admin_tips": "Tips",
@@ -2299,6 +2349,7 @@
   "sign_in": "Sign in",
   "sign_out": "Sign out",
   "sign_up": "Create account",
+  "statistics": "Statistics",
   "stock": "Stock",
   "support": "Support",
   "trade_in": "Receive trade-in",
@@ -2495,6 +2546,10 @@
    "deregistered": {
     "body": "{{by}} deregistered {{reg_number}}.",
     "title": "Machine deregistered"
+   },
+   "merged": {
+    "body": "The duplicate registration has been resolved. The data is now on {{reg_number}}.",
+    "title": "{{merged_reg_number}} has been merged into {{reg_number}}"
    },
    "out_of_service": {
     "body": "{{reason}}",
@@ -2775,6 +2830,7 @@
   "digest_instant": "Instantly",
   "digest_weekly": "Every Monday",
   "email_all": "E-mail for all notifications",
+  "email_channel": "E-mail",
   "email_important": "E-mail for important notifications only",
   "email_none": "No e-mail",
   "identity_missing": "Not verified",
@@ -2789,6 +2845,11 @@
   "no_org_title": "You are not in any organisation",
   "notifications_title": "Notifications and e-mail",
   "postal_code": "Postal code",
+  "push_all": "All notifications",
+  "push_channel": "Push notifications",
+  "push_hint": "Applies to devices where you have turned on push notifications under Profile.",
+  "push_important": "Important (warnings and critical)",
+  "push_none": "None",
   "remove_member": "Remove from the organisation",
   "role": "Role",
   "saved": "The details are saved.",
@@ -2797,6 +2858,18 @@
   "switcher_label": "Organisation",
   "vat_number": "VAT number",
   "website": "Website"
+ },
+ "partial": {
+  "check": "Check",
+  "flagged": "Flagged",
+  "hint": "At least 5 characters, for example what is legible on a worn nameplate.",
+  "label": "Part of the serial or registration number",
+  "match_reg": "Match in reg no.",
+  "match_serial": "Match in serial number",
+  "none": "No matches",
+  "none_body": "Check the characters, or search on another part of the number.",
+  "privacy": "Shows at most 10 matches without owner or encumbrances. Choose a machine to make a full check.",
+  "submit": "Search"
  },
  "pdf": {
   "document_number": "Document number",
@@ -2893,6 +2966,27 @@
   "verify_lead": "As a private person you can see whether a machine is encumbered, but not by whom. The check is logged and visible to the owner.",
   "verify_logged": "The check is logged and visible to the owner.",
   "verify_title": "Check financing"
+ },
+ "push": {
+  "added": "added {{date}}",
+  "denied": "Notifications are blocked for the site. Allow them in the browser settings.",
+  "disable": "Turn off for this device",
+  "enable": "Turn on for this device",
+  "error": {
+   "PUSH_DENIED": "You did not allow notifications.",
+   "PUSH_NOT_CONFIGURED": "Push notifications are not configured on the server."
+  },
+  "failing": "delivery failing",
+  "lead": "Get notifications on this device even when the app is closed, for example when a machine is scanned as stolen.",
+  "send_test": "Send test notification",
+  "test_message": {
+   "body": "Push notifications work on this device.",
+   "title": "Test notification from {{app}}"
+  },
+  "test_sent": "The test notification has been sent.",
+  "title": "Push notifications",
+  "unsupported": "This browser cannot receive push notifications. On iPhone: first add the app to the home screen.",
+  "what": "Choose which events are sent per organisation under Settings → Notifications and e-mail."
  },
  "receipt_verify": {
   "hash": "Checksum (SHA-256)",
@@ -3078,6 +3172,7 @@
  "settings": {
   "tab_api": "API and webhooks",
   "tab_billing": "Billing",
+  "tab_data": "Data and export",
   "tab_departments": "Departments",
   "tab_group": "Group"
  },
@@ -3089,6 +3184,54 @@
   "reason_revoked": "The owner has closed the link.",
   "shared_by": "Shared by {{org}}. The link is valid until {{date}}.",
   "views_left": "{{count}} views left."
+ },
+ "stats": {
+  "admin_lead": "Exact numbers without rounding or suppression. Share only the public version outside the register keeper.",
+  "admin_title": "Statistics",
+  "age": {
+   "0-4": "0–4 years",
+   "10-14": "10–14 years",
+   "15+": "15 years and older",
+   "5-9": "5–9 years"
+  },
+  "by_age": "Age",
+  "by_category": "Machine type",
+  "by_county": "County (owner's town)",
+  "by_emission_stage": "Emission stage",
+  "by_fuel": "Fuel",
+  "by_level": "Verification level",
+  "checks_by_month": "Checks per month",
+  "checks_unit": "checks",
+  "col_category": "Machine type",
+  "col_fuel": "Fuel",
+  "col_hours": "Avg hours",
+  "col_n": "Count",
+  "col_power": "Avg power (kW)",
+  "col_stage": "Emission stage",
+  "electric_share": "Share electric",
+  "encumbrances_active": "Active encumbrances",
+  "environment_csv": "Download environmental statistics (CSV, {{rows}} rows)",
+  "environment_lead": "Number of machines per type, emission stage and fuel with average power and hours – input for example for the Swedish EPA's non-road machinery model. Groups with fewer than 5 machines are left out.",
+  "environment_title": "Environmental statistics",
+  "exact_note": "Exact numbers.",
+  "generated": "Computed {{at}}.",
+  "labels_bound": "QR labels on machines",
+  "lead": "How many work machines the register holds, what they are and where they are. Updated daily.",
+  "level": {
+   "0": "Self-registered",
+   "1": "Document-verified",
+   "2": "Physically verified"
+  },
+  "machines": "Machines in the register",
+  "machines_unit": "machines",
+  "recovered_12m": "Recovered last 12 months",
+  "registered_12m": "Registered last 12 months",
+  "registrations_by_month": "New registrations per month",
+  "stolen_active": "Reported stolen",
+  "suppression_note": "Groups with 1–4 machines are shown as \"<5\" so individual owners cannot be singled out.",
+  "title": "Statistics",
+  "transfers_12m": "Transfers last 12 months",
+  "unknown": "Unknown"
  },
  "stolen": {
   "has_label": "Has QR label",

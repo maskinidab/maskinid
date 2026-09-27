@@ -28,6 +28,8 @@ export default defineConfig(({ mode }) => ({
         shortcuts: [{ name: "Skanna", short_name: "Skanna", url: "/scan" }],
       },
       workbox: {
+        // Push and notification-click handlers (step 24).
+        importScripts: ["/sw-push.js"],
         // App shell offline; the demo database and wasm are large and cached at runtime instead.
         globPatterns: ["**/*.{js,css,html,svg,woff2}"],
         globIgnores: ["**/demo-db/**"],

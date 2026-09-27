@@ -12,6 +12,8 @@ export * from "./types.ts";
 export * from "./mock.ts";
 export * from "./real.ts";
 export * from "./payments.ts";
+export * from "./webpush.ts";
+import { createMockPushSender, createWebPushSender } from "./webpush.ts";
 import { createStripePayments, mockPayments } from "./payments.ts";
 
 export type Env = Record<string, string | undefined>;
@@ -50,5 +52,8 @@ export function createAdapters(env: Env, ocr: Ocr = mockOcr): Adapters {
           .map(([k, v]) => [k.slice("STRIPE_PRICE_".length).toLowerCase(), v as string])),
       })
       : mockPayments,
+    push: !demo && env.VAPID_PRIVATE_KEY && env.VAPID_PUBLIC_KEY
+      ? createWebPushSender({ publicKey: env.VAPID_PUBLIC_KEY, privateKey: env.VAPID_PRIVATE_KEY, subject: env.VAPID_SUBJECT ?? "mailto:drift@maskinid.se" })
+      : createMockPushSender(),
   };
 }

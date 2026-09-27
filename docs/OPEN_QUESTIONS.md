@@ -63,3 +63,12 @@ Frågor som kräver affärsbeslut. Bygget stannar inte för dem; det säkraste a
 21. **Säljaruppgifter på fakturan** (org.nr, momsreg.nr, adress, bankgiro) saknas och måste fyllas i `BILLING_SELLER`
     innan riktig fakturering. Omvänd skattskyldighet för kunder utanför Sverige hanteras inte (alla kunder antas svenska).
 22. **Kortbetalning** är avstängd (`FEATURE_PAYMENTS=false`, SPEC §18) utom i demo; Stripe körs bara i testläge.
+
+## Statistik, export, push, sandlåda, delsökning, sammanslagning (steg 24, tolkat – SPEC §20.12–20.16 saknas)
+23. **Statistikens gräns för undertryckning** (1–4 maskiner) och länsindelning efter ägarens ort (inte maskinens plats)
+    är antaganden. Naturvårdsverket/Energimyndigheten bör få stämma av miljötabellens kolumner.
+24. **Delsökning** är öppen för finansiärer, försäkringsbolag, handlare, besiktningsorgan och myndigheter men inte
+    ägare. Minsta längd 5 tecken och 30 sökningar/timme är antaganden.
+25. **Sandlådan** svarar från fasta testdata i gatewayn i stället för ett eget sandlådeprojekt. Ett separat
+    Supabase-projekt kan läggas till för fullständiga tester.
+26. **Sammanslagning** kräver samma ägare; olika ägare hanteras som ägartvist (SPEC §6.7).

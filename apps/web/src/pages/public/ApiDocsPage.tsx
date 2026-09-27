@@ -1,7 +1,9 @@
 import { openApiDocument, ROUTES } from "@maskinid/shared/api/routes.ts";
+import { SANDBOX_MACHINES } from "@maskinid/shared/api/sandbox.ts";
 import { APP_DOMAIN } from "@maskinid/shared/config.ts";
 import { useTranslation } from "react-i18next";
 import { Icon } from "../../components/Icon";
+import { RegNumber } from "../../components/RegNumber";
 import { downloadBytes } from "../../lib/pdf/receipt";
 
 const BASE = `https://api.${APP_DOMAIN}/v1`;
@@ -30,6 +32,22 @@ curl -X POST ${BASE}/checks \\
   -H "Authorization: Bearer mk_live_…" -H "Idempotency-Key: 7f1c…" \\
   -H "Content-Type: application/json" \\
   -d '{"query":{"type":"serial","value":"VCE0EC220E00012345"},"purpose":"Ärende 4711"}'`}</pre>
+      </section>
+      <section className="panel stack-3" aria-labelledby="sandbox">
+        <h2 id="sandbox" className="t-rubrik-3">{t("apidocs.sandbox_title")}</h2>
+        <p className="t-brodtext">{t("apidocs.sandbox_body")}</p>
+        <div className="mid-tabell-wrap">
+          <table className="mid-tabell">
+            <caption className="visually-hidden">{t("apidocs.sandbox_title")}</caption>
+            <thead><tr><th scope="col">{t("apidocs.sandbox_scenario")}</th><th scope="col">{t("machines.col_reg")}</th><th scope="col">{t("apidocs.sandbox_serial")}</th><th scope="col">{t("apidocs.sandbox_expect")}</th></tr></thead>
+            <tbody>
+              {SANDBOX_MACHINES.map((m) => (
+                <tr key={m.id}><td>{t(`apidocs.scenario.${m.scenario}`)}</td><td><RegNumber value={m.reg_number} /></td><td className="mid-id">{m.serial}</td>
+                  <td className="t-liten">{t(`apidocs.expect.${m.scenario}`)}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
       <section className="stack-3" aria-labelledby="endpoints">
         <h2 id="endpoints" className="t-rubrik-3">{t("apidocs.endpoints")}</h2>

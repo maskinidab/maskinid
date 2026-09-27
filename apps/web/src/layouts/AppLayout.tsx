@@ -13,6 +13,7 @@ import { useRpc } from "../lib/api/query";
 import type { MachineView } from "../lib/api/types";
 import { backend } from "../lib/backend";
 import { DemoBanner, LanguageSwitch, LogoLink, SkipLink, ThemeSwitch } from "./Chrome";
+import { LocalPushPump } from "../components/LocalPushPump";
 import { LegalGate, ViewAsBanner } from "../components/AccountGuards";
 import { bottomNav, navGroups, type NavItem } from "./nav";
 
@@ -172,6 +173,7 @@ function Shell() {
       <SkipLink />
       <DemoBanner />
       <ViewAsBanner />
+      <LocalPushPump />
       <LegalGate />
       <header className="app-huvud">
         <LogoLink to={path("dashboard")} />

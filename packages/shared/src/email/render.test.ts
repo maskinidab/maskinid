@@ -43,3 +43,15 @@ describe("e-mail templates (SPEC §13)", () => {
     expect(renderEmail({ template: "sms", data: samples.sms }, { baseUrl: BASE })!.sms!.length).toBeLessThanOrEqual(320);
   });
 });
+
+describe("push texts (step 24)", () => {
+  it("renders the notification in the user's language with an app-relative link", async () => {
+    const { renderPush } = await import("./render.ts");
+    const sv = renderPush({ type: "machine.merged", data: { reg_number: "ABC2345", merged_reg_number: "XYZ2345" }, link: "/machines/1", locale: "sv" });
+    expect(sv.title).toContain("XYZ2345");
+    expect(sv.url).toBe("/go?to=%2Fmachines%2F1");
+    const test = renderPush({ type: "push.test", locale: "en" });
+    expect(test.title).toBe("Test notification from MaskinID");
+    expect(renderPush({ type: "unknown.type" }).body).toBe("");
+  });
+});

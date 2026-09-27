@@ -8,6 +8,8 @@ import { useRpcMutation } from "../lib/api/query";
 import { IdentityStep } from "./onboarding/IdentityStep";
 import { MfaSection } from "./MfaSection";
 import { SecuritySection } from "./SecuritySection";
+import { PushSection } from "./PushSection";
+import { MyDataSection } from "./MyDataSection";
 
 /** The signed-in user's own profile: name, phone, language, identity, two-factor sign-in. */
 export function ProfilePage() {
@@ -38,6 +40,8 @@ export function ProfilePage() {
       <section className="panel stack-3"><IdentityStep compact /></section>
       <MfaSection />
       <SecuritySection />
+      <PushSection />
+      <MyDataSection />
     </div>
   );
 }

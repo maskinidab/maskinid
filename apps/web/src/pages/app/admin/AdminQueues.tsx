@@ -100,13 +100,25 @@ export function AdminConflictsPage() {
 function ResolveDialog({ c, onClose }: { c: Conflict; onClose(): void }) {
   const { t } = useTranslation();
   const duplicate = c.type === "duplicate_identifier";
-  const [resolution, setResolution] = useState(duplicate ? "keep_existing" : "resolved");
+  const [resolution, setResolution] = useState(duplicate && c.machine && c.related_machine && (!c.machine.owner || c.machine.owner.id === c.related_machine.owner?.id)
+    ? "merge_into_existing" : duplicate ? "keep_existing" : "resolved");
   const [note, setNote] = useState("");
   const m = useRpcMutation<{ p_conflict_id: string; p_resolution: string; p_note: string }>("resolve_conflict", { onSuccess: onClose });
-  const options = duplicate ? ["keep_existing", "keep_new", "resolved", "dismiss"] : ["resolved", "dismiss"];
+  const merge = useRpcMutation<{ p_keep_id: string; p_merge_id: string; p_note: string }>("admin_merge_machines", { onSuccess: onClose });
+  // Merge (step 24) moves documents, service, labels etc. to the kept record; keep_* deregisters the other without moving data.
+  // Only records of the same owner can be merged; different owners are an ownership dispute (server enforces it too).
+  const canMerge = duplicate && !!c.machine && !!c.related_machine && (!c.machine.owner || c.machine.owner.id === c.related_machine.owner?.id);
+  const options = duplicate ? [...(canMerge ? ["merge_into_existing", "merge_into_new"] : []), "keep_existing", "keep_new", "resolved", "dismiss"] : ["resolved", "dismiss"];
+  function submit() {
+    if (resolution === "merge_into_existing" || resolution === "merge_into_new") {
+      const keep = resolution === "merge_into_existing" ? c.related_machine! : c.machine!;
+      const drop = resolution === "merge_into_existing" ? c.machine! : c.related_machine!;
+      merge.mutate({ p_keep_id: keep.id, p_merge_id: drop.id, p_note: note.trim() });
+    } else m.mutate({ p_conflict_id: c.id, p_resolution: resolution, p_note: note.trim() });
+  }
   return (
     <Dialog open onClose={onClose} title={t(`enum.conflict_type.${c.type}`)}>
-      <form className="stack-4" onSubmit={(e) => { e.preventDefault(); m.mutate({ p_conflict_id: c.id, p_resolution: resolution, p_note: note.trim() }); }}>
+      <form className="stack-4" onSubmit={(e) => { e.preventDefault(); submit(); }}>
         {Object.keys(c.details).length > 0 && <pre className="kodblock">{JSON.stringify(c.details, null, 2)}</pre>}
         <fieldset className="stack-2">
           <legend className="mid-etikett">{t("admin.conflicts.resolution")}</legend>
@@ -116,9 +128,12 @@ function ResolveDialog({ c, onClose }: { c: Conflict; onClose(): void }) {
           ))}
         </fieldset>
         <FormField label={t("admin.note")}><textarea className="mid-input" rows={3} value={note} onChange={(e) => setNote(e.target.value)} required /></FormField>
+        {resolution.startsWith("merge") && <p className="t-liten t-sekundar">{t("admin.conflicts.merge_hint")}</p>}
+        {duplicate && !canMerge && <p className="t-liten t-sekundar">{t("admin.conflicts.merge_other_owner")}</p>}
         {m.error && <ErrorNotice error={m.error} />}
+        {merge.error && <ErrorNotice error={merge.error} />}
         <div className="mid-rad">
-          <button type="submit" className="mid-knapp mid-knapp-primar" disabled={!note.trim() || m.isPending}>{t("admin.conflicts.resolve")}</button>
+          <button type="submit" className="mid-knapp mid-knapp-primar" disabled={!note.trim() || m.isPending || merge.isPending}>{t("admin.conflicts.resolve")}</button>
           <button type="button" className="mid-knapp mid-knapp-text" onClick={onClose}>{t("common.cancel")}</button>
         </div>
       </form>

@@ -53,6 +53,7 @@ export function Footer() {
           <ul>
             <li><Link to="/how">{t("nav.how_it_works")}</Link></li>
             <li><Link to="/pricing">{t("nav.pricing")}</Link></li>
+            <li><Link to="/statistics">{t("nav.statistics")}</Link></li>
             <li><Link to="/stolen">{t("public.stolen_list")}</Link></li>
             <li><Link to="/tips">{t("tips.link")}</Link></li>
             <li><Link to="/api-docs">{t("nav.api_docs")}</Link></li>

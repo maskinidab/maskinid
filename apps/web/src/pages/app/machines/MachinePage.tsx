@@ -103,6 +103,11 @@ export function MachinePage() {
         lead={[m.variant, m.year, t(`enum.category.${m.category}`)].filter(Boolean).join(" · ")} />
       {m.status !== "active" && m.status !== "draft" && <StatusBanner status={m.status} />}
       <OperationalNotice m={m} />
+      {m.merged_into && (
+        <Notice title={t("machine.merged_into", { reg: m.merged_into.reg_number })}>
+          <p><Link className="mid-lank" to={path(`machines/${m.merged_into.id}`)}>{t("machine.merged_open")}</Link></p>
+        </Notice>
+      )}
       <section className="panel maskin-huvud" aria-label={t("machine.summary")}>
         <MachinePhoto path={m.primary_photo_path} category={m.category} size={132} alt={`${m.make} ${m.model}`} />
         <div className="stack-3">

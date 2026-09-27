@@ -7,7 +7,7 @@ import { Dialog } from "../../components/Dialog";
 import { ErrorNotice, Notice, PageHeader, Skeleton, Tabs } from "../../components/Feedback";
 import { FormField } from "../../components/FormField";
 import { StatusBadge } from "../../components/StatusBadge";
-import { useRpc, useRpcMutation } from "../../lib/api/query";
+import { rpc, useRpc, useRpcMutation } from "../../lib/api/query";
 import { settingsTabs } from "./settingsTabs";
 
 interface OrgDetails {
@@ -149,17 +149,26 @@ function MembersTab() {
 function NotificationsTab() {
   const { t } = useTranslation();
   const { orgId } = useOrg();
-  const save = useRpcMutation<Record<string, unknown>>("set_notification_preferences", { raw: true });
   const [mode, setMode] = useState("important");
+  const [pushMode, setPushMode] = useState("important");
   const [digest, setDigest] = useState("instant");
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<unknown>(null);
+  const types = (m: string) => (m === "all" ? ["*"] : []);
   return (
-    <form className="stack-4 formular" onSubmit={(e) => {
+    <form className="stack-4 formular" onSubmit={async (e) => {
       e.preventDefault();
-      save.mutate({ p_org_id: orgId, p_channel: "email", p_event_types: mode === "all" ? ["*"] : [], p_digest: digest, p_enabled: mode !== "none" });
+      setSaved(false); setError(null);
+      try {
+        await rpc("set_notification_preferences", { p_org_id: orgId, p_channel: "email", p_event_types: types(mode), p_digest: digest, p_enabled: mode !== "none" });
+        await rpc("set_notification_preferences", { p_org_id: orgId, p_channel: "push", p_event_types: types(pushMode), p_digest: "instant", p_enabled: pushMode !== "none" });
+        setSaved(true);
+      } catch (err) { setError(err); }
     }}>
-      {save.isSuccess && <Notice kind="ok" title={t("org.saved")} />}
+      {saved && <Notice kind="ok" title={t("org.saved")} />}
+      {!!error && <ErrorNotice error={error} />}
       <fieldset className="mid-val">
-        <legend className="visually-hidden">{t("org.notifications_title")}</legend>
+        <legend className="mid-etikett">{t("org.email_channel")}</legend>
         {["important", "all", "none"].map((m) => (
           <label key={m}><input type="radio" name="mode" checked={mode === m} onChange={() => setMode(m)} /><span>{t(`org.email_${m}`)}</span></label>
         ))}
@@ -169,7 +178,14 @@ function NotificationsTab() {
           {["instant", "daily", "weekly"].map((d) => <option key={d} value={d}>{t(`org.digest_${d}`)}</option>)}
         </select>
       </FormField>
-      <button type="submit" className="mid-knapp mid-knapp-primar">{t("common.save")}</button>
+      <fieldset className="mid-val">
+        <legend className="mid-etikett">{t("org.push_channel")}</legend>
+        {["important", "all", "none"].map((m) => (
+          <label key={m}><input type="radio" name="push" checked={pushMode === m} onChange={() => setPushMode(m)} /><span>{t(`org.push_${m}`)}</span></label>
+        ))}
+      </fieldset>
+      <p className="t-liten t-sekundar">{t("org.push_hint")}</p>
+      <div><button type="submit" className="mid-knapp mid-knapp-primar">{t("common.save")}</button></div>
     </form>
   );
 }

@@ -128,6 +128,7 @@ export interface VirusScanner {
 }
 
 import type { Payments } from "./payments.ts";
+import type { PushSender } from "./webpush.ts";
 
 export interface Adapters {
   identity: IdentityProvider;
@@ -139,4 +140,5 @@ export interface Adapters {
   email: Email;
   virusScanner: VirusScanner;
   payments: Payments;
+  push: PushSender;
 }

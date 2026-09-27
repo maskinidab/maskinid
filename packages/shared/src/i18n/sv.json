@@ -158,11 +158,15 @@
    "empty": "Inga konflikter här",
    "involved": "Berörda",
    "lead": "Dubbla serienummer, ägartvister och marknadsavvikelser. Varje beslut kräver en anteckning och loggas i händelsekedjan.",
+   "merge_hint": "Sammanslagning flyttar identifierare, märken, dokument, service, flaggor och förbehåll till den maskin som behålls. Den andra posten blir skrivskyddad och pekar dit; historiken följer med.",
+   "merge_other_owner": "Sammanslagning går bara när båda posterna har samma ägare. Olika ägare hanteras som ägartvist.",
    "related": "Befintlig maskin",
    "res": {
     "dismiss": "Avfärda",
     "keep_existing": "Behåll befintlig registrering {{existing}} – avregistrera {{new}}",
     "keep_new": "Behåll nya registreringen {{new}} – avregistrera {{existing}}",
+    "merge_into_existing": "Slå ihop – behåll {{existing}}",
+    "merge_into_new": "Slå ihop – behåll {{new}}",
     "resolved": "Löst utan ändring i registret"
    },
    "resolution": "Beslut",
@@ -470,6 +474,13 @@
   "endpoints": "Anrop",
   "errors_body": "Fel returneras som { code, detail } med HTTP-status 401, 403, 404, 409 (konflikt, t.ex. dubbelt förbehåll), 422 (valideringsfel) eller 429 (för många anrop). Att godkänna ett ägarbyte kräver alltid en person med BankID: svaret är 202 med signing_url.",
   "errors_title": "Fel",
+  "expect": {
+   "clean": "Kontroll utan förbehåll; nytt förbehåll 201.",
+   "disputed": "Flagga tvist; ägarbyte 409.",
+   "financed": "Kontroll visar långivaren; nytt förbehåll 409 ACTIVE_ENCUMBRANCE_EXISTS.",
+   "scrapped": "Skrivskyddad; ändringar 409 MACHINE_READ_ONLY.",
+   "stolen": "Flagga stulen; ägarbyte och förbehåll 409 MACHINE_STOLEN."
+  },
   "lead": "REST och JSON. Samma behörigheter som i appen: en nyckel agerar som sin organisation och begränsas av sina scopes. Alla ändringar blir händelser i registrets hashkedja.",
   "method": "Metod",
   "op": {
@@ -496,6 +507,18 @@
    "POST_register_machine": "Registrera maskin. Returnerar regnr.",
    "POST_release_encumbrance": "Släpp förbehåll (endast innehavaren).",
    "POST_submit_oem_records": "Tillverkarens leveransdata (upp till 10 000 rader)."
+  },
+  "sandbox_body": "Nycklar som skapas som sandlådenycklar (mk_test_…) svarar från fasta testmaskiner och påverkar aldrig registret: inget sparas, inga webhooks skickas och anropen debiteras inte. Svaren har \"sandbox\": true och headern MaskinID-Sandbox: true.",
+  "sandbox_expect": "Förväntat svar",
+  "sandbox_scenario": "Scenario",
+  "sandbox_serial": "Serienummer",
+  "sandbox_title": "Sandlåda",
+  "scenario": {
+   "clean": "Utan anmärkning",
+   "disputed": "Tvist",
+   "financed": "Belånad",
+   "scrapped": "Skrotad",
+   "stolen": "Stulen"
   },
   "title": "MaskinID API",
   "webhooks_body": "Varje leverans signeras med HMAC-SHA256. Kontrollera signaturen och att tidsstämpeln är färsk. Vi försöker fem gånger med ökande intervall; misslyckade leveranser kan skickas igen från Inställningar.",
@@ -714,6 +737,13 @@
   "title": "Ägarbevis",
   "weight": "Tjänstevikt"
  },
+ "charts": {
+  "category": "Kategori",
+  "month": "Månad",
+  "share": "{{n}} {{unit}} ({{pct}} %)",
+  "show_table": "Visa som tabell",
+  "suppressed": "Färre än 5 – visas inte av integritetsskäl"
+ },
  "check": {
   "batch_count_one": "{{count}} rad att kontrollera",
   "batch_count_other": "{{count}} rader att kontrollera",
@@ -736,6 +766,7 @@
   "submit": "Kontrollera",
   "submit_batch": "Kontrollera alla",
   "tab_batch": "Flera (CSV)",
+  "tab_partial": "Delsökning",
   "tab_single": "En maskin",
   "title": "Finansieringskontroll",
   "type_any": "Alla identiteter",
@@ -925,6 +956,7 @@
   },
   "timeline": {
    "empty": "Inga händelser än.",
+   "from_merged": "från sammanslagen post {{reg}}",
    "load_more": "Visa äldre händelser"
   }
  },
@@ -1677,8 +1709,11 @@
    "deregistered": "{{actor}} avregistrerade maskinen",
    "factory_data_confirmed": "Fabriksdata bekräftade maskinens uppgifter",
    "hours_reported": "{{actor}} rapporterade {{payload.hour_meter}} timmar",
+   "merged": "Post {{payload.merged_reg_number}} slogs ihop med maskinen",
+   "merged_into": "Posten slogs ihop med {{payload.keep_reg_number}}",
    "operational_status_changed": "{{actor}} ändrade driftstatus",
    "operator_assigned": "{{actor}} ändrade förare",
+   "partial_search": "{{actor}} gjorde en delsökning",
    "photo_set": "{{actor}} bytte foto",
    "registered": "{{actor}} registrerade maskinen",
    "sighting_reported": "Tips om den stulna maskinen",
@@ -1720,6 +1755,7 @@
    "approved": "Organisationen godkändes",
    "claimed": "{{actor}} tog över organisationen",
    "created": "{{actor}} skapade organisationen",
+   "data_exported": "{{actor}} exporterade organisationens data",
    "group_linked": "Kopplad till koncern",
    "group_unlinked": "Koncernkoppling avslutad",
    "suspended": "Organisationen stängdes av",
@@ -1776,6 +1812,18 @@
    "created": "{{actor}} skapade en webhook",
    "deleted": "{{actor}} tog bort en webhook"
   }
+ },
+ "export": {
+  "my_download": "Ladda ner mina uppgifter",
+  "my_lead": "Ladda ner allt vi har om dig: profil, medlemskap, notiser, inloggningar, godkända villkor och supportärenden (JSON).",
+  "my_title": "Mina uppgifter",
+  "org_contents": "Ingår: maskiner, identifierare, ägarperioder, förbehåll, kontroller, dokumentlista, service, bränsle, projekt, förare, kunder, fakturor, medlemmar och händelser.",
+  "org_done": "Exporten är klar: {{machines}} maskiner och {{events}} händelser.",
+  "org_download": "Exportera (JSON)",
+  "org_lead": "En fil med allt organisationen har i registret, i ett maskinläsbart format (JSON) som går att läsa in i andra system.",
+  "org_limit": "Högst 5 exporter per dygn. Exporten loggas i händelseloggen.",
+  "org_not_included": "Ingår inte: nycklar, hemligheter och uppgifter om andra organisationer. Dokumentfiler laddas ner var för sig.",
+  "org_title": "Exportera organisationens data"
  },
  "extract": {
   "create": "Registerutdrag (PDF)",
@@ -2104,6 +2152,8 @@
   "market_seen_at": "Senast sedd till salu hos {{where}} {{date}}",
   "market_stolen_listed_one": "Stulen maskin syns i en annons – kontakta polisen",
   "market_stolen_listed_other": "Stulen maskin syns i {{count}} annonser – kontakta polisen",
+  "merged_into": "Posten är sammanslagen med {{reg}}",
+  "merged_open": "Öppna maskinen",
   "no_access": "Ingen har tittat ännu",
   "no_documents": "Inga dokument ännu",
   "no_label": "Inget kopplat märke",
@@ -2246,6 +2296,7 @@
   "admin_legal": "Juridiska dokument",
   "admin_market": "Marknadsbevakning",
   "admin_orgs": "Organisationer",
+  "admin_statistics": "Statistik",
   "admin_support": "Supportsök",
   "admin_tickets": "Supportärenden",
   "admin_tips": "Tips",
@@ -2299,6 +2350,7 @@
   "sign_in": "Logga in",
   "sign_out": "Logga ut",
   "sign_up": "Skapa konto",
+  "statistics": "Statistik",
   "stock": "Lager",
   "support": "Support",
   "trade_in": "Ta emot inbyte",
@@ -2495,6 +2547,10 @@
    "deregistered": {
     "body": "{{by}} avregistrerade {{reg_number}}.",
     "title": "Maskinen är avregistrerad"
+   },
+   "merged": {
+    "body": "Dubbelregistreringen är åtgärdad. Uppgifterna finns nu på {{reg_number}}.",
+    "title": "{{merged_reg_number}} är sammanslagen med {{reg_number}}"
    },
    "out_of_service": {
     "body": "{{reason}}",
@@ -2775,6 +2831,7 @@
   "digest_instant": "Direkt",
   "digest_weekly": "Varje måndag",
   "email_all": "E-post för alla notiser",
+  "email_channel": "E-post",
   "email_important": "E-post bara för viktiga notiser",
   "email_none": "Ingen e-post",
   "identity_missing": "Ej verifierad",
@@ -2789,6 +2846,11 @@
   "no_org_title": "Du är inte med i någon organisation",
   "notifications_title": "Notiser och e-post",
   "postal_code": "Postnummer",
+  "push_all": "Alla notiser",
+  "push_channel": "Push-notiser",
+  "push_hint": "Gäller enheter där du har slagit på push-notiser under Profil.",
+  "push_important": "Viktiga (varningar och kritiska)",
+  "push_none": "Inga",
   "remove_member": "Ta bort ur organisationen",
   "role": "Roll",
   "saved": "Uppgifterna är sparade.",
@@ -2797,6 +2859,18 @@
   "switcher_label": "Organisation",
   "vat_number": "Momsregistreringsnummer",
   "website": "Webbplats"
+ },
+ "partial": {
+  "check": "Kontrollera",
+  "flagged": "Flaggad",
+  "hint": "Minst 5 tecken, till exempel det som går att läsa på en sliten typskylt.",
+  "label": "Del av serienummer eller registreringsnummer",
+  "match_reg": "Träff i regnr",
+  "match_serial": "Träff i serienummer",
+  "none": "Inga träffar",
+  "none_body": "Kontrollera tecknen, eller sök på en annan del av numret.",
+  "privacy": "Visar högst 10 träffar utan ägare eller förbehåll. Välj en maskin för att göra en fullständig kontroll.",
+  "submit": "Sök"
  },
  "pdf": {
   "document_number": "Dokumentnummer",
@@ -2893,6 +2967,27 @@
   "verify_lead": "Som privatperson kan du se om en maskin är belånad, men inte hos vem. Kontrollen loggas och syns för ägaren.",
   "verify_logged": "Kontrollen är loggad och syns för ägaren.",
   "verify_title": "Kontrollera belåning"
+ },
+ "push": {
+  "added": "tillagd {{date}}",
+  "denied": "Notiser är blockerade för webbplatsen. Tillåt dem i webbläsarens inställningar.",
+  "disable": "Stäng av på den här enheten",
+  "enable": "Slå på på den här enheten",
+  "error": {
+   "PUSH_DENIED": "Du tillät inte notiser.",
+   "PUSH_NOT_CONFIGURED": "Push-notiser är inte konfigurerade på servern."
+  },
+  "failing": "leveransen misslyckas",
+  "lead": "Få notiser på den här enheten även när appen är stängd, till exempel om en maskin skannas som stulen.",
+  "send_test": "Skicka testnotis",
+  "test_message": {
+   "body": "Push-notiser fungerar på den här enheten.",
+   "title": "Testnotis från {{app}}"
+  },
+  "test_sent": "Testnotisen är skickad.",
+  "title": "Push-notiser",
+  "unsupported": "Den här webbläsaren kan inte ta emot push-notiser. På iPhone: lägg först till appen på hemskärmen.",
+  "what": "Vilka händelser som skickas ställer du in per organisation under Inställningar → Notiser och e-post."
  },
  "receipt_verify": {
   "hash": "Kontrollsumma (SHA-256)",
@@ -3078,6 +3173,7 @@
  "settings": {
   "tab_api": "API och webhooks",
   "tab_billing": "Betalning",
+  "tab_data": "Data och export",
   "tab_departments": "Avdelningar",
   "tab_group": "Koncern"
  },
@@ -3089,6 +3185,54 @@
   "reason_revoked": "Länken är stängd av ägaren.",
   "shared_by": "Delad av {{org}}. Länken gäller till {{date}}.",
   "views_left": "{{count}} visningar kvar."
+ },
+ "stats": {
+  "admin_lead": "Exakta siffror utan avrundning eller undertryckning. Dela bara den publika versionen utanför registerhållaren.",
+  "admin_title": "Statistik",
+  "age": {
+   "0-4": "0–4 år",
+   "10-14": "10–14 år",
+   "15+": "15 år och äldre",
+   "5-9": "5–9 år"
+  },
+  "by_age": "Ålder",
+  "by_category": "Maskintyp",
+  "by_county": "Län (ägarens ort)",
+  "by_emission_stage": "Utsläppssteg",
+  "by_fuel": "Drivmedel",
+  "by_level": "Verifieringsnivå",
+  "checks_by_month": "Kontroller per månad",
+  "checks_unit": "kontroller",
+  "col_category": "Maskintyp",
+  "col_fuel": "Drivmedel",
+  "col_hours": "Snitt timmar",
+  "col_n": "Antal",
+  "col_power": "Snitt effekt (kW)",
+  "col_stage": "Utsläppssteg",
+  "electric_share": "Andel eldrivna",
+  "encumbrances_active": "Aktiva förbehåll",
+  "environment_csv": "Ladda ner miljöstatistik (CSV, {{rows}} rader)",
+  "environment_lead": "Antal maskiner per typ, utsläppssteg och drivmedel med genomsnittlig effekt och timmar – underlag för till exempel Naturvårdsverkets arbetsmaskinsmodell. Grupper med färre än 5 maskiner ingår inte.",
+  "environment_title": "Miljöstatistik",
+  "exact_note": "Exakta siffror.",
+  "generated": "Beräknad {{at}}.",
+  "labels_bound": "QR-märken på maskiner",
+  "lead": "Hur många arbetsmaskiner som finns i registret, vilka de är och var de finns. Uppdateras varje dygn.",
+  "level": {
+   "0": "Självregistrerad",
+   "1": "Dokumentverifierad",
+   "2": "Fysiskt verifierad"
+  },
+  "machines": "Maskiner i registret",
+  "machines_unit": "maskiner",
+  "recovered_12m": "Återfunna senaste 12 mån",
+  "registered_12m": "Registrerade senaste 12 mån",
+  "registrations_by_month": "Nya registreringar per månad",
+  "stolen_active": "Anmälda stulna",
+  "suppression_note": "Grupper med 1–4 maskiner visas som \"<5\" så att enskilda ägare inte kan pekas ut.",
+  "title": "Statistik",
+  "transfers_12m": "Ägarbyten senaste 12 mån",
+  "unknown": "Okänt"
  },
  "stolen": {
   "has_label": "Har QR-märke",

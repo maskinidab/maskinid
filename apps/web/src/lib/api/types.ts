@@ -139,6 +139,7 @@ export interface MachineView {
   last_transfer_date: string | null;
   open_transfer?: Transfer | null;
   stolen_public?: { flag_id: string; published: boolean };
+  merged_into?: { id: string; reg_number: string };
   [extra: string]: unknown;
 }
 
@@ -211,6 +212,8 @@ export interface HistoryEvent {
   actor_org: { id: string; name: string } | null;
   actor_name: string | null;
   payload: Record<string, unknown>;
+  /** Reg number of a record merged into this machine, when the event belongs to it (step 24). */
+  from_merged_record?: string | null;
 }
 
 export interface NotificationItem {

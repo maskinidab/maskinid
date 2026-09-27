@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { useOrg } from "../../../auth/OrgContext";
+import { PartialSearch } from "../../../components/PartialSearch";
 import { DataTable } from "../../../components/DataTable";
 import { Dialog } from "../../../components/Dialog";
 import { EmptyState, ErrorNotice, PageHeader, Skeleton, Tabs } from "../../../components/Feedback";
@@ -40,7 +41,7 @@ export function CheckPage() {
   const { t } = useTranslation();
   const { orgId, has, canWrite } = useOrg();
   const pdf = useReceiptPdf();
-  const [tab, setTab] = useState<"single" | "batch">("single");
+  const [tab, setTab] = useState<"single" | "batch" | "partial">("single");
   const [type, setType] = useState<(typeof TYPES)[number]>("any");
   const [value, setValue] = useState("");
   const [purpose, setPurpose] = useState("");
@@ -103,10 +104,12 @@ export function CheckPage() {
   return (
     <div className="stack-6">
       <PageHeader title={t("check.title")} lead={t("check.lead")} />
-      <Tabs label={t("check.title")} value={tab} onChange={(v) => setTab(v as "single" | "batch")}
-        tabs={[{ id: "single", label: t("check.tab_single") }, { id: "batch", label: t("check.tab_batch") }]} />
+      <Tabs label={t("check.title")} value={tab} onChange={(v) => setTab(v as "single" | "batch" | "partial")}
+        tabs={[{ id: "single", label: t("check.tab_single") }, { id: "batch", label: t("check.tab_batch") }, { id: "partial", label: t("check.tab_partial") }]} />
       <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`flik-${tab}`} className="stack-5">
-        {tab === "single" ? (
+        {tab === "partial" ? (
+          <PartialSearch onPick={(reg) => { setTab("single"); setType("reg"); setValue(reg); void check(reg, "reg"); }} />
+        ) : tab === "single" ? (
           <form className="panel stack-3" onSubmit={(e) => { e.preventDefault(); void check(); }}>
             <div className="rutnat">
               <FormField className="kol-3" label={t("common.type")}>

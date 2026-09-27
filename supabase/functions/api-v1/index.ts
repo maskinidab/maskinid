@@ -1,7 +1,9 @@
 // Edge Function: api-v1 (SPEC §12) – REST gateway. Authorization: Bearer <api key>. The key is resolved by its SHA-256,
 // then the route's RPC runs as service_role with header x-maskinid-api-key-id, so the database applies exactly the same
 // authorisation, scopes and event logging as for the web app. Idempotency-Key on POST replays the first response.
+// Sandbox keys (mk_test_) are answered from the fixed test dataset in shared/api/sandbox.ts and never reach the register.
 import { matchRoute, statusForCode } from "../_shared/shared/api/routes.ts";
+import { sandboxHandle } from "../_shared/shared/api/sandbox.ts";
 import { serviceClient } from "../_shared/db.ts";
 import { corsHeaders, ipHash, json, preflight, sha256Hex } from "../_shared/http.ts";
 
@@ -48,6 +50,11 @@ Deno.serve(async (req) => {
     if (text.length > 1_000_000) return done(413, { code: "PAYLOAD_TOO_LARGE" });
     try { body = text ? JSON.parse(text) : {}; } catch { return done(400, { code: "INVALID_JSON" }); }
     if (typeof body !== "object" || body === null || Array.isArray(body)) return done(400, { code: "INVALID_JSON" });
+  }
+
+  if (k.data.sandbox) {
+    const r = sandboxHandle(m.route, { method: req.method, params: m.params, query: Object.fromEntries(url.searchParams), body, orgId });
+    return done(r.status, r.body, { ...corsHeaders(), "Cache-Control": "no-store", "MaskinID-Sandbox": "true" });
   }
 
   const idem = req.method === "POST" ? req.headers.get("idempotency-key") : null;

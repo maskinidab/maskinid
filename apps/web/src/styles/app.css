@@ -239,3 +239,30 @@ a { color: var(--id-text); }
 .plan-pris { font-size: 24px; line-height: 30px; font-weight: 700; margin: 0; }
 .mid-tabell .tal, .mid-tabell th.tal { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .mid-tabell tfoot td { font-weight: 600; border-bottom: 0; }
+
+/* Step 24: charts (dataviz method: one series ⇒ no legend; bars ≤ 24 px, 4 px rounded data end; hairline baseline;
+   text in text ink; values also in a table). Bar colour validated: #8a5a00 on light, #c07d10 on dark surfaces. */
+:root { --diagram-stapel: #8a5a00; --diagram-spar: var(--yta-2); }
+:root:is([data-theme="morkt"], [data-theme="dark"]) { --diagram-stapel: #c07d10; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="ljust"]):not([data-theme="light"]) { --diagram-stapel: #c07d10; } }
+.diagram { margin: 0; }
+.stapellista { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.stapellista li { position: relative; display: grid; grid-template-columns: minmax(7rem, 38%) 1fr; align-items: center; gap: var(--space-3); padding: 4px 0; outline-offset: 2px; }
+.stapellista li.is-aktiv .stapel-etikett { font-weight: 600; }
+.stapel-etikett { font-size: 14px; line-height: 20px; overflow-wrap: anywhere; }
+.stapel-spar { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
+.stapel { display: block; height: 16px; min-width: 2px; background: var(--diagram-stapel); border-radius: 0 4px 4px 0; }
+.stapel-varde { font-size: 13px; color: var(--text-sekundar); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.diagram-tips { position: absolute; z-index: 5; right: 0; top: -1.9rem; background: var(--text); color: var(--yta); font-size: 13px; line-height: 18px;
+  padding: 4px 8px; border-radius: 4px; white-space: nowrap; pointer-events: none; }
+.stolpar { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 2px; align-items: end; border-bottom: 1px solid var(--linje); padding-top: 1.5rem; }
+.stolpe-kolumn { position: relative; display: flex; flex-direction: column; align-items: center; outline-offset: 2px; }
+.stolpe-yta { position: relative; height: 140px; width: 100%; display: flex; align-items: flex-end; justify-content: center; }
+.stolpe { width: min(24px, 70%); min-height: 1px; background: var(--diagram-stapel); border-radius: 4px 4px 0 0; }
+.stolpe-kolumn.is-aktiv .stolpe { filter: brightness(0.85); }
+.stolpe-varde { position: absolute; top: -1.3rem; font-size: 12px; color: var(--text-sekundar); font-variant-numeric: tabular-nums; }
+.stolpe-etikett { font-size: 11px; line-height: 14px; color: var(--text-sekundar); margin-top: 4px; transform: translateY(100%); position: absolute; bottom: 0; }
+.stolpar + .diagram-tabell { margin-top: 1.4rem; }
+.stolpe-kolumn .diagram-tips { top: -2rem; right: auto; }
+.diagram-tabell summary { cursor: pointer; }
+.diagram-rutnat { display: grid; gap: var(--space-6); grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); }

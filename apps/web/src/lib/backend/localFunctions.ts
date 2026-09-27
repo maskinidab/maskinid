@@ -5,6 +5,7 @@
  */
 import { heuristicColumnMapping, mockOcr } from "@maskinid/shared/adapters/mock.ts";
 import { mockPayments } from "@maskinid/shared/adapters/payments.ts";
+import { renderPush } from "@maskinid/shared/email/render.ts";
 import { ApiError } from "./errors";
 import { idbGet } from "./idb";
 import type { LocalContext } from "./local";
@@ -53,6 +54,18 @@ export const localFunctions: Record<string, Handler> = {
       p_subscription_id: s.sessionId, p_period_end: null,
     });
     return { url: s.url, provider: "mock" };
+  },
+
+  // push-send: claims queued push messages; the app shows those for this device (see lib/push.ts).
+  async "push-send"(ctx) {
+    const claimed = await ctx.rpcAs<{ id: string; type: string; data: Record<string, unknown>; link: string | null; endpoint: string; locale: string }[]>(
+      "service_role", "claim_push_outbox", { p_limit: 50 });
+    const messages = [];
+    for (const m of claimed) {
+      messages.push({ endpoint: m.endpoint, ...renderPush({ type: m.type, data: m.data, link: m.link, locale: m.locale }) });
+      await ctx.rpcAs("service_role", "record_push_result", { p_id: m.id, p_ok: true, p_gone: false, p_error: null });
+    }
+    return { messages };
   },
 
   async lead(ctx, body) {
