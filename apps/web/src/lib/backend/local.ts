@@ -235,6 +235,8 @@ export function createLocalBackend(): Backend {
     },
     auth: {
       async getSession() {
+        // Without a stored session there is nothing to validate: public pages do not wait for the database to boot.
+        if (!session) return null;
         await db();
         return session;
       },

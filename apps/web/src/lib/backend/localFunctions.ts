@@ -42,8 +42,8 @@ export const localFunctions: Record<string, Handler> = {
     const mock = createMockTelematics();
     for (const c of due) {
       await ctx.rpcAs("service_role", "telematics_ingest", c.provider === "mock"
-        ? { p_connection_id: c.id, p_readings: JSON.stringify(await mock.fetch(c)) }
-        : { p_connection_id: c.id, p_readings: "[]", p_error: "DEMO: only demo connections can sync in the browser" });
+        ? { p_connection_id: c.id, p_readings: await mock.fetch(c) }
+        : { p_connection_id: c.id, p_readings: [], p_error: "DEMO: only demo connections can sync in the browser" });
     }
     return { synced: due.length };
   },

@@ -4,7 +4,9 @@ import { APP_NAME } from "@maskinid/shared/config.ts";
 import { Icon, type IconName } from "../../components/Icon";
 import { RegNumber } from "../../components/RegNumber";
 import { ScanButton } from "../../components/Scanner";
+import { Skeleton } from "../../components/Feedback";
 import { useRpc } from "../../lib/api/query";
+import { dataSource } from "../../lib/backend";
 import { PublicLookup } from "./PublicLookup";
 
 const ACTORS: { key: string; icon: IconName }[] = [
@@ -15,13 +17,15 @@ const ACTORS: { key: string; icon: IconName }[] = [
 function DemoShortcuts() {
   const { t } = useTranslation();
   const q = useRpc<{ kind: string; reg_number: string; code: string | null }[]>("demo_shortcuts", {});
-  if (!q.data?.length) return null;
+  // The browser demo always has shortcuts: keep their place while the in-browser register boots (no layout shift).
+  const pending = q.isLoading && dataSource === "local";
+  if (!pending && !q.data?.length) return null;
   return (
     <section className="sektion-liten sektion-yta2" aria-labelledby="demo-genvagar">
       <div className="behallare stack-4">
         <h2 id="demo-genvagar" className="t-rubrik-3">{t("public.demo_title")}</h2>
-        <ul className="handlingar">
-          {q.data.map((d) => (
+        {pending ? <div className="demo-genvagar-plats"><Skeleton lines={2} height={40} /></div> : <ul className="handlingar">
+          {(q.data ?? []).map((d) => (
             <li key={d.kind}>
               <Link className="handling" to={d.code ? `/m/${d.code}` : `/r/${d.reg_number}`}>
                 <strong><Icon name={d.kind === "stolen" ? "varning" : "qr"} />{t(`public.demo_${d.kind}`)}</strong>
@@ -29,7 +33,7 @@ function DemoShortcuts() {
               </Link>
             </li>
           ))}
-        </ul>
+        </ul>}
       </div>
     </section>
   );

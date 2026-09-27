@@ -86,7 +86,7 @@ export function MachinesPage() {
           </ul>
         </section>
       )}
-      <Tabs label={t("machines.title")} tabs={scopes} value={scope} onChange={(s) => setParams({ scope: s }, { replace: true })} />
+      <Tabs panels label={t("machines.title")} tabs={scopes} value={scope} onChange={(s) => setParams({ scope: s }, { replace: true })} />
       <div role="tabpanel" id={`panel-${scope}`} aria-labelledby={`flik-${scope}`}>
         {list.isLoading ? <Skeleton lines={6} height={40} /> : list.error ? <ErrorNotice error={list.error} /> : (
           <DataTable caption={t("machines.title")} rows={list.data!.items} columns={columns} getKey={(m) => m.id} exportName="maskiner"

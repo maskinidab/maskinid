@@ -33,7 +33,7 @@ export function FleetPage() {
   return (
     <div className="stack-6">
       <PageHeader title={t("nav.fleet")} lead={t("fleet.lead")} actions={<HoursByScan />} />
-      <Tabs label={t("nav.fleet")} tabs={tabs} value={tab} onChange={(x) => setParams({ tab: x }, { replace: true })} />
+      <Tabs panels label={t("nav.fleet")} tabs={tabs} value={tab} onChange={(x) => setParams({ tab: x }, { replace: true })} />
       <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`flik-${tab}`} className="stack-5">
         {tab === "todo" && <Todo orgId={orgId} />}
         {tab === "projects" && <Projects />}

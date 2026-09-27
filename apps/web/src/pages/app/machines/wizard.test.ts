@@ -14,7 +14,7 @@ describe("register wizard", () => {
   it("builds the register payload: identifiers, numbers, owner only when another org", () => {
     const d = toRegisterData({ ...base, road_reg: "ABC123", owner_org_number: "556701-1001", label_code: "mid-abcd" });
     expect(d.identifiers).toEqual([
-      { type: "serial", value: "VCE0EC220E00012345", source: "ocr" },
+      { type: "serial", value: "VCE0EC220E00012345", source: "nameplate_ocr" },
       { type: "road_reg", value: "ABC123", external_system: "transportstyrelsen" },
     ]);
     expect(d).toMatchObject({ year: 2021, hour_meter: 4250, engine_power_kw: 128.5, service_weight_kg: 22500, owner_org_number: null, label_code: "MID-ABCD",

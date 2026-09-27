@@ -3,6 +3,9 @@
 Läs `CLAUDE.md` (inkl. "Projektbeslut"), denna fil och relevant §-avsnitt i `docs/SPEC.md` innan du fortsätter.
 Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 
+**Bygget är komplett (2026-09-27): alla 27 steg är klara och testerna gröna.** Antaganden som bör bekräftas finns i
+`docs/OPEN_QUESTIONS.md`; vägvalen i `docs/adr/`.
+
 ## Miljö i byggcontainern
 - Docker-registret är inte nåbart ⇒ `supabase start` fungerar inte här. Lokal Postgres 16:
   `su postgres -c "/usr/lib/postgresql/16/bin/pg_ctl -D /tmp/pg/data -o '-p 54322 -k /tmp/pg' -l /tmp/pg/log start"`
@@ -37,7 +40,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 24 | Statistik, dataexport, push, sandbox, partial search, merge | ✅ | tolkat, ADR 0021 |
 | 25 | Integrationsadaptrar (NFC, telematik, TS, Larmtjänst), publika sidor | ✅ | ADR 0022 |
 | 26 | Drift | ✅ | ADR 0023 |
-| 27 | Kvalitet | ⬜ | |
+| 27 | Kvalitet: e2e, a11y, Lighthouse, README | ✅ | ADR 0024 |
 
 ## Logg
 - **Steg 1** – Repo omstrukturerat till `apps/web`, `apps/ingest`, `packages/shared`. Specdokumenten ligger i `docs/`.
@@ -278,3 +281,15 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   GitHub Actions: `deploy.yml` (staging automatiskt, produktion med godkännande), `uptime.yml`, `backup-drill.yml` med
   `scripts/verify-restore.mjs`. Komplett `.env.example`, `vercel.json` med säkerhetsheaders. Runbooks: setup, deploy,
   monitoring, backup-restore, incident, secrets. Tester `22_operations`, server-PDF, skrubbning. ADR 0023.
+- **Steg 27** – E2E-svit i `e2e/` (Playwright, kör mot demodatabasen i webbläsaren, en ny databas per test, inga
+  omkörningar): §16 p.13 handlare (registrering → godkännande → import 20/18 → märken → försäljning med långivare →
+  köparen godkänner → förbehåll bekräftas → ägarbevis-PDF), p.14 ägare, p.15 långivare, p.16 stöld, p.17 myndighet;
+  tolkade p.18–26: daglig kontroll/ur drift, kommission, stöldlista + tips, support + villkor + "Visa som", betalning,
+  statistik + dataexport, sandlådenyckel, telematik, driftstatus; mobil (Pixel 7) och axe (WCAG 2.1 AA) på 21 sidor.
+  30 tester gröna. Lighthouse-skript (`npm run lighthouse`, produktionsbygge: tillgänglighet 100, prestanda 83–87).
+  CI-jobb `e2e` och `lighthouse`. Sviten hittade och rättade: krasch i åtkomstloggen, OCR-värden som försvann i
+  guiden, fel enumvärde för OCR-identifierare, verifieringsförfrågan utan underlag, dubbelkodad telematik i
+  webbläsarläget, flikar med `aria-controls` mot saknade paneler (nu även piltangenter/Home/End med fokus), layoutskift
+  i sidfoten (prestanda 59 → 85), och ett säkerhetsfel: "Visa som organisation" kunde skapa supportärenden i
+  organisationens namn ⇒ migration `view_as_read_only` (skrivspärr via `require_actor` + triggrar, `VIEW_AS_READ_ONLY`).
+  `/status` visar schemalagda jobb. README omskriven: uppstart på 10 minuter. ADR 0024, öppna frågor 34–37.

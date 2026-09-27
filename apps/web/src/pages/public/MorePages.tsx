@@ -89,6 +89,7 @@ interface SystemStatus {
   database: string; demo: boolean; events_last_24h: number; statistics_at: string | null; checked_at: string;
   last_anchor: { day: string; root: string; published_at: string; reference: string | null } | null;
   integrations: Record<string, boolean>;
+  jobs?: { total: number; failing: number };
 }
 
 /** /status – live system status and the latest published anchor of the event chain. */
@@ -104,10 +105,15 @@ export function StatusPage() {
       {q.isLoading ? <Skeleton lines={5} /> : q.error ? <ErrorNotice error={q.error} title={t("status.down")} /> : (
         <>
           <section className="panel stack-3">
-            <p><StatusBadge kind="verifierad" icon="bock">{t("status.operational")}</StatusBadge></p>
+            <p>{q.data!.jobs?.failing
+              ? <StatusBadge kind="vantar" icon="varning">{t("status.degraded")}</StatusBadge>
+              : <StatusBadge kind="verifierad" icon="bock">{t("status.operational")}</StatusBadge>}</p>
             <dl className="faktarutnat">
               <div><dt>{t("status.register")}</dt><dd>{t("status.ok")}</dd></div>
               <div><dt>{t("status.events_24h")}</dt><dd>{q.data!.events_last_24h}</dd></div>
+              {q.data!.jobs && <div><dt>{t("status.jobs")}</dt><dd>{q.data!.jobs.failing
+                ? t("status.jobs_failing", { count: q.data!.jobs.failing, total: q.data!.jobs.total })
+                : t("status.jobs_ok", { total: q.data!.jobs.total })}</dd></div>}
               <div><dt>{t("status.checked")}</dt><dd>{formatDateTime(q.data!.checked_at)}</dd></div>
               {q.data!.demo && <div><dt>{t("status.mode")}</dt><dd>DEMO</dd></div>}
             </dl>

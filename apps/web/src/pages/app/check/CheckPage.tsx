@@ -104,7 +104,7 @@ export function CheckPage() {
   return (
     <div className="stack-6">
       <PageHeader title={t("check.title")} lead={t("check.lead")} />
-      <Tabs label={t("check.title")} value={tab} onChange={(v) => setTab(v as "single" | "batch" | "partial")}
+      <Tabs panels label={t("check.title")} value={tab} onChange={(v) => setTab(v as "single" | "batch" | "partial")}
         tabs={[{ id: "single", label: t("check.tab_single") }, { id: "batch", label: t("check.tab_batch") }, { id: "partial", label: t("check.tab_partial") }]} />
       <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`flik-${tab}`} className="stack-5">
         {tab === "partial" ? (

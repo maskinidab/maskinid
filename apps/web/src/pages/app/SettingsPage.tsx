@@ -206,7 +206,7 @@ export function SettingsPage() {
   return (
     <div className="stack-5">
       <PageHeader title={t("nav.settings")} />
-      <Tabs label={t("nav.settings")} tabs={tabs} value={tab} onChange={(v) => setParams({ tab: v })} />
+      <Tabs panels label={t("nav.settings")} tabs={tabs} value={tab} onChange={(v) => setParams({ tab: v })} />
       <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`flik-${tab}`}>
         {tab === "org" && <OrgTab />}
         {tab === "members" && <MembersTab />}

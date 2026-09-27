@@ -161,7 +161,7 @@ export function MachinePage() {
         </div>
       </section>
 
-      <Tabs label={t("machine.tabs")} tabs={tabs} value={tab} onChange={(x) => setParams({ tab: x }, { replace: true })} />
+      <Tabs panels label={t("machine.tabs")} tabs={tabs} value={tab} onChange={(x) => setParams({ tab: x }, { replace: true })} />
       <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`flik-${tab}`} className="stack-5">
         {tab === "overview" && (has("owner") || (has("authority") && m.status === "stolen")) && <PositionBox machineId={m.id} stolen={m.status === "stolen"} />}
         {tab === "overview" && <Overview m={m} flags={flags} onClearFlag={setClearFlag} />}

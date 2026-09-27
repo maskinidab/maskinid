@@ -87,3 +87,13 @@ Frågor som kräver affärsbeslut. Bygget stannar inte för dem; det säkraste a
 32. **Backup-övning.** Veckovis logisk dump till en tillfällig container i GitHub Actions. Kräver en läsbehörig
     databasroll i produktion; alternativt körs övningen i Supabase med PITR till ett nytt projekt (runbook).
 33. **Tidszon för jobb.** pg_cron körs i UTC; tiderna är satta så att de hamnar tidigt på morgonen svensk tid.
+
+## Kvalitet (steg 27, tolkat – SPEC §21.7 saknas)
+34. **Punkt 18–26 i §21.7** är tolkade från CLAUDE.md steg 20–26 (ADR 0024) och bör stämmas av mot den saknade texten.
+35. **Lighthouse-budget.** Prestanda ≥ 75 gäller Supabase-bygget; demobygget (hela registret i webbläsaren) mäts utan
+    prestandabudget. CI mäter Supabase-bygget först när `VITE_SUPABASE_URL` och `VITE_SUPABASE_PUBLISHABLE_KEY` finns som
+    repository-variabler.
+36. **Push-notiser** testas inte end-to-end: headless Chromium saknar push-tjänst. Kön och renderingen testas i databas-
+    och enhetstester.
+37. **`npm run build:demo`** (en enda HTML-fil) är från tiden med mock-backend och fungerar inte med demodatabasen i
+    webbläsaren. Statisk demo byggs i stället med `VITE_ROUTER=hash npm run build`. Skriptet kan tas bort.

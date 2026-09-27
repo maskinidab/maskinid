@@ -17,7 +17,7 @@
     "build:demo": "npm run build:demo -w @maskinid/web",
     "preview": "npm run preview -w @maskinid/web",
     "lint": "oxlint",
-    "typecheck": "tsc -b packages/shared apps/web apps/ingest supabase/tests api",
+    "typecheck": "tsc -b packages/shared apps/web apps/ingest supabase/tests api && tsc -p e2e",
     "test": "vitest run",
     "test:db": "vitest run --config supabase/tests/vitest.config.ts",
     "test:e2e": "playwright test --config e2e/playwright.config.ts",
@@ -26,7 +26,9 @@
     "tokens": "npm run tokens -w @maskinid/web",
     "ingest": "npm run start -w @maskinid/ingest",
     "check:functions": "node scripts/sync-functions-shared.mjs --check && cd supabase/functions && deno check */index.ts && deno test --allow-env _shared/",
-    "sync:functions": "node scripts/sync-functions-shared.mjs"
+    "sync:functions": "node scripts/sync-functions-shared.mjs",
+    "lighthouse": "node scripts/lighthouse.mjs",
+    "test:a11y": "playwright test --config e2e/playwright.config.ts a11y"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",

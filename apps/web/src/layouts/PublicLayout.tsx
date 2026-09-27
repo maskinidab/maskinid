@@ -91,7 +91,7 @@ export function PublicLayout() {
       <SkipLink />
       <DemoBanner />
       <PublicHeader />
-      <main id="innehall" tabIndex={-1}>
+      <main id="innehall" tabIndex={-1} className="publik-innehall">
         <Outlet />
       </main>
       <Footer />

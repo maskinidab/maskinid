@@ -34,9 +34,10 @@ export async function service<T = unknown>(page: Page, fn: string, args: Record<
 
 /** Confirms a Demo-BankID signature dialog. */
 export async function signDemo(page: Page): Promise<void> {
-  const dialog = page.locator("dialog[open]");
+  // The signing dialog may open on top of another dialog; pick the innermost one.
+  const dialog = page.locator("dialog[open]").filter({ hasText: "Du signerar" }).last();
   await expect(dialog.getByText("Du signerar")).toBeVisible();
-  await dialog.getByRole("button", { name: /Signera/ }).click();
+  await dialog.getByRole("button", { name: "Signera", exact: true }).click();
 }
 
 export function uniqueSerial(prefix: string): string {

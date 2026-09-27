@@ -53,7 +53,7 @@ export function StockPage() {
       <PageHeader title={t("nav.stock")} lead={t("dealer.stock_lead")}
         actions={canWrite ? <><Link className="mid-knapp mid-knapp-kontur" to={path("import")}><Icon name="uppladdning" />{t("dealer.import_stock")}</Link>
           <Link className="mid-knapp mid-knapp-primar" to={path("machines/new")}><Icon name="plus" />{t("nav.register")}</Link></> : undefined} />
-      <Tabs label={t("nav.stock")} value={tab} onChange={(x) => setParams({ tab: x }, { replace: true })}
+      <Tabs panels label={t("nav.stock")} value={tab} onChange={(x) => setParams({ tab: x }, { replace: true })}
         tabs={[{ id: "stock", label: t("dealer.tab_stock"), count: counts("stock") }, { id: "trade_in", label: t("dealer.tab_trade_in"), count: counts("trade_in") },
           { id: "demo", label: t("dealer.tab_demo"), count: counts("demo") }, { id: "consignment", label: t("dealer.tab_consignment"), count: counts("consignment") },
           { id: "sold", label: t("dealer.tab_sold") }]} />

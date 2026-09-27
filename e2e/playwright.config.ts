@@ -14,7 +14,7 @@ export default defineConfig({
   expect: { timeout: 30_000 },
   fullyParallel: false,
   workers: process.env.CI ? 2 : 1,
-  retries: process.env.CI ? 1 : 0,
+  retries: 0,
   reporter: process.env.CI ? [["github"], ["html", { open: "never", outputFolder: "../playwright-report" }]] : [["list"]],
   use: {
     baseURL: process.env.E2E_BASE_URL ?? "http://localhost:5173",
@@ -25,7 +25,7 @@ export default defineConfig({
     launchOptions: { executablePath },
   },
   projects: [
-    { name: "desktop", use: { ...devices["Desktop Chrome"], launchOptions: { executablePath } } },
+    { name: "desktop", testIgnore: /mobile\.spec\.ts/, use: { ...devices["Desktop Chrome"], launchOptions: { executablePath } } },
     { name: "mobile", testMatch: /mobile\.spec\.ts/, use: { ...devices["Pixel 7"], launchOptions: { executablePath } } },
   ],
   webServer: process.env.E2E_BASE_URL ? undefined : {

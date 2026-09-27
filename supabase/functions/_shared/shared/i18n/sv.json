@@ -1636,6 +1636,7 @@
   "UPLOAD_MISSING": "Filen laddades inte upp. Försök igen.",
   "USE_BANKID_FLOW": "Använd BankID-inloggningen.",
   "VALIDATION": "Kontrollera uppgifterna i formuläret.",
+  "VIEW_AS_READ_ONLY": "Visningen som organisation är skrivskyddad. Avsluta visningen för att göra ändringar.",
   "WEAK_PASSWORD": "Lösenordet behöver minst 8 tecken."
  },
  "events": {
@@ -3538,6 +3539,7 @@
   "anchor_ref": "Publicerat som {{ref}}",
   "anchor_title": "Senaste kontrollvärde",
   "checked": "Kontrollerad",
+  "degraded": "Vissa bakgrundsjobb har fel",
   "down": "Registret svarar inte just nu",
   "events_24h": "Händelser senaste dygnet",
   "how_verify": "Så kontrollerar du historiken",
@@ -3549,6 +3551,10 @@
    "theft_sync": "Stöldregister (Larmtjänst)"
   },
   "integrations": "Integrationer",
+  "jobs": "Schemalagda jobb",
+  "jobs_failing_one": "{{count}} av {{total}} har fel",
+  "jobs_failing_other": "{{count}} av {{total}} har fel",
+  "jobs_ok": "Alla {{total}} körs utan fel",
   "lead": "Aktuell status för registret och dess integrationer.",
   "mode": "Läge",
   "no_anchor": "Inget kontrollvärde publicerat än.",

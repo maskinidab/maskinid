@@ -129,6 +129,9 @@ describe("account security and view-as (step 22)", () => {
       expect((await t.rpc("get_machine", { p_org_id: ORGS.owner_a, p_machine_id: m.id })).id).toBe(m.id);
       expect((await t.rpcError("update_machine", { p_org_id: ORGS.owner_a, p_machine_id: m.id, p_patch: { color: "blå" } })).code).toBe("FORBIDDEN");
       expect((await t.rpcError("record_hours", { p_org_id: ORGS.owner_a, p_machine_id: m.id, p_hours: 100 })).code).toBe("FORBIDDEN");
+      // Writes a readonly member may make (support tickets) are refused while viewing as the org (ADR 0024).
+      expect((await t.rpcError("create_support_ticket", { p_org_id: ORGS.owner_a, p_category: "other", p_subject: "Test", p_body: "Test" })).code)
+        .toBe("VIEW_AS_READ_ONLY");
       await t.rpc("end_view_as", {});
       expect((await t.rpcError("list_machines", { p_org_id: ORGS.owner_a, p_scope: "owned" })).code).toBe("FORBIDDEN");
       await t.as(null);

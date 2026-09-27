@@ -267,3 +267,10 @@ a { color: var(--id-text); }
 .diagram-tabell summary { cursor: pointer; }
 .diagram-rutnat { display: grid; gap: var(--space-6); grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); }
 .panel-fara { border-color: var(--status-sparr); box-shadow: inset 4px 0 0 var(--status-sparr); }
+/* Space for the three demo shortcuts (1, 2 or 3 per row) while the browser demo boots. */
+.demo-genvagar-plats { min-height: 106px; }
+@media (max-width: 800px) { .demo-genvagar-plats { min-height: 232px; } }
+@media (max-width: 560px) { .demo-genvagar-plats { min-height: 364px; } }
+
+/* Public pages load lazily: keep the footer below the fold until the page has rendered (no layout shift). */
+.publik-innehall { min-height: 100vh; min-height: 100svh; }

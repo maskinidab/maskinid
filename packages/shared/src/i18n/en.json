@@ -1636,6 +1636,7 @@
   "UPLOAD_MISSING": "The file was not uploaded. Try again.",
   "USE_BANKID_FLOW": "Use the BankID sign-in.",
   "VALIDATION": "Check the details in the form.",
+  "VIEW_AS_READ_ONLY": "Viewing as an organisation is read-only. End the view to make changes.",
   "WEAK_PASSWORD": "The password needs at least 8 characters."
  },
  "events": {
@@ -3538,6 +3539,7 @@
   "anchor_ref": "Published as {{ref}}",
   "anchor_title": "Latest anchor",
   "checked": "Checked",
+  "degraded": "Some background jobs are failing",
   "down": "The register is not responding right now",
   "events_24h": "Events last 24 hours",
   "how_verify": "How to verify the history",
@@ -3549,6 +3551,10 @@
    "theft_sync": "Theft register (Larmtjänst)"
   },
   "integrations": "Integrations",
+  "jobs": "Scheduled jobs",
+  "jobs_failing_one": "{{count}} of {{total}} failing",
+  "jobs_failing_other": "{{count}} of {{total}} failing",
+  "jobs_ok": "All {{total}} running without errors",
   "lead": "Current status of the register and its integrations.",
   "mode": "Mode",
   "no_anchor": "No anchor published yet.",

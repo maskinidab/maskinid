@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { KeyboardEvent, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { ApiError } from "../lib/backend";
@@ -95,18 +95,29 @@ export function PageHeader({ title, lead, actions, crumbs }: {
   );
 }
 
-export function Tabs<T extends string>({ tabs, value, onChange, label }: {
+export function Tabs<T extends string>({ tabs, value, onChange, label, panels = false }: {
   tabs: { id: T; label: string; count?: number }[]; value: T; onChange(v: T): void; label: string;
+  /** The page renders `<div role="tabpanel" id="panel-{value}">` for the selected tab: link the tab to it. */
+  panels?: boolean;
 }) {
+  const move = (e: KeyboardEvent<HTMLButtonElement>, to: number) => {
+    e.preventDefault();
+    const next = tabs[(to + tabs.length) % tabs.length]!.id;
+    onChange(next);
+    (e.currentTarget.parentElement?.querySelector(`#flik-${CSS.escape(next)}`) as HTMLElement | null)?.focus();
+  };
   return (
     <div className="flikar" role="tablist" aria-label={label}>
       {tabs.map((tab) => (
-        <button key={tab.id} type="button" role="tab" id={`flik-${tab.id}`} aria-selected={tab.id === value} aria-controls={`panel-${tab.id}`}
+        <button key={tab.id} type="button" role="tab" id={`flik-${tab.id}`} aria-selected={tab.id === value}
+          aria-controls={panels && tab.id === value ? `panel-${tab.id}` : undefined} tabIndex={tab.id === value ? 0 : -1}
           className={tab.id === value ? "flik is-vald" : "flik"} onClick={() => onChange(tab.id)}
           onKeyDown={(e) => {
             const i = tabs.findIndex((x) => x.id === value);
-            if (e.key === "ArrowRight") onChange(tabs[(i + 1) % tabs.length]!.id);
-            if (e.key === "ArrowLeft") onChange(tabs[(i - 1 + tabs.length) % tabs.length]!.id);
+            if (e.key === "ArrowRight") move(e, i + 1);
+            if (e.key === "ArrowLeft") move(e, i - 1);
+            if (e.key === "Home") move(e, 0);
+            if (e.key === "End") move(e, tabs.length - 1);
           }}>
           {tab.label}{typeof tab.count === "number" && <span className="flik-antal">{tab.count}</span>}
         </button>
