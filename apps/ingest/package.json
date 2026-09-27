@@ -1,0 +1,12 @@
+{
+  "name": "@maskinid/ingest",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "scripts": {
+    "start": "node --experimental-strip-types src/cli.ts"
+  },
+  "dependencies": {
+    "@maskinid/shared": "*"
+  }
+}

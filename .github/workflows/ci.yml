@@ -5,8 +5,13 @@ on:
     branches: [main]
   pull_request:
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build:
+  quality:
+    name: Lint, typecheck, unit tests, build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,6 +21,108 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run check:functions
       - run: npm test
-      - run: npm run test:db
       - run: npm run build
+      - name: Dependency scan
+        run: npm audit --audit-level=high --omit=dev
+
+  db:
+    name: RLS & RPC tests (local Supabase)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - run: npm ci
+      - name: Start local Supabase database and apply migrations + seed
+        run: |
+          supabase db start
+          supabase db reset --local
+      - name: Run RLS/RPC tests
+        env:
+          SUPABASE_LOCAL: "1"
+          DATABASE_URL: postgres://postgres:postgres@127.0.0.1:54322/postgres
+        run: npm run test:db
+
+  db-plain:
+    name: RLS & RPC tests (plain PostgreSQL, same suite as in containers without Docker)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ["54322:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run test:db
+
+  e2e:
+    name: End-to-end (Playwright, in-browser demo database)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: SPEC §16 points 13–17, points 18–26, mobile and axe accessibility
+        run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: |
+            playwright-report
+            test-results
+          retention-days: 14
+
+  lighthouse:
+    name: Lighthouse budget (public pages)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # The production build talks to Supabase (public URL + publishable key as repository variables). Without them the
+      # browser demo build is measured, and performance is left out (it ships the whole register in the browser).
+      - name: Build
+        env:
+          VITE_DATA_SOURCE: ${{ vars.VITE_SUPABASE_URL && 'supabase' || 'local' }}
+          VITE_DEMO_MODE: ${{ vars.VITE_SUPABASE_URL && 'false' || 'true' }}
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
+        run: npm run build
+      - name: Measure
+        env:
+          LIGHTHOUSE_REG: ${{ vars.LIGHTHOUSE_REG }}
+        run: |
+          (npm run preview -- --port 4173 &) && npx --yes wait-on http://localhost:4173 --timeout 60000
+          npm run lighthouse -- --url http://localhost:4173 ${{ vars.VITE_SUPABASE_URL && ' ' || '--no-performance' }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-report
+          path: lighthouse-report
+          retention-days: 14

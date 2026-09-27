@@ -11,16 +11,59 @@ major_version = 17
 
 [db.seed]
 enabled = true
-sql_paths = ["./seed.sql"]
+sql_paths = ["./seed/*.sql"]
 
 [auth]
 site_url = "http://localhost:5173"
 additional_redirect_urls = ["http://localhost:5173/mina-sidor"]
-enable_signup = false
+enable_signup = true
 
 [auth.email]
 enable_signup = true
 enable_confirmations = false
 
-[functions.invite-user]
-verify_jwt = true
+
+# Public Edge Functions (no user JWT): they authorise internally (rate limits, share tokens, cron secret).
+[functions.scan-log]
+verify_jwt = false
+[functions.share-view]
+verify_jwt = false
+[functions.anchor-events]
+verify_jwt = false
+[functions.av-scan]
+verify_jwt = false
+[functions.lead]
+verify_jwt = false
+# OIDC callbacks arrive without a Supabase JWT; the POST side authenticates the user itself.
+[functions.bankid-identify]
+verify_jwt = false
+[functions.bankid-sign]
+verify_jwt = false
+# API gateway authenticates with API keys; badge is public; the dispatcher checks CRON_SECRET/service key.
+[functions.api-v1]
+verify_jwt = false
+[functions.badge]
+verify_jwt = false
+[functions.webhook-dispatch]
+verify_jwt = false
+# Step 22: public tip and contact form (rate limited per IP inside).
+[functions.tip]
+verify_jwt = false
+[functions.support]
+verify_jwt = false
+# Step 23: Stripe sends no JWT – the signature is verified in the function; billing-sync accepts CRON_SECRET.
+[functions.stripe-webhook]
+verify_jwt = false
+[functions.billing-sync]
+verify_jwt = false
+# Step 24: scheduled push delivery accepts CRON_SECRET.
+[functions.push-send]
+verify_jwt = false
+# Step 25: scheduled integration jobs accept CRON_SECRET.
+[functions.telematics-sync]
+verify_jwt = false
+[functions.theft-sync]
+verify_jwt = false
+# Step 26: uptime monitoring calls health without a token.
+[functions.health]
+verify_jwt = false

@@ -1,0 +1,44 @@
+{
+  "name": "@maskinid/web",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "build:demo": "node scripts/build-demo.mjs",
+    "preview": "vite preview",
+    "tokens": "node scripts/build-tokens.mjs",
+    "demo-db": "node scripts/demo-db.mjs",
+    "predev": "node scripts/demo-db.mjs",
+    "prebuild": "node scripts/demo-db.mjs"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.9.1",
+    "@maskinid/shared": "*",
+    "@sentry/react": "^11.0.0",
+    "@supabase/supabase-js": "^2.117.2",
+    "@tanstack/react-query": "^5.104.0",
+    "@zxing/browser": "^0.2.1",
+    "@zxing/library": "^0.23.0",
+    "i18next": "^26.4.2",
+    "pdf-lib": "1.17",
+    "qrcode": "1.5",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-hook-form": "^7.89.0",
+    "react-i18next": "^17.0.15",
+    "react-router-dom": "^7.18.4",
+    "read-excel-file": "^9.3.10",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@vitejs/plugin-react": "^6.1.1",
+    "vite": "^8.3.0",
+    "vite-plugin-pwa": "1.3"
+  }
+}

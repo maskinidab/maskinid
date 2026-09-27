@@ -1,0 +1,51 @@
+# Backup drill (step 26, docs/runbooks/backup-restore.md): every Monday a logical dump of production is restored into a
+# throw-away Supabase Postgres container and verified (event chain, RLS, migrations, anchor vs. live). The dump never
+# leaves the runner: no artifact is uploaded. Needs a read-only connection string in BACKUP_DRILL_DB_URL.
+name: Backup drill
+
+on:
+  schedule:
+    - cron: "30 4 * * 1"
+  workflow_dispatch:
+
+jobs:
+  drill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    environment: production
+    env:
+      SOURCE_DB_URL: ${{ secrets.BACKUP_DRILL_DB_URL }}
+      REFERENCE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+      ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+    services:
+      restore:
+        image: supabase/postgres:15.8.1.060
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ["55432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+        if: env.SOURCE_DB_URL != ''
+      - uses: actions/setup-node@v4
+        if: env.SOURCE_DB_URL != ''
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+        if: env.SOURCE_DB_URL != ''
+      - name: Dump production (schema app + public + migrations)
+        if: env.SOURCE_DB_URL != ''
+        run: pg_dump "$SOURCE_DB_URL" --format=custom --no-owner --no-privileges --schema=public --schema=app --schema=supabase_migrations -f /tmp/drill.dump
+      - name: Restore into the throw-away container
+        if: env.SOURCE_DB_URL != ''
+        run: pg_restore --no-owner --no-privileges -d postgres://postgres:postgres@127.0.0.1:55432/postgres /tmp/drill.dump || true
+      - name: Verify the restored copy
+        if: env.SOURCE_DB_URL != ''
+        env:
+          DATABASE_URL: postgres://postgres:postgres@127.0.0.1:55432/postgres
+        run: node scripts/verify-restore.mjs --reference-url "$REFERENCE_URL" --anon-key "$ANON_KEY"
+      - name: Remove the dump
+        if: always()
+        run: rm -f /tmp/drill.dump

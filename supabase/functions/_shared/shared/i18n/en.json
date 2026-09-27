@@ -1,0 +1,3844 @@
+{
+ "about": {
+  "continuity_body": "The register data is then handed to a neutral party so owners and lenders do not lose their records.",
+  "continuity_title": "If the company ceases",
+  "history_body": "Every event is chained with a checksum and an anchor value is published every day.",
+  "history_title": "History that cannot be changed",
+  "independent_body": "We are not an authority and not tied to any manufacturer, bank or dealer. Machines can carry other registers' ID numbers.",
+  "independent_title": "Independent",
+  "lead": "{{app}} is run by {{legal}} and is an independent register for heavy work machines: who owns them, whether they are financed and whether they are stolen.",
+  "no_amounts_body": "The register shows whether a machine is financed and by whom – never purchase price, loan amount or outstanding debt.",
+  "no_amounts_title": "No amounts",
+  "privacy_body": "Personal identity numbers are never stored in clear text. Whoever scans a machine sees its status, never the owner's contact details.",
+  "privacy_title": "As little personal data as possible",
+  "title": "About {{app}}"
+ },
+ "actions": {
+  "clear_flag": {
+   "reason": "Reason",
+   "recovered_hint": "For example: machine recovered, police informed.",
+   "submit": "Clear the flag",
+   "title": "Clear flag"
+  },
+  "deregister": {
+   "label": "The label",
+   "label_destroyed": "Destroyed",
+   "label_removed": "Removed",
+   "label_returned": "Returned",
+   "reason": "Reason",
+   "submit": "Sign and deregister",
+   "title": "Deregister",
+   "warning": "Deregistration cannot be undone. The label is revoked and the history is kept."
+  },
+  "edit": {
+   "title": "Update details"
+  },
+  "encumbrance": {
+   "contract_ref": "Contract reference",
+   "counterparty": "Counterparty: {{name}}",
+   "end": "End date",
+   "end_before_start": "The end date cannot be before the start date.",
+   "end_required": "An end date is required for retention of title.",
+   "holder": "Financier",
+   "no_amounts": "Amounts are never registered, only that the encumbrance exists.",
+   "notes_hint": "Visible only to you and the owner.",
+   "start": "Start date",
+   "submit": "Sign and register",
+   "title": "Register encumbrance"
+  },
+  "flag": {
+   "location": "Location",
+   "occurred_at": "When did it happen",
+   "police_report": "Police report number",
+   "reference": "Reference",
+   "reference_required": "Enter the police report number.",
+   "report_stolen": "Report theft",
+   "stolen_lead": "The machine is shown as stolen to everyone who scans the label. Police, insurer and financier are notified.",
+   "submit": "Flag",
+   "submit_stolen": "Sign and report theft",
+   "title": "Flag the machine"
+  },
+  "label": {
+   "code": "Label code",
+   "lead": "Scan the QR code on the label you put on the machine, or type the code.",
+   "scan": "Scan the label",
+   "submit": "Attach",
+   "title": "Attach label"
+  },
+  "release": {
+   "reason": "Reason",
+   "reason_placeholder": "For example: paid in full",
+   "submit": "Sign and release",
+   "title": "Release encumbrance"
+  },
+  "request_release": {
+   "lead": "{{holder}} is notified that you want the encumbrance released.",
+   "title": "Request release"
+  },
+  "share": {
+   "created": "The link is created",
+   "days": "Valid for",
+   "days_n_one": "{{count}} day",
+   "days_n_other": "{{count}} days",
+   "link": "Share link",
+   "max_views": "Maximum views",
+   "once": "The link is shown only now. You can close it at any time under Access.",
+   "scope": "What to show",
+   "scope_buyer_report": "Machine card, history and whether an encumbrance exists. For a buyer.",
+   "scope_public_card": "Only the public machine card.",
+   "submit": "Create link",
+   "title": "Share",
+   "valid_until": "Valid until {{date}}."
+  },
+  "transfer": {
+   "buyer": "Buyer",
+   "buyer_required": "Look up the buyer's organisation number.",
+   "by_email": "E-mail (buyer has no account)",
+   "by_org": "Organisation number",
+   "documents": "Documents that follow",
+   "documents_hint": "Documents that are not private always follow. Choose which private documents the buyer should also get.",
+   "email_hint": "The buyer gets a link and creates an account before approving.",
+   "email_invalid": "Enter a valid e-mail address.",
+   "financier_first": "The machine has an active encumbrance with {{holder}}. They decide before the buyer can approve.",
+   "financing_incomplete": "Choose a financier and, for retention of title, an end date.",
+   "late_hint": "More than ten days since the sale: the transfer is effective from today.",
+   "lead": "The buyer approves with BankID. Only then is the transfer complete.",
+   "sale_date": "Date of sale",
+   "sale_date_hint": "If reported within ten days, the date of sale is the effective date.",
+   "submit": "Send to buyer",
+   "title": "Sell / transfer",
+   "with_financing": "The buyer finances the purchase (new encumbrance)"
+  },
+  "verify": {
+   "documents_hint": "Upload invoice or purchase agreement and photos under Documents.",
+   "evidence": "Evidence sent with the request",
+   "missing": "Upload {{what}} under Documents first.",
+   "need_nameplate": "a photo of the nameplate",
+   "need_proof": "an invoice or purchase agreement",
+   "no_evidence": "No documents or photos uploaded yet.",
+   "operator": "MaskinID reviews",
+   "partner": "Reviewer",
+   "partner_hint": "A trusted dealer or inspection firm. Without a choice MaskinID reviews.",
+   "preferred_date": "Preferred visit date",
+   "submit": "Send request",
+   "title": "Raise verification level"
+  }
+ },
+ "ad": {
+  "consent": "I agree that {{dealer}} gets my name and contact details to reply. The details are deleted after 24 months.",
+  "contact": "E-mail or phone",
+  "contact_hint": "The seller only uses it to reply to you.",
+  "contact_title": "Contact {{dealer}}",
+  "not_for_sale": "The machine is not for sale right now",
+  "not_for_sale_body": "The ad has ended or the machine has been sold.",
+  "register_note": "The details come from MaskinID. Always check that the serial number on the nameplate matches.",
+  "see_card": "See the machine's register card",
+  "send": "Send",
+  "sent": "Thank you. The seller has received your message.",
+  "serial": "Serial number {{serial}}"
+ },
+ "admin": {
+  "api": {
+   "days_one": "{{count}} day",
+   "days_other": "{{count}} days",
+   "empty": "No API requests in the period",
+   "errors": "Errors",
+   "last": "Last",
+   "lead": "Requests per organisation, errors, rate limits and webhook deliveries.",
+   "per_day": "Requests per day",
+   "per_org": "Per organisation",
+   "period": "Period",
+   "rate_limited_one": "{{count}} rate limited",
+   "rate_limited_other": "{{count}} rate limited",
+   "requests": "Requests",
+   "title": "API usage",
+   "top_endpoints": "Most used endpoints",
+   "webhooks_delivered": "Webhooks delivered",
+   "webhooks_failed": "Webhooks failed"
+  },
+  "billing": {
+   "close": "Create invoices",
+   "close_lead": "Creates invoices for the month. Runs automatically on the first of each month; an organisation already invoiced for the period is skipped.",
+   "close_title": "Close period",
+   "closed": "{{count}} invoices created for {{month}}.",
+   "fee": "Monthly fee",
+   "lead": "Price list, plans, usage and invoices. All amounts excl. VAT unless stated.",
+   "mark_paid": "Mark paid",
+   "new_price": "New price (SEK)",
+   "new_price_for": "New price for {{name}}",
+   "open_total": "Unpaid incl. VAT",
+   "plans": "Plans",
+   "subscribers": "Customers",
+   "title": "Billing",
+   "updated": "Changed",
+   "void": "Void"
+  },
+  "conflicts": {
+   "empty": "No conflicts here",
+   "involved": "Involved",
+   "lead": "Duplicate serial numbers, ownership disputes and market anomalies. Every decision needs a note and is logged in the event chain.",
+   "merge_hint": "Merging moves identifiers, labels, documents, service, flags and encumbrances to the machine that is kept. The other record becomes read-only and points to it; the history follows.",
+   "merge_other_owner": "Merging is only possible when both records have the same owner. Different owners are handled as an ownership dispute.",
+   "related": "Existing machine",
+   "res": {
+    "dismiss": "Dismiss",
+    "keep_existing": "Keep existing registration {{existing}} – deregister {{new}}",
+    "keep_new": "Keep new registration {{new}} – deregister {{existing}}",
+    "merge_into_existing": "Merge – keep {{existing}}",
+    "merge_into_new": "Merge – keep {{new}}",
+    "resolved": "Resolved without register change"
+   },
+   "resolution": "Decision",
+   "resolve": "Resolve",
+   "title": "Conflicts"
+  },
+  "corrections": {
+   "approve": "Approve and sign",
+   "change": "Change",
+   "empty": "No corrections",
+   "lead": "Four eyes: one verifier proposes and another approves, both with BankID. The affected organisation gets 14 days to object, except for obvious typos.",
+   "not_found": "Could not find the machine or the organisation.",
+   "obvious_typo": "Obvious typo (no objection period)",
+   "propose": "Propose correction",
+   "propose_lead": "Only use when the registered owner is demonstrably wrong. Another verifier must approve.",
+   "propose_sign": "Propose and sign",
+   "status": {
+    "applied": "Applied",
+    "cancelled": "Cancelled",
+    "objected": "Objection received",
+    "objection_period": "Objection period",
+    "proposed": "Awaiting second verifier"
+   },
+   "title": "Owner corrections",
+   "to_org": "Correct owner",
+   "to_org_hint": "Organisation number or name",
+   "until": "Objection period until {{date}}"
+  },
+  "events": {
+   "all_for_org": "All events for the organisation",
+   "anchor_bad": "Does not match",
+   "anchor_events_one": "{{count}} event",
+   "anchor_events_other": "{{count}} events",
+   "anchor_ok": "Matches",
+   "anchors": "Daily anchors",
+   "chain_broken": "The chain is broken at event #{{seq}} ({{reason}}). Follow the incident runbook.",
+   "chain_ok_one": "The chain is intact ({{count}} event checked).",
+   "chain_ok_other": "The chain is intact ({{count}} events checked).",
+   "clear": "Clear filters",
+   "hash": "Hash",
+   "lead": "All hash-chained register events. The chain and the daily anchors can be verified here.",
+   "no_anchors": "No anchors yet.",
+   "payload": "Payload",
+   "published": "Published",
+   "title": "Event log",
+   "type_filter": "Event type",
+   "type_hint": "Start of the type, e.g. encumbrance or market.",
+   "verify_anchor": "Verify",
+   "verify_chain": "Verify the whole chain"
+  },
+  "flags": {
+   "changed": "Changed by {{who}} {{at}}",
+   "desc": {
+    "DEMO_MODE": "Mock services everywhere and a visible DEMO banner",
+    "FEATURE_MARKET": "Market surveillance",
+    "FEATURE_NFC": "NFC labels",
+    "FEATURE_PAYMENTS": "Payments (Stripe, test mode)",
+    "FEATURE_PUSH": "Browser push notifications",
+    "FEATURE_SMS": "SMS for critical notifications",
+    "FEATURE_TELEMATICS": "Telematics integrations",
+    "FEATURE_THEFT_SYNC": "Theft flag sync with the stolen goods register",
+    "FEATURE_VALUATION": "Market value index"
+   },
+   "lead": "Switch features on and off without a release. Changes are logged in the event chain.",
+   "read_only": "Only superadmins can change flags.",
+   "title": "Feature flags"
+  },
+  "health": {
+   "action": "Action",
+   "anchors": "Daily anchors",
+   "anchors_detail": "Latest {{day}} · {{missing}} missing days last week · {{unpublished}} unpublished",
+   "attention": "Needs attention",
+   "audit": "Operator log",
+   "audit_lead": "Every operator lookup and change. The log cannot be altered.",
+   "chain": "Event chain (last 2,000)",
+   "email": "E-mail",
+   "email_detail": "{{pending}} queued · {{overdue}} overdue",
+   "events_24h": "Events last 24 h",
+   "events_total": "Events in total",
+   "lead": "Checked {{at}}.",
+   "market": "Market surveillance",
+   "market_detail": "{{errors}} errors (24 h) · {{stuck}} stuck runs",
+   "ok": "OK",
+   "title": "System health",
+   "webhooks": "Webhooks",
+   "webhooks_detail": "{{pending}} queued · {{overdue}} overdue · {{failed_24h}} failed (24 h)",
+   "when": "When",
+   "who": "Who"
+  },
+  "home": {
+   "api_requests": "API requests (24 h)",
+   "conflicts_open": "open conflicts",
+   "corrections_pending": "corrections in progress",
+   "labels_ordered": "label orders to print",
+   "last_anchor": "Latest anchor",
+   "lead": "What is waiting for the register keeper right now. Your role: {{role}}.",
+   "market_alerts": "open market alerts",
+   "orgs": "Approved organisations",
+   "orgs_pending": "organisations awaiting approval",
+   "verifications_open": "verifications in queue",
+   "webhooks_failed": "failed webhooks (24 h)"
+  },
+  "labels": {
+   "address": "Shipping address",
+   "bound_one": "{{count}} bound",
+   "bound_other": "{{count}} bound",
+   "empty": "No batches here",
+   "lead": "Orders from dealers and other organisations. \"Print\" creates the codes; the print file holds code and URL for every label.",
+   "mark_shipped": "Mark shipped",
+   "org": "Organisation",
+   "print": "Print",
+   "print_file": "Print file (CSV)",
+   "quantity": "Quantity",
+   "title": "Label batches",
+   "unassigned": "Unassigned"
+  },
+  "legal": {
+   "body_en": "Text (English)",
+   "body_sv": "Text (Swedish)",
+   "document": "Document",
+   "lead": "Publish new versions. Documents that require acceptance are shown to all users at their next sign-in.",
+   "new_version": "New version",
+   "publish": "Publish",
+   "published": "Version {{version}} has been published.",
+   "requires": "Requires acceptance",
+   "requires_hint": "Users must accept the new version before they continue.",
+   "title": "Legal documents",
+   "title_en": "Title (English)",
+   "title_sv": "Title (Swedish)"
+  },
+  "market": {
+   "alerts": "Alerts",
+   "alerts_open": "Open alerts",
+   "counts": "Result",
+   "dismiss": "Dismiss",
+   "enabled": "Active",
+   "error": "Error",
+   "escalate": "Escalate to conflict",
+   "inactive": "no longer active",
+   "last_run": "Last run",
+   "lead": "Sources, runs and alerts. A source can only be switched on once its terms are reviewed; restricted sources never run.",
+   "listing": "Listing",
+   "no_alerts": "No open alerts",
+   "no_runs": "No runs yet",
+   "off": "Off",
+   "on": "On",
+   "run_counts": "{{fetched}} listings · {{new}} new · {{matched}} matched · {{alerts}} alerts",
+   "run_status": {
+    "error": "Error",
+    "ok": "Done",
+    "running": "Running"
+   },
+   "runs": "Runs",
+   "source": "Source",
+   "sources": "Sources",
+   "title": "Market surveillance",
+   "tos": "Terms",
+   "tos_hint": "Terms status changes after legal review. \"Restricted by terms\" switches the source off until an agreement exists.",
+   "volume": "{{matched}} matched · {{serial}} with serial"
+  },
+  "note": "Note",
+  "orgs": {
+   "api_keys": "Active API keys",
+   "approve": "Approve",
+   "change_types": "Change roles",
+   "created": "Created",
+   "dpa": "DPA accepted",
+   "empty": "No organisations here",
+   "identity": "BankID",
+   "lead": "Approval queue and search across all organisations. Dealers, lenders, insurers, authorities, inspection bodies and marketplaces are approved manually.",
+   "lookup": "Lookup",
+   "members": "Members",
+   "not_looked_up": "Not looked up",
+   "reactivate": "Reactivate",
+   "role": "Permission",
+   "search": "Name or organisation number",
+   "suspend": "Suspend",
+   "suspend_lead": "{{name}} cannot sign in or make changes until the organisation is reactivated. Its administrators are notified with the reason.",
+   "suspended_reason": "Suspended: {{reason}}",
+   "title": "Organisations",
+   "types": "Roles"
+  },
+  "reason": "Reason",
+  "support": {
+   "bankid_no": "Not verified",
+   "bankid_yes": "BankID verified",
+   "hint": "Name, organisation number, e-mail, registration number or serial number (at least 3 characters).",
+   "lead": "Find an organisation, user or machine to help a customer.",
+   "logged": "Every search is recorded in the operator log.",
+   "no_orgs": "No organisation",
+   "nothing": "No results",
+   "query": "Search",
+   "title": "Support search",
+   "users": "Users"
+  },
+  "tickets": {
+   "empty": "No cases",
+   "from": "From",
+   "lead": "Cases from signed-in users and the contact form. Replies are logged.",
+   "title": "Support cases"
+  },
+  "tips": {
+   "close": "Close",
+   "contact": "Contact: {{contact}}",
+   "empty": "No tips",
+   "forward": "Forward to authority",
+   "lead": "Tips from the public. Forward to the authority that flagged the machine, or close.",
+   "no_match": "No machine matched",
+   "status": {
+    "closed": "Closed",
+    "forwarded": "Forwarded",
+    "new": "New"
+   },
+   "title": "Tips"
+  }
+ },
+ "alerts": {
+  "empty": "No alerts",
+  "lead": "What others have done to machines in your portfolio: flags, transfers, encumbrances and double-encumbrance attempts.",
+  "system": "MaskinID",
+  "type": {
+   "conflict": {
+    "created": "Conflict"
+   },
+   "encumbrance": {
+    "registered": "Encumbrance registered",
+    "released": "Encumbrance released"
+   },
+   "flag": {
+    "cleared": "Flag cleared",
+    "raised": "Flagged"
+   },
+   "machine": {
+    "deregistered": "Deregistered",
+    "scanned_while_stolen": "Stolen machine scanned"
+   },
+   "market": {
+    "alert": "Market alert",
+    "listed": "Listed for sale"
+   },
+   "ownership": {
+    "transferred": "New owner"
+   },
+   "sighting": {
+    "reported": "Machine sighted"
+   },
+   "transfer": {
+    "initiated": "Transfer started"
+   }
+  },
+  "what": "Event",
+  "who": "By"
+ },
+ "api": {
+  "attempts": "Attempts",
+  "create_key": "Create key",
+  "create_webhook": "Add webhook",
+  "deliveries": "Deliveries",
+  "docs": "API documentation",
+  "events": "Events",
+  "events_all": "empty = all",
+  "keys": "API keys",
+  "last_24h": "{{ok}} delivered, {{failed}} failed in the last 24 h",
+  "last_used": "Last used",
+  "lead": "Connect your business or credit system to MaskinID. Keys have scopes and every call is logged.",
+  "name_hint": "For example the system's name.",
+  "new_key": "New API key",
+  "no_deliveries": "No deliveries yet",
+  "no_keys": "No API keys",
+  "no_webhooks": "No webhooks.",
+  "redeliver": "Send again",
+  "requests_30d": "Calls / errors 30 d",
+  "revoke": "Revoke",
+  "revoked": "Revoked",
+  "sandbox": "Test key (sandbox)",
+  "scope": {
+   "checks_write": "Financing checks",
+   "encumbrances_write": "Register and release encumbrances",
+   "flags_write": "Flags",
+   "inspections_write": "Record inspections",
+   "machines_read": "Look up machines and history",
+   "machines_write": "Register machines, hours, labels",
+   "oem_write": "Manufacturer delivery data",
+   "transfers_write": "Transfers",
+   "webhooks_manage": "Manage webhooks"
+  },
+  "scopes": "Scopes",
+  "shown_once": "Copy it now. It is shown only this once and cannot be retrieved again.",
+  "status": {
+   "delivered": "Delivered",
+   "failed": "Failed",
+   "pending": "Pending"
+  },
+  "test": "Send test",
+  "url_hint": "Must be https and a public address.",
+  "webhook_secret": "Signing secret",
+  "webhooks": "Webhooks"
+ },
+ "apidocs": {
+  "auth_body": "Create a key under Settings → API. Send it as a Bearer token. Idempotency-Key on POST makes a repeated call get the same response for 24 hours. Limit: 60 calls per minute and key.",
+  "auth_title": "Authentication",
+  "badge": "Public badge for listings, no key.",
+  "description": "Description",
+  "download": "Download OpenAPI 3.1",
+  "endpoints": "Endpoints",
+  "errors_body": "Errors are returned as { code, detail } with HTTP status 401, 403, 404, 409 (conflict, e.g. double encumbrance), 422 (validation) or 429 (too many calls). Accepting a transfer always needs a person with BankID: the response is 202 with signing_url.",
+  "errors_title": "Errors",
+  "expect": {
+   "clean": "Check without encumbrance; new encumbrance 201.",
+   "disputed": "Disputed flag; transfer 409.",
+   "financed": "Check shows the lender; new encumbrance 409 ACTIVE_ENCUMBRANCE_EXISTS.",
+   "scrapped": "Read-only; changes 409 MACHINE_READ_ONLY.",
+   "stolen": "Stolen flag; transfer and encumbrance 409 MACHINE_STOLEN."
+  },
+  "lead": "REST and JSON. The same permissions as in the app: a key acts as its organisation and is limited by its scopes. Every change becomes an event in the register's hash chain.",
+  "method": "Method",
+  "op": {
+   "DELETE_delete_webhook": "Delete a webhook.",
+   "GET_get_machine": "Machine as your role sees it.",
+   "GET_get_machine_history": "Role-filtered history.",
+   "GET_list_webhooks": "List webhooks.",
+   "GET_lookup_machine": "Exact lookup by reg number, serial, PIN or VIN.",
+   "PATCH_update_machine": "Limited fields: hour_meter, description, color.",
+   "POST_accept_transfer": "Accept as buyer. Needs a personal BankID signature: returns 202 with signing_url.",
+   "POST_approve_transfer_financier": "Financier decision.",
+   "POST_bind_label": "Bind a label code.",
+   "POST_cancel_transfer": "Cancel or decline.",
+   "POST_clear_flag": "Clear a flag.",
+   "POST_confirm_encumbrance": "Confirm a pending encumbrance.",
+   "POST_create_webhook": "Create a webhook; the secret is returned once.",
+   "POST_initiate_transfer": "Start a transfer; the buyer signs in the app.",
+   "POST_perform_check": "Financing check with receipt.",
+   "POST_perform_check_batch": "Up to 500 checks.",
+   "POST_raise_flag": "Raise a flag (stolen needs a police report number).",
+   "POST_record_hours": "Report the hour meter.",
+   "POST_record_inspection": "Record an inspection (inspection body).",
+   "POST_register_encumbrance": "Register an encumbrance (financier). 409 ACTIVE_ENCUMBRANCE_EXISTS if another is active.",
+   "POST_register_machine": "Register a machine. Returns reg_number.",
+   "POST_release_encumbrance": "Release (holder only).",
+   "POST_submit_oem_records": "Manufacturer delivery data (up to 10 000 rows)."
+  },
+  "sandbox_body": "Keys created as sandbox keys (mk_test_…) answer from fixed test machines and never affect the register: nothing is stored, no webhooks are sent and calls are not billed. Responses carry \"sandbox\": true and the header MaskinID-Sandbox: true.",
+  "sandbox_expect": "Expected response",
+  "sandbox_scenario": "Scenario",
+  "sandbox_serial": "Serial number",
+  "sandbox_title": "Sandbox",
+  "scenario": {
+   "clean": "Clean",
+   "disputed": "Disputed",
+   "financed": "Financed",
+   "scrapped": "Scrapped",
+   "stolen": "Stolen"
+  },
+  "title": "MaskinID API",
+  "webhooks_body": "Every delivery is signed with HMAC-SHA256. Check the signature and that the timestamp is fresh. We retry five times with increasing intervals; failed deliveries can be sent again from Settings.",
+  "webhooks_title": "Webhooks"
+ },
+ "auth": {
+  "callback_title": "Signing in",
+  "create_account": "Create account",
+  "demo_accounts": "Demo accounts",
+  "demo_accounts_hint": "Password for all: demo1234",
+  "demo_link": "Demo mode: no e-mail is sent. Open the link here.",
+  "email": "E-mail address",
+  "full_name": "Name",
+  "have_account": "Already have an account?",
+  "invalid_email": "Enter a valid e-mail address.",
+  "link_sent": "We have sent a sign-in link to {{email}}.",
+  "mfa_code": "Code from your authenticator app",
+  "mfa_title": "Two-factor sign-in",
+  "mfa_verify": "Verify",
+  "no_account": "No account?",
+  "open_link": "Open the sign-in link",
+  "or": "or",
+  "password": "Password",
+  "password_hint": "At least 8 characters.",
+  "required_email": "Enter your e-mail address.",
+  "required_name": "Enter your name.",
+  "required_password": "Enter your password.",
+  "send_link": "Send sign-in link",
+  "sign_in": "Sign in",
+  "sign_in_lead": "Sign in with e-mail and password or get a sign-in link.",
+  "sign_in_title": "Sign in",
+  "sign_up_lead": "Registration is free. You verify your identity with BankID in the next step.",
+  "sign_up_title": "Create account",
+  "signing_in": "Signing in …"
+ },
+ "authority": {
+  "count": "Count",
+  "county": "County",
+  "export_clear": "No encumbrances or flags.",
+  "export_financed": "Warning: active encumbrance with {{holder}}. Export requires the holder's consent.",
+  "export_lead": "Look up the machine at the border. An active encumbrance or theft flag gives a warning.",
+  "export_stolen": "Warning: the machine is wanted or seized.",
+  "flags_active": "Active",
+  "flags_cleared": "Cleared",
+  "flags_lead": "Wanted, seized and blocked machines with the latest scan.",
+  "last_scan": "Last scanned",
+  "logged": "The search and every hit are logged in the access log.",
+  "no_flags": "No flags",
+  "prep_lead": "Summary by county, category and weight class for preparedness planning. Contains no owner data.",
+  "prep_run": "Generate summary",
+  "prep_total": "{{count}} machines in total, {{date}}.",
+  "query": "Reg number or serial (at least 4 characters)",
+  "query_hint": "Part of the number is enough.",
+  "search_lead": "Search on part of the reg number or serial, or by make, model and year. Every hit is logged.",
+  "unknown_county": "Unknown county",
+  "weight": {
+   "10_30t": "10–30 t",
+   "1_5_10t": "1.5–10 t",
+   "gt_30t": "Over 30 t",
+   "lt_1_5t": "Under 1.5 t",
+   "unknown": "Unknown weight"
+  },
+  "weight_class": "Weight class"
+ },
+ "bankid": {
+  "demo_hint": "This is Demo BankID. No real signing takes place.",
+  "demo_title": "Sign with Demo BankID",
+  "open_app": "Open the BankID app and confirm.",
+  "sign": "Sign",
+  "signed": "Signed",
+  "signing": "Waiting for signature …",
+  "title": "Sign with BankID",
+  "you_sign": "You sign"
+ },
+ "billing": {
+  "all_excl_vat": "All prices exclude VAT. VAT (25%) is added and shown separately on the invoice.",
+  "amount_excl_vat": "Amount excl. VAT",
+  "checkout_done": "You are now on {{plan}}.",
+  "choose_free": "Switch to this",
+  "choose_paid": "Choose and pay",
+  "contact_sales": "Custom quote",
+  "contact_us": "Contact us",
+  "current_plan": "Current plan",
+  "details": "Billing details",
+  "download_pdf": "PDF",
+  "enterprise_points": "Volume pricing, contract and invoicing by agreement",
+  "estimate_total": "Estimated total incl. VAT",
+  "excl_vat_note": "excl. VAT – VAT {{vat}}, total {{total}}",
+  "faq_invoice": "Subscriptions are paid by card. Usage is invoiced monthly in arrears with 30 days' payment terms.",
+  "faq_no_amounts": "The prices are for our services. The register never contains purchase, loan or leasing amounts.",
+  "faq_title": "Good to know",
+  "feature_registration": "Registering machines is always included",
+  "free": "Free",
+  "get_started": "Get started",
+  "included": "Included",
+  "included_n": "{{n}} {{name}} included per month",
+  "included_name": {
+   "api_call": "API calls",
+   "check": "checks",
+   "label_nfc": "NFC labels",
+   "label_qr": "QR labels",
+   "register_extract": "register extracts"
+  },
+  "invoice_email": "E-mail for invoices",
+  "invoice_number": "Invoice number",
+  "invoice_status": {
+   "open": "Unpaid",
+   "paid": "Paid",
+   "void": "Void"
+  },
+  "invoices": "Invoices",
+  "item": "Service",
+  "line": {
+   "above_included": "{{name}} ({{used}} used, {{included}} included)",
+   "plan": "Subscription {{plan}}"
+  },
+  "manage_payment": "Manage payment",
+  "metric": {
+   "api_call": "API calls",
+   "check": "Checks",
+   "label_nfc": "NFC labels",
+   "label_qr": "QR labels",
+   "register_extract": "Register extracts"
+  },
+  "no_invoices": "No invoices yet",
+  "overdue": "Overdue",
+  "past_due": "The latest payment failed. Update the card under Manage payment.",
+  "pay": "Pay",
+  "pay_demo": "Pay (demo)",
+  "payments_disabled": "Card payment is not enabled. Invoices are sent by e-mail and paid by bank transfer.",
+  "pdf": {
+   "bankgiro": "Bankgiro {{nr}}",
+   "buyer": "Customer",
+   "due": "Due date",
+   "issued": "Invoice date",
+   "org_number": "reg. no. {{nr}}",
+   "paid": "Paid {{date}}.",
+   "pay_online": "Pay by card or bank transfer: {{url}}",
+   "period": "Period",
+   "questions": "Questions about the invoice: {{email}}",
+   "specification": "Specification",
+   "title": "Invoice",
+   "vat_number": "VAT no. {{nr}}"
+  },
+  "per_month": "{{price}}/month",
+  "per_unit": "{{price}} per {{unit}}",
+  "plan": {
+   "dealer": {
+    "for": "For dealers who check trade-ins and sell with ownership certificates",
+    "name": "Dealer"
+   },
+   "enterprise": {
+    "for": "For large volumes and own agreements",
+    "name": "Enterprise"
+   },
+   "financier": {
+    "for": "For banks and finance companies with encumbrances and a portfolio",
+    "name": "Lender"
+   },
+   "free": {
+    "for": "For owners, clients and smaller dealers",
+    "name": "Free"
+   },
+   "insurer": {
+    "for": "For insurers with a portfolio and claims checks",
+    "name": "Insurer"
+   },
+   "marketplace": {
+    "for": "For listing sites that check machines in listings",
+    "name": "Marketplace"
+   },
+   "public_sector": {
+    "for": "Authorities and inspection bodies",
+    "name": "Public sector"
+   }
+  },
+  "price_excl_vat": "Price excl. VAT",
+  "price_list": "Price list",
+  "pricing_lead": "Registering machines is free. Those who check machines, use the API or order labels pay for it.",
+  "pricing_title": "Pricing",
+  "public_sector_note": "Authorities, inspection bodies and the register keeper are not charged.",
+  "reference": "Your reference",
+  "reference_hint": "For example cost centre or purchase order number. Printed on the invoice.",
+  "start_free": "Start for free",
+  "subtotal_excl_vat": "Subtotal excl. VAT",
+  "then_price": "Then {{price}} per {{name}}",
+  "total_incl_vat": "Total incl. VAT",
+  "unit": {
+   "api_call": "call",
+   "check": "check",
+   "label_nfc": "label",
+   "label_qr": "label",
+   "register_extract": "extract"
+  },
+  "unit_price": "Unit price",
+  "usage_hint": "Usage is invoiced in arrears on the first of next month. Registering machines is always free.",
+  "usage_title": "Usage {{month}}",
+  "used": "Used",
+  "vat_amount": "VAT {{rate}}%",
+  "your_plan": "Your plan"
+ },
+ "certificate": {
+  "download": "Ownership certificate (PDF)",
+  "downloaded": "The ownership certificate has been downloaded.",
+  "financing": "Registered financing",
+  "label": "QR label",
+  "lead": "{{org}} is the registered owner of the machine with registration number {{reg}} in MaskinID.",
+  "legal": "The certificate shows who is the registered owner in MaskinID when it was issued. It is not proof of title in a civil-law sense and does not replace a purchase agreement. Registered financing is stated without amounts. Always check the current status with the QR code or at maskinid.se.",
+  "level": "Verification level",
+  "owner": "Registered owner",
+  "owner_ordinal": "Owners in the register",
+  "owner_since": "Owner since",
+  "power": "Engine power",
+  "ready": "The transfer is complete – the ownership certificate can be downloaded",
+  "sold_new_by": "Sold new by",
+  "title": "Ownership certificate",
+  "weight": "Operating weight"
+ },
+ "charts": {
+  "category": "Category",
+  "month": "Month",
+  "share": "{{n}} {{unit}} ({{pct}}%)",
+  "show_table": "Show as table",
+  "suppressed": "Fewer than 5 – not shown for privacy"
+ },
+ "check": {
+  "batch_count_one": "{{count}} line to check",
+  "batch_count_other": "{{count}} lines to check",
+  "batch_file": "Choose CSV file",
+  "batch_hint": "Up to 500 lines. Optional format type;value, e.g. reg;ABC-123X or pin;VCE0EC220E00012345.",
+  "batch_label": "One value per line",
+  "batch_results": "Results",
+  "blocked_hint": "The machine already has an active encumbrance. A new one cannot be registered until it is released.",
+  "download_pdf": "Download receipt (PDF)",
+  "lead": "Search exactly by reg number, PIN/serial, VIN or road registration. Every check gets a receipt.",
+  "listed_for_sale": "The machine is listed for sale in {{count}} ads right now.",
+  "not_found": "No machine found",
+  "purpose": "Purpose",
+  "purpose_hint": "For example a case number. Shown on the receipt.",
+  "query": "Search value",
+  "query_hint": "Exact value. Spaces and hyphens do not matter.",
+  "result_financing": "Financing encumbrance",
+  "result_owner": "Registered owner",
+  "result_status": "Status and level",
+  "submit": "Check",
+  "submit_batch": "Check all",
+  "tab_batch": "Several (CSV)",
+  "tab_partial": "Partial search",
+  "tab_single": "One machine",
+  "title": "Financing check",
+  "type_any": "Any identifier",
+  "type_pin": "PIN",
+  "type_reg": "Reg number (MaskinID)",
+  "type_road_reg": "Road registration",
+  "type_serial": "Serial number",
+  "type_vin": "VIN"
+ },
+ "client": {
+  "choose": "Report",
+  "empty": "No shared reports",
+  "empty_body": "Ask the contractor to give you read access under Fleet → Clients.",
+  "lead": "Reports contractors have shared with you. They always show the register as of today.",
+  "live": "Shared by {{org}}, current right now."
+ },
+ "climate": {
+  "add_fuel": "Log fuel",
+  "by_fuel": "By fuel",
+  "by_machine": "By machine",
+  "by_project": "By project",
+  "download": "Climate report (PDF)",
+  "factors": "Emission factors used",
+  "fossil_free": "Share of fossil-free fuel",
+  "from": "From",
+  "fuel": {
+   "biogas": "Biogas",
+   "diesel": "Diesel",
+   "electricity": "Electricity",
+   "hvo100": "HVO100",
+   "other": "Other",
+   "petrol": "Petrol",
+   "rme": "RME"
+  },
+  "fuel_label": "Fuel",
+  "lead": "Log refuelling and charging per machine. The climate report calculates CO2 equivalents per period, machine and project.",
+  "litres": "Litres",
+  "method": "The calculation uses well-to-wheel emission factors. The factors are stated in the report and can be adjusted by the register keeper. The fossil-free share refers to liquid fuels (HVO100 and RME).",
+  "no_data": "No fuel data for the period",
+  "no_data_body": "Log fuel on the machines or under the Fuel log tab.",
+  "no_fuel": "No fuel logged.",
+  "pdf_title": "Climate report",
+  "per_hour": "{{value}} l/h",
+  "period": "Period",
+  "quantity": "Quantity",
+  "tab_log": "Fuel log",
+  "tab_report": "Climate report",
+  "to": "To",
+  "total": "Total emissions"
+ },
+ "common": {
+  "actions": "Actions",
+  "add": "Add",
+  "address": "Address",
+  "all": "All",
+  "and": " and ",
+  "back": "Back",
+  "cancel": "Cancel",
+  "city": "City",
+  "close": "Close",
+  "confirm": "Confirm",
+  "continue": "Continue",
+  "copied": "Copied",
+  "copy": "Copy",
+  "created": "Created",
+  "date": "Date",
+  "demo_banner": "DEMO – example data and Demo BankID. No real register data.",
+  "demo_reset": "Reset demo data",
+  "details": "Details",
+  "done": "Done",
+  "download": "Download",
+  "edit": "Edit",
+  "email": "E-mail",
+  "empty": "Nothing to show yet.",
+  "error_title": "Something went wrong",
+  "excl_vat": "excl. VAT",
+  "export_csv": "Export CSV",
+  "filter": "Filter",
+  "from": "From",
+  "hours": "{{count}} h",
+  "incl_vat": "incl. VAT",
+  "lang_en": "English",
+  "lang_sv": "Svenska",
+  "language": "Language",
+  "loading": "Loading",
+  "menu": "Menu",
+  "more": "More",
+  "name": "Name",
+  "next": "Next",
+  "no": "No",
+  "none": "None",
+  "not_found_body": "Check the address or go to the start page.",
+  "not_found_title": "Page not found",
+  "not_set": "Not set",
+  "note": "Comment",
+  "notes": "Note",
+  "open": "Open",
+  "optional": "optional",
+  "org_number": "Organisation number",
+  "phone": "Phone",
+  "print": "Print",
+  "remove": "Remove",
+  "required": "Required",
+  "results": "{{count}} results",
+  "retry": "Try again",
+  "save": "Save",
+  "saved": "Saved",
+  "search": "Search",
+  "select": "Select",
+  "send": "Send",
+  "show_more": "Show more",
+  "signing_required": "Signature required",
+  "skip_to_content": "Skip to content",
+  "sort": "Sort",
+  "starting_demo": "Starting the demo database in your browser …",
+  "status": "Status",
+  "theme_dark": "Switch to dark theme",
+  "theme_light": "Switch to light theme",
+  "to": "To",
+  "to_start": "Go to start page",
+  "today": "Today",
+  "type": "Type",
+  "unknown": "Unknown",
+  "updated": "Updated",
+  "view": "View",
+  "yes": "Yes"
+ },
+ "components": {
+  "company": {
+   "found": "{{name}}, {{city}}",
+   "invalid": "Enter the organisation number as NNNNNN-NNNN.",
+   "lookup": "Look up",
+   "not_found": "No company with that number."
+  },
+  "dropzone": {
+   "camera": "Take photo",
+   "choose": "Choose file",
+   "hint": "PDF, JPG, PNG or HEIC, max 25 MB. Location data is removed from photos.",
+   "title": "Drop files here or choose",
+   "too_large": "{{name}} is larger than 25 MB.",
+   "uploaded": "{{name}} is uploaded.",
+   "uploading": "Uploading {{name}} …",
+   "wrong_type": "{{name}} has an unsupported file format."
+  },
+  "financing": {
+   "login": "Financing: sign in to see",
+   "no": "No registered encumbrance",
+   "yes": "Encumbered"
+  },
+  "loading_skeleton": "Loading",
+  "machine_card": {
+   "hours": "{{hours}} h"
+  },
+  "receipt": {
+   "number": "Receipt number",
+   "performed": "Check performed {{date}} by {{org}}",
+   "title": "Check receipt"
+  },
+  "reg_copy": "Copy the registration number",
+  "scan_button": "Scan label",
+  "scan_hint": "Point the camera at the QR code on the machine's label.",
+  "scan_invalid": "The QR code is not a MaskinID label.",
+  "scan_manual": "Type reg. no. or label code",
+  "scan_no_camera": "The camera could not start. Type the registration number instead.",
+  "scan_title": "Scan the QR label",
+  "serial": {
+   "checking": "Checking the register …",
+   "exists_mine": "The machine is already yours ({{reg}}).",
+   "exists_other": "This machine already exists (reg. no. {{reg}}). Is it yours?",
+   "free": "Not in the register",
+   "oem": "Factory data found: {{make}} {{model}} {{year}}",
+   "report_error": "Report an error",
+   "request_transfer": "Request transfer"
+  },
+  "status_banner": {
+   "active_title": "ACTIVE",
+   "blocked_body": "The machine is blocked by an authority or the register operator.",
+   "blocked_title": "BLOCKED",
+   "deregistered_title": "DEREGISTERED",
+   "disputed_body": "The machine's details are being investigated.",
+   "disputed_title": "UNDER INVESTIGATION",
+   "draft_title": "DRAFT",
+   "exported_title": "EXPORTED",
+   "read_only": "The machine remains in the register but cannot be changed.",
+   "scrapped_title": "SCRAPPED",
+   "stolen_body": "Call the police on 114 14 if you see the machine.",
+   "stolen_title": "REPORTED STOLEN"
+  },
+  "timeline": {
+   "empty": "No events yet.",
+   "from_merged": "from merged record {{reg}}",
+   "load_more": "Show older events"
+  }
+ },
+ "daily": {
+  "all_ok": "Mark all OK",
+  "builtin": "Built-in",
+  "copy": "copy",
+  "copy_edit": "Copy and edit",
+  "critical": "critical",
+  "done": {
+   "failed": "Critical fault – the machine is out of service",
+   "ok": "The check is saved – no remarks",
+   "remarks": "The check is saved with remarks"
+  },
+  "edit_template": "Edit checklist",
+  "fault": "Fault",
+  "fault_note": "Describe the fault",
+  "items": "Items",
+  "items_count_one": "1 item",
+  "items_count_other": "{{count}} items",
+  "items_hint": "One item per line. Start the line with * for a critical item – a fault there takes the machine out of service.",
+  "lead": "Go through the machine before starting. A fault on a critical item takes the machine out of service and notifies the owner.",
+  "missing_one": "1 item left",
+  "missing_other": "{{count}} items left",
+  "new_template": "New checklist",
+  "next": "Next machine",
+  "none": "No daily checks yet.",
+  "ok": "OK",
+  "operator": "Operator",
+  "out_of_service": "The machine is out of service until the fault is fixed and a new check is clean.",
+  "result": {
+   "failed": "Critical fault",
+   "ok": "No remarks",
+   "remarks": "Remarks"
+  },
+  "result_label": "Result",
+  "submit": "Save the check",
+  "tab_history": "History",
+  "tab_new": "New check",
+  "tab_templates": "Checklists",
+  "template": "Checklist",
+  "templates_lead": "The built-in checklists apply to all machines of the right type. Copy and adapt them for your organisation."
+ },
+ "dashboard": {
+  "financed": "Encumbered",
+  "greeting": "Hi {{name}}",
+  "level_breakdown": "Verification levels",
+  "machines": "Machines",
+  "no_machines": "You have no machines in the register yet.",
+  "quick": "Quick actions",
+  "recent": "Recent activity",
+  "stolen": "Reported stolen",
+  "title": "Overview",
+  "waiting": "Waiting for me"
+ },
+ "dealer": {
+  "ad_qr": "Ad QR",
+  "ad_scan": "Scan to see the machine's history",
+  "ad_scan_body": "Registered in MaskinID: verification level, theft check and whether there are encumbrances. Contact the seller directly from the page.",
+  "buyer_financing": "Buyer's financing",
+  "consignment_for": "on consignment for {{org}}",
+  "contact": "Contact",
+  "customers_lead": "Built automatically from your sales and registrations.",
+  "history": {
+   "encumbrance": {
+    "registered": "Encumbrance registered",
+    "released": "Encumbrance released"
+   },
+   "flag": {
+    "cleared": "Flag cleared",
+    "raised": "Flagged"
+   },
+   "inspection": {
+    "recorded": "Inspected"
+   },
+   "machine": {
+    "registered": "Registered",
+    "verified": "Verified"
+   },
+   "ownership": {
+    "transferred": "Change of ownership"
+   }
+  },
+  "import_stock": "Import stock",
+  "invoice": "Invoice",
+  "invoice_required": "Attach the invoice for a new sale.",
+  "last_deal": "Latest",
+  "lead_status": {
+   "contacted": "Contacted",
+   "lost": "Lost",
+   "new": "New",
+   "won": "Won"
+  },
+  "leads_lead": "Enquiries from your ad QR codes. Also sent as webhook lead.created to your business system.",
+  "lot_tag": "Lot tag",
+  "lot_tag_note": "Scan for the machine's register card",
+  "machines_registered": "Registered for the customer",
+  "machines_sold": "Machines sold",
+  "message": "Message",
+  "message_to_owner": "Message to the owner",
+  "new_sale": "New sale",
+  "new_sale_hint": "First sale from your stock with an invoice. The machine becomes physically verified (level 2) when the buyer accepts.",
+  "no_customers": "No customers yet",
+  "no_leads": "No enquiries yet",
+  "no_leads_body": "Create an ad QR under Stock and put it on the machine or in the ad.",
+  "no_sales": "No sales yet",
+  "not_in_stock": "Is the machine not in the register?",
+  "reg_or_scan": "Reg number",
+  "request_trade_in": "Request trade-in",
+  "sale_lead": "The buyer accepts with BankID. The financier confirms its encumbrance.",
+  "sale_next": "The buyer gets an e-mail with a link, sees the machine card and accepts. An ownership certificate is created when the transfer is complete.",
+  "sell": "Sell",
+  "share_report": "Share report",
+  "sold_by": "Salesperson",
+  "stock_empty": "No machines here",
+  "stock_lead": "Machines you own in stock, trade-ins and demo machines. Sell, create an ad QR or share a report.",
+  "stock_status": "Stock status",
+  "tab_consignment": "Consignment",
+  "tab_demo": "Demo",
+  "tab_sold": "Sold",
+  "tab_stock": "In stock",
+  "tab_trade_in": "Trade-ins",
+  "trade_in_financing": "Encumbrance: {{type}} with {{holder}}. Request a release as part of the deal.",
+  "trade_in_lead": "Scan the label on the machine the customer wants to trade in. You see history and encumbrances, the customer approves the trade-in.",
+  "trade_in_own": "The machine is already yours.",
+  "trade_in_sent": "The owner has received a trade-in request.",
+  "trade_in_verify": "The machine is not physically verified. You can verify it on site once the customer has approved the trade-in."
+ },
+ "department": {
+  "activate": "Activate",
+  "add": "Add",
+  "code": "Code",
+  "deactivate": "Deactivate",
+  "label": "Department",
+  "lead": "Group machines by department, depot or cost centre. Filter the machine list and reports by department.",
+  "none": "No departments yet.",
+  "none_short": "No departments"
+ },
+ "email": {
+  "footer": "You receive this message from {{app}} ({{legal}}). Questions? Do not reply – write to {{support}}.",
+  "invite": {
+   "bankid": "You sign in with e-mail and confirm your identity with BankID before you can make changes in the register.",
+   "body": "{{inviter}} has invited you as {{role}} in {{org_name}}.",
+   "button": "Accept invitation",
+   "expires": "The link is valid for 14 days. If you did not expect the invitation you can ignore it.",
+   "heading": "Invitation to {{org_name}}",
+   "subject": "{{inviter}} invites you to {{org_name}} in {{app}}"
+  },
+  "invite_owner": {
+   "body": "{{registered_by}} has registered a machine with {{org_name}} as owner in {{app}}. Sign in to see the machine, its history and any encumbrances.",
+   "button": "Sign in and take over",
+   "free": "Using the register is free for owners.",
+   "heading": "A machine is registered to {{org_name}}",
+   "subject": "{{registered_by}} has registered a machine for {{org_name}}"
+  },
+  "invoice": {
+   "body": "The invoice to {{org_name}} is {{total}} incl. VAT and due on {{due_date}}. Specification and PDF are under Settings → Billing.",
+   "button": "View the invoice",
+   "heading": "Invoice for {{period}}",
+   "subject": "Invoice {{number}} from {{app}}"
+  },
+  "notification": {
+   "fallback_title": "You have a new notification",
+   "open": "Open",
+   "preferences": "You can choose which notifications are e-mailed under Settings → Notifications: {{url}}",
+   "subject_critical": "Important: {{title}}"
+  },
+  "notification_digest": {
+   "body": "Here are the notifications since the last summary.",
+   "heading": "Notifications for {{org_name}}",
+   "subject_daily": "{{count}} new notifications in {{app}}",
+   "subject_weekly": "This week's notifications in {{app}}: {{count}}"
+  },
+  "ownership_certificate": {
+   "body": "The transfer from {{seller}} is complete and {{make}} {{model}} ({{reg_number}}) is registered to {{org_name}}. The ownership certificate can be downloaded as a PDF on the machine page.",
+   "button": "Open the machine",
+   "heading": "{{org_name}} is the registered owner",
+   "number": "Ownership certificate number {{certificate_number}}.",
+   "subject": "Ownership certificate for {{make}} {{model}} ({{reg_number}})",
+   "verify": "Anyone can check that the certificate is genuine: {{url}}"
+  },
+  "support_reply": {
+   "heading": "Reply to case {{number}}",
+   "how_to_answer": "Reply to this e-mail or write through the contact form and quote the case number.",
+   "subject": "Reply to case {{number}}: {{subject}}"
+  },
+  "transfer_invite": {
+   "bankid": "You accept with BankID. Only then do you become the registered owner.",
+   "body": "{{seller}} has started a transfer of {{make}} {{model}} with registration number {{reg_number}}. Review the machine card, history and any encumbrances before you accept.",
+   "button": "Review and accept",
+   "heading": "A transfer is waiting for you",
+   "not_expected": "Did you not buy the machine? Do not accept – contact the seller or us.",
+   "subject": "{{seller}} wants to transfer {{make}} {{model}} ({{reg_number}}) to you"
+  },
+  "weekly_digest": {
+   "body_one": "This is due within two weeks or 100 operating hours:",
+   "body_other": "These {{count}} items are due within two weeks or 100 operating hours:",
+   "button": "Open fleet",
+   "due_date": "by {{date}}",
+   "due_hours": "at {{hours}} h (now {{now}} h)",
+   "heading": "This week's reminders for {{org_name}}",
+   "subject_one": "{{org_name}}: 1 reminder this week",
+   "subject_other": "{{org_name}}: {{count}} reminders this week"
+  }
+ },
+ "encumbrance_new": {
+  "done": "The encumbrance is registered",
+  "lead": "Find the machine and register your encumbrance. The register never contains amounts.",
+  "not_found_body": "Check the value. The machine must be registered by the owner or dealer first.",
+  "query": "Reg number, PIN/serial or VIN"
+ },
+ "enum": {
+  "access_via": {
+   "api": "API",
+   "check": "Check",
+   "scan": "Scan",
+   "share_link": "Share link",
+   "web": "Web"
+  },
+  "category": {
+   "attachment": "Attachment",
+   "backhoe": "Backhoe loader",
+   "compressor": "Compressor",
+   "crane_mobile": "Mobile crane",
+   "crusher": "Crusher",
+   "dozer": "Dozer",
+   "drill_rig": "Drill rig",
+   "dumper": "Dumper",
+   "excavator_tracked": "Tracked excavator",
+   "excavator_wheeled": "Wheeled excavator",
+   "forestry_forwarder": "Forwarder",
+   "forestry_harvester": "Harvester",
+   "forklift": "Forklift",
+   "generator": "Generator",
+   "grader": "Grader",
+   "other": "Other",
+   "paver": "Paver",
+   "roller": "Roller",
+   "screener": "Screener",
+   "skidder": "Skidder",
+   "telehandler": "Telehandler",
+   "tractor": "Tractor",
+   "trailer_heavy": "Heavy trailer",
+   "wheel_loader": "Wheel loader"
+  },
+  "conflict_status": {
+   "dismissed": "Dismissed",
+   "open": "Open",
+   "resolved": "Resolved"
+  },
+  "conflict_type": {
+   "double_encumbrance": "Double encumbrance",
+   "duplicate_identifier": "Duplicate serial number",
+   "label_reuse": "Label reuse",
+   "market_anomaly": "Market anomaly",
+   "ownership_dispute": "Ownership dispute"
+  },
+  "deregistration_reason": {
+   "exported": "Exported permanently",
+   "military": "Military register",
+   "misregistered": "Registered by mistake",
+   "other": "Other reason",
+   "scrapped": "Scrapped",
+   "stolen_not_recovered": "Stolen, not recovered"
+  },
+  "document_type": {
+   "buyer_report": "Machine report",
+   "ce_declaration": "CE declaration",
+   "check_receipt": "Check receipt",
+   "climate_report": "Climate report",
+   "financing_contract": "Financing contract",
+   "fleet_report": "Fleet report",
+   "inspection_report": "Inspection report",
+   "insurance_policy": "Insurance policy",
+   "invoice": "Invoice",
+   "manual": "Manual",
+   "other": "Other",
+   "ownership_certificate": "Certificate of ownership",
+   "photo_label": "Photo of fitted label",
+   "photo_machine": "Machine photo",
+   "photo_nameplate": "Nameplate photo",
+   "police_report": "Police report",
+   "power_of_attorney": "Power of attorney",
+   "purchase_agreement": "Purchase agreement",
+   "register_extract": "Register extract"
+  },
+  "electric": {
+   "battery": "Battery",
+   "battery_and_cable": "Battery and cable",
+   "cable": "Cable",
+   "fuel_cell": "Fuel cell",
+   "plugin_hybrid": "Plug-in hybrid"
+  },
+  "emission": {
+   "pre_stage": "Pre-stage",
+   "stage_i": "Stage I",
+   "stage_ii": "Stage II",
+   "stage_iiia": "Stage IIIA",
+   "stage_iiib": "Stage IIIB",
+   "stage_iv": "Stage IV",
+   "stage_v": "Stage V",
+   "unknown": "Unknown",
+   "zero_emission": "Zero emission"
+  },
+  "encumbrance_status": {
+   "active": "Active",
+   "pending": "Awaiting confirmation",
+   "rejected": "Rejected",
+   "released": "Released",
+   "transferred": "Transferred"
+  },
+  "encumbrance_type": {
+   "leasing": "Leasing",
+   "other": "Other right",
+   "ownership_reservation": "Retention of title",
+   "rental": "Rental"
+  },
+  "flag_type": {
+   "blocked": "Blocked",
+   "disputed": "Dispute",
+   "exported": "Exported",
+   "scrapped": "Scrapped",
+   "seized": "Seized",
+   "stolen": "Stolen",
+   "under_investigation": "Under investigation"
+  },
+  "fuel": {
+   "diesel": "Diesel",
+   "electric": "Electric",
+   "gas": "Gas",
+   "hvo": "HVO",
+   "hybrid": "Hybrid",
+   "hydrogen": "Hydrogen",
+   "other": "Other",
+   "petrol": "Petrol",
+   "unknown": "Unknown"
+  },
+  "identifier_type": {
+   "chassis": "Chassis number",
+   "engine_serial": "Engine number",
+   "external_registry": "Other register's number",
+   "other": "Other identifier",
+   "pin": "PIN",
+   "road_reg": "Road registration number",
+   "serial": "Serial number",
+   "vin": "VIN"
+  },
+  "inspection_result": {
+   "approved": "Approved",
+   "approved_with_remarks": "Approved with remarks",
+   "rejected": "Rejected"
+  },
+  "inspection_type": {
+   "extraordinary": "Extraordinary inspection",
+   "first": "First inspection",
+   "periodic": "Periodic inspection",
+   "revision": "Revision inspection"
+  },
+  "label_batch_status": {
+   "cancelled": "Cancelled",
+   "ordered": "Ordered",
+   "printed": "Printed",
+   "shipped": "Shipped"
+  },
+  "label_status": {
+   "assigned": "Assigned",
+   "bound": "Bound",
+   "lost": "Lost",
+   "printed": "Printed",
+   "revoked": "Replaced"
+  },
+  "machine_status": {
+   "active": "Active",
+   "blocked": "Blocked",
+   "deregistered": "Deregistered",
+   "disputed": "Disputed",
+   "draft": "Draft",
+   "exported": "Exported",
+   "scrapped": "Scrapped",
+   "stolen": "Reported stolen"
+  },
+  "maintenance_type": {
+   "hour_reading": "Hour reading",
+   "inspection": "Inspection",
+   "other": "Other",
+   "repair": "Repair",
+   "service": "Service"
+  },
+  "market_alert_status": {
+   "dismissed": "Dismissed",
+   "escalated": "Escalated",
+   "open": "Open",
+   "reviewed": "Reviewed"
+  },
+  "market_alert_type": {
+   "duplicate_serial_in_market": "Duplicate serial",
+   "listed_after_transfer": "Listed after transfer",
+   "listed_with_active_financing": "Financed machine listed",
+   "price_anomaly": "Price anomaly",
+   "seller_not_owner": "Seller is not owner",
+   "stolen_machine_listed": "Stolen machine listed"
+  },
+  "market_tos_status": {
+   "allowed": "Allowed",
+   "partner_feed": "Partner feed",
+   "restricted": "Restricted by terms",
+   "unknown": "Not reviewed"
+  },
+  "member_role": {
+   "admin": "Administrator",
+   "member": "Member",
+   "readonly": "Read only"
+  },
+  "membership_status": {
+   "active": "Active",
+   "invited": "Invited",
+   "removed": "Removed"
+  },
+  "operator_role": {
+   "superadmin": "Super administrator",
+   "support": "Support",
+   "verifier": "Verifier"
+  },
+  "org_status": {
+   "approved": "Approved",
+   "pending": "Pending review",
+   "suspended": "Suspended"
+  },
+  "org_type": {
+   "authority": "Authority",
+   "client": "Client",
+   "dealer": "Machine dealer",
+   "financier": "Lender",
+   "inspector": "Inspection body",
+   "insurer": "Insurer",
+   "manufacturer": "Manufacturer",
+   "marketplace": "Marketplace",
+   "operator": "Register operator",
+   "owner": "Machine owner"
+  },
+  "org_type_desc": {
+   "authority": "Police, Customs and other authorities",
+   "client": "Client or procurer",
+   "dealer": "Sells machines, stock and trade-ins",
+   "financier": "Bank, finance or leasing company",
+   "inspector": "Accredited inspection body",
+   "insurer": "Insures machines",
+   "manufacturer": "Manufacturer or importer",
+   "marketplace": "Marketplace, auction or information broker",
+   "operator": "",
+   "owner": "Owns or uses machines"
+  },
+  "origin": {
+   "import": "Import",
+   "new_sale": "New sale",
+   "retro": "Retrospective registration",
+   "transfer_in": "Transfer"
+  },
+  "power_standard": {
+   "ece_r120": "ECE R120",
+   "iso_14396": "ISO 14396",
+   "other": "Other",
+   "sae_j1349": "SAE J1349"
+  },
+  "registration_type": {
+   "permanent": "Permanent",
+   "temporary": "Temporary"
+  },
+  "rental_status": {
+   "active": "Rented out",
+   "overdue": "Overdue",
+   "planned": "Planned",
+   "returned": "Returned"
+  },
+  "share_scope": {
+   "buyer_report": "Machine report",
+   "fleet_report": "Fleet report",
+   "project_list": "Project list",
+   "public_card": "Machine card"
+  },
+  "transfer_status": {
+   "awaiting_buyer": "Waiting for the buyer",
+   "awaiting_financier": "Waiting for the lender",
+   "cancelled": "Cancelled",
+   "completed": "Completed",
+   "draft": "Waiting for the owner",
+   "expired": "Expired"
+  },
+  "verification_method": {
+   "documents": "Documents",
+   "new_sale": "New sale",
+   "physical": "Physical check"
+  },
+  "verification_request_status": {
+   "approved": "Approved",
+   "in_review": "In review",
+   "needs_info": "Needs more information",
+   "open": "New",
+   "rejected": "Rejected"
+  },
+  "viewer_type": {
+   "api": "API",
+   "authority": "Authority",
+   "client": "Client",
+   "dealer": "Machine dealer",
+   "financier": "Lender",
+   "inspector": "Inspection body",
+   "insurer": "Insurer",
+   "manufacturer": "Manufacturer",
+   "marketplace": "Marketplace",
+   "operator": "Register operator",
+   "owner": "Machine owner",
+   "public": "Public scan"
+  },
+  "visibility": {
+   "owner": "Owner only",
+   "owner_and_financier": "Owner and lender",
+   "public": "Public",
+   "verifiers": "Verifiers and buyers with a link"
+  }
+ },
+ "equipment": {
+  "add_attachment": "Add attachment",
+  "add_certificate": "Add certificate",
+  "add_certificate_for": "New certificate for {{name}}",
+  "add_operator": "Add operator",
+  "assign": "Assign to machine",
+  "assign_title": "Which machine does {{name}} drive?",
+  "attachment": "Attachment",
+  "attachment_type": {
+   "auger": "Auger",
+   "bucket": "Bucket",
+   "compactor": "Plate compactor",
+   "ditch_bucket": "Ditch bucket",
+   "fork": "Pallet forks",
+   "grapple": "Grapple",
+   "hammer": "Hydraulic hammer",
+   "mower": "Mower",
+   "other": "Other attachment",
+   "quick_coupler": "Quick coupler",
+   "ripper": "Ripper",
+   "snow_plough": "Snow plough",
+   "sweeper": "Sweeper",
+   "tiltrotator": "Tiltrotator"
+  },
+  "attachments_lead": "Buckets, hammers, tiltrotators and other attachments – and which machine they are on right now.",
+  "cert_attention": "Expiring or expired",
+  "cert_label": "Name",
+  "cert_type": {
+   "aerial_platform": "Aerial platform licence",
+   "crane": "Crane operator licence",
+   "first_aid": "First aid",
+   "forklift": "Forklift licence",
+   "hot_work": "Hot work",
+   "loader_crane": "Loader crane",
+   "machine_operator_licence": "Earthmoving machine licence",
+   "other": "Other certificate",
+   "road_safety": "Road work safety",
+   "ykb": "Driver CPC (YKB)"
+  },
+  "certificates": "Certificates",
+  "deactivate": "Inactive (left)",
+  "drives": "Drives",
+  "edit_attachment": "Edit attachment",
+  "edit_operator": "Edit operator",
+  "employee_ref": "Employee number",
+  "employee_ref_hint": "Optional. Never enter a personal identity number.",
+  "expired": "Expired",
+  "expiring": "Expires soon",
+  "has_login": "Login: {{name}}",
+  "inactive": "Inactive",
+  "issued_at": "Issued",
+  "login": "Login",
+  "login_hint": "Link to a user in the organisation so the operator can do daily checks on the phone.",
+  "mounted_on": "Mounted on",
+  "no_attachments": "No attachments registered",
+  "no_operators": "No operators registered",
+  "not_mounted": "Not mounted",
+  "operators_lead": "Operators, their licences and training, and which machine they drive. No personal identity numbers are stored.",
+  "retire": "Retired (out of use)",
+  "retired": "Retired",
+  "valid_until": "Valid until",
+  "weight": "Weight (kg)"
+ },
+ "errors": {
+  "ACTIVE_ENCUMBRANCE_EXISTS": "The machine already has an active encumbrance held by {{holder}}. Yours was not registered and both parties have been notified.",
+  "CHAIN_BROKEN": "The event chain does not verify.",
+  "CONFLICT_NOT_OPEN": "The conflict has already been handled.",
+  "DEMO_DB_MISSING": "The demo database is missing. Run npm run demo-db.",
+  "DPA_REQUIRED": "Accept the data processing agreement to continue.",
+  "EMAIL_IN_USE": "There is already an account with that e-mail. Sign in instead.",
+  "ENCUMBRANCE_BLOCKS_DEREGISTRATION": "The machine has an active encumbrance held by {{holder}}. It must be released, or the lender must deregister.",
+  "ENCUMBRANCE_NOT_ACTIVE": "The encumbrance is not active.",
+  "ENCUMBRANCE_NOT_PENDING": "The encumbrance is not awaiting confirmation.",
+  "ENCUMBRANCE_TRANSFER_PENDING": "A transfer of the encumbrance is already in progress.",
+  "FEATURE_DISABLED": "This feature is not enabled.",
+  "FLAG_ALREADY_ACTIVE": "The flag is already active.",
+  "FLAG_NOT_ACTIVE": "The flag is already cleared.",
+  "FORBIDDEN": "Your organisation is not allowed to do this.",
+  "FOUR_EYES_REQUIRED": "Another verifier must approve.",
+  "IDENTITY_IN_USE": "This personal number is already linked to another account. Contact support.",
+  "IDENTITY_NOT_VERIFIED": "Verify your identity with BankID before changing the register.",
+  "IMPORT_NOT_VALIDATED": "The import has already been completed or has not been checked.",
+  "INVALID_CREDENTIALS": "Wrong e-mail or password.",
+  "INVALID_REG": "Invalid registration number. Check the characters.",
+  "INVITE_EMAIL_MISMATCH": "The invitation is for another e-mail address. Sign in with that address.",
+  "INVITE_EXPIRED": "The invitation has expired. Ask for a new one.",
+  "LABEL_ALREADY_USED": "The label is already in use. The register operator has been notified.",
+  "LABEL_ASSIGNED_TO_OTHER_ORG": "The label belongs to another organisation.",
+  "LABEL_NOT_FOUND": "The label does not exist. Check the QR code.",
+  "LAST_ADMIN": "The organisation needs at least one administrator.",
+  "LINK_EXPIRED": "The link has expired. Request a new one.",
+  "LINK_INVALID": "The link is invalid or already used.",
+  "LOOKUP_REQUIRED": "Look up the organisation number first.",
+  "LOOKUP_UNAVAILABLE": "The lookup is not responding right now. Try again shortly.",
+  "MACHINE_BLOCKED": "The machine is blocked by an authority or the register operator.",
+  "MACHINE_READ_ONLY": "The machine is deregistered and cannot be changed.",
+  "MACHINE_SEIZED": "The machine is seized. Changes are blocked.",
+  "MACHINE_STOLEN": "The machine is reported stolen. Transfers, encumbrances and deregistration are blocked.",
+  "MACHINE_UNDER_INVESTIGATION": "The machine is under investigation. Changes are blocked.",
+  "MEMBER_EXISTS": "The person is already a member.",
+  "MFA_FAILED": "Two-factor sign-in could not be enabled.",
+  "MFA_INVALID_CODE": "The code is wrong. Check your app and try again.",
+  "MFA_REQUIRED": "Your organisation requires two-factor sign-in. Enable it under My profile.",
+  "MOCK_PROVIDER_DISABLED": "Demo BankID is disabled. Use BankID.",
+  "NAMEPLATE_MISMATCH": "The nameplate serial does not match the register. The machine cannot be verified.",
+  "NETWORK": "Could not reach the register. Check your connection.",
+  "NOT_AUTHENTICATED": "You need to sign in to do this.",
+  "NOT_FOUND": "Not found, or you are not allowed to see it.",
+  "NO_PAYMENT_METHOD": "There is no payment card on file.",
+  "ORG_EXISTS": "The organisation already exists. Ask an administrator for an invitation.",
+  "ORG_NOT_APPROVED": "The organisation is suspended. Contact the register operator.",
+  "ORG_REQUIRED": "Choose an organisation first.",
+  "OTP_FAILED": "The sign-in link could not be sent.",
+  "PAYMENTS_DISABLED": "Card payment is not enabled. Contact us to change plan.",
+  "PAYMENT_REQUIRED": "This plan has a fee and is chosen with card payment.",
+  "RATE_LIMITED": "Too many lookups in a short time. Wait a minute and try again.",
+  "RENTAL_OVERLAP": "The machine is already rented out in that period.",
+  "SIGNATORY_REQUIRED": "Only a signatory can take over the organisation. Ask a signatory for an invitation.",
+  "SIGNATURE_ALREADY_USED": "The signature was already used. Sign again.",
+  "SIGNATURE_EXPIRED": "The signature has expired. Sign again.",
+  "SIGNATURE_INVALID": "The signature is not valid for this action.",
+  "SIGNATURE_PARAMS_MISMATCH": "The details changed after signing. Sign again.",
+  "SIGNATURE_PROVIDER_NOT_ALLOWED": "Only BankID signatures are valid.",
+  "SIGNATURE_REQUIRED": "Sign with BankID to continue.",
+  "SIGNATURE_REQUIRES_USER": "This action must be signed by a person.",
+  "SIGNUP_FAILED": "The account could not be created.",
+  "TRANSFER_ALREADY_OPEN": "There is already an ongoing transfer for this machine.",
+  "TRANSFER_EXPIRED": "The transfer has expired. The seller needs to start it again.",
+  "TRANSFER_NOT_AWAITING_BUYER": "The transfer is not waiting for the buyer.",
+  "TRANSFER_NOT_AWAITING_FINANCIER": "The transfer is not waiting for the lender.",
+  "TRANSFER_NOT_OPEN": "The transfer is already closed.",
+  "UNKNOWN": "Something went wrong. Try again in a moment.",
+  "UNKNOWN_ARGUMENT": "Unknown parameter.",
+  "UNKNOWN_FUNCTION": "Unknown function.",
+  "UPLOAD_FAILED": "The file could not be uploaded.",
+  "UPLOAD_MISSING": "The file was not uploaded. Try again.",
+  "USE_BANKID_FLOW": "Use the BankID sign-in.",
+  "VALIDATION": "Check the details in the form.",
+  "VIEW_AS_READ_ONLY": "Viewing as an organisation is read-only. End the view to make changes.",
+  "WEAK_PASSWORD": "The password needs at least 8 characters."
+ },
+ "events": {
+  "api": "API",
+  "api_key": {
+   "created": "{{actor}} created an API key",
+   "revoked": "{{actor}} revoked an API key"
+  },
+  "attachment": {
+   "mounted": "{{actor}} mounted an attachment",
+   "unmounted": "{{actor}} removed an attachment"
+  },
+  "audit": {
+   "anchor_published": "Daily anchor published"
+  },
+  "authority": {
+   "preparedness_export": "{{actor}} produced a preparedness export",
+   "search": "{{actor}} searched the register"
+  },
+  "billing": {
+   "plan_changed": "Plan changed to {{plan}}"
+  },
+  "config": {
+   "changed": "{{actor}} changed a feature flag"
+  },
+  "conflict": {
+   "created": "A conflict was created",
+   "resolved": "The conflict was handled"
+  },
+  "correction": {
+   "approved": "The correction was approved by a second verifier",
+   "cancelled": "The correction was cancelled",
+   "objected": "Objection to the correction",
+   "proposed": "An owner correction was proposed"
+  },
+  "document": {
+   "archived": "{{actor}} archived a document",
+   "quarantined": "A document was stopped by the virus scan",
+   "sanitized": "Location data was removed from a photo",
+   "uploaded": "{{actor}} uploaded a document",
+   "visibility_changed": "{{actor}} changed who can see a document"
+  },
+  "encumbrance": {
+   "confirmed": "{{actor}} confirmed the encumbrance",
+   "conflict": "{{actor}} tried to register a second encumbrance – blocked",
+   "counterparty_changed": "The encumbrance moved to the buyer",
+   "holder_transferred": "{{actor}} took over the encumbrance",
+   "registered": "{{actor}} registered an encumbrance",
+   "rejected": "{{actor}} rejected the encumbrance",
+   "release_requested": "{{actor}} requested a release",
+   "released": "{{actor}} released the encumbrance",
+   "requested": "{{actor}} requested an encumbrance",
+   "transfer_initiated": "{{actor}} started transferring the encumbrance"
+  },
+  "fallback": "Register event",
+  "flag": {
+   "cleared": "{{actor}} cleared the flag",
+   "published": "{{actor}} showed the machine on the stolen list",
+   "raised": "{{actor}} flagged the machine",
+   "unpublished": "{{actor}} removed the machine from the stolen list"
+  },
+  "fuel": {
+   "logged": "{{actor}} logged fuel"
+  },
+  "identity": {
+   "verified": "Identity verified with {{payload.provider}}"
+  },
+  "import": {
+   "committed": "{{actor}} imported machines"
+  },
+  "inspection": {
+   "recorded": "{{actor}} recorded an inspection"
+  },
+  "insurance": {
+   "registered": "{{actor}} registered an insurance policy",
+   "requirement_set": "{{actor}} set a verification level requirement"
+  },
+  "label": {
+   "bound": "{{actor}} bound label …{{payload.label_serial}}",
+   "nfc_mismatch": "The NFC label was scanned with a different chip than the registered one",
+   "nfc_registered": "{{actor}} registered the NFC label's chip",
+   "revoked": "{{actor}} revoked label …{{payload.label_serial}}"
+  },
+  "labels": {
+   "cancelled": "Label order cancelled",
+   "ordered": "{{actor}} ordered {{payload.quantity}} labels",
+   "printed": "{{payload.quantity}} labels were printed",
+   "shipped": "Labels shipped to {{actor}}"
+  },
+  "legacy": {
+   "imported": "Data moved from the previous version"
+  },
+  "legal": {
+   "published": "New version of a legal document"
+  },
+  "machine": {
+   "assigned": "{{actor}} assigned the machine to a project",
+   "checked": "{{actor}} checked the machine",
+   "daily_check": "{{actor}} did a daily check",
+   "department_set": "{{actor}} changed department",
+   "deregistered": "{{actor}} deregistered the machine",
+   "factory_data_confirmed": "Factory data confirmed the machine details",
+   "hours_reported": "{{actor}} reported {{payload.hours}} hours",
+   "merged": "Record {{payload.merged_reg_number}} was merged into the machine",
+   "merged_into": "The record was merged into {{payload.keep_reg_number}}",
+   "operational_status_changed": "{{actor}} changed the operational status",
+   "operator_assigned": "{{actor}} changed the operator",
+   "partial_search": "{{actor}} made a partial search",
+   "photo_set": "{{actor}} changed the photo",
+   "registered": "{{actor}} registered the machine",
+   "sighting_reported": "Tip about the stolen machine",
+   "stock_status_changed": "{{actor}} changed stock status",
+   "stolen_scanned": "The stolen machine was scanned",
+   "unassigned": "{{actor}} removed the machine from a project",
+   "updated": "{{actor}} updated machine details",
+   "verified": "{{actor}} verified the machine to level {{payload.level}}"
+  },
+  "machine_report": {
+   "created": "{{actor}} produced a machine report"
+  },
+  "maintenance": {
+   "logged": "{{actor}} logged maintenance"
+  },
+  "mandate": {
+   "accepted": "{{actor}} accepted a mandate",
+   "declined": "{{actor}} declined a mandate",
+   "granted": "{{actor}} granted a mandate",
+   "revoked": "{{actor}} revoked a mandate",
+   "used": "{{actor}} started a transfer under a mandate"
+  },
+  "market": {
+   "alert": "Market alert raised",
+   "alert_reviewed": "{{actor}} reviewed a market alert",
+   "listed": "The machine was seen in a listing",
+   "source_changed": "{{actor}} changed a market source"
+  },
+  "member": {
+   "invited": "{{actor}} invited a member",
+   "joined": "A member joined",
+   "removed": "A member was removed",
+   "role_changed": "A member's role changed"
+  },
+  "oem": {
+   "records_submitted": "{{actor}} submitted delivery data"
+  },
+  "org": {
+   "approved": "The organisation was approved",
+   "claimed": "{{actor}} claimed the organisation",
+   "created": "{{actor}} created the organisation",
+   "data_exported": "{{actor}} exported the organisation's data",
+   "group_linked": "Linked to a group",
+   "group_unlinked": "Group link ended",
+   "suspended": "The organisation was suspended",
+   "types_changed": "{{actor}} changed the organisation's roles",
+   "updated": "{{actor}} updated the organisation"
+  },
+  "ownership": {
+   "corrected": "Registered owner corrected",
+   "transferred": "{{actor}} became registered owner"
+  },
+  "ownership_certificate": {
+   "issued": "Ownership certificate issued"
+  },
+  "register_extract": {
+   "created": "{{actor}} produced a register extract"
+  },
+  "rental": {
+   "created": "{{actor}} registered a rental",
+   "returned": "{{actor}} registered the machine as returned"
+  },
+  "report": {
+   "created": "{{actor}} produced a report",
+   "viewed": "A shared report was viewed"
+  },
+  "report_grant": {
+   "created": "{{actor}} shared a report",
+   "revoked": "{{actor}} stopped sharing a report"
+  },
+  "share_link": {
+   "created": "{{actor}} created a share link",
+   "revoked": "{{actor}} closed a share link"
+  },
+  "system": "MaskinID",
+  "telematics": {
+   "connected": "{{actor}} connected telematics",
+   "disconnected": "{{actor}} disconnected telematics",
+   "stolen_position": "The stolen machine reported a position via telematics"
+  },
+  "theft": {
+   "external_match": "The machine appears in an external theft register"
+  },
+  "tip": {
+   "received": "A tip was received about the machine"
+  },
+  "transfer": {
+   "cancelled": "The transfer was cancelled",
+   "completed": "The transfer was completed",
+   "expired": "The transfer expired",
+   "financier_approved": "{{actor}} approved the transfer",
+   "financier_rejected": "{{actor}} declined the transfer",
+   "initiated": "{{actor}} started a transfer",
+   "trade_in_requested": "{{actor}} requested a trade-in"
+  },
+  "verification": {
+   "cancelled": "The verification was withdrawn",
+   "needs_info": "{{actor}} asked for more documents",
+   "rejected": "{{actor}} rejected the verification",
+   "requested": "{{actor}} requested verification",
+   "updated": "{{actor}} added documents"
+  },
+  "webhook": {
+   "created": "{{actor}} created a webhook",
+   "deleted": "{{actor}} deleted a webhook"
+  }
+ },
+ "export": {
+  "my_download": "Download my data",
+  "my_lead": "Download everything we hold about you: profile, memberships, notifications, sign-ins, accepted terms and support cases (JSON).",
+  "my_title": "My data",
+  "org_contents": "Included: machines, identifiers, ownership periods, encumbrances, checks, document list, service, fuel, projects, operators, customers, invoices, members and events.",
+  "org_done": "The export is ready: {{machines}} machines and {{events}} events.",
+  "org_download": "Export (JSON)",
+  "org_lead": "One file with everything the organisation has in the register, in a machine-readable format (JSON) that other systems can import.",
+  "org_limit": "At most 5 exports per day. The export is logged in the event log.",
+  "org_not_included": "Not included: keys, secrets and data about other organisations. Document files are downloaded one by one.",
+  "org_title": "Export the organisation's data"
+ },
+ "extract": {
+  "create": "Register extract (PDF)",
+  "encumbrances": "Financing encumbrances",
+  "flag_active": "active",
+  "flag_cleared": "cleared",
+  "footer": "The extract contains no personal identity numbers. Sole traders' numbers are masked. The register never contains amounts.",
+  "issued": "Issued",
+  "number": "Extract number",
+  "owner": "Registered owner",
+  "ownerships": "Ownership history",
+  "title": "Register extract",
+  "verified": "checked against the nameplate"
+ },
+ "fleet": {
+  "all_machines": "All machines",
+  "archive": "Close the project (machines are released)",
+  "client": "Client",
+  "clients_lead": "Give a client (e.g. a municipality or the transport administration) read access to the report. It is always current and you can close it at any time.",
+  "col": {
+   "category": "Category",
+   "emission": "Emission stage",
+   "fuel": "Fuel",
+   "inspection": "Inspected until",
+   "level": "Level",
+   "machine": "Machine",
+   "machines": "Machines",
+   "power": "Power",
+   "project": "Project",
+   "reg": "Reg no",
+   "weight": "Weight",
+   "year": "Year"
+  },
+  "digest_note": "Every Monday you get an e-mail with what is coming in the next two weeks.",
+  "download_pdf": "Download PDF",
+  "edit_project": "Edit project",
+  "ends_on": "To",
+  "generated": "Generated {{date}}",
+  "grant": "Grant read access",
+  "granted": "Since {{date}}",
+  "inspection_missing_short": "Missing",
+  "inspections": "Inspections",
+  "lead": "Service, inspections, projects and reports for your machines.",
+  "machines_on_site": "Machines",
+  "new_project": "New project",
+  "no_grants": "No client has read access.",
+  "no_projects": "No projects yet",
+  "no_projects_body": "Create projects or sites and assign machines on the machine's Service tab.",
+  "not_required": "Not required",
+  "overdue": "Overdue ({{count}})",
+  "pdf_footer": "Verify the report at {{url}} with the report number and checksum. The report shows the register content on {{date}}.",
+  "period": "Period",
+  "project_list_lead": "Which machines are on the project, with reg number and verification level.",
+  "project_list_title": "Project list",
+  "public_badge": "Show \"Inspected until\" to everyone who scans machines owned by {{org}}",
+  "public_badge_title": "Inspection on the public machine card",
+  "reference": "Client reference",
+  "reference_hint": "For example a procurement or contract number.",
+  "report_hours": "Report hours",
+  "report_kind": "Report",
+  "report_lead": "Emission stage, fuel, weight, power, inspection and verification level – what clients require in procurement and follow-up.",
+  "report_title": "Fleet and procurement report",
+  "revoke": "Close",
+  "service": "Service",
+  "share_created": "The link is created. It is shown only now.",
+  "share_link": "Share link (30 days)",
+  "show_archived": "Show archived",
+  "site_address": "Site",
+  "starts_on": "From",
+  "sum_electric": "Electric or hybrid",
+  "sum_inspection_due": "Without valid inspection",
+  "sum_level2": "Physically verified",
+  "sum_stage_v": "Stage V / zero emission",
+  "summary_line": "{{count}} machines · stage V/zero emission {{stage_v}} · electric/hybrid {{electric}} · HVO {{hvo}} · level 2 {{level2}} · without valid inspection {{inspection_due}}",
+  "tab_clients": "Clients",
+  "tab_projects": "Projects",
+  "tab_report": "Report",
+  "tab_todo": "To do",
+  "upcoming": "Upcoming"
+ },
+ "group": {
+  "children_title": "Subsidiaries",
+  "company": "Company",
+  "end": "End link",
+  "fleet_lead": "All subsidiaries' machines in one place.",
+  "is_parent": "The organisation is a parent and cannot itself have a parent.",
+  "lead": "Link subsidiaries to a parent company. The parent sees the subsidiaries' machines but cannot change anything for them.",
+  "machines_one": "{{count}} machine",
+  "machines_other": "{{count}} machines",
+  "no_children": "No subsidiaries.",
+  "open_fleet": "Show the group's machines",
+  "parent_title": "Parent company",
+  "read_only": "Read access – changes are made by each subsidiary.",
+  "request": "Request link",
+  "search_parent": "Search parent company",
+  "status": {
+   "active": "Active",
+   "pending": "Awaiting approval"
+  }
+ },
+ "help": {
+  "contact": "Contact support",
+  "lead": "Answers to common questions about the register.",
+  "none": "No articles match the search",
+  "not_found_title": "Cannot find the answer?",
+  "search": "Search help",
+  "title": "Help centre"
+ },
+ "how": {
+  "disclaimer": "{{app}} is a private, voluntary register and not a public authority.",
+  "financing_body": "A machine can have at most one active financing encumbrance. A second attempt is stopped and both parties are told. Amounts are never stored.",
+  "financing_title": "Financing",
+  "label_body": "The label breaks if removed and contains only a link. The scan page shows the last three characters of the serial number so you can compare with the nameplate.",
+  "label_title": "The QR label",
+  "lead": "{{app}} gives every machine an identity, a verified owner and a history that cannot be changed afterwards.",
+  "public_body": "Only what is needed to confirm identity and status: model, status, verification level and that a registered owner exists. Never the owner's name.",
+  "public_title": "What is public",
+  "regnr_body": "Seven characters in the format XXX-XXXX. The last one is a check character, so typing errors are caught at once. It does not look like a car registration.",
+  "regnr_title": "Registration number",
+  "theft_body": "A stolen machine shows a red warning when scanned. The owner is told where and when, and the machine cannot be sold or financed in the register.",
+  "theft_title": "Theft"
+ },
+ "identity": {
+  "button": "Verify with BankID",
+  "demo_button": "Verify with Demo BankID",
+  "demo_notice": "Demo BankID: no real identification takes place.",
+  "lead": "Every change to the register requires a BankID-verified identity. Your personal number is never stored in clear text.",
+  "title": "Verify your identity",
+  "verified": "Identity verified {{date}}",
+  "verified_title": "Your identity is verified"
+ },
+ "import": {
+  "action_create": "Will be registered",
+  "action_encumber": "Exists ({{reg}}) – encumbrance added",
+  "change_mapping": "Change columns",
+  "col_errors": "Errors",
+  "col_result": "Result",
+  "col_row": "Row",
+  "commit_one": "Import {{count}} row",
+  "commit_other": "Import {{count}} rows",
+  "commit_valid_one": "Import only the valid row ({{count}})",
+  "commit_valid_other": "Import only valid rows ({{count}})",
+  "done_errors_one": "{{count}} row was not imported. Download the error report, fix it and import again.",
+  "done_errors_other": "{{count}} rows were not imported. Download the error report, fix them and import again.",
+  "done_title_one": "{{count}} machine imported",
+  "done_title_other": "{{count}} machines imported",
+  "empty_file": "The file has no rows below the header row.",
+  "encumbrances": "Encumbrances",
+  "error": {
+   "ACTIVE_ENCUMBRANCE_EXISTS": "Another encumbrance was registered before the import. The conflict has been reported.",
+   "LOOKUP_REQUIRED": "The owner's org number could not be looked up. Add the owner's name.",
+   "active_encumbrance_exists": "the machine ({{reg}}) already has an active encumbrance with another financier",
+   "already_encumbered_by_you": "you already have an active encumbrance on {{reg}}",
+   "before_start": "before the start date",
+   "duplicate_in_file": "same as row {{row}}",
+   "duplicate_in_register": "already in the register ({{reg}})",
+   "invalid": "invalid value",
+   "machine_blocked": "the machine ({{reg}}) is blocked",
+   "machine_deregistered": "the machine ({{reg}}) is deregistered",
+   "machine_exported": "the machine ({{reg}}) is exported",
+   "machine_scrapped": "the machine ({{reg}}) is scrapped",
+   "machine_stolen": "the machine ({{reg}}) is reported stolen",
+   "required": "missing",
+   "required_for_ownership_reservation": "required for retention of title",
+   "unknown": "unknown value"
+  },
+  "error_report": "Download error report",
+  "field": {
+   "category": "Category",
+   "color": "Colour",
+   "contract_ref": "Contract reference",
+   "description": "Description",
+   "encumbrance_type": "Encumbrance type",
+   "end_date": "End date",
+   "hour_meter": "Hours",
+   "make": "Manufacturer",
+   "model": "Model",
+   "owner_org_number": "Owner's org number",
+   "pin": "PIN",
+   "road_reg": "Road registration",
+   "serial": "Serial number",
+   "start_date": "Start date",
+   "vin": "VIN",
+   "year": "Model year"
+  },
+  "file": "File",
+  "file_hint": "CSV (semicolon, comma or tab) or XLSX. The first row is headers. At most 5,000 rows.",
+  "history": "Previous imports",
+  "lead": "Upload a CSV or Excel file, or paste from a spreadsheet. We suggest the columns, you check, and only valid rows are imported.",
+  "lead_financier": "Import your portfolio. Machines already in the register get your encumbrance, new machines are registered to the customer. Amounts are never imported.",
+  "map_ai": "The suggestion was made automatically. Check it before continuing.",
+  "map_heuristic": "The suggestion is based on the column headers. Check it before continuing.",
+  "map_title": "{{count}} rows in {{file}}. Which column is what?",
+  "missing_required": "Choose a column for: {{fields}}.",
+  "new_import": "New import",
+  "no_history": "No imports yet.",
+  "no_rows": "No rows to show",
+  "not_in_file": "Not in the file",
+  "only_errors": "Show only rows with errors",
+  "order_labels": "Order labels",
+  "paste": "Or paste",
+  "paste_hint": "Select in the spreadsheet, including the header row, and paste here.",
+  "preview_title": "Row-by-row check",
+  "progress": "Import steps",
+  "rows_committed": "Imported",
+  "rows_error": "With errors",
+  "rows_ok": "Valid",
+  "rows_total": "Rows",
+  "sign_notice": "{{count}} encumbrances will be registered. You sign the whole import once with BankID.",
+  "status": {
+   "committed": "Imported",
+   "failed": "Failed",
+   "mapped": "Mapped",
+   "uploaded": "Uploaded",
+   "validated": "Checked, not imported"
+  },
+  "step_done": "Done",
+  "step_map": "Columns",
+  "step_preview": "Check",
+  "step_upload": "File",
+  "template": "Download template",
+  "title": "Import machines",
+  "to_machines": "To the machines",
+  "validate": "Check the rows"
+ },
+ "inbox": {
+  "conflict": "Conflict",
+  "correction_objection": "Owner correction",
+  "empty": "Nothing is waiting for you right now.",
+  "encumbrance_confirm": "Encumbrance to confirm",
+  "encumbrance_takeover": "Encumbrance to take over",
+  "handle": "Handle",
+  "invitation": "Invitation",
+  "title": "Waiting for me",
+  "trade_in_approve": "Trade-in to approve",
+  "transfer_accept": "Accept machine",
+  "transfer_financier": "Transfer to approve",
+  "verification_needs_info": "Complete verification",
+  "verification_review": "Verification to review"
+ },
+ "inspection_new": {
+  "done": "The inspection is recorded",
+  "lead": "Find the machine or scan the label and record the inspection. The owner is notified and the record follows the machine.",
+  "no_lifting": "The machine is not marked as having a lifting device.",
+  "title": "Record inspection"
+ },
+ "integrations": {
+  "add": "Connect telematics",
+  "auth": "Authentication",
+  "auth_basic": "Username and password",
+  "auth_bearer": "API key (token)",
+  "auth_oauth": "OAuth client (e.g. Trackunit)",
+  "base_url": "AEMP feed address",
+  "base_url_hint": "The address you got from the manufacturer, e.g. https://…/aemp. Must start with https.",
+  "client_id": "Client ID",
+  "client_secret": "Client secret",
+  "connect": "Connect",
+  "counts": "{{matched}} matched, {{unmatched}} unknown, {{hours}} hour meters updated",
+  "credential_note": "The credentials are stored encrypted and never shown again. Preferably create a read-only user just for MaskinID.",
+  "error": "Last error: {{error}}",
+  "last_sync": "Synced {{at}}",
+  "linked": "{{count}} machines linked",
+  "mock_note": "Demo telematics reports hours and location for your own machines.",
+  "name": "Name",
+  "never_synced": "Not synced yet",
+  "none": "No telematics connected",
+  "none_body": "Volvo CareTrack, Komatsu Komtrax and Trackunit are supported through the ISO 15143-3 (AEMP 2.0) standard.",
+  "password": "Password",
+  "pause": "Pause",
+  "privacy": "Only the last reported location is stored, no track history. You and any user of the machine see it. Authorities see it only while the machine is reported stolen.",
+  "privacy_title": "About positions",
+  "provider": {
+   "caretrack": "Volvo CareTrack",
+   "iso15143": "Other (ISO 15143-3 / AEMP 2.0)",
+   "komtrax": "Komatsu Komtrax",
+   "mock": "Demo telematics",
+   "trackunit": "Trackunit"
+  },
+  "provider_label": "System",
+  "resume": "Resume",
+  "status": {
+   "active": "Active",
+   "error": "Error",
+   "paused": "Paused"
+  },
+  "sync": "Sync now",
+  "telematics_lead": "Connect your machines' telematics so the hour meter updates automatically and you see the last reported location. Machines are matched on serial number, PIN or VIN.",
+  "telematics_title": "Telematics",
+  "token": "Token",
+  "token_url": "Token URL",
+  "username": "Username"
+ },
+ "integrations_page": {
+  "api_body": "REST API with keys per organisation, scopes, idempotency and signed webhooks. Sandbox for testing.",
+  "api_title": "API and webhooks",
+  "import_body": "Import machine lists from Excel or CSV; the columns are mapped automatically.",
+  "import_title": "Import",
+  "lead": "{{app}} works with the systems you already have.",
+  "nfc_body": "Labels with both QR and an NFC chip. The chip is registered to the machine so copied labels are detected.",
+  "nfc_title": "NFC labels",
+  "read_more": "Read more",
+  "telematics_body": "Volvo CareTrack, Komatsu Komtrax, Trackunit and others via ISO 15143-3 (AEMP 2.0): hour meters and last location update automatically.",
+  "telematics_title": "Telematics",
+  "theft_body": "Theft reports are synced with the insurance industry's theft register.",
+  "theft_title": "Larmtjänst",
+  "title": "Integrations",
+  "vtr_body": "Tractors and motor implements with road registration are looked up at registration – without storing personal data.",
+  "vtr_title": "Transportstyrelsen"
+ },
+ "jobs": {
+  "desc": {
+   "anchor-events": "Publishes yesterday's anchor",
+   "anonymize-market": "Anonymises old market observations",
+   "billing-close": "Invoices last month (on the 1st)",
+   "billing-sync": "Pushes invoices to Stripe",
+   "cleanup": "Deletes short-lived technical rows",
+   "collect-http-results": "Records Edge Function job responses",
+   "daily-digests": "Daily notification digests",
+   "email-send": "Sends queued e-mail",
+   "expire-transfers": "Cancels transfers not accepted within 14 days",
+   "partitions": "Creates access log partitions ahead",
+   "purge-leads": "Deletes leads older than the retention period",
+   "push-send": "Sends web push",
+   "reminders": "Service and inspection reminders",
+   "rental-statuses": "Rentals: planned → active → overdue",
+   "statistics": "Daily public statistics snapshot",
+   "stolen-24-months": "Suggests deregistration of machines stolen over 24 months",
+   "telematics-sync": "Fetches telematics feeds",
+   "temporary-regs": "Temporary registrations: reminders and expiry",
+   "theft-sync": "Syncs with the theft register",
+   "verify-chain": "Verifies the whole event chain",
+   "webhook-dispatch": "Delivers webhooks",
+   "weekly-digest": "Weekly fleet digest e-mail",
+   "weekly-digests": "Weekly notification digests"
+  },
+  "failures": "{{count}} failures in a row: {{error}}",
+  "job": "Job",
+  "kind_http": "Edge Function",
+  "kind_sql": "Database job",
+  "last_run": "Last run",
+  "lead": "Jobs run by pg_cron: database jobs directly and Edge Functions via pg_net. Three failures in a row alert the superadmins.",
+  "not_ready": "The scheduler is not fully configured in this environment",
+  "pause": "Pause",
+  "paused": "Paused",
+  "req": {
+   "cron_secret": "cron_secret in Vault",
+   "functions_url": "FUNCTIONS_BASE_URL set",
+   "pg_cron": "pg_cron installed",
+   "pg_net": "pg_net installed"
+  },
+  "resume": "Resume",
+  "run": "Run now",
+  "schedule": "Schedule (UTC)",
+  "status": {
+   "dispatched": "Dispatched",
+   "error": "Error",
+   "ok": "OK"
+  },
+  "title": "Scheduled jobs",
+  "utc_note": "Schedules are in UTC (Swedish time minus 1–2 hours)."
+ },
+ "labels": {
+  "batch_one": "{{count}} label, ordered {{date}}",
+  "batch_other": "{{count}} labels, ordered {{date}}",
+  "bound_at": "Attached",
+  "labels": "Labels",
+  "lead": "Tamper-proof labels with a QR code. A label becomes active when it is attached to a machine and can only be attached once.",
+  "medium": "Type",
+  "medium_nfc": "NFC label",
+  "medium_nfc_hint": "QR code and NFC chip in one label. The chip is registered once the label is on the machine.",
+  "medium_qr": "QR label",
+  "nfc_android_only": "Registered with Chrome on Android",
+  "nfc_register": "Register chip",
+  "nfc_registered": "NFC, chip registered",
+  "nfc_wrong_tag": "That was a different label. Hold the phone to this particular label.",
+  "none": "No labels yet",
+  "none_body": "Order labels above. They appear here when they have been shipped.",
+  "order_one": "Order {{count}} label",
+  "order_other": "Order {{count}} labels",
+  "order_title": "Order labels",
+  "ordered": "The order is received. We send the labels within five working days.",
+  "orders": "Orders",
+  "postal_code": "Postal code",
+  "price": "Price {{price}} excl. VAT ({{incl}} incl. VAT). Billed on the monthly invoice.",
+  "quantity": "Quantity",
+  "role": "Type",
+  "role_primary": "Primary",
+  "role_secondary": "Hidden secondary",
+  "serial": "Label number"
+ },
+ "legal": {
+  "gate_accept": "Accept and continue",
+  "gate_confirm": "I have read and accept the documents above",
+  "gate_lead": "We have updated the following documents. Read them and accept to continue using the service.",
+  "gate_title": "Updated terms",
+  "keys": {
+   "cookies": "Cookies",
+   "dpa": "Data processing agreement",
+   "privacy": "Privacy policy",
+   "terms": "Terms of use"
+  },
+  "old_version": "This is an earlier version. The current version is available through the link below.",
+  "other": "Other documents",
+  "version": "Version {{version}}, published {{date}}",
+  "version_short": "version {{version}}",
+  "versions": "Earlier versions"
+ },
+ "level": {
+  "0": {
+   "desc": "The owner registered the machine without reviewed documents.",
+   "name": "Self-registered"
+  },
+  "1": {
+   "desc": "Invoice or purchase agreement and photos were reviewed by a trusted party.",
+   "name": "Document-verified"
+  },
+  "2": {
+   "desc": "A trusted party has seen the machine, matched the serial number to the nameplate and fitted the label.",
+   "name": "Physically verified"
+  },
+  "below_trusted": "Below your minimum trusted level ({{level}})",
+  "label": "Verification level"
+ },
+ "machine": {
+  "access_log": "Who has looked",
+  "access_log_lead": "Scans, checks and lookups of the machine. Private individuals are shown without name.",
+  "claim": "Report a claim",
+  "confirm_encumbrance": "Confirm the encumbrance",
+  "doc_status": {
+   "failed": "Failed",
+   "infected": "Blocked (virus)",
+   "pending_upload": "Uploading",
+   "scanning": "Being scanned"
+  },
+  "flag_by": "Flagged by {{org}}",
+  "flags": "Active flags",
+  "hours": "Hour meter",
+  "identity": "Identity",
+  "in_conflict": "in conflict",
+  "inspected_until": "Inspected until {{date}}",
+  "inspection_missing": "Inspection missing",
+  "insured": "Insured",
+  "insurer_requires": "{{insurer}} requires the machine to be {{level}}.",
+  "label": "Label",
+  "last_transfer": "Latest change of ownership",
+  "market_listed_one": "The machine appears in a listing",
+  "market_listed_other": "The machine appears in {{count}} listings",
+  "market_open": "View listing",
+  "market_seen_at": "Last seen for sale at {{where}} on {{date}}",
+  "market_stolen_listed_one": "Stolen machine appears in a listing – contact the police",
+  "market_stolen_listed_other": "Stolen machine appears in {{count}} listings – contact the police",
+  "merged_into": "This record has been merged into {{reg}}",
+  "merged_open": "Open the machine",
+  "no_access": "Nobody has looked yet",
+  "no_documents": "No documents yet",
+  "no_label": "No attached label",
+  "no_share_links": "No share links.",
+  "origin": "Registered via",
+  "owner": "Owner",
+  "registered_by": "Registered by",
+  "registration_liable": "Subject to registration",
+  "released_at": "released {{date}}",
+  "rented_from": "Rented from {{org}} until {{date}}.",
+  "rented_to": "Rented to {{org}} until {{date}}.",
+  "set_primary": "Use as main photo",
+  "share_closed": "closed",
+  "share_links": "Share links",
+  "share_meta": "{{views}} views · valid until {{date}}",
+  "share_revoke": "Close the link",
+  "summary": "Machine card",
+  "tab_access": "Access",
+  "tab_documents": "Documents",
+  "tab_financing": "Encumbrances",
+  "tab_history": "History",
+  "tab_overview": "Overview",
+  "tab_service": "Service",
+  "tabs": "Machine tabs",
+  "technical": "Technical data",
+  "temporary_until": "Temporary until {{date}}",
+  "transfer_open_status": "Transfer in progress: {{status}}",
+  "upload": "Upload document",
+  "user_org": "User",
+  "verified_identifier": "Checked against the nameplate",
+  "via": "Via",
+  "viewer": "Who",
+  "visibility": "Visibility",
+  "where": "Approximate location"
+ },
+ "machine_report": {
+  "documents": "Documents",
+  "download": "Machine report (PDF)",
+  "history": "History",
+  "inspections": "Inspections",
+  "legal": "The report shows the register's data when it was issued. Financing is stated without amounts. The serial number is masked. Check the current status with the QR code.",
+  "service": "Service",
+  "title": "Machine report"
+ },
+ "machines": {
+  "col_machine": "Machine",
+  "col_next": "Next action",
+  "col_reg": "Reg no",
+  "col_serial": "Serial number",
+  "col_year": "Model year",
+  "draft_saved": "Saved {{at}}",
+  "draft_untitled": "Untitled draft",
+  "drafts_title": "Registrations in progress",
+  "empty_body": "Register a machine in under two minutes, or import several at once.",
+  "empty_title": "No machines here yet",
+  "filter_financing": "Encumbrance",
+  "filter_level": "Level",
+  "lead": "Machines you own, use or have registered.",
+  "scope_all": "All",
+  "scope_owned": "Owned",
+  "scope_previous": "Previous machines",
+  "scope_registered": "Registered for customers",
+  "scope_used": "Used",
+  "search_placeholder": "Search reg no, serial number or model",
+  "title": "Machines",
+  "transfer_open": "Transfer in progress"
+ },
+ "mandate": {
+  "accept": "Accept",
+  "action": "Mandate / consignment",
+  "agent": "Agent",
+  "all_machines": "All machines",
+  "decline": "Decline",
+  "direction": "Direction",
+  "from": "From {{org}}",
+  "grant_for": "Mandate or consignment for {{reg}}",
+  "grant_poa": "Grant mandate",
+  "granted": "Granted",
+  "kind": {
+   "consignment": "Consignment",
+   "power_of_attorney": "Power of attorney"
+  },
+  "kind_hint": {
+   "consignment": "The dealer sells the machine for you. It appears in the dealer's stock.",
+   "power_of_attorney": "The agent may manage the machine according to the permissions below."
+  },
+  "lead": "Give a dealer a consignment to sell a machine, or another organisation a mandate to manage your machines. You always remain the registered owner and seller; everything done under the mandate is logged.",
+  "none": "No mandates",
+  "none_body": "Mandates you grant or receive are shown here.",
+  "party": "Counterparty",
+  "received": "Received",
+  "revoke": "Revoke",
+  "scope": {
+   "fleet": "Manage operation and service",
+   "sell": "Sell",
+   "view": "See all information"
+  },
+  "scope_hint": {
+   "fleet": "Hours, service, daily checks and fuel.",
+   "sell": "Start an ownership transfer. The buyer accepts with BankID and you are notified.",
+   "view": "History, documents and encumbrances as the owner sees them."
+  },
+  "scopes": "Permissions",
+  "search_agent": "Search organisation",
+  "sign_grant": "Sign with BankID",
+  "status": {
+   "active": "Active",
+   "completed": "Completed",
+   "declined": "Declined",
+   "expired": "Expired",
+   "pending": "Awaiting answer",
+   "revoked": "Revoked"
+  },
+  "to": "To {{org}}",
+  "valid_hint": "At most two years.",
+  "valid_to": "Valid until"
+ },
+ "market": {
+  "candidate_seen": "seen on {{source}} {{date}}",
+  "candidates_create_one": "Create one draft",
+  "candidates_create_other": "Create {{count}} drafts",
+  "candidates_created_one": "One draft has been created under Drafts.",
+  "candidates_created_other": "{{count}} drafts have been created under Drafts.",
+  "candidates_lead": "They appear in listings with your organisation number but are not registered. Choose which ones become prefilled drafts – you review and sign each registration.",
+  "candidates_review": "Show machines",
+  "candidates_title_one": "We found a machine you have advertised",
+  "candidates_title_other": "We found {{count}} machines you have advertised"
+ },
+ "nav": {
+  "about": "About us",
+  "admin": "Administration",
+  "admin_api": "API usage",
+  "admin_billing": "Billing",
+  "admin_conflicts": "Conflicts",
+  "admin_corrections": "Corrections",
+  "admin_events": "Event log",
+  "admin_flags": "Feature flags",
+  "admin_health": "System health",
+  "admin_home": "Overview",
+  "admin_jobs": "Scheduled jobs",
+  "admin_labels": "Label batches",
+  "admin_legal": "Legal documents",
+  "admin_market": "Market surveillance",
+  "admin_orgs": "Organisations",
+  "admin_statistics": "Statistics",
+  "admin_support": "Support search",
+  "admin_theft_reports": "Theft register",
+  "admin_tickets": "Support cases",
+  "admin_tips": "Tips",
+  "alerts": "Alerts",
+  "api_docs": "API",
+  "attachments": "Attachments",
+  "bookings": "Bookings",
+  "check": "Check",
+  "client_reports": "Shared reports",
+  "climate": "Fuel & climate",
+  "customers": "Customers",
+  "daily_check": "Daily check",
+  "dashboard": "Overview",
+  "encumbrances_new": "Register encumbrance",
+  "export_check": "Export check",
+  "exports": "Exports",
+  "flags": "Flags",
+  "fleet": "Fleet",
+  "global_search": "Search reg. no. or serial",
+  "global_search_hint": "Ctrl+K",
+  "group": "Group",
+  "group_org": "Organisation",
+  "group_register": "Register",
+  "group_role": "My tools",
+  "help": "Help",
+  "how_it_works": "How it works",
+  "import": "Import",
+  "inbox": "Waiting for me",
+  "inspection_new": "Record inspection",
+  "integrations": "Integrations",
+  "labels": "Labels",
+  "leads": "Leads",
+  "machines": "Machines",
+  "main": "Main menu",
+  "mandates": "Mandates",
+  "notifications": "Notifications",
+  "oem": "Delivery data",
+  "operators": "Operators",
+  "org_switcher": "Switch organisation",
+  "portfolio": "Portfolio",
+  "pricing": "Pricing",
+  "profile": "My profile",
+  "receipts": "Receipts",
+  "register": "Register machine",
+  "rentals": "Rentals",
+  "reports": "Reports",
+  "sales_new": "New sale",
+  "scan": "Scan",
+  "search": "Advanced search",
+  "security": "Security",
+  "settings": "Settings",
+  "sign_in": "Sign in",
+  "sign_out": "Sign out",
+  "sign_up": "Create account",
+  "statistics": "Statistics",
+  "status": "System status",
+  "stock": "Stock",
+  "support": "Support",
+  "trade_in": "Receive trade-in",
+  "verify": "Verification queue",
+  "watchlist": "Watchlist"
+ },
+ "nfc": {
+  "error": "The label could not be read. Try again or scan the QR code.",
+  "hold": "Hold the phone to the label…",
+  "mismatch_body": "The chip in this NFC label is not the one registered for the machine. Check the machine carefully and contact the owner or the police if in doubt.",
+  "mismatch_title": "The label may have been copied",
+  "read": "Read NFC label"
+ },
+ "notifications": {
+  "audit": {
+   "chain_broken": {
+    "body": "Check the event log immediately.",
+    "title": "Event chain does not verify"
+   }
+  },
+  "billing": {
+   "invoice_issued": {
+    "body": "The invoice for {{period}} is under Settings → Billing.",
+    "title": "Invoice {{number}}"
+   },
+   "payment_failed": {
+    "body": "Update the card under Settings → Billing.",
+    "title": "Payment of {{number}} failed"
+   },
+   "plan_changed": {
+    "body": "You are now on plan {{plan}}.",
+    "title": "The plan has changed"
+   },
+   "subscription_canceled": {
+    "body": "You are now on the free plan.",
+    "title": "The subscription has ended"
+   },
+   "subscription_past_due": {
+    "body": "Update the card under Settings → Billing.",
+    "title": "The subscription has an unpaid fee"
+   }
+  },
+  "chain": {
+   "broken": {
+    "body": "The nightly check found a break at event {{at_seq}}. Follow the incident runbook.",
+    "title": "The event chain is broken"
+   }
+  },
+  "conflict": {
+   "created": {
+    "body": "A conflict of type {{type}} needs handling.",
+    "title": "New conflict"
+   },
+   "duplicate_identifier": {
+    "body": "Someone tried to register a machine with the same serial number as {{reg_number}}.",
+    "title": "Serial number found on a new registration"
+   },
+   "ownership_dispute": {
+    "body": "{{by}} reported an ownership dispute about {{reg_number}}.",
+    "title": "Ownership dispute reported"
+   },
+   "resolved": {
+    "body": "The register operator has handled the conflict.",
+    "title": "Conflict handled"
+   }
+  },
+  "correction": {
+   "applied": {
+    "body": "The registered owner has been changed.",
+    "title": "Owner corrected"
+   },
+   "needs_second_approval": {
+    "body": "An owner correction for {{reg_number}} needs a second verifier.",
+    "title": "Correction to approve"
+   },
+   "objected": {
+    "body": "The affected organisation has objected.",
+    "title": "Objection to correction"
+   },
+   "objection_period": {
+    "body": "The register operator intends to change the owner of {{reg_number}} to {{to}}. You can object until {{effective_after}}.",
+    "title": "Correction of registered owner"
+   },
+   "pending": {
+    "body": "You will become registered owner of {{reg_number}} unless someone objects before {{effective_after}}.",
+    "title": "Correction in progress"
+   }
+  },
+  "document": {
+   "infected": {
+    "body": "{{filename}} contained malware and was not stored.",
+    "title": "A file was stopped"
+   }
+  },
+  "empty": "No notifications.",
+  "encumbrance": {
+   "confirmed": {
+    "body": "{{holder}} confirmed the encumbrance on {{reg_number}}.",
+    "title": "Encumbrance confirmed"
+   },
+   "conflict": {
+    "body": "{{attempted_by}} tried to register an encumbrance on {{reg_number}}, where you hold an active one. The attempt was blocked.",
+    "title": "Attempted double encumbrance"
+   },
+   "conflict_owner": {
+    "body": "{{attempted_by}} tried to register an encumbrance on {{reg_number}}, which already has one. The attempt was blocked.",
+    "title": "Attempt to encumber your machine again"
+   },
+   "holder_transferred": {
+    "body": "The encumbrance on {{reg_number}} was transferred from {{from}} to {{to}}.",
+    "title": "Encumbrance has a new lender"
+   },
+   "pending": {
+    "body": "{{requested_by}} names you as lender for {{reg_number}}. Confirm or reject.",
+    "title": "Encumbrance to confirm"
+   },
+   "registered": {
+    "body": "{{holder}} registered {{type}} on {{reg_number}}.",
+    "title": "Encumbrance registered"
+   },
+   "rejected": {
+    "body": "{{holder}} rejected the encumbrance on {{reg_number}}.",
+    "title": "Encumbrance rejected"
+   },
+   "release_requested": {
+    "body": "{{requested_by}} asks you to release the encumbrance on {{reg_number}}.",
+    "title": "Release requested"
+   },
+   "released": {
+    "body": "{{holder}} released the encumbrance on {{reg_number}}.",
+    "title": "Encumbrance released"
+   },
+   "transfer_accepted": {
+    "body": "{{to}} has taken over the encumbrance on {{reg_number}}.",
+    "title": "Transfer completed"
+   },
+   "transfer_offered": {
+    "body": "{{from}} wants to transfer its encumbrance on {{reg_number}} to you.",
+    "title": "Encumbrance to take over"
+   }
+  },
+  "fallback": {
+   "body": "",
+   "title": "Notification"
+  },
+  "flag": {
+   "cleared": {
+    "body": "The flag on {{reg_number}} was cleared.",
+    "title": "Flag cleared"
+   },
+   "raised": {
+    "body": "{{reg_number}} was flagged: {{type}}.",
+    "title": "Machine flagged"
+   },
+   "stolen_24_months": {
+    "body": "Propose deregistration to the owner (30 days to object).",
+    "title": "{{reg_number}} has been stolen for over two years"
+   }
+  },
+  "group": {
+   "accepted": {
+    "body": "",
+    "title": "{{parent}} has approved the group link"
+   },
+   "declined": {
+    "body": "",
+    "title": "{{parent}} has declined the group link"
+   },
+   "requested": {
+    "body": "Approve under Settings → Group.",
+    "title": "{{child}} wants to join your group"
+   }
+  },
+  "inspection": {
+   "recorded": {
+    "body": "{{body}} has recorded an inspection of {{reg_number}}.",
+    "title": "Inspection recorded"
+   }
+  },
+  "insurance": {
+   "requires_verification": {
+    "body": "{{insurer}} requires a higher verification level for {{reg_number}}.",
+    "title": "The insurance requires verification"
+   }
+  },
+  "job": {
+   "failing": {
+    "body": "Three failures in a row. Last error: {{error}}",
+    "title": "The job {{job}} is failing"
+   }
+  },
+  "label": {
+   "nfc_mismatch": {
+    "body": "The label was scanned with a different chip than the one you registered. Check the label on the machine.",
+    "title": "The NFC label on {{reg_number}} may have been copied"
+   }
+  },
+  "labels": {
+   "cancelled": {
+    "body": "Contact support if you have questions.",
+    "title": "Label order cancelled"
+   },
+   "ordered": {
+    "body": "{{org}} ordered {{quantity}} labels.",
+    "title": "Labels ordered"
+   },
+   "printed": {
+    "body": "{{quantity}} labels are printed and on their way.",
+    "title": "Labels printed"
+   },
+   "shipped": {
+    "body": "{{quantity}} labels are on their way.",
+    "title": "Your labels have been shipped"
+   }
+  },
+  "lead": {
+   "created": {
+    "body": "Someone wants to know more about {{make}} {{model}} ({{reg_number}}).",
+    "title": "New enquiry"
+   }
+  },
+  "machine": {
+   "deregistered": {
+    "body": "{{by}} deregistered {{reg_number}}.",
+    "title": "Machine deregistered"
+   },
+   "merged": {
+    "body": "The duplicate registration has been resolved. The data is now on {{reg_number}}.",
+    "title": "{{merged_reg_number}} has been merged into {{reg_number}}"
+   },
+   "out_of_service": {
+    "body": "{{reason}}",
+    "title": "{{reg_number}} is out of service"
+   },
+   "registered_for_you": {
+    "body": "{{by}} registered {{reg_number}} with you as owner.",
+    "title": "Machine registered for you"
+   },
+   "sighting_reported": {
+    "body": "A tip about {{reg_number}} has arrived.",
+    "title": "Someone has seen your stolen machine"
+   },
+   "stolen_scanned": {
+    "body": "{{reg_number}} was scanned at {{at}}. Location: {{location.city}}.",
+    "title": "Your stolen machine was scanned"
+   },
+   "temporary_expired": {
+    "body": "The temporary registration expired and the machine has been marked as exported.",
+    "title": "{{reg_number}} has been deregistered"
+   },
+   "temporary_expiring": {
+    "body": "Extend the registration or register the machine permanently, otherwise it is deregistered as exported.",
+    "title": "Temporary registration for {{reg_number}} expires {{valid_until}}"
+   },
+   "verified": {
+    "body": "{{reg_number}} is now at level {{level}} ({{by}}).",
+    "title": "Machine verified"
+   }
+  },
+  "mandate": {
+   "accepted": {
+    "body": "",
+    "title": "{{agent}} has accepted the mandate"
+   },
+   "declined": {
+    "body": "",
+    "title": "{{agent}} has declined the mandate"
+   },
+   "granted": {
+    "body": "Accept or decline under Mandates.",
+    "title": "{{principal}} has granted you a mandate"
+   },
+   "revoked": {
+    "body": "Revoked by {{by}}.",
+    "title": "A mandate has been revoked"
+   },
+   "sale_started": {
+    "body": "The transfer is made with you as seller under the mandate.",
+    "title": "{{agent}} has started selling {{reg_number}}"
+   }
+  },
+  "mark_all_read": "Mark all as read",
+  "market": {
+   "duplicate_serial_in_market": {
+    "body": "The serial number of {{reg_number}} appears with several sellers.",
+    "title": "Same serial number in several listings"
+   },
+   "listed_after_transfer": {
+    "body": "{{reg_number}} has changed owner but the listing on {{source}} is still active.",
+    "title": "Listing still active after transfer"
+   },
+   "listed_with_active_financing": {
+    "body": "{{reg_number}} has an active encumbrance and appears in a listing on {{source}}.",
+    "title": "Financed machine listed for sale"
+   },
+   "price_anomaly": {
+    "body": "A listing for {{reg_number}} is far below comparable machines.",
+    "title": "Unusually low price in listing"
+   },
+   "seller_not_owner": {
+    "body": "{{reg_number}} is listed on {{source}} by a company that is not the registered owner.",
+    "title": "Listed by someone other than the owner"
+   },
+   "stolen_machine_listed": {
+    "body": "{{reg_number}} is reported stolen but appears in a listing on {{source}}.",
+    "title": "Stolen machine listed for sale"
+   }
+  },
+  "member": {
+   "access_requested": {
+    "body": "{{name}} ({{email}}) wants to join the organisation.",
+    "title": "Access request"
+   },
+   "invited": {
+    "body": "You are invited to join {{org_name}}.",
+    "title": "Invitation to {{org_name}}"
+   },
+   "joined": {
+    "body": "{{name}} joined the organisation.",
+    "title": "New member"
+   }
+  },
+  "org": {
+   "approved": {
+    "body": "{{name}} is approved. All features for your organisation type are now available.",
+    "title": "Organisation approved"
+   },
+   "pending_approval": {
+    "body": "{{name}} is waiting for approval.",
+    "title": "New organisation to review"
+   },
+   "suspended": {
+    "body": "{{name}} is suspended: {{reason}}",
+    "title": "Organisation suspended"
+   }
+  },
+  "reminder": {
+   "due": {
+    "body": "{{reg_number}} – {{title}}. See Fleet → To do.",
+    "title": "Due: {{title}}"
+   }
+  },
+  "rental": {
+   "created": {
+    "body": "{{lessor}} rents {{reg_number}} to you {{from}}–{{to}}.",
+    "title": "New rental"
+   }
+  },
+  "report_grant": {
+   "created": {
+    "body": "{{owner}} has given you read access to its fleet report.",
+    "title": "Shared fleet report"
+   }
+  },
+  "support": {
+   "customer_reply": {
+    "body": "",
+    "title": "The customer replied in case {{number}}"
+   },
+   "reply": {
+    "body": "{{subject}}",
+    "title": "Reply to case {{number}}"
+   },
+   "ticket": {
+    "body": "{{subject}}",
+    "title": "New support case {{number}}"
+   },
+   "viewed_as": {
+    "body": "Read-only for at most 30 minutes. Reason: {{reason}}",
+    "title": "Support has viewed your organisation"
+   }
+  },
+  "telematics": {
+   "error": {
+    "body": "Check the address and credentials under Settings → Integrations.",
+    "title": "The telematics connection {{name}} is failing"
+   },
+   "stolen_position": {
+    "body": "Position {{lat}}, {{lon}}. Contact the police before going there.",
+    "title": "Stolen machine {{reg_number}} has reported a position"
+   }
+  },
+  "theft": {
+   "external_match": {
+    "body": "The machine is not reported stolen here. The register keeper reviews the report.",
+    "title": "{{reg_number}} appears in the theft register at {{source}}"
+   }
+  },
+  "tip": {
+   "forwarded": {
+    "body": "{{message}} Contact: {{contact}}",
+    "title": "Tip about {{reg_number}} forwarded"
+   },
+   "received": {
+    "body": "{{reg_number}}",
+    "title": "New tip"
+   },
+   "stolen_machine": {
+    "body": "{{message}}",
+    "title": "Tip about stolen machine {{reg_number}}"
+   }
+  },
+  "transfer": {
+   "awaiting_financier": {
+    "body": "{{seller}} wants to sell {{reg_number}}, on which you hold an encumbrance.",
+    "title": "Transfer to approve"
+   },
+   "awaiting_you": {
+    "body": "{{seller}} wants to transfer {{reg_number}} to you. Review and sign.",
+    "title": "Machine to accept"
+   },
+   "cancelled": {
+    "body": "The transfer of {{reg_number}} was cancelled.",
+    "title": "Transfer cancelled"
+   },
+   "completed": {
+    "body": "{{buyer}} is the new registered owner of {{reg_number}}.",
+    "title": "Transfer completed"
+   },
+   "expired": {
+    "body": "The buyer did not accept within 14 days.",
+    "title": "Transfer expired"
+   },
+   "financier_approved": {
+    "body": "The transfer of {{reg_number}} is now waiting for the buyer.",
+    "title": "The lender approved the transfer"
+   },
+   "financier_rejected": {
+    "body": "{{holder}} declined the transfer of {{reg_number}}.",
+    "title": "The lender declined the transfer"
+   },
+   "trade_in_requested": {
+    "body": "{{dealer}} wants to receive {{reg_number}} as a trade-in. Approve to continue.",
+    "title": "Trade-in to approve"
+   }
+  },
+  "unread": "{{count}} unread",
+  "verification": {
+   "needs_info": {
+    "body": "The verifier needs more documents for {{reg_number}}: {{note}}",
+    "title": "More information needed"
+   },
+   "rejected": {
+    "body": "The verifier rejected the verification of {{reg_number}}: {{note}}",
+    "title": "Verification rejected"
+   },
+   "requested": {
+    "body": "{{by}} requests level {{level}} for {{reg_number}}.",
+    "title": "New verification to review"
+   },
+   "updated": {
+    "body": "The owner has added documents.",
+    "title": "Verification updated"
+   }
+  },
+  "watch": {
+   "hit": {
+    "body": "Something happened to {{reg_number}}. See Watchlist.",
+    "title": "Event on watched machine {{reg_number}}"
+   }
+  }
+ },
+ "oem": {
+  "delivered": "Delivered",
+  "empty": "No delivery data yet",
+  "errors": "Rows with errors: {{rows}}",
+  "file": "Delivery data file",
+  "file_hint": "CSV or XLSX with the template's columns. Existing serials are updated. Also via API.",
+  "lead": "Delivery data per serial number. When a machine is registered with the serial, technical data is filled in automatically.",
+  "matched": "Registered machines",
+  "registered": "Reg no",
+  "saved_one": "{{count}} row saved",
+  "saved_other": "{{count}} rows saved",
+  "total": "Serial numbers"
+ },
+ "onboarding": {
+  "accept": "Join",
+  "access_requested": "Request sent to the organisation's administrators.",
+  "check_api": "Connect the API",
+  "check_first_machine": "Add the first machine",
+  "check_import": "Import a list",
+  "check_labels": "Order labels",
+  "checklist_title": "Get started",
+  "create": "Add the organisation",
+  "create_org_lead": "Enter the organisation number and we fetch name and address. It takes less than three minutes.",
+  "create_org_title": "Add your organisation",
+  "dealer_lead": "Add the company, invite your sales team, import your stock and order the label starter kit – all on one page.",
+  "dealer_step_labels": "Order label starter kit",
+  "dealer_step_org": "Company",
+  "dealer_step_stock": "Import stock",
+  "dealer_step_team": "Invite colleagues",
+  "dealer_title": "Get started as a dealer",
+  "dpa_label": "I accept the data processing agreement (version {{version}}) on behalf of the organisation.",
+  "dpa_link": "Read the agreement",
+  "existing": "{{name}} is already in the register. Ask an administrator for an invitation or request access.",
+  "invitations": "You have invitations",
+  "invite_emails": "E-mail addresses, one per line",
+  "invites_sent": "{{count}} invitations sent.",
+  "lookup": "Look up",
+  "order_starter": "Order 50 labels",
+  "pending_body": "We review within one working day. You can already add your own machines.",
+  "pending_title": "We are reviewing your organisation",
+  "request_access": "Request access",
+  "send_invites": "Send invitations",
+  "sole_trader": "Sole trader – the organisation number is a personal number and is shown masked.",
+  "starter_ordered": "The starter kit is ordered.",
+  "suggested": "Colleagues with the same e-mail domain are in",
+  "title": "Get started",
+  "types_hint": "Choose one or more. Types other than machine owner are reviewed within one working day – meanwhile you can add machines.",
+  "types_legend": "What does the organisation do?"
+ },
+ "operations": {
+  "change_status": "Change operational status",
+  "operator": "Operator",
+  "recent_checks": "Latest daily checks",
+  "recent_fuel": "Latest refuelling",
+  "status": {
+   "operational": "In operation",
+   "out_of_service": "Out of service",
+   "restricted": "Restricted operation"
+  },
+  "title": "Operation"
+ },
+ "org": {
+  "authority_reads": "Show our reads to the machine owner",
+  "claims_url": "Claims link",
+  "create_new": "Add a new organisation",
+  "current": "You act for {{name}}",
+  "digest": "Digest",
+  "digest_daily": "Daily",
+  "digest_instant": "Instantly",
+  "digest_weekly": "Every Monday",
+  "email_all": "E-mail for all notifications",
+  "email_channel": "E-mail",
+  "email_important": "E-mail for important notifications only",
+  "email_none": "No e-mail",
+  "identity_missing": "Not verified",
+  "identity_ok": "Verified",
+  "invite": "Invite",
+  "invite_title": "Invite a colleague",
+  "invited": "Invitation sent to {{email}}.",
+  "leave": "Leave the organisation",
+  "members_title": "Members",
+  "min_trusted_level": "Minimum trusted verification level",
+  "min_trusted_level_hint": "Machines below this level are shown with a clear warning.",
+  "no_org_title": "You are not in any organisation",
+  "notifications_title": "Notifications and e-mail",
+  "postal_code": "Postal code",
+  "push_all": "All notifications",
+  "push_channel": "Push notifications",
+  "push_hint": "Applies to devices where you have turned on push notifications under Profile.",
+  "push_important": "Important (warnings and critical)",
+  "push_none": "None",
+  "remove_member": "Remove from the organisation",
+  "role": "Role",
+  "saved": "The details are saved.",
+  "settings_title": "Organisation details",
+  "street": "Street address",
+  "switcher_label": "Organisation",
+  "vat_number": "VAT number",
+  "website": "Website"
+ },
+ "partial": {
+  "check": "Check",
+  "flagged": "Flagged",
+  "hint": "At least 5 characters, for example what is legible on a worn nameplate.",
+  "label": "Part of the serial or registration number",
+  "match_reg": "Match in reg no.",
+  "match_serial": "Match in serial number",
+  "none": "No matches",
+  "none_body": "Check the characters, or search on another part of the number.",
+  "privacy": "Shows at most 10 matches without owner or encumbrances. Choose a machine to make a full check.",
+  "submit": "Search"
+ },
+ "pdf": {
+  "document_number": "Document number",
+  "flags": "Flags",
+  "issued_by": "Issued for",
+  "market": "Market observations",
+  "no_amounts": "The register never contains amounts. The receipt shows the register content at the time of the check.",
+  "no_caps": "NO – no active encumbrance",
+  "page": "Page {{page}} of {{pages}}",
+  "performed_at": "Check performed",
+  "performed_by": "Performed by",
+  "reg_number": "Registration number",
+  "snapshot": "The receipt is a snapshot and does not replace a new check at a later time.",
+  "verify_at": "Verify the receipt at {{url}} with the receipt number and checksum.",
+  "verify_document": "Check that the document is genuine at {{url}} with document number {{number}} and the checksum below.",
+  "yes_caps": "YES – active encumbrance"
+ },
+ "portfolio": {
+  "claim_url": "Claim link",
+  "claim_url_hint": "Shown to the owner on machines you insure.",
+  "empty": "The portfolio is empty",
+  "flagged": "Flagged",
+  "in_transfer": "In transfer",
+  "last_event": "Latest event",
+  "lead_financier": "Machines with your encumbrance: status, flags and transfers in progress.",
+  "lead_insurer": "Machines you insure. Set a verification level requirement per policy.",
+  "no_requirement": "No requirement",
+  "pending": "To confirm",
+  "requirement": "Requirement"
+ },
+ "position": {
+  "open_map": "Open in OpenStreetMap",
+  "reported": "{{at}} via {{provider}}. Only the latest point is stored.",
+  "stolen_hint": "The machine is reported stolen. Do not go there yourself – contact the police on 114 14.",
+  "title": "Last reported location"
+ },
+ "public": {
+  "actors_title": "Value for everyone in the chain",
+  "are_you_owner": "Are you the owner?",
+  "are_you_owner_body": "Sign in to see who has scanned the machine.",
+  "call_police": "Call the police 114 14",
+  "check_financing": "Buying this machine?",
+  "check_financing_body": "Sign in with BankID to see whether it is encumbered.",
+  "cta_dealer": "Get started as a dealer",
+  "demo_active_level2": "Scan a verified machine",
+  "demo_financed": "Scan an encumbered machine",
+  "demo_scrapped": "Look up a scrapped machine",
+  "demo_stolen": "Scan a stolen machine",
+  "demo_title": "Try the demo",
+  "fact_free": "Registration is free and takes less than two minutes.",
+  "fact_history": "History cannot be changed afterwards. A checksum is published every day.",
+  "fact_independent": "Independent – compatible with other registers' ID numbers.",
+  "fact_no_amounts": "No amounts are stored: only whether the machine is encumbered and by whom.",
+  "facts_label": "About the register",
+  "facts_title": "The register in brief",
+  "financing_login": "Sign in with BankID to see",
+  "footer_about": "{{app}} is an independent register for heavy machinery: owners, encumbrances, history and theft protection.",
+  "footer_trust": "Trust",
+  "hero_lead": "Every machine gets a registration number and a QR label. The register shows the verified owner, history and financing – and makes stolen machines hard to sell.",
+  "hero_title": "Who owns the machine – and is it encumbered?",
+  "how_title": "How it works",
+  "inspected_until": "Inspected until {{date}}",
+  "label_replaced": "The label has been replaced",
+  "label_replaced_link": "Show the machine",
+  "lookup_button": "Look up",
+  "lookup_hint": "The number is on the machine's QR label. Serial numbers can be searched after signing in.",
+  "lookup_label": "Registration number",
+  "lookup_placeholder": "For example ABC-1234",
+  "not_in_register": "The machine is not in the register",
+  "not_in_register_body": "Check the number on the label. If it is your machine you can register it for free.",
+  "offline": "No connection. Showing the last known status from {{date}}.",
+  "owner": "Registered owner",
+  "owner_exists": "A registered owner exists (organisation)",
+  "owner_missing": "No registered owner",
+  "privacy": "Privacy",
+  "register_free": "Register for free",
+  "serial": "Serial number",
+  "serial_hint": "Compare the last characters with the nameplate on the machine.",
+  "sighting_consent": "Your approximate location is only shared if you choose so. It goes to the owner and whoever reported the theft.",
+  "sighting_message": "Where and when did you see the machine? (optional)",
+  "sighting_sent": "Thank you. The owner has received your tip.",
+  "sighting_with_location": "I have seen the machine – share my location",
+  "sighting_without_location": "Send without location",
+  "step1_body": "Photograph the nameplate or type the serial number. The machine gets a registration number at once.",
+  "step1_title": "Register the machine",
+  "step2_body": "The QR label is bound to the machine. Anyone can scan it and see its status.",
+  "step2_title": "Fit the label",
+  "step3_body": "A trusted party verifies documents or the machine. Lenders, buyers and insurers rely on the data.",
+  "step3_title": "Verify and use",
+  "stolen_list": "Stolen machines",
+  "terms": "Terms",
+  "value_authority": "Search by serial and reg. no., wanted and seized flags, export checks and history.",
+  "value_client": "Follow up machine requirements in procurement with contractors' fleet reports.",
+  "value_dealer": "Stock with QR labels, sale with transfer and financing in one go, trade-in checks and leads from ad QR codes.",
+  "value_financier": "Search by serial, register encumbrances, time-stamped check receipts, portfolio and webhooks.",
+  "value_inspector": "Verify machines physically, fit labels and record inspections.",
+  "value_insurer": "Portfolio, theft flags and verified machines as a premium basis.",
+  "value_marketplace": "Verified badge via API and checks before listing.",
+  "value_owner": "Free fleet overview, certificate of ownership, theft protection, document vault, hours and service, share link when selling.",
+  "verify_lead": "As a private person you can see whether a machine is encumbered, but not by whom. The check is logged and visible to the owner.",
+  "verify_logged": "The check is logged and visible to the owner.",
+  "verify_title": "Check financing"
+ },
+ "push": {
+  "added": "added {{date}}",
+  "denied": "Notifications are blocked for the site. Allow them in the browser settings.",
+  "disable": "Turn off for this device",
+  "enable": "Turn on for this device",
+  "error": {
+   "PUSH_DENIED": "You did not allow notifications.",
+   "PUSH_NOT_CONFIGURED": "Push notifications are not configured on the server."
+  },
+  "failing": "delivery failing",
+  "lead": "Get notifications on this device even when the app is closed, for example when a machine is scanned as stolen.",
+  "send_test": "Send test notification",
+  "test_message": {
+   "body": "Push notifications work on this device.",
+   "title": "Test notification from {{app}}"
+  },
+  "test_sent": "The test notification has been sent.",
+  "title": "Push notifications",
+  "unsupported": "This browser cannot receive push notifications. On iPhone: first add the app to the home screen.",
+  "what": "Choose which events are sent per organisation under Settings → Notifications and e-mail."
+ },
+ "receipt_verify": {
+  "hash": "Checksum (SHA-256)",
+  "hash_hint": "64 characters at the bottom of the receipt.",
+  "invalid": "The receipt could not be confirmed",
+  "invalid_body": "Check the receipt number and checksum. If they do not match the receipt may have been altered.",
+  "kind": {
+   "climate_report": "Genuine climate report, issued {{date}} for {{org}}.",
+   "machine_report": "Genuine machine report, issued {{date}} for {{org}}.",
+   "ownership_certificate": "Genuine ownership certificate, issued {{date}} for {{org}}.",
+   "register_extract": "Genuine register extract, issued {{date}} for {{org}}."
+  },
+  "lead": "If you have received a check receipt (K-…) or a fleet report (F-…) you can confirm it is genuine. Enter the number and the checksum printed on the document.",
+  "report_one": "Report generated {{date}} by {{org}}, {{count}} machine.",
+  "report_other": "Report generated {{date}} by {{org}}, {{count}} machines.",
+  "submit": "Verify",
+  "superseded": "The machine has changed owner since the document was issued. It no longer shows the current owner.",
+  "title": "Verify a receipt",
+  "valid": "The receipt is genuine"
+ },
+ "receipts": {
+  "empty": "No checks yet",
+  "lead": "Every check your organisation has made, with receipt number.",
+  "title": "Check receipts"
+ },
+ "rentals": {
+  "direction": "Direction",
+  "empty": "No rentals",
+  "in": "Rented in",
+  "lead": "Machines you rent out and rent in. The rental shows in the register as a right of use but never affects the financing check.",
+  "lessee": "Lessee's org number",
+  "lessee_needs_account": "The lessee must be in the register. Invite them first.",
+  "new": "New rental",
+  "out": "Rented out by us",
+  "party": "Counterparty",
+  "register_note": "The lessee is notified and sees the machine during the rental period.",
+  "returned": "Mark returned"
+ },
+ "report_error": {
+  "description": "What is wrong",
+  "description_hint": "For example: we bought the machine in 2024, a purchase agreement exists.",
+  "lead": "Describe what is wrong. MaskinID investigates and the owner is informed.",
+  "message": "Message",
+  "request_trade_in": "Request trade-in from the owner",
+  "sent": "Thank you. The case is registered and the owner has been informed.",
+  "submit": "Send to MaskinID",
+  "title": "Report an error",
+  "trade_in_sent": "The owner has received a trade-in request.",
+  "transfer_lead": "A transfer is always started by the current owner. Ask the seller to choose Sell / transfer. If you believe the registration is wrong you can report it here.",
+  "transfer_title": "Request a transfer"
+ },
+ "risk": {
+  "active_flag": "The machine has an active flag (theft, block or investigation)",
+  "disclaimer": "The signals are reasons to look closer – not a statement that something is wrong.",
+  "financing_recently_released": "An encumbrance was released in the last 30 days",
+  "frequent_transfers": "Three or more transfers in the last two years",
+  "hour_meter_corrected": "The hour meter was corrected downwards in the last year",
+  "listed_by_other_seller": "Listed by someone other than the owner or with the same serial at several sellers",
+  "listed_for_sale": "The machine appears in an active listing",
+  "many_recent_checks": "Several lenders have checked the machine in the last month",
+  "new_unverified_registration": "Newly registered without reviewed documents",
+  "open_conflict": "Open conflict about the machine's identity or owner",
+  "open_transfer": "A transfer is in progress",
+  "recent_owner_change": "Current owner for less than 90 days",
+  "title": "Risk signals",
+  "watch_days_one": "{{count}} day",
+  "watch_days_other": "{{count}} days",
+  "watch_lead": "Get notified if the machine gets a new encumbrance, is flagged, changes owner or is listed.",
+  "watch_title": "Watch the machine",
+  "watching_permanent": "The machine is already watched indefinitely.",
+  "watching_until": "Watched until {{date}}."
+ },
+ "search": {
+  "no_hits": "No result for {{q}}. Check the number on the nameplate."
+ },
+ "security": {
+  "event": {
+   "identity_verified": "Identity confirmed with BankID",
+   "legal_accepted": "Terms accepted",
+   "mfa_enrolled": "Two-factor sign-in enabled",
+   "mfa_removed": "Two-factor sign-in disabled",
+   "sign_in": "Sign-in",
+   "sign_out": "Sign-out",
+   "sign_out_everywhere": "Signed out of all devices",
+   "view_as_started": "View as organisation"
+  },
+  "lead": "Your recent sign-ins and security changes.",
+  "mfa_disable": "Disable two-factor sign-in",
+  "mfa_enable": "Enable two-factor sign-in",
+  "mfa_enabled": "Two-factor sign-in is enabled.",
+  "mfa_lead": "Required for lenders, authorities and the register operator. Use an authenticator app.",
+  "mfa_on": "Enabled",
+  "mfa_qr_alt": "QR code for the authenticator app",
+  "mfa_scan": "Scan the code with your authenticator app and enter the code it shows.",
+  "mfa_session_ok": "verified for this session",
+  "mfa_title": "Two-factor sign-in",
+  "none": "No events yet",
+  "sign_out_everywhere": "Sign out of all devices",
+  "suspicious": "Do you not recognise a sign-in? Sign out of all devices and contact support.",
+  "title": "Sign-ins and security"
+ },
+ "securitypage": {
+  "anchor_body": "Every night a combined checksum (Merkle root) of the day's events is computed. It is published here and in a public GitHub repository. Anyone holding an old value can see if anything changed.",
+  "anchors_title": "Published anchors",
+  "commit": "View on GitHub",
+  "data_backups": "Daily backups with point-in-time recovery.",
+  "data_eu": "All data is stored in the EU.",
+  "data_exit": "If the company ceases, register data is handed over to a neutral party.",
+  "data_pentest": "Penetration tests are done before the first bank integration and yearly thereafter.",
+  "data_pnr": "Personal numbers are never stored in clear text.",
+  "data_rls": "Every table is protected by row-level security and all writes go through controlled functions.",
+  "data_sla": "Availability target: 99.9%.",
+  "data_title": "Data and operations",
+  "disclosure_body": "Found a security issue? E-mail us. We reply within two working days and do not report good-faith researchers.",
+  "disclosure_title": "Report a vulnerability",
+  "events": "Events",
+  "history_body": "Every change is an event in an append-only log. Every event carries a checksum built on the previous event.",
+  "history_title": "History that cannot be changed",
+  "lead": "How {{app}} protects the register, and how you can verify yourself that the history has not been changed.",
+  "published": "Published",
+  "root": "Merkle root",
+  "title": "Security",
+  "verified_bad": "Does not verify",
+  "verified_ok": "Verified",
+  "verify": "Verify"
+ },
+ "segments": {
+  "agare": {
+   "cta": "Register for free",
+   "lead": "Register your machines for free, label them with QR and get an ownership certificate that makes them easier to sell and harder to steal.",
+   "p1_body": "Every machine gets a registration number and an ownership certificate that buyers, banks and insurers can check.",
+   "p1_title": "Proof of who owns",
+   "p2_body": "A stolen machine shows red when someone scans it, and you get a notification with an approximate location.",
+   "p2_title": "Harder to sell stolen goods",
+   "p3_body": "Hour meters, service, inspection, operators, daily checks and climate report – with telematics the hours update themselves.",
+   "p3_title": "The fleet in one place",
+   "p4_body": "The fleet report shows emission stage, fuel and inspection – what clients ask for.",
+   "p4_title": "Input for tenders",
+   "short": "Owners",
+   "title": "For machine owners"
+  },
+  "finansiarer": {
+   "cta": "Book a walkthrough",
+   "lead": "Stop double financing: a machine can have only one active encumbrance and every check gives a verifiable receipt.",
+   "p1_body": "Search by reg number, serial or PIN – one at a time or thousands via API – and keep the receipt in the credit file.",
+   "p1_title": "Check with receipt",
+   "p2_body": "A second encumbrance is blocked and both parties are notified. The register never contains amounts.",
+   "p2_title": "One encumbrance per machine",
+   "p3_body": "Alerts if a machine is flagged, changes owner or appears in listings – with risk signals in every check.",
+   "p3_title": "Portfolio monitoring",
+   "p4_body": "BankID signing, two-step verification, an event chain with daily anchors and a data processing agreement.",
+   "p4_title": "Built for the bank's requirements",
+   "short": "Lenders",
+   "title": "For banks and finance companies"
+  },
+  "forsakring": {
+   "cta": "Contact us",
+   "lead": "See that the machine exists, who owns it and how well its data is checked – before underwriting and at a claim.",
+   "p1_body": "Link policies to machines and require a verification level.",
+   "p1_title": "Portfolio and requirements",
+   "p2_body": "Theft flags can be synced with Larmtjänst's theft register.",
+   "p2_title": "Theft cooperation",
+   "p3_body": "Duplicate serials, ownership disputes and anomalous listings are detected and handled in the register.",
+   "p3_title": "Less fraud",
+   "p4_body": "Checks and monitoring via API with a sandbox for testing.",
+   "p4_title": "API",
+   "short": "Insurers",
+   "title": "For insurers"
+  },
+  "handlare": {
+   "cta": "Get started as a dealer",
+   "lead": "Check trade-ins in seconds, sell with an ownership certificate and give the buyer a machine with a history.",
+   "p1_body": "Scan the label and see at once whether the machine is financed, wanted or disputed.",
+   "p1_title": "Trade-ins without surprises",
+   "p2_body": "One flow for transfer, new financing and ownership certificate. A new sale gives the highest verification level.",
+   "p2_title": "Sell with an ownership certificate",
+   "p3_body": "Stock, consignment, listing QR and leads in one tool – with API and webhooks to your business system.",
+   "p3_title": "Stock and leads",
+   "p4_body": "Order labels and attach them on delivery, so the registration follows the machine.",
+   "p4_title": "Label your customers' machines",
+   "short": "Dealers",
+   "title": "For machine dealers"
+  },
+  "myndigheter": {
+   "cta": "Request access",
+   "lead": "Search on parts of serial numbers, see flags and access log, issue wanted notices and blocks – free of charge.",
+   "p1_body": "A wanted machine shows red when scanned and blocks transfer, encumbrance and deregistration.",
+   "p1_title": "Wanted notices and seizure",
+   "p2_body": "Look up a machine at the border and see whether it is financed.",
+   "p2_title": "Export control",
+   "p3_body": "A formal extract as PDF with extract number and checksum.",
+   "p3_title": "Register extract",
+   "p4_body": "Aggregated statistics without owner data for preparedness planning and environmental follow-up.",
+   "p4_title": "Preparedness and environment",
+   "short": "Authorities",
+   "title": "For police, customs and other authorities"
+  },
+  "nav": "For"
+ },
+ "service": {
+  "add_entry": "Log service",
+  "add_inspection": "Record inspection",
+  "add_insurance": "Add insurance",
+  "add_reminder": "New reminder",
+  "at_hours": "At hours",
+  "attach": "Receipt or report",
+  "attached": "Attached",
+  "certificate_no": "Certificate number",
+  "chart_label": "Hour meter from {{from}} to {{to}} hours",
+  "coverage": {
+   "full": "Comprehensive",
+   "liability": "Liability",
+   "machine": "Machine damage",
+   "theft": "Theft"
+  },
+  "coverage_label": "Coverage",
+  "done": "Done",
+  "hours_correction": "Save anyway as a correction (meter replaced or typo)",
+  "hours_now": "Now {{hours}} h",
+  "hours_report": "Save",
+  "hours_saved": "The hours are saved.",
+  "hours_saved_due": "Saved. Coming up: {{title}}.",
+  "hours_title": "Hour meter",
+  "inspection_body": "Inspection body",
+  "inspection_required": "The machine has a lifting device and must be inspected by an accredited inspection body.",
+  "inspections": "Inspections",
+  "insurance": "Insurance",
+  "insurer": "Insurer",
+  "insurer_name": "Insurer's name",
+  "insurer_other": "Other insurer",
+  "log": "Service and repairs",
+  "next_due": "Next: {{when}}",
+  "next_due_at": "Next service, date",
+  "next_due_hint": "For example 2,000. We remind you when the hour meter gets close.",
+  "next_due_hours": "Next service, hours",
+  "no_entries": "Nothing logged yet.",
+  "no_inspections": "No inspections recorded.",
+  "no_insurance": "No insurance registered.",
+  "no_project": "No project",
+  "no_reminders": "No reminders.",
+  "overdue": "overdue",
+  "performed_by": "Performed by",
+  "policy_number": "Policy number",
+  "project": "Project or site",
+  "protocol": "Inspection report",
+  "remarks": "Remarks",
+  "reminder_title": "What",
+  "reminders": "Reminders",
+  "result": "Result",
+  "snooze_week": "In a week",
+  "valid_from": "Valid from",
+  "valid_to": "Valid to",
+  "valid_until": "valid until {{date}}",
+  "valid_until_label": "Valid until"
+ },
+ "settings": {
+  "tab_api": "API and webhooks",
+  "tab_billing": "Billing",
+  "tab_data": "Data and export",
+  "tab_departments": "Departments",
+  "tab_group": "Group",
+  "tab_integrations": "Integrations"
+ },
+ "share": {
+  "owner_ordinal": "Number of owners: {{count}}",
+  "reason_expired": "The link has expired.",
+  "reason_max_views": "The link has been viewed as many times as the owner allowed.",
+  "reason_not_found": "The link does not exist.",
+  "reason_revoked": "The owner has closed the link.",
+  "shared_by": "Shared by {{org}}. The link is valid until {{date}}.",
+  "views_left": "{{count}} views left."
+ },
+ "stats": {
+  "admin_lead": "Exact numbers without rounding or suppression. Share only the public version outside the register keeper.",
+  "admin_title": "Statistics",
+  "age": {
+   "0-4": "0–4 years",
+   "10-14": "10–14 years",
+   "15+": "15 years and older",
+   "5-9": "5–9 years"
+  },
+  "by_age": "Age",
+  "by_category": "Machine type",
+  "by_county": "County (owner's town)",
+  "by_emission_stage": "Emission stage",
+  "by_fuel": "Fuel",
+  "by_level": "Verification level",
+  "checks_by_month": "Checks per month",
+  "checks_unit": "checks",
+  "col_category": "Machine type",
+  "col_fuel": "Fuel",
+  "col_hours": "Avg hours",
+  "col_n": "Count",
+  "col_power": "Avg power (kW)",
+  "col_stage": "Emission stage",
+  "electric_share": "Share electric",
+  "encumbrances_active": "Active encumbrances",
+  "environment_csv": "Download environmental statistics (CSV, {{rows}} rows)",
+  "environment_lead": "Number of machines per type, emission stage and fuel with average power and hours – input for example for the Swedish EPA's non-road machinery model. Groups with fewer than 5 machines are left out.",
+  "environment_title": "Environmental statistics",
+  "exact_note": "Exact numbers.",
+  "generated": "Computed {{at}}.",
+  "labels_bound": "QR labels on machines",
+  "lead": "How many work machines the register holds, what they are and where they are. Updated daily.",
+  "level": {
+   "0": "Self-registered",
+   "1": "Document-verified",
+   "2": "Physically verified"
+  },
+  "machines": "Machines in the register",
+  "machines_unit": "machines",
+  "recovered_12m": "Recovered last 12 months",
+  "registered_12m": "Registered last 12 months",
+  "registrations_by_month": "New registrations per month",
+  "stolen_active": "Reported stolen",
+  "suppression_note": "Groups with 1–4 machines are shown as \"<5\" so individual owners cannot be singled out.",
+  "title": "Statistics",
+  "transfers_12m": "Transfers last 12 months",
+  "unknown": "Unknown"
+ },
+ "status": {
+  "anchor_body": "The anchor for {{day}} summarises all events that day.",
+  "anchor_ref": "Published as {{ref}}",
+  "anchor_title": "Latest anchor",
+  "checked": "Checked",
+  "degraded": "Some background jobs are failing",
+  "down": "The register is not responding right now",
+  "events_24h": "Events last 24 hours",
+  "how_verify": "How to verify the history",
+  "integration": {
+   "nfc": "NFC labels",
+   "payments": "Card payment",
+   "push": "Push notifications",
+   "telematics": "Telematics",
+   "theft_sync": "Theft register (Larmtjänst)"
+  },
+  "integrations": "Integrations",
+  "jobs": "Scheduled jobs",
+  "jobs_failing_one": "{{count}} of {{total}} failing",
+  "jobs_failing_other": "{{count}} of {{total}} failing",
+  "jobs_ok": "All {{total}} running without errors",
+  "lead": "Current status of the register and its integrations.",
+  "mode": "Mode",
+  "no_anchor": "No anchor published yet.",
+  "off": "Off",
+  "ok": "Operational",
+  "on": "On",
+  "operational": "All systems operational",
+  "register": "The register",
+  "title": "System status"
+ },
+ "stolen": {
+  "has_label": "Has QR label",
+  "lead": "Machines reported stolen where the owner or the police chose to show them here. If you see one: call the police on 114 14 or leave a tip.",
+  "none": "No machines on the list right now",
+  "privacy": "The list never shows owners or contact details.",
+  "publish_hint": "The list shows make, model, registration number and county – never the owner.",
+  "publish_toggle": "Show on the public stolen list",
+  "since": "Stolen since {{date}}",
+  "title": "Stolen machines"
+ },
+ "support": {
+  "categories": {
+   "account": "Account and sign-in",
+   "api": "API and integrations",
+   "billing": "Billing",
+   "financing": "Encumbrances",
+   "labels": "QR labels",
+   "machine": "Machine and details",
+   "other": "Other",
+   "privacy": "Personal data",
+   "transfer": "Ownership transfer"
+  },
+  "category": "Category",
+  "close": "Close the case",
+  "contact_lead": "Cannot find the answer in the help centre? Write to us and we normally reply within one working day.",
+  "contact_title": "Contact us",
+  "lead": "Your support cases. Replies also arrive as notifications.",
+  "message": "Message",
+  "new": "New case",
+  "reopen": "Reopen",
+  "reply": "Reply",
+  "send": "Send",
+  "sent": "Case {{number}} has been created. The reply will go to your e-mail.",
+  "status": {
+   "closed": "Closed",
+   "open": "Open",
+   "waiting_customer": "Waiting for you"
+  },
+  "status_waiting_customer_admin": "Waiting for customer",
+  "subject": "Subject"
+ },
+ "theftsync": {
+  "confirm": "Confirm",
+  "disabled": "Sync is turned off (FEATURE_THEFT_SYNC).",
+  "empty": "No reports here",
+  "ignore": "Dismiss",
+  "lead": "Machines reported stolen are sent to the insurance industry's theft register (Larmtjänst) and its reports are matched against the register.",
+  "match": "Machine in the register",
+  "never_auto": "An external report never flags a machine automatically. The owner is notified and the flag is set by the owner or the police.",
+  "no_match": "No match",
+  "queue": {
+   "failed": "Failed",
+   "pending": "Waiting to be sent",
+   "sent": "Sent"
+  },
+  "received": "Received",
+  "report": "Report",
+  "report_status": {
+   "recovered": "Recovered",
+   "stolen": "Stolen"
+  },
+  "review": {
+   "confirmed": "Confirmed",
+   "ignored": "Dismissed",
+   "new": "New"
+  },
+  "sync_now": "Sync now (demo)",
+  "title": "Theft register"
+ },
+ "tips": {
+  "city": "Town",
+  "contact": "Phone or e-mail",
+  "contact_hint": "Optional. Only shown to us and may be passed on to the police.",
+  "emergency": "Is a crime in progress? Call 112.",
+  "kind": {
+   "other": "Other",
+   "seen_machine": "I have seen a machine",
+   "suspicious_listing": "Suspicious listing",
+   "suspicious_sale": "Suspicious sale"
+  },
+  "kind_label": "What is the tip about?",
+  "lead": "Have you seen a machine that may be stolen, or a suspicious listing? The tip goes to us and, if the machine is reported stolen, to the owner. You can remain anonymous.",
+  "link": "Report a tip",
+  "listing_url": "Link to the listing",
+  "message": "Describe what you have seen",
+  "reg_hint": "Found on the QR label or the nameplate. Leave empty if you do not know.",
+  "reg_or_serial": "Registration or serial number",
+  "sent": "Thank you for the tip",
+  "sent_body": "We will review it and contact the police if needed.",
+  "submit": "Send the tip",
+  "title": "Report a tip about a machine"
+ },
+ "transfer": {
+  "accept": "Sign and approve",
+  "buyer": "Buyer",
+  "buyer_body": "Check the machine card, history and encumbrances above. You sign with BankID and become owner effective {{date}}.",
+  "buyer_title": "Approve the acquisition",
+  "cancel": "Cancel the transfer",
+  "decision_reject": "Refuse the transfer",
+  "decision_release": "Release the encumbrance",
+  "decision_transfer_to_buyer": "Transfer to the buyer",
+  "decline": "Decline",
+  "done_accepted": "Done. You now own the machine.",
+  "done_cancelled": "The transfer is cancelled.",
+  "done_declined": "You have declined the transfer.",
+  "done_financier": "The decision is registered. The buyer may now approve.",
+  "done_rejected": "The transfer is refused. The seller has been informed.",
+  "done_trade_in": "The trade-in is approved. The dealer completes with signature.",
+  "effective_date": "Effective date",
+  "expires": "Expires",
+  "financier_body": "Choose whether the encumbrance is released, carried over to the buyer, or the transfer is refused. The decision is signed.",
+  "financier_decision": "Financier's decision",
+  "financier_title": "Your encumbrance in the transfer",
+  "lead": "From {{from}} to {{to}}",
+  "new_financing": "New financing",
+  "see_history": "See the full history",
+  "seller": "Seller",
+  "title": "Transfer of ownership",
+  "trade_in": "Trade-in",
+  "trade_in_approve": "Approve the trade-in",
+  "trade_in_title": "{{dealer}} wants to take the machine as trade-in",
+  "waiting_awaiting_buyer": "Waiting for the buyer to approve.",
+  "waiting_awaiting_financier": "Waiting for the financier's decision.",
+  "waiting_draft": "Draft, not sent."
+ },
+ "verifyq": {
+  "approve": "Approve",
+  "bookings_lead": "Visits for physical verification (level 2).",
+  "decision": "Decision",
+  "documents": "Documents",
+  "empty": "No requests",
+  "lead": "Requests where the owner chose you as reviewer.",
+  "nameplate_hint": "Read the nameplate on site. Must match the register.",
+  "nameplate_serial": "Serial number on the nameplate",
+  "needs_info": "Ask for more",
+  "no_documents": "No documents attached.",
+  "note_hint": "Required when rejecting or asking for more. The owner sees the text.",
+  "owner_note": "Owner's message",
+  "register_data": "The register",
+  "reject": "Reject",
+  "requested_by": "From",
+  "review_lead": "From {{org}}, {{date}}.",
+  "review_title": "Review: {{level}}",
+  "site": "Site: {{address}}, preferred date {{date}}.",
+  "when_where": "When and where"
+ },
+ "viewas": {
+  "banner": "You are viewing {{org}} as the organisation sees it, read-only, until {{until}}. The view is logged.",
+  "end": "End view",
+  "lead": "You view {{name}} read-only for 30 minutes. The organisation's admins are notified and the reason is logged.",
+  "start": "View as organisation"
+ },
+ "vtr": {
+  "class": {
+   "motorredskap_klass_i": "Motor implement class I",
+   "motorredskap_klass_ii": "Motor implement class II",
+   "traktor_a": "Tractor a",
+   "traktor_b": "Tractor b"
+  },
+  "last_owner_change": "Last change of owner",
+  "lookup": "Look up at Transportstyrelsen",
+  "owner": {
+   "legal_person": "Company",
+   "natural_person": "Private person (not shown)",
+   "unknown": "Unknown"
+  },
+  "owner_category": "Owner in the road traffic register",
+  "source": "Source",
+  "source_mock": "Demo data",
+  "status": {
+   "deregistered": "Deregistered",
+   "in_traffic": "In traffic",
+   "off_road": "Off road"
+  },
+  "vehicle_class": "Vehicle class"
+ },
+ "watch": {
+  "add": "Watch",
+  "bulk": "Several at once",
+  "bulk_hint": "One value per line, at most 1,000.",
+  "empty": "Nothing watched",
+  "lead": "Get a notice when a watched reg number or serial is registered, flagged, changes owner or is encumbered.",
+  "match": "In the register",
+  "not_registered": "Not registered",
+  "since": "Since"
+ },
+ "wizard": {
+  "autosave": "The draft is saved automatically.",
+  "category": "Category",
+  "ce": "CE marked",
+  "color": "Colour",
+  "description": "Description",
+  "done_disputed": "The serial number already exists on {{reg}}",
+  "done_disputed_body": "The machine is marked disputed until MaskinID has investigated the duplicate. Both owners have been informed.",
+  "done_factory": "Technical data was taken from factory data.",
+  "done_next": "Register next",
+  "done_open": "Open the machine",
+  "done_title": "The machine is registered",
+  "done_upload": "Upload invoice for level 1",
+  "emission": "Emission stage",
+  "engine": "Engine",
+  "err_country": "Two letters, for example DE.",
+  "err_duplicate": "The serial number is already in the register.",
+  "err_email": "Enter a valid e-mail address.",
+  "err_number": "Enter a whole number.",
+  "err_serial": "Enter serial number or PIN (at least four characters).",
+  "err_year": "Enter a year between 1950 and next year.",
+  "factory_body": "The manufacturer has provided technical data for the serial number.",
+  "factory_found": "Factory data found: {{make}} {{model}}",
+  "financing_hint": "The financier receives a request and confirms.",
+  "financing_question": "Is there a financing encumbrance",
+  "fuel": "Fuel",
+  "id_hint_pin": "17 characters, ISO 10261",
+  "id_hint_serial": "The manufacturer's serial number",
+  "id_type": "Which number is on the nameplate",
+  "label_lead": "Scan the label you put on the machine. If you have no label yet you can attach it later.",
+  "label_reminder": "We will remind you to attach a label.",
+  "label_scan": "Scan the label",
+  "label_skip": "I have no label yet",
+  "lifting": "Has lifting device",
+  "machine_photo": "Photo of the machine",
+  "make": "Manufacturer",
+  "model": "Model",
+  "model_results": "Models",
+  "model_search": "Search model",
+  "model_search_hint": "Pick from the model catalogue to fill in category, weight and power.",
+  "nameplate_alt": "Photo of the nameplate",
+  "ocr_failed": "The nameplate could not be read",
+  "ocr_field": {
+   "engine_serial": "Engine number",
+   "make": "Manufacturer",
+   "model": "Model",
+   "pin": "PIN",
+   "serial": "Serial number",
+   "weight_kg": "Weight (kg)",
+   "year": "Model year"
+  },
+  "ocr_suggestions": "Suggestions from the nameplate",
+  "origin_country": "Country of origin",
+  "owner": "Owner",
+  "owner_email": "Owner's e-mail",
+  "owner_email_hint": "We send an invitation to sign in.",
+  "owner_exists": "{{name}} is already in the register and will be notified.",
+  "owner_new": "{{name}} is added as owner and can claim the account.",
+  "owner_other": "Another owner",
+  "owner_other_hint": "For example a customer. The owner is invited.",
+  "owner_self": "Our organisation owns the machine",
+  "photo_add": "Take photo",
+  "photo_lead": "Photograph the nameplate and we fill in what we can read. You confirm each field.",
+  "photo_nameplate": "Photograph the nameplate",
+  "photo_replace": "Replace photo",
+  "photo_saved": "The photo is saved",
+  "power": "Engine power (kW)",
+  "progress": "Registration steps",
+  "reading": "Reading the nameplate…",
+  "register": "Register",
+  "road_reg_hint": "If the machine also has a road registration plate",
+  "saved": "Draft saved {{at}}",
+  "step_identity": "Identity",
+  "step_label": "Label",
+  "step_machine": "Machine",
+  "step_n": "Step {{n}} of {{total}}",
+  "step_owner": "Owner and financing",
+  "summary": "Summary",
+  "technical": "Technical data and temporary registration",
+  "temporary": "Temporary registration (foreign machine)",
+  "title": "Register machine",
+  "use": "Use",
+  "use_factory": "Fill in from factory data",
+  "valid_until": "Valid until",
+  "variant": "Variant",
+  "vtr_mismatch": "The owner in the road vehicle register does not match the stated owner. Check the details.",
+  "weight": "Operating weight (kg)",
+  "weight_hint": "Determines whether registration is mandatory (from 1,500 kg).",
+  "year": "Model year"
+ }
+}

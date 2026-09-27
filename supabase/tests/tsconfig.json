@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "../../node_modules/.tmp/supabase-tests.tsbuildinfo",
+    "composite": true,
+    "target": "es2023",
+    "lib": ["ES2023", "DOM"],
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "emitDeclarationOnly": true,
+    "outDir": "../../node_modules/.tmp/supabase-tests",
+    "skipLibCheck": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "allowJs": true,
+    "types": ["node"]
+  },
+  "include": ["**/*.ts", "../../packages/shared/src/testdata/*.json"]
+}

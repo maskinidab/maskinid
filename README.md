@@ -1,97 +1,114 @@
 # MaskinID
 
-Registret där maskinhandlare, maskinägare, långivare och försäkringsgivare ser **vem som äger en maskin, om den är belånad och vem som försäkrar den** – i ett uppslag.
+Ett fristående register för tunga arbetsmaskiner: vem som äger maskinen, om den är belånad, vem som försäkrar den, hela historiken och stöldskydd med QR-märke. Handlare, ägare, långivare, försäkringsgivare, myndigheter och kontrollorgan arbetar i samma register, var och en med sin behörighet.
 
-Det här repot innehåller hela frontenden (React + TypeScript + Vite) byggd efter MaskinIDs grafiska profil, samt ett färdigt Supabase-schema som backend kopplas mot. Tills Supabase är uppsatt körs appen mot en mock-backend med exempeldata i webbläsaren.
+Allt skrivs via databasfunktioner med behörighetskontroll, varje ändring blir en händelse i en hashkedja som inte går att ändra i efterhand, och inga belopp eller personnummer lagras i klartext. Sanningskällan för vad som ska finnas är [docs/SPEC.md](docs/SPEC.md). Byggloggen finns i [PROGRESS.md](PROGRESS.md).
 
-## Kom igång
+## Kom igång på 10 minuter
 
-Kräver [Node.js](https://nodejs.org) 20.19 eller senare.
+Du behöver [Node.js](https://nodejs.org) 20.19 eller senare. Inget konto, ingen databas och ingen nyckel behövs för att prova.
 
 ```bash
 git clone https://github.com/maskinidab/maskinid.git
 cd maskinid
 npm install
-npm run dev          # öppna http://localhost:5173
+npm run dev              # öppna http://localhost:5173
 ```
 
-Appen startar i **demoläge** (`VITE_DATA_SOURCE=mock`). Logga in med något av demokontona – lösenord `maskinid`:
+Appen startar i **demoläge**: hela registret (samma migrationer och exempeldata som i produktion) körs som en riktig Postgres-databas i webbläsaren. Första sidladdningen tar några sekunder medan databasen packas upp. Allt du gör sparas bara i din webbläsare, och "Återställ demodata" i den gula demoraden börjar om från början. BankID, bolagsuppslag, OCR, betalning och e-post är ersatta av tydligt märkta demoversioner.
 
-| Konto | Organisation | Roll |
+Logga in med något av demokontona, lösenord `demo1234`:
+
+| Konto | Organisation | Prova |
 | --- | --- | --- |
-| `agare@exempel.se` | Exempel Anläggning AB | Maskinägare |
-| `handlare@exempel.se` | Maskinhandel Mitt AB | Maskinhandlare |
-| `langivare@exempel.se` | Exempelbanken AB | Långivare |
-| `forsakring@exempel.se` | Exempelförsäkring AB | Försäkringsgivare |
-| `admin@exempel.se` | MaskinID Sverige AB | Registerhållare, administratör |
+| `berg@demo.se` | Bergs Schakt & Entreprenad AB (ägare) | Registrera en maskin med typskyltsfoto, daglig kontroll, anmäl stöld, dela en köparrapport |
+| `nordmaskin@demo.se` | Nordmaskin AB (handlare) | Importera lager, sälj en maskin med finansiering, beställ märken, kommission |
+| `bank@demo.se` | Demo Bank Finans (långivare) | Portfölj, registrera och bekräfta förbehåll, kontroll med kvitto |
+| `finans@demo.se` | Nordisk Maskinfinans (långivare) | Se att en andra finansiering stoppas |
+| `forsakring@demo.se` | Demo Försäkring | Försäkringsportalen |
+| `polisen@demo.se` | Polisen (demo) | Partiell sökning, efterlysning, beslag |
+| `kontroll@demo.se` | Maskinkontroll Sverige AB | Besiktningar och verifieringskö |
+| `admin@demo.se` | MaskinID Sverige AB (operatör) | Godkännanden, konflikter, händelseutforskare, schemalagda jobb, "Visa som organisation" |
 
-Prova att söka på `7KX0L2T4003198` (belånad hjullastare), `1FG5H3R8002741` (grävmaskin) eller `9DM2T7A5000452` (anmäld stulen).
+På startsidan finns genvägar till en fysiskt verifierad maskin, en belånad maskin, en anmäld stulen maskin och en skrotad maskin.
+
+### Kör testerna
+
+```bash
+npm run lint
+npm run typecheck
+npm test                 # enhetstester (Vitest)
+npm run check:functions  # Edge Functions: deno check + deno test
+```
+
+Databastesterna kör varje RLS-policy och varje RPC-funktion med en testanvändare per roll. De behöver en lokal PostgreSQL 16 på port 54322, till exempel:
+
+```bash
+docker run -d --name maskinid-pg -p 54322:5432 -e POSTGRES_PASSWORD=postgres postgres:16
+npm run db:reset         # alla migrationer + seed
+npm run test:db
+```
+
+Med Supabase CLI fungerar `supabase start` i stället, kör då `SUPABASE_LOCAL=1 npm run test:db` (se [ADR 0008](docs/adr/0008-test-database.md)).
+
+End-to-end-testerna startar appen själva och kör i Chromium mot demodatabasen i webbläsaren:
+
+```bash
+npx playwright install chromium
+npm run test:e2e         # alla flöden, mobil och tillgänglighet (axe)
+npm run test:a11y        # bara tillgänglighet
+```
+
+Lighthouse mäts mot ett produktionsbygge (se kommentaren i [scripts/lighthouse.mjs](scripts/lighthouse.mjs)):
+
+```bash
+npm run build && npm run preview &
+npm run lighthouse -- --no-performance   # demobygget; utelämna flaggan för Supabase-bygget
+```
 
 ## Skript
 
 | Kommando | Vad |
 | --- | --- |
-| `npm run dev` | Utvecklingsserver |
-| `npm run build` | Typkontroll och produktionsbygge till `dist/` |
-| `npm run preview` | Förhandsgranska bygget |
-| `npm run build:demo` | Fristående demo som en enda HTML-fil (`dist-demo/maskinid-demo.html`) – mock-data, hash-routing |
-| `npm run lint` | Oxlint |
-| `npm run typecheck` | TypeScript |
-| `npm test` | Enhetstester (Vitest): format, identifierare, mock-backend |
-| `npm run test:db` | Kör Supabase-migrering, seed och alla RPC-funktioner mot inbäddad Postgres (PGlite) |
-| `npm run tokens` | Genererar `src/styles/tokens.css` från `design-system/tokens.json` |
-
-## Vyer
-
-| Sökväg | Vy | Inloggning |
-| --- | --- | --- |
-| `/` | Startsida med registersök | – |
-| `/sok?q=…` | Sökresultat – registerposten | – |
-| `/maskin/:id` | Hela registerposten: maskinuppgifter, spärrar, belåning, försäkring, historik och ändringar enligt behörighet | Läsning öppen, ändringar kräver inloggning |
-| `/maskin/:id/utdrag` | Hämta registerutdrag | Ja |
-| `/utdrag/:utdragsnummer` | Utfärdat registerutdrag med sigill, utskriftsvänligt | – (verifiering) |
-| `/logga-in` | Inloggning med lösenord eller e-postlänk | – |
-| `/mina-sidor` | Översikt över organisationens maskiner | Ja |
-| `/mina-sidor/registrera-maskin` | Registrera ny maskin (ägare och handlare) | Ja |
-| `/admin` | Administration: bjud in användare, skapa organisationer | Administratör |
-| `/sa-fungerar-det` | Om registret, status och roller | – |
-| `/profil` | Levande referens för den grafiska profilen | – |
+| `npm run dev` | Utvecklingsserver med demodatabasen i webbläsaren |
+| `npm run build` / `npm run preview` | Produktionsbygge av webbappen och förhandsgranskning |
+| `npm run lint` / `npm run typecheck` | Oxlint och TypeScript (alla paket, API-funktionen och e2e) |
+| `npm test` | Enhetstester |
+| `npm run test:db` | RLS- och RPC-tester mot lokal Postgres |
+| `npm run db:reset` / `npm run db:types` | Återskapa lokal databas / generera `packages/shared/src/database.types.ts` |
+| `npm run test:e2e` / `npm run test:a11y` | Playwright-sviten / bara axe-granskningen |
+| `npm run lighthouse` | Lighthouse-budget för de publika sidorna |
+| `npm run check:functions` / `npm run sync:functions` | Kontrollera Edge Functions / kopiera delad kod till dem |
+| `npm run ingest` | Marknadsbevakningen (annonsflöden) |
+| `npm run tokens` | Designtokens från `design-system/tokens.json` |
 
 ## Struktur
 
 ```
-design-system/          Exporterad grafisk profil: tokens.json, profilbok och originalstilar
-src/assets/logo/        Logotyper (vektorbanor ur MaskinID.eps) – ritas aldrig om
-src/assets/fonts/       Archivo, Archivo Expanded, IBM Plex Mono
-src/
-  styles/               tokens.css (genererad), components.css (mid-*-klasser), app.css (layout)
-  components/           IdFrame, StatusBadge, LookupField, RecordCard, Seal, RegisterExtractHeader, Layout …
-  pages/                En fil per vy
-  auth/                 AuthContext – inloggningsstatus för hela appen
-  lib/
-    types.ts            Domänmodellen (speglar databasen)
-    api/                MaskinIdApi-kontraktet + mockApi och supabaseApi
-    permissions.ts      Behörighetsregler (samma som i databasen)
-    format.ts           Datum, tid och belopp enligt profilens tonalitet
-  data/seed.ts          Exempeldata för mock-läget
-supabase/
-  migrations/           Schema, RLS och RPC-funktioner (registret + administration)
-  functions/invite-user Edge Function som bjuder in användare
-  seed.sql              Samma exempeldata som mock-läget
-  tests/                Databastester (PGlite)
-docs/
-  BACKEND.md            Hur Supabase kopplas på – datamodell, säkerhet, API-kontrakt
-  DESIGN.md             Hur den grafiska profilen används i koden
+apps/web/              Webbappen (Vite, React 19, TypeScript) – PWA, sv/en, MaskinIDs grafiska profil
+apps/ingest/           Marknadsbevakning: connectors, matchning, juridiska räcken
+packages/shared/       Delad kod: regnr, identifierare, i18n (sv/en), adaptrar med mockar, PDF, API-kontrakt
+supabase/migrations/   Schema, RLS, RPC-funktioner, hashkedja, jobb – en migration per steg
+supabase/seed/         Demoregistret (SPEC §17)
+supabase/functions/    Edge Functions (Deno): BankID, OCR, e-post, API v1, webhooks, telematik, betalning …
+supabase/tests/        Databastester per roll
+api/                   Vercel-funktion för PDF:er på serversidan
+e2e/                   Playwright: flöden, mobil, tillgänglighet
+docs/                  SPEC, ADR:er, runbooks, öppna frågor
+design-system/         Den grafiska profilen (tokens, typsnitt, logotyper)
 ```
 
-## Backend
+## Driftsättning
 
-Se **[docs/BACKEND.md](docs/BACKEND.md)**. Kortversion:
+Uppsättning av Supabase, Vercel, hemligheter, schemalagda jobb, övervakning och backupövning beskrivs steg för steg i [docs/runbooks/setup.md](docs/runbooks/setup.md). Alla inställningar finns samlade i [.env.example](.env.example). Migrationer mot staging och produktion körs bara via GitHub Actions (`deploy.yml`), aldrig från en utvecklares dator.
 
-1. `supabase link --project-ref ogpqatvgamzgwwhgtlcr`, `supabase db push` och `supabase functions deploy invite-user`.
-2. Kopiera `.env.example` till `.env`, sätt `VITE_DATA_SOURCE=supabase` och fyll i URL och publishable key.
-3. Starta om `npm run dev`. Ingen frontendkod behöver ändras.
+För att köra webbappen mot ett Supabase-projekt: kopiera `.env.example` till `.env`, sätt `VITE_DATA_SOURCE=supabase` och fyll i `VITE_SUPABASE_URL` och `VITE_SUPABASE_PUBLISHABLE_KEY`.
 
-## Grafisk profil
+## Dokumentation
 
-Allt utgår från profilen i `design-system/` – se **[docs/DESIGN.md](docs/DESIGN.md)** och vyn `/profil` i appen.
+- [docs/SPEC.md](docs/SPEC.md) – kravspecifikationen
+- [docs/adr/](docs/adr/) – arkitekturbeslut, ett per vägval
+- [docs/OPEN_QUESTIONS.md](docs/OPEN_QUESTIONS.md) – antaganden som bör bekräftas
+- [docs/runbooks/](docs/runbooks/) – drift, incidenter, backup, hemligheter, integrationer
+- [docs/DESIGN.md](docs/DESIGN.md) – hur den grafiska profilen används i koden
+- `/api-docs` i appen – API v1 med OpenAPI-specifikation och sandlåda

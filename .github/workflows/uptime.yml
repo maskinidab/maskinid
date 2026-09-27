@@ -1,0 +1,30 @@
+# Uptime (step 26, docs/runbooks/monitoring.md): every 10 minutes the health endpoint and the web app must answer.
+# A failing run notifies through GitHub (and Slack when SLACK_WEBHOOK_URL is set). An external monitor (e.g. Better
+# Stack or UptimeRobot) should watch the same URLs from outside GitHub.
+name: Uptime
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      HEALTH_URL: ${{ secrets.HEALTH_URL }}
+      APP_URL: ${{ secrets.APP_URL }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    steps:
+      - name: Health endpoint
+        if: env.HEALTH_URL != ''
+        run: curl -fsS --max-time 20 "$HEALTH_URL" | tee /dev/stderr | grep -q '"ok":true'
+      - name: Web app
+        if: env.APP_URL != ''
+        run: curl -fsS --max-time 20 -o /dev/null "$APP_URL"
+      - name: Alert
+        if: failure() && env.SLACK_WEBHOOK_URL != ''
+        run: |
+          curl -fsS -X POST -H 'Content-Type: application/json' \
+            -d "{\"text\":\"MaskinID uptime check failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" "$SLACK_WEBHOOK_URL"
