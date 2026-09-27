@@ -28,7 +28,8 @@
     "check:functions": "node scripts/sync-functions-shared.mjs --check && cd supabase/functions && deno check */index.ts && deno test --allow-env _shared/",
     "sync:functions": "node scripts/sync-functions-shared.mjs",
     "lighthouse": "node scripts/lighthouse.mjs",
-    "test:a11y": "playwright test --config e2e/playwright.config.ts a11y"
+    "test:a11y": "playwright test --config e2e/playwright.config.ts a11y",
+    "dev:staging": "npm run dev -w @maskinid/web -- --mode staging"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",

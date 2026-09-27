@@ -11,7 +11,8 @@
     "tokens": "node scripts/build-tokens.mjs",
     "demo-db": "node scripts/demo-db.mjs",
     "predev": "node scripts/demo-db.mjs",
-    "prebuild": "node scripts/demo-db.mjs"
+    "prebuild": "node scripts/demo-db.mjs",
+    "postbuild": "node scripts/drop-demo-db.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
