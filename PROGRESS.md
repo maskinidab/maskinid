@@ -31,7 +31,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 18 | PDF:er & e-post | ✅ | §10, §13 |
 | 19 | Seed & demo | ✅ | §17, ADR 0016 |
 | 20 | Redskap, förare, daglig kontroll, bränsle/klimat | ✅ | tolkat, ADR 0017 |
-| 21 | Fullmakter, kommission, risksignaler, koncern | ⬜ | tolkas från CLAUDE.md |
+| 21 | Fullmakter, kommission, risksignaler, koncern | ✅ | tolkat, ADR 0018 |
 | 22 | Tips, stöldlista, hjälpcenter, support, juridik, kontosäkerhet, "Visa som" | ⬜ | tolkas från CLAUDE.md |
 | 23 | Betalning (Stripe testläge) | ⬜ | tolkas från CLAUDE.md |
 | 24 | Statistik, dataexport, push, sandbox, partial search, merge | ⬜ | tolkas från CLAUDE.md |
@@ -229,3 +229,10 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   `app_config` och verifierbar C-ögonblicksbild. Webb: Daglig kontroll (mobil, stora knappar, historik, mallar),
   Redskap, Förare, Bränsle & klimat (+ PDF), Drift-sektion på maskinens Service-flik, "Ur drift" i listan och på
   maskinsidan. Seed: redskap, förare, kontroller (en med fel), 8 veckors tankningar för Bergs.
+- **Steg 21** – Fullmakter/kommission, risksignaler, koncern (tolkat, ADR 0018): migration `mandates_risk_groups` –
+  fullmakt och kommission med BankID-signatur, accept, återkallelse och behörigheter (sälja/se/drift); ombudet kan
+  påbörja ägarbyte med ägaren som säljare, kommissionsmaskiner i handlarens lager; risksignaler i kontrollresultat och
+  kvitto; bevakning efter kontroll (30/90/180 dagar); koncern (en nivå, moderbolaget läser dotterbolagens maskiner);
+  avdelningar med filter. Webb: Fullmakter-sida + dialog från maskinsidan, Kommission-flik i lagret, risksignaler och
+  "Bevaka maskinen" på kontrollen, Inställningar → Koncern/Avdelningar, Koncernöversikt. Seed: kommission
+  Bergs → Nordmaskin, avdelningar hos Bergs, Skogsmaskiner Norr som dotterbolag till Nordmaskin.

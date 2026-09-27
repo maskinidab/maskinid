@@ -25,6 +25,7 @@ export function MachinesPage() {
   const scope = (params.get("scope") as Scope | null) ?? "all";
   const list = useRpc<{ total: number; items: MachineListItem[] }>("list_machines", { p_org_id: orgId, p_scope: scope, p_limit: 500 });
   const drafts = useRpc<Draft[]>("list_machine_drafts", { p_org_id: orgId });
+  const departments = useRpc<{ id: string; name: string }[]>("list_departments", { p_org_id: orgId });
   const delDraft = useRpcMutation<{ p_org_id: string; p_draft_id: string }>("delete_machine_draft");
   const canRegister = canWrite && (has("owner") || has("dealer") || has("financier") || has("inspector"));
 
@@ -95,6 +96,8 @@ export function MachinesPage() {
               { id: "status", label: t("common.status"), options: STATUSES.map((s) => ({ value: s, label: t(`enum.machine_status.${s}`) })), match: (m, v) => m.status === v },
               { id: "financing", label: t("machines.filter_financing"), options: [{ value: "yes", label: t("common.yes") }, { value: "no", label: t("common.no") }],
                 match: (m, v) => m.has_active_financing === (v === "yes") },
+              ...(departments.data?.length ? [{ id: "department", label: t("department.label"), options: departments.data.map((d) => ({ value: d.id, label: d.name })),
+                match: (m: MachineListItem, v: string) => (m.department as { id: string } | null | undefined)?.id === v }] : []),
               { id: "level", label: t("machines.filter_level"), options: [0, 1, 2].map((l) => ({ value: String(l), label: t(`level.${l}.name`) })),
                 match: (m, v) => String(m.verification_level) === v },
             ]}

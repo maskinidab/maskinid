@@ -52,6 +52,7 @@ export function OperationsSection({ m, write }: { m: MachineView; write: boolean
       )}
       <dl className="faktarutnat">
         <div><dt>{t("operations.operator")}</dt><dd>{operator?.name ?? "–"}</dd></div>
+        <div><dt>{t("department.label")}</dt><dd>{write ? <DepartmentSelect m={m} /> : ((m.department as { name: string } | undefined)?.name ?? "–")}</dd></div>
         <div><dt>{t("nav.attachments")}</dt><dd>{attachments.length
           ? attachments.map((a) => [t(`equipment.attachment_type.${a.type}`), a.make, a.model].filter(Boolean).join(" ")).join(", ") : "–"}</dd></div>
       </dl>
@@ -103,5 +104,22 @@ function StatusDialog({ m, current, onClose }: { m: MachineView; current: string
         </div>
       </form>
     </Dialog>
+  );
+}
+
+function DepartmentSelect({ m }: { m: MachineView }) {
+  const { t } = useTranslation();
+  const { orgId } = useOrg();
+  const deps = useRpc<{ id: string; name: string; active: boolean }[]>("list_departments", { p_org_id: orgId });
+  const list = useRpc<{ items: { id: string; department?: { id: string } | null }[] }>("list_machines", { p_org_id: orgId, p_scope: "all", p_limit: 500 });
+  const current = list.data?.items.find((x) => x.id === m.id)?.department?.id ?? "";
+  const set = useRpcMutation<{ p_org_id: string; p_machine_id: string; p_department_id: string | null }>("set_machine_department");
+  if (!deps.data?.length) return <>{t("department.none_short")}</>;
+  return (
+    <select className="mid-select mid-select-liten" aria-label={t("department.label")} value={current}
+      onChange={(e) => set.mutate({ p_org_id: orgId, p_machine_id: m.id, p_department_id: e.target.value || null })}>
+      <option value="">{t("common.none")}</option>
+      {deps.data.filter((d) => d.active || d.id === current).map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
+    </select>
   );
 }

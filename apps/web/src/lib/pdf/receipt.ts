@@ -49,6 +49,7 @@ export async function receiptPdf(r: CheckReceipt, t: TFunction): Promise<Uint8Ar
     row(t("pdf.flags"), x.flags?.length ? x.flags.map((f) => t(`enum.flag_type.${f.type}`)).join(", ") : t("common.none"));
     row(t("machine.last_transfer"), x.last_transfer_date ? formatDate(x.last_transfer_date) : "–");
     if (x.market_listings?.length) row(t("pdf.market"), t("check.listed_for_sale", { count: x.market_listings.length }));
+    if (x.risk_signals?.length) row(t("risk.title"), x.risk_signals.map((s) => t(`risk.${s.code}`)).join("; "));
   }
   y -= 16;
   line(t("pdf.no_amounts"), { size: 9, color: grey, gap: 14 });

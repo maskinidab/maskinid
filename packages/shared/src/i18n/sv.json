@@ -806,6 +806,7 @@
   "ad_scan": "Skanna och se maskinens historik",
   "ad_scan_body": "Registrerad i MaskinID: verifieringsnivå, stöldkontroll och om det finns förbehåll. Kontakta säljaren direkt från sidan.",
   "buyer_financing": "Köparens finansiering",
+  "consignment_for": "i kommission för {{org}}",
   "contact": "Kontakt",
   "customers_lead": "Byggs automatiskt av era försäljningar och registreringar.",
   "history": {
@@ -862,6 +863,7 @@
   "stock_empty": "Inga maskiner här",
   "stock_lead": "Maskiner ni äger i lager, inbyten och demomaskiner. Sälj, skapa annons-QR eller dela rapport.",
   "stock_status": "Lagerstatus",
+  "tab_consignment": "Kommission",
   "tab_demo": "Demo",
   "tab_sold": "Sålda",
   "tab_stock": "I lager",
@@ -871,6 +873,16 @@
   "trade_in_own": "Maskinen ägs redan av er.",
   "trade_in_sent": "Ägaren har fått en förfrågan om inbyte.",
   "trade_in_verify": "Maskinen är inte fysiskt verifierad. Ni kan verifiera den på plats när kunden har godkänt inbytet."
+ },
+ "department": {
+  "activate": "Aktivera",
+  "add": "Lägg till",
+  "code": "Kod",
+  "deactivate": "Inaktivera",
+  "label": "Avdelning",
+  "lead": "Dela in maskinerna efter avdelning, depå eller kostnadsställe. Filtrera maskinlistan och rapporter på avdelning.",
+  "none": "Inga avdelningar ännu.",
+  "none_short": "Inga avdelningar"
  },
  "email": {
   "footer": "Du får det här meddelandet från {{app}} ({{legal}}). Frågor? Svara inte på mejlet – skriv till {{support}}.",
@@ -1460,6 +1472,7 @@
    "assigned": "{{actor}} placerade maskinen i ett projekt",
    "checked": "{{actor}} kontrollerade maskinen",
    "daily_check": "{{actor}} gjorde daglig kontroll",
+   "department_set": "{{actor}} ändrade avdelning",
    "deregistered": "{{actor}} avregistrerade maskinen",
    "factory_data_confirmed": "Fabriksdata bekräftade maskinens uppgifter",
    "hours_reported": "{{actor}} rapporterade {{payload.hour_meter}} timmar",
@@ -1480,6 +1493,13 @@
   "maintenance": {
    "logged": "{{actor}} registrerade service"
   },
+  "mandate": {
+   "accepted": "{{actor}} accepterade fullmakt",
+   "declined": "{{actor}} avböjde fullmakt",
+   "granted": "{{actor}} gav fullmakt",
+   "revoked": "{{actor}} återkallade fullmakt",
+   "used": "{{actor}} påbörjade ägarbyte med fullmakt"
+  },
   "market": {
    "alert": "Marknadslarm skapat",
    "alert_reviewed": "{{actor}} granskade ett marknadslarm",
@@ -1499,6 +1519,8 @@
    "approved": "Organisationen godkändes",
    "claimed": "{{actor}} tog över organisationen",
    "created": "{{actor}} skapade organisationen",
+   "group_linked": "Kopplad till koncern",
+   "group_unlinked": "Koncernkoppling avslutad",
    "suspended": "Organisationen stängdes av",
    "types_changed": "{{actor}} ändrade organisationens roller",
    "updated": "{{actor}} ändrade organisationens uppgifter"
@@ -1629,6 +1651,26 @@
   "tab_report": "Rapport",
   "tab_todo": "Att göra",
   "upcoming": "Kommande"
+ },
+ "group": {
+  "children_title": "Dotterbolag",
+  "company": "Bolag",
+  "end": "Avsluta koppling",
+  "fleet_lead": "Alla dotterbolags maskiner på ett ställe.",
+  "is_parent": "Organisationen är moderbolag och kan inte själv ha ett moderbolag.",
+  "lead": "Koppla ihop dotterbolag med moderbolag. Moderbolaget ser dotterbolagens maskiner men kan inte ändra något åt dem.",
+  "machines_one": "{{count}} maskin",
+  "machines_other": "{{count}} maskiner",
+  "no_children": "Inga dotterbolag.",
+  "open_fleet": "Visa koncernens maskiner",
+  "parent_title": "Moderbolag",
+  "read_only": "Läsbehörighet – ändringar görs av respektive dotterbolag.",
+  "request": "Begär koppling",
+  "search_parent": "Sök moderbolag",
+  "status": {
+   "active": "Aktiv",
+   "pending": "Väntar på godkännande"
+  }
  },
  "how": {
   "disclaimer": "{{app}} är ett privat, frivilligt register och ingen myndighet.",
@@ -1899,6 +1941,56 @@
   "title": "Maskiner",
   "transfer_open": "Ägarbyte pågår"
  },
+ "mandate": {
+  "accept": "Acceptera",
+  "action": "Fullmakt / kommission",
+  "agent": "Ombud",
+  "all_machines": "Alla maskiner",
+  "decline": "Avböj",
+  "direction": "Riktning",
+  "from": "Från {{org}}",
+  "grant_for": "Fullmakt eller kommission för {{reg}}",
+  "grant_poa": "Ge fullmakt",
+  "granted": "Givna",
+  "kind": {
+   "consignment": "Kommission",
+   "power_of_attorney": "Fullmakt"
+  },
+  "kind_hint": {
+   "consignment": "Handlaren säljer maskinen åt er. Den syns i handlarens lager.",
+   "power_of_attorney": "Ombudet får sköta maskinen enligt behörigheterna nedan."
+  },
+  "lead": "Ge en handlare kommission att sälja en maskin, eller en annan organisation fullmakt att sköta era maskiner. Ni är alltid registrerad ägare och säljare; allt som görs med fullmakten loggas.",
+  "none": "Inga fullmakter",
+  "none_body": "Fullmakter ni ger eller får visas här.",
+  "party": "Motpart",
+  "received": "Mottagna",
+  "revoke": "Återkalla",
+  "scope": {
+   "fleet": "Sköta drift och service",
+   "sell": "Sälja",
+   "view": "Se all information"
+  },
+  "scope_hint": {
+   "fleet": "Timmar, service, daglig kontroll och tankning.",
+   "sell": "Påbörja ägarbyte. Köparen accepterar med BankID och ni meddelas.",
+   "view": "Historik, dokument och förbehåll som ägaren ser."
+  },
+  "scopes": "Behörigheter",
+  "search_agent": "Sök organisation",
+  "sign_grant": "Signera med BankID",
+  "status": {
+   "active": "Aktiv",
+   "completed": "Avslutad",
+   "declined": "Avböjd",
+   "expired": "Utgången",
+   "pending": "Väntar på svar",
+   "revoked": "Återkallad"
+  },
+  "to": "Till {{org}}",
+  "valid_hint": "Högst två år.",
+  "valid_to": "Giltig till"
+ },
  "market": {
   "candidate_seen": "sedd hos {{source}} {{date}}",
   "candidates_create_one": "Skapa ett utkast",
@@ -1940,6 +2032,7 @@
   "fleet": "Flotta",
   "global_search": "Sök regnr eller serienummer",
   "global_search_hint": "Ctrl+K",
+  "group": "Koncern",
   "group_org": "Organisation",
   "group_register": "Register",
   "group_role": "Mina verktyg",
@@ -1952,6 +2045,7 @@
   "leads": "Leads",
   "machines": "Maskiner",
   "main": "Huvudmeny",
+  "mandates": "Fullmakter",
   "notifications": "Notiser",
   "oem": "Leveransdata",
   "operators": "Förare",
@@ -2090,6 +2184,20 @@
     "title": "Maskinen har flaggats"
    }
   },
+  "group": {
+   "accepted": {
+    "body": "",
+    "title": "{{parent}} har godkänt koncernkopplingen"
+   },
+   "declined": {
+    "body": "",
+    "title": "{{parent}} har avböjt koncernkopplingen"
+   },
+   "requested": {
+    "body": "Godkänn under Inställningar → Koncern.",
+    "title": "{{child}} vill ingå i er koncern"
+   }
+  },
   "inspection": {
    "recorded": {
     "body": "{{body}} har registrerat en besiktning av {{reg_number}}.",
@@ -2150,6 +2258,28 @@
    "verified": {
     "body": "{{reg_number}} är nu på nivå {{level}} ({{by}}).",
     "title": "Maskinen är verifierad"
+   }
+  },
+  "mandate": {
+   "accepted": {
+    "body": "",
+    "title": "{{agent}} har accepterat fullmakten"
+   },
+   "declined": {
+    "body": "",
+    "title": "{{agent}} har avböjt fullmakten"
+   },
+   "granted": {
+    "body": "Acceptera eller avböj under Fullmakter.",
+    "title": "{{principal}} har gett er fullmakt"
+   },
+   "revoked": {
+    "body": "Återkallad av {{by}}.",
+    "title": "En fullmakt har återkallats"
+   },
+   "sale_started": {
+    "body": "Ägarbytet görs med er som säljare enligt fullmakten.",
+    "title": "{{agent}} har påbörjat försäljning av {{reg_number}}"
    }
   },
   "mark_all_read": "Markera alla som lästa",
@@ -2281,7 +2411,7 @@
   "watch": {
    "hit": {
     "body": "Något har hänt med {{reg_number}}. Se Bevakning.",
-    "title": "Bevakning: {{value}}"
+    "title": "Händelse på bevakad maskin {{reg_number}}"
    }
   }
  },
@@ -2525,6 +2655,27 @@
   "transfer_lead": "Ett ägarbyte startas alltid av nuvarande ägare. Be säljaren välja Sälj / överlåt. Anser du att registreringen är fel kan du anmäla det här.",
   "transfer_title": "Begär ägarbyte"
  },
+ "risk": {
+  "active_flag": "Maskinen har en aktiv flagga (stöld, spärr eller utredning)",
+  "disclaimer": "Signalerna är skäl att titta närmare – inte ett besked om att något är fel.",
+  "financing_recently_released": "Ett förbehåll har släppts de senaste 30 dagarna",
+  "frequent_transfers": "Tre eller fler ägarbyten de senaste två åren",
+  "hour_meter_corrected": "Timmätaren har rättats nedåt det senaste året",
+  "listed_by_other_seller": "Annonseras av någon annan än ägaren eller med samma serienummer hos flera säljare",
+  "listed_for_sale": "Maskinen syns i en aktiv annons",
+  "many_recent_checks": "Flera kreditgivare har kontrollerat maskinen senaste månaden",
+  "new_unverified_registration": "Nyregistrerad utan granskade underlag",
+  "open_conflict": "Öppen konflikt om maskinens identitet eller ägare",
+  "open_transfer": "Ett ägarbyte pågår",
+  "recent_owner_change": "Nuvarande ägare sedan mindre än 90 dagar",
+  "title": "Risksignaler",
+  "watch_days_one": "{{count}} dag",
+  "watch_days_other": "{{count}} dagar",
+  "watch_lead": "Få en notis om maskinen får nytt förbehåll, flaggas, byter ägare eller annonseras.",
+  "watch_title": "Bevaka maskinen",
+  "watching_permanent": "Maskinen bevakas redan tills vidare.",
+  "watching_until": "Bevakas till {{date}}."
+ },
  "search": {
   "no_hits": "Inget resultat för {{q}}. Kontrollera numret på typskylten."
  },
@@ -2621,7 +2772,9 @@
   "valid_until_label": "Gäller till"
  },
  "settings": {
-  "tab_api": "API och webhooks"
+  "tab_api": "API och webhooks",
+  "tab_departments": "Avdelningar",
+  "tab_group": "Koncern"
  },
  "share": {
   "owner_ordinal": "Antal ägare: {{count}}",

@@ -62,6 +62,7 @@ export function navGroups(types: OrgType[], isAdmin: boolean, isOperator: boolea
     { to: "import", label: "nav.import", icon: "uppladdning" },
     { to: "labels", label: "nav.labels", icon: "qr" },
     { to: "watchlist", label: "nav.watchlist", icon: "oga" },
+    { to: "mandates", label: "nav.mandates", icon: "sigill" },
     { to: "settings", label: "nav.settings", icon: "installningar" },
   ];
   if (!isAdmin) org.splice(0, 1);

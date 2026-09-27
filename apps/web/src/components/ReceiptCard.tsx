@@ -6,6 +6,7 @@ import { FinancingBadge, MachineStatusBadge, VerificationBadge } from "./StatusB
 import type { Level, MachineStatus } from "../lib/api/types";
 
 export interface CheckReceipt {
+  id?: string;
   receipt_number: string;
   created_at: string;
   result_hash: string;
@@ -24,6 +25,7 @@ export interface CheckReceipt {
     flags?: { type: string; raised_at: string }[];
     last_transfer_date?: string | null;
     market_listings?: { source: string; url: string; seen_at: string; seller: string | null }[];
+    risk_signals?: { code: string; severity: "high" | "medium" | "info" }[];
     performed_by: string;
     performed_at: string;
   };
@@ -73,6 +75,17 @@ export function ReceiptCard({ r, onPdf }: { r: CheckReceipt; onPdf?: () => void 
         <p className="kvitto-flaggor"><Icon name="flagga" className="ikon-inline" /> {x.flags.map((f) => t(`enum.flag_type.${f.type}`)).join(", ")}</p>
       )}
       {!!x.market_listings?.length && <p className="kvitto-flaggor"><Icon name="varning" className="ikon-inline" /> {t("check.listed_for_sale", { count: x.market_listings.length })}</p>}
+      {!!x.risk_signals?.length && (
+        <div className="kvitto-risk">
+          <p className="mid-etikett">{t("risk.title")}</p>
+          <ul className="stack-1">
+            {x.risk_signals.map((s) => (
+              <li key={s.code} className={`risk-${s.severity}`}><Icon name={s.severity === "info" ? "info" : "varning"} className="ikon-inline" /> {t(`risk.${s.code}`)}</li>
+            ))}
+          </ul>
+          <p className="t-liten t-sekundar">{t("risk.disclaimer")}</p>
+        </div>
+      )}
       <div className="mid-post-fot">
         <span>{t("components.receipt.performed", { date: formatDateTime(x.performed_at ?? r.created_at), org: x.performed_by })}</span>
         <span className="mid-id" title="SHA-256">{r.result_hash.slice(0, 16)}…</span>

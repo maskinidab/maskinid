@@ -12,9 +12,9 @@ import { RegNumber } from "../../../components/RegNumber";
 import { ScanButton, type ScanResult } from "../../../components/Scanner";
 import { ApiError } from "../../../lib/backend";
 import { FinancingBadge } from "../../../components/StatusBadge";
-import { rpc, useRpc } from "../../../lib/api/query";
+import { rpc, useRpc, useRpcMutation } from "../../../lib/api/query";
 import type { MachineView } from "../../../lib/api/types";
-import { formatDateTime } from "../../../lib/format";
+import { formatDate, formatDateTime } from "../../../lib/format";
 import { downloadBytes, receiptPdf } from "../../../lib/pdf/receipt";
 import { EncumbranceDialog } from "../machines/MachineActions";
 
@@ -141,6 +141,7 @@ export function CheckPage() {
         {tab === "single" && receipt && (
           <div className="stack-3">
             <ReceiptCard r={receipt} onPdf={() => void pdf(receipt)} />
+            {receipt.result.found && canWrite && receipt.id && <WatchAfterCheck receiptId={receipt.id} />}
             {machine && canWrite && has("financier") && (
               <div className="mid-rad">
                 {!receipt.result.has_active_financing && (
@@ -201,5 +202,33 @@ export function ReceiptsPage() {
         {open && <ReceiptCard r={open} onPdf={() => void pdf(open)} />}
       </Dialog>
     </div>
+  );
+}
+
+/** Monitoring after a check: the checker is notified of new encumbrances, flags, transfers or listings (step 21). */
+function WatchAfterCheck({ receiptId }: { receiptId: string }) {
+  const { t } = useTranslation();
+  const { orgId } = useOrg();
+  const [until, setUntil] = useState<string | null>(null);
+  const m = useRpcMutation<{ p_org_id: string; p_receipt_id: string; p_days: number }, { watch: { expires_at: string | null } }>("watch_after_check",
+    { onSuccess: (r) => setUntil(r.watch.expires_at ?? "") });
+  return (
+    <section className="panel stack-2" aria-labelledby="bevaka">
+      <h2 id="bevaka" className="t-rubrik-4">{t("risk.watch_title")}</h2>
+      {until !== null ? (
+        <p role="status"><Icon name="bock" className="ikon-inline" /> {until ? t("risk.watching_until", { date: formatDate(until) }) : t("risk.watching_permanent")}</p>
+      ) : (
+        <>
+          <p className="t-liten">{t("risk.watch_lead")}</p>
+          <div className="mid-rad">
+            {[30, 90, 180].map((d) => (
+              <button key={d} type="button" className="mid-knapp mid-knapp-kontur mid-knapp-liten" disabled={m.isPending}
+                onClick={() => m.mutate({ p_org_id: orgId, p_receipt_id: receiptId, p_days: d })}>{t("risk.watch_days", { count: d })}</button>
+            ))}
+          </div>
+        </>
+      )}
+      {m.error && <ErrorNotice error={m.error} />}
+    </section>
   );
 }

@@ -22,3 +22,4 @@ the product owner decided otherwise. Format: context → decision → consequenc
 | [0015](0015-operator-admin-and-audit.md) | Operator admin in the operator org; append-only operator audit |
 | [0016](0016-demo-timeline-in-seed.md) | Demo seed spreads events over 30 days and anchors them |
 | [0017](0017-fleet-operations.md) | Attachments, operators, daily checks and fuel as fleet data |
+| [0018](0018-mandates-risk-groups.md) | Mandates (fullmakt/kommission), risk signals, monitoring after check, groups and departments |

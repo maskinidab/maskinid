@@ -18,6 +18,7 @@ import { formatDate, formatDateTime, formatMonth, formatNumber } from "../../../
 import { extractPdf } from "../../../lib/pdf/extract";
 import { downloadCertificate, downloadMachineReport } from "../../../lib/pdf/downloads";
 import { downloadBytes } from "../../../lib/pdf/receipt";
+import { GrantMandateDialog } from "../org/MandatesPage";
 import { OperationalNotice } from "./OperationsSection";
 import { ServiceTab } from "./ServiceTab";
 import {
@@ -26,7 +27,7 @@ import {
 } from "./MachineActions";
 
 type Tab = "overview" | "history" | "documents" | "financing" | "service" | "access";
-type DialogId = "transfer" | "flag" | "deregister" | "share" | "encumbrance" | "label" | "verify" | "edit" | null;
+type DialogId = "transfer" | "flag" | "deregister" | "share" | "encumbrance" | "label" | "verify" | "edit" | "mandate" | null;
 
 const READ_ONLY: MachineView["status"][] = ["scrapped", "exported", "deregistered"];
 
@@ -34,7 +35,7 @@ const READ_ONLY: MachineView["status"][] = ["scrapped", "exported", "deregistere
 export function MachinePage() {
   const { id } = useParams();
   const { t } = useTranslation();
-  const { orgId, has, canWrite, minTrustedLevel, path } = useOrg();
+  const { orgId, has, canWrite, minTrustedLevel, path, isAdmin } = useOrg();
   const [params, setParams] = useSearchParams();
   const q = useRpc<MachineView>("get_machine", { p_org_id: orgId, p_machine_id: id });
   const [dialog, setDialog] = useState<DialogId>(null);
@@ -83,6 +84,7 @@ export function MachinePage() {
     const stolenActive = flags.some((f) => f.type === "stolen");
     if (isOwner && !m.open_transfer && !blocked) actions.push({ id: "transfer", label: t("actions.transfer.title"), icon: "byt" });
     if (isOwner) actions.push({ id: "share", label: t("actions.share.title"), icon: "lank" });
+    if (isOwner && isAdmin && !blocked) actions.push({ id: "mandate", label: t("mandate.action"), icon: "sigill" });
     if (full) actions.push({ id: "edit", label: t("actions.edit.title"), icon: "penna" });
     if (full && m.verification_level < 2) actions.push({ id: "verify", label: t("actions.verify.title"), icon: "sigill" });
     if ((full || has("dealer") || has("inspector")) && Array.isArray(m.labels) && !m.labels.some((l) => l.status === "bound")) {
@@ -170,6 +172,7 @@ export function MachinePage() {
       <FlagDialog m={m} open={dialog === "flag"} onClose={() => setDialog(null)} />
       <DeregisterDialog m={m} open={dialog === "deregister"} onClose={() => setDialog(null)} />
       <ShareDialog m={m} open={dialog === "share"} onClose={() => setDialog(null)} />
+      {dialog === "mandate" && <GrantMandateDialog machine={m} onClose={() => setDialog(null)} />}
       <EncumbranceDialog m={m} open={dialog === "encumbrance"} onClose={() => setDialog(null)} />
       <BindLabelDialog m={m} open={dialog === "label"} onClose={() => setDialog(null)} />
       <VerificationDialog m={m} open={dialog === "verify"} onClose={() => setDialog(null)} />

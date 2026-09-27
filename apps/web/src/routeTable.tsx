@@ -51,6 +51,8 @@ const AttachmentsPage = L(() => import("./pages/app/fleet/EquipmentPages"), "Att
 const OperatorsPage = L(() => import("./pages/app/fleet/EquipmentPages"), "OperatorsPage");
 const DailyCheckPage = L(() => import("./pages/app/fleet/DailyCheckPage"), "DailyCheckPage");
 const ClimatePage = L(() => import("./pages/app/fleet/ClimatePage"), "ClimatePage");
+const MandatesPage = L(() => import("./pages/app/org/MandatesPage"), "MandatesPage");
+const GroupFleetPage = L(() => import("./pages/app/org/GroupSettings"), "GroupFleetPage");
 const AdminHomePage = L(() => import("./pages/app/admin/AdminQueues"), "AdminHomePage");
 const AdminConflictsPage = L(() => import("./pages/app/admin/AdminQueues"), "AdminConflictsPage");
 const AdminCorrectionsPage = L(() => import("./pages/app/admin/AdminQueues"), "AdminCorrectionsPage");
@@ -119,6 +121,8 @@ export const appRoutes: { path: string; element: ReactNode }[] = [
   { path: "operators", element: <OperatorsPage /> },
   { path: "daily-check", element: <DailyCheckPage /> },
   { path: "climate", element: <ClimatePage /> },
+  { path: "mandates", element: <MandatesPage /> },
+  { path: "group", element: <GroupFleetPage /> },
   { path: "admin", element: <AdminHomePage /> },
   { path: "admin/organizations", element: <AdminOrgsPage /> },
   { path: "admin/organizations/:id", element: <AdminOrgPage /> },

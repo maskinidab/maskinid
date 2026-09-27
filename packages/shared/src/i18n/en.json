@@ -806,6 +806,7 @@
   "ad_scan": "Scan to see the machine's history",
   "ad_scan_body": "Registered in MaskinID: verification level, theft check and whether there are encumbrances. Contact the seller directly from the page.",
   "buyer_financing": "Buyer's financing",
+  "consignment_for": "on consignment for {{org}}",
   "contact": "Contact",
   "customers_lead": "Built automatically from your sales and registrations.",
   "history": {
@@ -862,6 +863,7 @@
   "stock_empty": "No machines here",
   "stock_lead": "Machines you own in stock, trade-ins and demo machines. Sell, create an ad QR or share a report.",
   "stock_status": "Stock status",
+  "tab_consignment": "Consignment",
   "tab_demo": "Demo",
   "tab_sold": "Sold",
   "tab_stock": "In stock",
@@ -871,6 +873,16 @@
   "trade_in_own": "The machine is already yours.",
   "trade_in_sent": "The owner has received a trade-in request.",
   "trade_in_verify": "The machine is not physically verified. You can verify it on site once the customer has approved the trade-in."
+ },
+ "department": {
+  "activate": "Activate",
+  "add": "Add",
+  "code": "Code",
+  "deactivate": "Deactivate",
+  "label": "Department",
+  "lead": "Group machines by department, depot or cost centre. Filter the machine list and reports by department.",
+  "none": "No departments yet.",
+  "none_short": "No departments"
  },
  "email": {
   "footer": "You receive this message from {{app}} ({{legal}}). Questions? Do not reply – write to {{support}}.",
@@ -1460,6 +1472,7 @@
    "assigned": "{{actor}} assigned the machine to a project",
    "checked": "{{actor}} checked the machine",
    "daily_check": "{{actor}} did a daily check",
+   "department_set": "{{actor}} changed department",
    "deregistered": "{{actor}} deregistered the machine",
    "factory_data_confirmed": "Factory data confirmed the machine details",
    "hours_reported": "{{actor}} reported {{payload.hour_meter}} hours",
@@ -1480,6 +1493,13 @@
   "maintenance": {
    "logged": "{{actor}} logged maintenance"
   },
+  "mandate": {
+   "accepted": "{{actor}} accepted a mandate",
+   "declined": "{{actor}} declined a mandate",
+   "granted": "{{actor}} granted a mandate",
+   "revoked": "{{actor}} revoked a mandate",
+   "used": "{{actor}} started a transfer under a mandate"
+  },
   "market": {
    "alert": "Market alert raised",
    "alert_reviewed": "{{actor}} reviewed a market alert",
@@ -1499,6 +1519,8 @@
    "approved": "The organisation was approved",
    "claimed": "{{actor}} claimed the organisation",
    "created": "{{actor}} created the organisation",
+   "group_linked": "Linked to a group",
+   "group_unlinked": "Group link ended",
    "suspended": "The organisation was suspended",
    "types_changed": "{{actor}} changed the organisation's roles",
    "updated": "{{actor}} updated the organisation"
@@ -1629,6 +1651,26 @@
   "tab_report": "Report",
   "tab_todo": "To do",
   "upcoming": "Upcoming"
+ },
+ "group": {
+  "children_title": "Subsidiaries",
+  "company": "Company",
+  "end": "End link",
+  "fleet_lead": "All subsidiaries' machines in one place.",
+  "is_parent": "The organisation is a parent and cannot itself have a parent.",
+  "lead": "Link subsidiaries to a parent company. The parent sees the subsidiaries' machines but cannot change anything for them.",
+  "machines_one": "{{count}} machine",
+  "machines_other": "{{count}} machines",
+  "no_children": "No subsidiaries.",
+  "open_fleet": "Show the group's machines",
+  "parent_title": "Parent company",
+  "read_only": "Read access – changes are made by each subsidiary.",
+  "request": "Request link",
+  "search_parent": "Search parent company",
+  "status": {
+   "active": "Active",
+   "pending": "Awaiting approval"
+  }
  },
  "how": {
   "disclaimer": "{{app}} is a private, voluntary register and not a public authority.",
@@ -1899,6 +1941,56 @@
   "title": "Machines",
   "transfer_open": "Transfer in progress"
  },
+ "mandate": {
+  "accept": "Accept",
+  "action": "Mandate / consignment",
+  "agent": "Agent",
+  "all_machines": "All machines",
+  "decline": "Decline",
+  "direction": "Direction",
+  "from": "From {{org}}",
+  "grant_for": "Mandate or consignment for {{reg}}",
+  "grant_poa": "Grant mandate",
+  "granted": "Granted",
+  "kind": {
+   "consignment": "Consignment",
+   "power_of_attorney": "Power of attorney"
+  },
+  "kind_hint": {
+   "consignment": "The dealer sells the machine for you. It appears in the dealer's stock.",
+   "power_of_attorney": "The agent may manage the machine according to the permissions below."
+  },
+  "lead": "Give a dealer a consignment to sell a machine, or another organisation a mandate to manage your machines. You always remain the registered owner and seller; everything done under the mandate is logged.",
+  "none": "No mandates",
+  "none_body": "Mandates you grant or receive are shown here.",
+  "party": "Counterparty",
+  "received": "Received",
+  "revoke": "Revoke",
+  "scope": {
+   "fleet": "Manage operation and service",
+   "sell": "Sell",
+   "view": "See all information"
+  },
+  "scope_hint": {
+   "fleet": "Hours, service, daily checks and fuel.",
+   "sell": "Start an ownership transfer. The buyer accepts with BankID and you are notified.",
+   "view": "History, documents and encumbrances as the owner sees them."
+  },
+  "scopes": "Permissions",
+  "search_agent": "Search organisation",
+  "sign_grant": "Sign with BankID",
+  "status": {
+   "active": "Active",
+   "completed": "Completed",
+   "declined": "Declined",
+   "expired": "Expired",
+   "pending": "Awaiting answer",
+   "revoked": "Revoked"
+  },
+  "to": "To {{org}}",
+  "valid_hint": "At most two years.",
+  "valid_to": "Valid until"
+ },
  "market": {
   "candidate_seen": "seen on {{source}} {{date}}",
   "candidates_create_one": "Create one draft",
@@ -1940,6 +2032,7 @@
   "fleet": "Fleet",
   "global_search": "Search reg. no. or serial",
   "global_search_hint": "Ctrl+K",
+  "group": "Group",
   "group_org": "Organisation",
   "group_register": "Register",
   "group_role": "My tools",
@@ -1952,6 +2045,7 @@
   "leads": "Leads",
   "machines": "Machines",
   "main": "Main menu",
+  "mandates": "Mandates",
   "notifications": "Notifications",
   "oem": "Delivery data",
   "operators": "Operators",
@@ -2090,6 +2184,20 @@
     "title": "Machine flagged"
    }
   },
+  "group": {
+   "accepted": {
+    "body": "",
+    "title": "{{parent}} has approved the group link"
+   },
+   "declined": {
+    "body": "",
+    "title": "{{parent}} has declined the group link"
+   },
+   "requested": {
+    "body": "Approve under Settings → Group.",
+    "title": "{{child}} wants to join your group"
+   }
+  },
   "inspection": {
    "recorded": {
     "body": "{{body}} has recorded an inspection of {{reg_number}}.",
@@ -2150,6 +2258,28 @@
    "verified": {
     "body": "{{reg_number}} is now at level {{level}} ({{by}}).",
     "title": "Machine verified"
+   }
+  },
+  "mandate": {
+   "accepted": {
+    "body": "",
+    "title": "{{agent}} has accepted the mandate"
+   },
+   "declined": {
+    "body": "",
+    "title": "{{agent}} has declined the mandate"
+   },
+   "granted": {
+    "body": "Accept or decline under Mandates.",
+    "title": "{{principal}} has granted you a mandate"
+   },
+   "revoked": {
+    "body": "Revoked by {{by}}.",
+    "title": "A mandate has been revoked"
+   },
+   "sale_started": {
+    "body": "The transfer is made with you as seller under the mandate.",
+    "title": "{{agent}} has started selling {{reg_number}}"
    }
   },
   "mark_all_read": "Mark all as read",
@@ -2281,7 +2411,7 @@
   "watch": {
    "hit": {
     "body": "Something happened to {{reg_number}}. See Watchlist.",
-    "title": "Watch: {{value}}"
+    "title": "Event on watched machine {{reg_number}}"
    }
   }
  },
@@ -2525,6 +2655,27 @@
   "transfer_lead": "A transfer is always started by the current owner. Ask the seller to choose Sell / transfer. If you believe the registration is wrong you can report it here.",
   "transfer_title": "Request a transfer"
  },
+ "risk": {
+  "active_flag": "The machine has an active flag (theft, block or investigation)",
+  "disclaimer": "The signals are reasons to look closer – not a statement that something is wrong.",
+  "financing_recently_released": "An encumbrance was released in the last 30 days",
+  "frequent_transfers": "Three or more transfers in the last two years",
+  "hour_meter_corrected": "The hour meter was corrected downwards in the last year",
+  "listed_by_other_seller": "Listed by someone other than the owner or with the same serial at several sellers",
+  "listed_for_sale": "The machine appears in an active listing",
+  "many_recent_checks": "Several lenders have checked the machine in the last month",
+  "new_unverified_registration": "Newly registered without reviewed documents",
+  "open_conflict": "Open conflict about the machine's identity or owner",
+  "open_transfer": "A transfer is in progress",
+  "recent_owner_change": "Current owner for less than 90 days",
+  "title": "Risk signals",
+  "watch_days_one": "{{count}} day",
+  "watch_days_other": "{{count}} days",
+  "watch_lead": "Get notified if the machine gets a new encumbrance, is flagged, changes owner or is listed.",
+  "watch_title": "Watch the machine",
+  "watching_permanent": "The machine is already watched indefinitely.",
+  "watching_until": "Watched until {{date}}."
+ },
  "search": {
   "no_hits": "No result for {{q}}. Check the number on the nameplate."
  },
@@ -2621,7 +2772,9 @@
   "valid_until_label": "Valid until"
  },
  "settings": {
-  "tab_api": "API and webhooks"
+  "tab_api": "API and webhooks",
+  "tab_departments": "Departments",
+  "tab_group": "Group"
  },
  "share": {
   "owner_ordinal": "Number of owners: {{count}}",

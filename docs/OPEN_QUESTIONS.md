@@ -39,3 +39,10 @@ Frågor som kräver affärsbeslut. Bygget stannar inte för dem; det säkraste a
     meddelar ägare/brukare; ingen blockering av registeråtgärder (ägarbyte m.m.) sker på grund av driftstatus.
 12. **Förarbehörigheter.** Typlistan (förarbevis, truckkort, kranförarbevis, lift, heta arbeten m.fl.) är ett urval.
     Påminnelse vid utgång visas i listan (60 dagar); e-postpåminnelse ingår inte ännu.
+
+## Fullmakter, risksignaler, koncern (steg 21, tolkat – SPEC §20.5–20.7 saknas)
+13. **Fullmaktens omfattning.** *Antagande:* behörigheterna är sälja, se all information och sköta drift/service.
+    Förbehåll, flaggor och avregistrering kan aldrig göras med fullmakt. Längsta giltighet två år.
+14. **Risksignalernas trösklar** (t.ex. 3 ägarbyten på 2 år, 3 kreditgivare på 30 dagar, ägarbyte inom 90 dagar)
+    är antaganden och bör stämmas av med finansiärer.
+15. **Koncern.** *Antagande:* en nivå (moderbolag–dotterbolag) och endast läsbehörighet för moderbolaget.
