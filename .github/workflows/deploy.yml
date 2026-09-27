@@ -1,14 +1,18 @@
 # Deploy (step 26, docs/runbooks/deploy.md). Migrations and Edge Functions reach staging/production only through here.
-# Staging: automatically after green CI on main. Production: manual, through the "production" environment, which has
-# required reviewers configured in GitHub. The web app is deployed by the Vercel Git integration (preview per PR,
-# production from main after this workflow has migrated the database).
+#
+# Branch model:
+#   push to `staging` + green CI  ->  staging Supabase project   (automatic)
+#   push to `main`    + green CI  ->  production Supabase project (the "production" environment has required
+#                                     reviewers configured in GitHub, so it waits for an approval)
+# The web app itself is deployed by the Vercel Git integration: `staging` branch -> staging deployment,
+# `main` -> production, plus a preview per pull request.
 name: Deploy
 
 on:
   workflow_run:
     workflows: [CI]
     types: [completed]
-    branches: [main]
+    branches: [main, staging]
   workflow_dispatch:
     inputs:
       target:
@@ -19,14 +23,14 @@ on:
         options: [staging, production]
 
 concurrency:
-  group: deploy-${{ github.event.inputs.target || 'staging' }}
+  group: deploy-${{ github.event.inputs.target || (github.event.workflow_run.head_branch == 'main' && 'production' || 'staging') }}
   cancel-in-progress: false
 
 jobs:
   deploy:
     if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.target || 'staging' }}
+    environment: ${{ github.event.inputs.target || (github.event.workflow_run.head_branch == 'main' && 'production' || 'staging') }}
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
@@ -39,6 +43,8 @@ jobs:
       - uses: supabase/setup-cli@v1
         with:
           version: latest
+      - name: Show which project is being deployed
+        run: echo "Deploying to ${{ github.event.inputs.target || (github.event.workflow_run.head_branch == 'main' && 'production' || 'staging') }} (project $SUPABASE_PROJECT_REF)"
       - name: Link project
         run: supabase link --project-ref "$SUPABASE_PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
       - name: Show pending migrations

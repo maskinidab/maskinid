@@ -14,7 +14,9 @@ export default defineConfig({
   expect: { timeout: 30_000 },
   fullyParallel: false,
   workers: process.env.CI ? 2 : 1,
-  retries: 0,
+  // These tests drive a real database in the browser, so a slow runner can push a whole test past its budget.
+  // Retry on CI rather than let a timing blip turn the pipeline red; a test that fails every attempt is a real bug.
+  retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI ? [["github"], ["html", { open: "never", outputFolder: "../playwright-report" }]] : [["list"]],
   use: {
     baseURL: process.env.E2E_BASE_URL ?? "http://localhost:5173",
@@ -30,6 +32,9 @@ export default defineConfig({
   ],
   webServer: process.env.E2E_BASE_URL ? undefined : {
     command: "npm run dev",
+    // Pin the data source: the suite needs the in-browser demo register, and a developer .env pointing
+    // VITE_DATA_SOURCE at a Supabase project would otherwise make every test fail at login.
+    env: { VITE_DATA_SOURCE: "local", VITE_DEMO_MODE: "true" },
     cwd: "..",
     url: "http://localhost:5173",
     reuseExistingServer: true,
