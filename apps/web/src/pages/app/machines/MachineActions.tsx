@@ -449,6 +449,9 @@ export function BindLabelDialog({ m, open, onClose }: { m: MachineView; open: bo
 }
 
 // ---------- Verification request (SPEC §3.3) ----------
+const PROOF_TYPES = ["invoice", "purchase_agreement", "ownership_certificate"];
+const EVIDENCE_TYPES = [...PROOF_TYPES, "photo_nameplate", "photo_machine", "photo_label", "inspection_report", "ce_declaration"];
+
 export function VerificationDialog({ m, open, onClose }: { m: MachineView; open: boolean; onClose(): void }) {
   const { t } = useTranslation();
   const { orgId } = useOrg();
@@ -457,11 +460,17 @@ export function VerificationDialog({ m, open, onClose }: { m: MachineView; open:
   const [note, setNote] = useState("");
   const [date, setDate] = useState("");
   const partners = useRpc<(OrgBrief & { address?: unknown })[]>("list_verification_partners", open ? { p_level: level } : null);
+  // The machine's documents go with the request as evidence; level 1 needs proof of acquisition + a nameplate photo.
+  const docs = useRpc<DocumentItem[]>("list_documents", open ? { p_org_id: orgId, p_machine_id: m.id } : null);
+  const evidence = (docs.data ?? []).filter((d) => EVIDENCE_TYPES.includes(d.type));
+  const hasProof = evidence.some((d) => PROOF_TYPES.includes(d.type));
+  const hasNameplate = evidence.some((d) => d.type === "photo_nameplate");
+  const missing = level === 1 && docs.data && !(hasProof && hasNameplate);
   return (
     <ActionDialog open={open} onClose={onClose} title={t("actions.verify.title")} submitLabel={t("actions.verify.submit")}
       onSubmit={async () => {
-        await rpc("request_verification", { p_org_id: orgId, p_machine_id: m.id, p_level: level, p_reviewer_org_id: partner || null,
-          p_note: note || null, p_preferred_date: date || null });
+        await rpc("request_verification", { p_org_id: orgId, p_machine_id: m.id, p_level: level, p_document_ids: evidence.map((d) => d.id),
+          p_reviewer_org_id: partner || null, p_note: note || null, p_preferred_date: date || null });
         onClose();
       }}>
       <MachineSummary m={m} />
@@ -472,6 +481,14 @@ export function VerificationDialog({ m, open, onClose }: { m: MachineView; open:
             <span><strong>{t(`level.${l}.name`)}</strong><br /><small>{t(`level.${l}.desc`)}</small></span></label>
         ))}</div>
       </fieldset>
+      <div className="stack-1">
+        <p className="mid-etikett">{t("actions.verify.evidence")}</p>
+        {evidence.length ? (
+          <ul className="lista-punkter t-liten">{evidence.map((d) => <li key={d.id}>{t(`enum.document_type.${d.type}`)} · {d.filename}</li>)}</ul>
+        ) : <p className="t-liten t-sekundar">{t("actions.verify.no_evidence")}</p>}
+        {missing && <Notice kind="fel" title={t("actions.verify.missing", {
+          what: [!hasProof && t("actions.verify.need_proof"), !hasNameplate && t("actions.verify.need_nameplate")].filter(Boolean).join(t("common.and")) })} />}
+      </div>
       <FormField label={t("actions.verify.partner")} hint={t("actions.verify.partner_hint")} optional>
         <select className="mid-select" value={partner} onChange={(e) => setPartner(e.target.value)}>
           <option value="">{t("actions.verify.operator")}</option>

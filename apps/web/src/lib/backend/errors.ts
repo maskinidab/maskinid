@@ -30,6 +30,8 @@ export function fromPgError(e: { message?: string; code?: string; details?: stri
   }
   const message = e.message ?? "UNKNOWN";
   const code = /^[A-Z][A-Z0-9_]+$/.test(message) ? message : message.includes("permission denied") ? "FORBIDDEN" : "UNKNOWN";
+  // An unexpected database error is a bug: make it visible while developing (users only see the generic message).
+  if (code === "UNKNOWN" && import.meta.env?.DEV) console.error("database error:", message);
   return new ApiError(code, code === "UNKNOWN" ? { message, ...(typeof detail === "object" ? detail : {}) } : detail, STATUS[e.code ?? ""] ?? 400);
 }
 

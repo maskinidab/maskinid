@@ -198,6 +198,11 @@ export function createLocalBackend(): Backend {
       return (await (await db()).query<T>(sql, params)).rows;
     },
   };
+  // e2e hook (step 27): lets Playwright read the in-browser database to assert results (e-mail queued, events …).
+  // Only in the Vite dev server – production builds (import.meta.env.DEV = false) drop this branch entirely.
+  if (import.meta.env.DEV && typeof window !== "undefined") {
+    (window as unknown as { __maskinidTest?: unknown }).__maskinidTest = { query: ctx.query, rpcAs };
+  }
 
   async function createSession(userId: string, email: string): Promise<Session> {
     // Like Supabase: a password/link sign-in is aal1; verifying a TOTP code (mfa.verify) raises the session to aal2.

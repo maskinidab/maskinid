@@ -70,7 +70,7 @@ const EMPTY: WizardData = {
 /** The register payload for register_machine (see app.create_machine). */
 export function toRegisterData(d: WizardData): Record<string, unknown> {
   const identifiers = [
-    d.serial.trim() && { type: d.id_type, value: d.serial.trim(), source: d.ocr_fields.includes("serial") ? "ocr" : "manual" },
+    d.serial.trim() && { type: d.id_type, value: d.serial.trim(), source: d.ocr_fields.includes("serial") ? "nameplate_ocr" : "manual" },
     d.engine_serial.trim() && { type: "engine_serial", value: d.engine_serial.trim() },
     d.road_reg.trim() && { type: "road_reg", value: d.road_reg.trim(), external_system: "transportstyrelsen" },
   ].filter(Boolean);
@@ -134,10 +134,13 @@ export function RegisterWizard() {
   const [result, setResult] = useState<Result | null>(null);
   const dirty = useRef(false);
   const heading = useRef<HTMLHeadingElement>(null);
+  // The draft this wizard created itself (autosave or photo upload): putting its id in the URL must not reload it,
+  // or edits made meanwhile (e.g. accepted OCR suggestions) would be overwritten by the older saved copy.
+  const createdDraft = useRef<string | null>(null);
 
   // Resume a draft.
   useEffect(() => {
-    if (!draftParam) return;
+    if (!draftParam || draftParam === createdDraft.current) return;
     void rpc<{ id: string; draft_data: Partial<WizardData> }[]>("list_machine_drafts", { p_org_id: orgId }).then((list) => {
       const found = list.find((x) => x.id === draftParam);
       if (found) setD({ ...EMPTY, ...found.draft_data });
@@ -152,6 +155,7 @@ export function RegisterWizard() {
       try {
         const r = await rpc<{ id: string; saved_at: string }>("save_machine_draft", { p_org_id: orgId, p_data: d, p_draft_id: draftId });
         if (!draftId) {
+          createdDraft.current = r.id;
           setDraftId(r.id);
           setParams({ draft: r.id }, { replace: true });
         }
@@ -182,6 +186,7 @@ export function RegisterWizard() {
   async function ensureDraft(): Promise<string> {
     if (draftId) return draftId;
     const r = await rpc<{ id: string }>("save_machine_draft", { p_org_id: orgId, p_data: d, p_draft_id: null });
+    createdDraft.current = r.id;
     setDraftId(r.id);
     setParams({ draft: r.id }, { replace: true });
     return r.id;

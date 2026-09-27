@@ -375,7 +375,14 @@ function FinancingTab({ m, onRelease, onAskRelease, onRegister }: {
   );
 }
 
-interface AccessRow { id: string; viewer_type: string; via: string; created_at: string; viewer_org_name: string | null; approx_location: string | null; user_agent_family: string | null }
+interface AccessRow { id: string; viewer_type: string; via: string; created_at: string; viewer_org_name: string | null; approx_location: { city?: string | null; lat?: number; lng?: number } | string | null; user_agent_family: string | null }
+
+/** access_log.approx_location is { lat, lng, city } (rounded) – show the town only. */
+function placeText(p: AccessRow["approx_location"]): string {
+  if (!p) return "–";
+  if (typeof p === "string") return p;
+  return p.city ?? (p.lat !== undefined && p.lng !== undefined ? `${p.lat.toFixed(1)}, ${p.lng.toFixed(1)}` : "–");
+}
 interface ShareRow { id: string; scope: string; token_prefix: string; expires_at: string; max_views: number | null; views: number; active: boolean; created_at: string }
 
 function Access({ m }: { m: MachineView }) {
@@ -415,7 +422,7 @@ function Access({ m }: { m: MachineView }) {
               { id: "who", header: t("machine.viewer"), value: (r) => r.viewer_org_name ?? r.viewer_type,
                 cell: (r) => r.viewer_org_name ?? t(`enum.viewer_type.${r.viewer_type}`) },
               { id: "via", header: t("machine.via"), value: (r) => r.via, cell: (r) => t(`enum.access_via.${r.via}`) },
-              { id: "where", header: t("machine.where"), value: (r) => r.approx_location, cell: (r) => r.approx_location ?? "–", hideOnMobile: true },
+              { id: "where", header: t("machine.where"), value: (r) => placeText(r.approx_location), cell: (r) => placeText(r.approx_location), hideOnMobile: true },
             ]} />
         )}
       </section>

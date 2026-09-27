@@ -29,10 +29,12 @@
     "sync:functions": "node scripts/sync-functions-shared.mjs"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "1.63",
     "@types/node": "^24.13.3",
     "@types/pg": "^8.15.6",
     "deno": "^2.9.6",
+    "lighthouse": "^13.5.0",
     "oxlint": "^1.81.0",
     "pg": "^8.23.0",
     "typescript": "~6.0.2",
