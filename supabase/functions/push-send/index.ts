@@ -5,10 +5,11 @@ import { createAdapters } from "../_shared/shared/adapters/index.ts";
 import { renderPush } from "../_shared/shared/email/render.ts";
 import { envRecord, serviceClient } from "../_shared/db.ts";
 import { isInternalCall, json, preflight } from "../_shared/http.ts";
+import { withSentry } from "../_shared/sentry.ts";
 
 interface Claimed { id: string; type: string; data: Record<string, unknown>; link: string | null; severity: string; endpoint: string; p256dh: string; auth: string; locale: string }
 
-Deno.serve(async (req) => {
+Deno.serve(withSentry("push-send", async (req) => {
   const pre = preflight(req);
   if (pre) return pre;
   if (!isInternalCall(req)) return json(401, { code: "NOT_AUTHENTICATED" });
@@ -31,4 +32,4 @@ Deno.serve(async (req) => {
     }
   }
   return json(200, { sent, failed });
-});
+}));

@@ -5,8 +5,9 @@ import { createAdapters } from "../_shared/shared/adapters/index.ts";
 import type { TheftReport } from "../_shared/shared/adapters/types.ts";
 import { envRecord, serviceClient } from "../_shared/db.ts";
 import { isInternalCall, json, preflight } from "../_shared/http.ts";
+import { withSentry } from "../_shared/sentry.ts";
 
-Deno.serve(async (req) => {
+Deno.serve(withSentry("theft-sync", async (req) => {
   const pre = preflight(req);
   if (pre) return pre;
   if (!isInternalCall(req)) return json(401, { code: "NOT_AUTHENTICATED" });
@@ -33,4 +34,4 @@ Deno.serve(async (req) => {
     console.error("theft-sync pull failed", (e as Error).message);
   }
   return json(200, { pushed, pulled });
-});
+}));

@@ -7,7 +7,7 @@ import { APP_LEGAL_NAME, APP_NAME, SUPPORT_EMAIL } from "../config.ts";
 import { translator, type Locale } from "../i18n/index.ts";
 import { formatSek } from "../billing.ts";
 
-export const EMAIL_TEMPLATES = ["notification", "invite", "invite_owner", "transfer_invite", "weekly_digest", "ownership_certificate", "support_reply", "invoice", "sms"] as const;
+export const EMAIL_TEMPLATES = ["notification", "invite", "invite_owner", "transfer_invite", "weekly_digest", "ownership_certificate", "support_reply", "invoice", "notification_digest", "sms"] as const;
 export type EmailTemplate = (typeof EMAIL_TEMPLATES)[number];
 
 export interface OutboxMessage {
@@ -108,6 +108,21 @@ export function renderEmail(msg: OutboxMessage, opts: { baseUrl: string }): Rend
       subject = t("email.support_reply.subject", vars);
       block = { heading: t("email.support_reply.heading", vars), paragraphs: [str(d.body)], footnote: t("email.support_reply.how_to_answer") };
       break;
+    case "notification_digest": {
+      const items = Array.isArray(d.items) ? (d.items as { type: string; data?: Record<string, unknown> }[]) : [];
+      const v = { ...vars, count: items.length };
+      subject = t(d.mode === "weekly" ? "email.notification_digest.subject_weekly" : "email.notification_digest.subject_daily", v);
+      block = { heading: t("email.notification_digest.heading", v), paragraphs: [t("email.notification_digest.body", v)],
+        list: items.map((i) => {
+          const inner: Record<string, unknown> = { app: APP_NAME, ...(i.data ?? {}) };
+          if (typeof inner.type === "string") inner.type = t(`enum.flag_type.${inner.type}`);
+          const title = t(`notifications.${i.type}.title`, inner);
+          return title === `notifications.${i.type}.title` ? t("email.notification.fallback_title") : title;
+        }),
+        button: { label: t("email.notification.open"), url: absolute(base, "/notifications") },
+        footnote: t("email.notification.preferences", { url: `${base}/go?to=${encodeURIComponent("/settings?tab=notifications")}` }) };
+      break;
+    }
     case "invoice": {
       const v = { ...vars, total: formatSek(Number(d.total_ore ?? 0), locale) };
       subject = t("email.invoice.subject", v);

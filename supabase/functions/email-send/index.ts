@@ -6,10 +6,11 @@ import { renderEmail } from "../_shared/shared/email/render.ts";
 import { APP_BASE_URL } from "../_shared/shared/config.ts";
 import { envRecord, serviceClient } from "../_shared/db.ts";
 import { isInternalCall, json, preflight } from "../_shared/http.ts";
+import { withSentry } from "../_shared/sentry.ts";
 
 interface Claimed { id: string; to_email: string; template: string; locale: string; data: Record<string, unknown>; attachments: unknown[] }
 
-Deno.serve(async (req) => {
+Deno.serve(withSentry("email-send", async (req) => {
   const pre = preflight(req);
   if (pre) return pre;
   if (!isInternalCall(req)) return json(401, { code: "NOT_AUTHENTICATED" });
@@ -37,4 +38,4 @@ Deno.serve(async (req) => {
     }
   }
   return json(200, { sent, failed, skipped });
-});
+}));

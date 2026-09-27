@@ -5,10 +5,11 @@ import { createAdapters } from "../_shared/shared/adapters/index.ts";
 import { envRecord, userClient } from "../_shared/db.ts";
 import { json, preflight } from "../_shared/http.ts";
 import { createAnthropicOcr, OcrRefused } from "../_shared/anthropic-ocr.ts";
+import { withSentry } from "../_shared/sentry.ts";
 
 const MAX = 8 * 1024 * 1024;
 
-Deno.serve(async (req) => {
+Deno.serve(withSentry("ocr-nameplate", async (req) => {
   const pre = preflight(req);
   if (pre) return pre;
   const ctx = await userClient(req).rpc("my_context");
@@ -24,4 +25,4 @@ Deno.serve(async (req) => {
     console.error("ocr-nameplate failed", (e as Error).name);
     return json(502, { code: "OCR_UNAVAILABLE" });
   }
-});
+}));

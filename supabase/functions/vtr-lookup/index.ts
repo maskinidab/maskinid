@@ -5,8 +5,9 @@
 import { createAdapters } from "../_shared/shared/adapters/index.ts";
 import { envRecord, serviceClient, userClient } from "../_shared/db.ts";
 import { json, preflight, rpcError } from "../_shared/http.ts";
+import { withSentry } from "../_shared/sentry.ts";
 
-Deno.serve(async (req) => {
+Deno.serve(withSentry("vtr-lookup", async (req) => {
   const pre = preflight(req);
   if (pre) return pre;
   const user = userClient(req);
@@ -33,4 +34,4 @@ Deno.serve(async (req) => {
   const { data, error } = await user.rpc("lookup_vehicle_registry", { p_road_reg: reg });
   if (error) return rpcError(error);
   return json(200, data);
-});
+}));

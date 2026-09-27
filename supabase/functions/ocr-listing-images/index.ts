@@ -5,8 +5,9 @@ import { createAdapters } from "../_shared/shared/adapters/index.ts";
 import { envRecord, serviceClient } from "../_shared/db.ts";
 import { isInternalCall, json, preflight, rpcError } from "../_shared/http.ts";
 import { createAnthropicOcr } from "../_shared/anthropic-ocr.ts";
+import { withSentry } from "../_shared/sentry.ts";
 
-Deno.serve(async (req) => {
+Deno.serve(withSentry("ocr-listing-images", async (req) => {
   const pre = preflight(req);
   if (pre) return pre;
   if (!isInternalCall(req)) return json(401, { code: "NOT_AUTHENTICATED" });
@@ -28,4 +29,4 @@ Deno.serve(async (req) => {
   });
   if (error) return rpcError(error);
   return json(200, best);
-});
+}));

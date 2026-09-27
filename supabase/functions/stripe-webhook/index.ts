@@ -3,8 +3,9 @@
 import { createAdapters } from "../_shared/shared/adapters/index.ts";
 import { envRecord, serviceClient } from "../_shared/db.ts";
 import { json, rpcError } from "../_shared/http.ts";
+import { withSentry } from "../_shared/sentry.ts";
 
-Deno.serve(async (req) => {
+Deno.serve(withSentry("stripe-webhook", async (req) => {
   if (req.method !== "POST") return json(405, { code: "METHOD_NOT_ALLOWED" });
   const { payments } = createAdapters(envRecord());
   if (payments.name !== "stripe") return json(404, { code: "NOT_FOUND" });
@@ -20,4 +21,4 @@ Deno.serve(async (req) => {
   });
   if (error) return rpcError(error);
   return json(200, data);
-});
+}));

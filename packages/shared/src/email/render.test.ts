@@ -11,6 +11,7 @@ const samples: Record<string, Record<string, unknown>> = {
   weekly_digest: { org_name: "Bergs", items: [{ title: "Service 500 h", reg_number: "ABC-123", make: "Volvo", model: "L60H", due_at: "2026-10-01", due_hours: 500, hour_meter: 450 }] },
   ownership_certificate: { certificate_number: "B-2026-000001", result_hash: "ab", reg_number: "ABC-123", make: "Volvo", model: "L60H", org_name: "Bergs", seller: "Nordmaskin AB", machine_id: "m1" },
   support_reply: { number: 42, subject: "Kan inte logga in", body: "Prova länken igen." },
+  notification_digest: { mode: "daily", org_name: "Bergs", items: [{ type: "machine.merged", data: { reg_number: "ABC2345", merged_reg_number: "XYZ2345" } }, { type: "x.unknown" }] },
   invoice: { number: "INV-2026-000001", period: "2026-08", due_date: "2026-10-01", org_name: "Bergs", total_ore: 123750 },
   sms: { type: "flag.stolen", data: { reg_number: "ABC-123" }, link: "/machines/1" },
 };

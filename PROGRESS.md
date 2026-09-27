@@ -36,7 +36,7 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
 | 23 | Betalning (Stripe testläge) | ✅ | tolkat, ADR 0020 |
 | 24 | Statistik, dataexport, push, sandbox, partial search, merge | ✅ | tolkat, ADR 0021 |
 | 25 | Integrationsadaptrar (NFC, telematik, TS, Larmtjänst), publika sidor | ✅ | ADR 0022 |
-| 26 | Drift | ⬜ | |
+| 26 | Drift | ✅ | ADR 0023 |
 | 27 | Kvalitet | ⬜ | |
 
 ## Logg
@@ -269,3 +269,12 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   Integrationer, position på maskinsidan, NFC i skanning och märkessidan, publika sidor `/for/:segment`, `/about`,
   `/integrations`, `/status`. Rättning: tidslinjetexten för rapporterade timmar. Runbook `docs/runbooks/integrations.md`.
   Seed `60_integrations.sql`. Tester `21_integrations`, telematikadapter. ADR 0022, öppna frågor 27–30.
+- **Steg 26** – Migration `operations`: jobbtabell + körhistorik, `app.schedule_jobs()` till pg_cron, SQL-jobb via
+  `app.run_job` och Edge Functions via pg_net med `x-cron-secret`, larm efter tre misslyckanden, Admin → Schemalagda jobb.
+  Nya jobb: tillfälliga registreringar (påminnelse + avregistrering), stulen > 24 mån, dagliga/veckovisa
+  notissammanfattningar (ny e-postmall), nattlig verifiering av händelsekedjan, städning; `health_check` och `/status`
+  visar jobbhälsa. PDF i Vercel Node-funktion `api/pdf.ts` (samma generatorer och RPC:er som webben). Sentry i alla
+  Edge Functions (`_shared/sentry.ts`) med gemensam skrubbning (`packages/shared/src/scrub.ts`), Edge Function `health`.
+  GitHub Actions: `deploy.yml` (staging automatiskt, produktion med godkännande), `uptime.yml`, `backup-drill.yml` med
+  `scripts/verify-restore.mjs`. Komplett `.env.example`, `vercel.json` med säkerhetsheaders. Runbooks: setup, deploy,
+  monitoring, backup-restore, incident, secrets. Tester `22_operations`, server-PDF, skrubbning. ADR 0023.

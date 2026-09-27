@@ -64,3 +64,6 @@ verify_jwt = false
 verify_jwt = false
 [functions.theft-sync]
 verify_jwt = false
+# Step 26: uptime monitoring calls health without a token.
+[functions.health]
+verify_jwt = false

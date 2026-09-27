@@ -24,6 +24,7 @@ const StatusPage = L(() => import("./pages/public/MorePages"), "StatusPage");
 const AdminStatisticsPage = L(() => import("./pages/public/StatisticsPage"), "AdminStatisticsPage");
 const AdminBillingPage = L(() => import("./pages/app/admin/AdminBilling"), "AdminBillingPage");
 const AdminTheftReportsPage = L(() => import("./pages/app/admin/AdminTheftReports"), "AdminTheftReportsPage");
+const AdminJobsPage = L(() => import("./pages/app/admin/AdminJobs"), "AdminJobsPage");
 const TipPage = L(() => import("./pages/public/InfoPages"), "TipPage");
 const HelpPage = L(() => import("./pages/public/InfoPages"), "HelpPage");
 const HelpArticlePage = L(() => import("./pages/public/InfoPages"), "HelpArticlePage");
@@ -174,4 +175,5 @@ export const appRoutes: { path: string; element: ReactNode }[] = [
   { path: "admin/billing", element: <AdminBillingPage /> },
   { path: "admin/statistics", element: <AdminStatisticsPage /> },
   { path: "admin/theft-reports", element: <AdminTheftReportsPage /> },
+  { path: "admin/jobs", element: <AdminJobsPage /> },
 ];

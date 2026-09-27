@@ -80,3 +80,10 @@ Frågor som kräver affärsbeslut. Bygget stannar inte för dem; det säkraste a
     *Antagande:* tillräckligt för v1; NTAG 424 DNA med SUN-meddelanden kan införas senare.
 29. **Telematikposition.** *Antagande:* endast senaste position sparas och myndighet ser den bara vid stöldflagga.
 30. **Publika sidor.** Innehållet på `/for/*`, `/about` och `/integrations` är utkast och bör granskas av produkt/marknad.
+
+## Drift (steg 26, tolkat – SPEC §21 saknas)
+31. **Leverantörer för drift.** *Antagande:* Sentry för fel, GitHub Actions + extern tjänst (t.ex. Better Stack) för
+    uptime, Slack för larm. Byts utan kodändring utom Sentry-klienten.
+32. **Backup-övning.** Veckovis logisk dump till en tillfällig container i GitHub Actions. Kräver en läsbehörig
+    databasroll i produktion; alternativt körs övningen i Supabase med PITR till ett nytt projekt (runbook).
+33. **Tidszon för jobb.** pg_cron körs i UTC; tiderna är satta så att de hamnar tidigt på morgonen svensk tid.

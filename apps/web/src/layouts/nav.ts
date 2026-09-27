@@ -89,6 +89,7 @@ export function navGroups(types: OrgType[], isAdmin: boolean, isOperator: boolea
       { to: "admin/billing", label: "nav.admin_billing", icon: "kvitto" },
       { to: "admin/statistics", label: "nav.admin_statistics", icon: "diagram" },
       { to: "admin/theft-reports", label: "nav.admin_theft_reports", icon: "flagga" },
+      { to: "admin/jobs", label: "nav.admin_jobs", icon: "tid" },
       { to: "admin/flags", label: "nav.admin_flags", icon: "installningar" },
       { to: "admin/health", label: "nav.admin_health", icon: "bock" },
     ] });

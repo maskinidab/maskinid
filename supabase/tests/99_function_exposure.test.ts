@@ -28,7 +28,7 @@ const SERVICE_ONLY = [
   "public.close_billing_period", "public.billing_set_invoice_provider", "public.billing_pending_invoices",
   "public.refresh_statistics", "public.claim_push_outbox", "public.record_push_result",
   "public.check_nfc_tag", "public.telematics_due_connections", "public.telematics_ingest", "public.claim_theft_sync",
-  "public.record_theft_sync_result", "public.ingest_external_theft_reports",
+  "public.record_theft_sync_result", "public.ingest_external_theft_reports", "public.health_check",
 ];
 
 describe("function exposure", () => {

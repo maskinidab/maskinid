@@ -2,6 +2,7 @@
 // "Verifierad nivå 2 · Ingen stöldflagga"; the SVG links to the public page when embedded as <a><img></a>.
 import { serviceClient } from "../_shared/db.ts";
 import { preflight } from "../_shared/http.ts";
+import { withSentry } from "../_shared/sentry.ts";
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
@@ -21,7 +22,7 @@ export function badgeSvg(b: { found: boolean; reg_number?: string; verification_
 <text x="${104 + reg.length * 7.5}" y="18" font-family="Helvetica,Arial,sans-serif" font-size="12" fill="#fff">${esc(right)}</text></svg>`;
 }
 
-Deno.serve(async (req) => {
+Deno.serve(withSentry("badge", async (req) => {
   const pre = preflight(req);
   if (pre) return pre;
   const url = new URL(req.url);
@@ -31,4 +32,4 @@ Deno.serve(async (req) => {
     headers: { "Content-Type": "image/svg+xml; charset=utf-8", "Cache-Control": "public, max-age=300", "X-Robots-Tag": "noindex",
       "Access-Control-Allow-Origin": "*", "X-Content-Type-Options": "nosniff" },
   });
-});
+}));

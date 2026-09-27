@@ -8,8 +8,9 @@ import { serviceClient, envRecord } from "../_shared/db.ts";
 import { isInternalCall, json, preflight, rpcError } from "../_shared/http.ts";
 import { createAdapters } from "../_shared/shared/adapters/index.ts";
 import { sha256Hex, stripJpegMetadata } from "../_shared/shared/image.ts";
+import { withSentry } from "../_shared/sentry.ts";
 
-Deno.serve(async (req) => {
+Deno.serve(withSentry("av-scan", async (req) => {
   const pre = preflight(req);
   if (pre) return pre;
   if (!isInternalCall(req) && !req.headers.get("Authorization")) return json(401, { code: "NOT_AUTHENTICATED" });
@@ -45,4 +46,4 @@ Deno.serve(async (req) => {
     await db.storage.from("machine-photos").upload(`${doc.machine_id}/${doc.id}.${ext}`, bytes, { contentType: doc.mime, upsert: true });
   }
   return json(200, rec.data);
-});
+}));

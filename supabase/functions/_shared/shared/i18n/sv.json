@@ -1138,6 +1138,12 @@
    "preferences": "Du kan välja vilka notiser som skickas som e-post under Inställningar → Notiser: {{url}}",
    "subject_critical": "Viktigt: {{title}}"
   },
+  "notification_digest": {
+   "body": "Här är notiserna sedan förra sammanfattningen.",
+   "heading": "Notiser för {{org_name}}",
+   "subject_daily": "{{count}} nya notiser i {{app}}",
+   "subject_weekly": "Veckans notiser i {{app}}: {{count}}"
+  },
   "ownership_certificate": {
    "body": "Ägarbytet från {{seller}} är genomfört och {{make}} {{model}} ({{reg_number}}) är registrerad på {{org_name}}. Ägarbeviset finns att ladda ner som PDF på maskinsidan.",
    "button": "Öppna maskinen",
@@ -2159,6 +2165,58 @@
   "vtr_body": "Traktorer och motorredskap med vägtrafikregistrering slås upp vid registrering – utan att personuppgifter sparas.",
   "vtr_title": "Transportstyrelsen"
  },
+ "jobs": {
+  "desc": {
+   "anchor-events": "Publicerar gårdagens kontrollvärde",
+   "anonymize-market": "Anonymiserar gamla annonsobservationer",
+   "billing-close": "Fakturerar förra månaden (den 1:a)",
+   "billing-sync": "Skickar fakturor till Stripe",
+   "cleanup": "Raderar kortlivade tekniska rader",
+   "collect-http-results": "Hämtar svar från Edge Function-jobb",
+   "daily-digests": "Dagliga notissammanfattningar",
+   "email-send": "Skickar e-post i kö",
+   "expire-transfers": "Avbryter ägarbyten som inte accepterats inom 14 dagar",
+   "partitions": "Skapar partitioner för åtkomstloggen i förväg",
+   "purge-leads": "Raderar leads äldre än lagringstiden",
+   "push-send": "Skickar push-notiser",
+   "reminders": "Notiser om service och besiktning",
+   "rental-statuses": "Uthyrning: planerad → aktiv → försenad",
+   "statistics": "Daglig ögonblicksbild av den publika statistiken",
+   "stolen-24-months": "Föreslår avregistrering av maskiner stulna över 24 månader",
+   "telematics-sync": "Hämtar telematikflöden",
+   "temporary-regs": "Tillfälliga registreringar: påminnelse och utgång",
+   "theft-sync": "Synkar med stöldregistret",
+   "verify-chain": "Verifierar hela händelsekedjan",
+   "webhook-dispatch": "Levererar webhooks",
+   "weekly-digest": "Veckosammanfattning för flottan via e-post",
+   "weekly-digests": "Veckovisa notissammanfattningar"
+  },
+  "failures": "{{count}} misslyckanden i rad: {{error}}",
+  "job": "Jobb",
+  "kind_http": "Edge Function",
+  "kind_sql": "Databasjobb",
+  "last_run": "Senast körd",
+  "lead": "Jobb som körs av pg_cron: databasjobb direkt och Edge Functions via pg_net. Tre misslyckanden i rad larmar superadmin.",
+  "not_ready": "Schemaläggaren är inte fullt konfigurerad i den här miljön",
+  "pause": "Pausa",
+  "paused": "Pausat",
+  "req": {
+   "cron_secret": "cron_secret i Vault",
+   "functions_url": "FUNCTIONS_BASE_URL satt",
+   "pg_cron": "pg_cron installerat",
+   "pg_net": "pg_net installerat"
+  },
+  "resume": "Återuppta",
+  "run": "Kör nu",
+  "schedule": "Schema (UTC)",
+  "status": {
+   "dispatched": "Skickat",
+   "error": "Fel",
+   "ok": "OK"
+  },
+  "title": "Schemalagda jobb",
+  "utc_note": "Scheman anges i UTC (svensk tid minus 1–2 timmar)."
+ },
  "labels": {
   "batch_one": "{{count}} märke, beställt {{date}}",
   "batch_other": "{{count}} märken, beställda {{date}}",
@@ -2390,6 +2448,7 @@
   "admin_flags": "Funktionsflaggor",
   "admin_health": "Systemhälsa",
   "admin_home": "Översikt",
+  "admin_jobs": "Schemalagda jobb",
   "admin_labels": "Märkesbatcher",
   "admin_legal": "Juridiska dokument",
   "admin_market": "Marknadsbevakning",
@@ -2492,6 +2551,12 @@
    "subscription_past_due": {
     "body": "Uppdatera kortet under Inställningar → Betalning.",
     "title": "Abonnemanget har en obetald avgift"
+   }
+  },
+  "chain": {
+   "broken": {
+    "body": "Nattlig kontroll hittade ett avbrott vid händelse {{at_seq}}. Följ incidentrutinen.",
+    "title": "Händelsekedjan är bruten"
    }
   },
   "conflict": {
@@ -2599,6 +2664,10 @@
    "raised": {
     "body": "{{reg_number}} flaggades: {{type}}.",
     "title": "Maskinen har flaggats"
+   },
+   "stolen_24_months": {
+    "body": "Föreslå avregistrering till ägaren (30 dagars invändningstid).",
+    "title": "{{reg_number}} har varit stulen i över två år"
    }
   },
   "group": {
@@ -2625,6 +2694,12 @@
    "requires_verification": {
     "body": "{{insurer}} kräver högre verifieringsnivå för {{reg_number}}.",
     "title": "Försäkringen kräver verifiering"
+   }
+  },
+  "job": {
+   "failing": {
+    "body": "Tre misslyckanden i rad. Senaste fel: {{error}}",
+    "title": "Jobbet {{job}} misslyckas"
    }
   },
   "label": {
@@ -2681,6 +2756,14 @@
    "stolen_scanned": {
     "body": "{{reg_number}} skannades {{at}}. Plats: {{location.city}}.",
     "title": "Din stulna maskin har skannats"
+   },
+   "temporary_expired": {
+    "body": "Den tillfälliga registreringen gick ut och maskinen har markerats som exporterad.",
+    "title": "{{reg_number}} är avregistrerad"
+   },
+   "temporary_expiring": {
+    "body": "Förläng registreringen eller registrera maskinen permanent, annars avregistreras den som exporterad.",
+    "title": "Tillfällig registrering för {{reg_number}} går ut {{valid_until}}"
    },
    "verified": {
     "body": "{{reg_number}} är nu på nivå {{level}} ({{by}}).",

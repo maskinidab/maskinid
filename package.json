@@ -17,7 +17,7 @@
     "build:demo": "npm run build:demo -w @maskinid/web",
     "preview": "npm run preview -w @maskinid/web",
     "lint": "oxlint",
-    "typecheck": "tsc -b packages/shared apps/web apps/ingest supabase/tests",
+    "typecheck": "tsc -b packages/shared apps/web apps/ingest supabase/tests api",
     "test": "vitest run",
     "test:db": "vitest run --config supabase/tests/vitest.config.ts",
     "test:e2e": "playwright test --config e2e/playwright.config.ts",

@@ -5,12 +5,13 @@ import { createAdapters } from "../_shared/shared/adapters/index.ts";
 import { envRecord, serviceClient, userClient } from "../_shared/db.ts";
 import { json, preflight } from "../_shared/http.ts";
 import { safeReturnTo, signState, verifyState } from "../_shared/oidc-state.ts";
+import { withSentry } from "../_shared/sentry.ts";
 
 const callbackUrl = () => `${Deno.env.get("SUPABASE_URL")}/functions/v1/bankid-identify`;
 const appOrigin = () => Deno.env.get("APP_ORIGIN") ?? "http://localhost:5173";
 const secret = () => Deno.env.get("BANKID_STATE_SECRET") ?? Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-Deno.serve(async (req) => {
+Deno.serve(withSentry("bankid-identify", async (req) => {
   const pre = preflight(req);
   if (pre) return pre;
   const { identity } = createAdapters(envRecord());
@@ -47,4 +48,4 @@ Deno.serve(async (req) => {
     back.searchParams.set("bankid", "failed");
   }
   return Response.redirect(back.toString(), 302);
-});
+}));

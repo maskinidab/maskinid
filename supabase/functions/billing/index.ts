@@ -7,8 +7,9 @@ import { createAdapters } from "../_shared/shared/adapters/index.ts";
 import { APP_BASE_URL } from "../_shared/shared/config.ts";
 import { envRecord, serviceClient, userClient } from "../_shared/db.ts";
 import { json, preflight, rpcError } from "../_shared/http.ts";
+import { withSentry } from "../_shared/sentry.ts";
 
-Deno.serve(async (req) => {
+Deno.serve(withSentry("billing", async (req) => {
   const pre = preflight(req);
   if (pre) return pre;
   if (req.method !== "POST") return json(405, { code: "METHOD_NOT_ALLOWED" });
@@ -44,4 +45,4 @@ Deno.serve(async (req) => {
     return json(200, await payments.createPortal(ctx.provider_customer_id, back));
   }
   return json(400, { code: "VALIDATION" });
-});
+}));

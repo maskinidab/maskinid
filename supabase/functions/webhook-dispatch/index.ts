@@ -3,6 +3,7 @@
 // Retries 5 times with backoff (recorded by record_webhook_result); redirects are not followed (SSRF).
 import { serviceClient } from "../_shared/db.ts";
 import { isInternalCall, json, preflight } from "../_shared/http.ts";
+import { withSentry } from "../_shared/sentry.ts";
 
 async function hmacHex(secret: string, data: string) {
   const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
@@ -14,7 +15,7 @@ export async function signPayload(secret: string, body: string, t = Math.floor(D
   return `t=${t},v1=${await hmacHex(secret, `${t}.${body}`)}`;
 }
 
-Deno.serve(async (req) => {
+Deno.serve(withSentry("webhook-dispatch", async (req) => {
   const pre = preflight(req);
   if (pre) return pre;
   if (!isInternalCall(req)) return json(401, { code: "NOT_AUTHENTICATED" });
@@ -41,4 +42,4 @@ Deno.serve(async (req) => {
     }
   }));
   return json(200, { delivered: ok, failed });
-});
+}));

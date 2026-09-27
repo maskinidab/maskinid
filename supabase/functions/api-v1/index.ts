@@ -6,10 +6,11 @@ import { matchRoute, statusForCode } from "../_shared/shared/api/routes.ts";
 import { sandboxHandle } from "../_shared/shared/api/sandbox.ts";
 import { serviceClient } from "../_shared/db.ts";
 import { corsHeaders, ipHash, json, preflight, sha256Hex } from "../_shared/http.ts";
+import { withSentry } from "../_shared/sentry.ts";
 
 const PREFIX = /^.*?\/api-v1(?:\/v1)?/;
 
-Deno.serve(async (req) => {
+Deno.serve(withSentry("api-v1", async (req) => {
   const pre = preflight(req);
   if (pre) return pre;
   const started = Date.now();
@@ -93,4 +94,4 @@ Deno.serve(async (req) => {
   }
   if (idem && status < 500) await svc.rpc("api_idempotency_put", { p_api_key_id: keyId, p_key: idem, p_request_hash: reqHash, p_status: status, p_response: out ?? null });
   return done(status, out ?? null, { ...corsHeaders(), "Cache-Control": "no-store" });
-});
+}));

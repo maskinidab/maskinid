@@ -1138,6 +1138,12 @@
    "preferences": "You can choose which notifications are e-mailed under Settings → Notifications: {{url}}",
    "subject_critical": "Important: {{title}}"
   },
+  "notification_digest": {
+   "body": "Here are the notifications since the last summary.",
+   "heading": "Notifications for {{org_name}}",
+   "subject_daily": "{{count}} new notifications in {{app}}",
+   "subject_weekly": "This week's notifications in {{app}}: {{count}}"
+  },
   "ownership_certificate": {
    "body": "The transfer from {{seller}} is complete and {{make}} {{model}} ({{reg_number}}) is registered to {{org_name}}. The ownership certificate can be downloaded as a PDF on the machine page.",
    "button": "Open the machine",
@@ -2159,6 +2165,58 @@
   "vtr_body": "Tractors and motor implements with road registration are looked up at registration – without storing personal data.",
   "vtr_title": "Transportstyrelsen"
  },
+ "jobs": {
+  "desc": {
+   "anchor-events": "Publishes yesterday's anchor",
+   "anonymize-market": "Anonymises old market observations",
+   "billing-close": "Invoices last month (on the 1st)",
+   "billing-sync": "Pushes invoices to Stripe",
+   "cleanup": "Deletes short-lived technical rows",
+   "collect-http-results": "Records Edge Function job responses",
+   "daily-digests": "Daily notification digests",
+   "email-send": "Sends queued e-mail",
+   "expire-transfers": "Cancels transfers not accepted within 14 days",
+   "partitions": "Creates access log partitions ahead",
+   "purge-leads": "Deletes leads older than the retention period",
+   "push-send": "Sends web push",
+   "reminders": "Service and inspection reminders",
+   "rental-statuses": "Rentals: planned → active → overdue",
+   "statistics": "Daily public statistics snapshot",
+   "stolen-24-months": "Suggests deregistration of machines stolen over 24 months",
+   "telematics-sync": "Fetches telematics feeds",
+   "temporary-regs": "Temporary registrations: reminders and expiry",
+   "theft-sync": "Syncs with the theft register",
+   "verify-chain": "Verifies the whole event chain",
+   "webhook-dispatch": "Delivers webhooks",
+   "weekly-digest": "Weekly fleet digest e-mail",
+   "weekly-digests": "Weekly notification digests"
+  },
+  "failures": "{{count}} failures in a row: {{error}}",
+  "job": "Job",
+  "kind_http": "Edge Function",
+  "kind_sql": "Database job",
+  "last_run": "Last run",
+  "lead": "Jobs run by pg_cron: database jobs directly and Edge Functions via pg_net. Three failures in a row alert the superadmins.",
+  "not_ready": "The scheduler is not fully configured in this environment",
+  "pause": "Pause",
+  "paused": "Paused",
+  "req": {
+   "cron_secret": "cron_secret in Vault",
+   "functions_url": "FUNCTIONS_BASE_URL set",
+   "pg_cron": "pg_cron installed",
+   "pg_net": "pg_net installed"
+  },
+  "resume": "Resume",
+  "run": "Run now",
+  "schedule": "Schedule (UTC)",
+  "status": {
+   "dispatched": "Dispatched",
+   "error": "Error",
+   "ok": "OK"
+  },
+  "title": "Scheduled jobs",
+  "utc_note": "Schedules are in UTC (Swedish time minus 1–2 hours)."
+ },
  "labels": {
   "batch_one": "{{count}} label, ordered {{date}}",
   "batch_other": "{{count}} labels, ordered {{date}}",
@@ -2390,6 +2448,7 @@
   "admin_flags": "Feature flags",
   "admin_health": "System health",
   "admin_home": "Overview",
+  "admin_jobs": "Scheduled jobs",
   "admin_labels": "Label batches",
   "admin_legal": "Legal documents",
   "admin_market": "Market surveillance",
@@ -2492,6 +2551,12 @@
    "subscription_past_due": {
     "body": "Update the card under Settings → Billing.",
     "title": "The subscription has an unpaid fee"
+   }
+  },
+  "chain": {
+   "broken": {
+    "body": "The nightly check found a break at event {{at_seq}}. Follow the incident runbook.",
+    "title": "The event chain is broken"
    }
   },
   "conflict": {
@@ -2599,6 +2664,10 @@
    "raised": {
     "body": "{{reg_number}} was flagged: {{type}}.",
     "title": "Machine flagged"
+   },
+   "stolen_24_months": {
+    "body": "Propose deregistration to the owner (30 days to object).",
+    "title": "{{reg_number}} has been stolen for over two years"
    }
   },
   "group": {
@@ -2625,6 +2694,12 @@
    "requires_verification": {
     "body": "{{insurer}} requires a higher verification level for {{reg_number}}.",
     "title": "The insurance requires verification"
+   }
+  },
+  "job": {
+   "failing": {
+    "body": "Three failures in a row. Last error: {{error}}",
+    "title": "The job {{job}} is failing"
    }
   },
   "label": {
@@ -2681,6 +2756,14 @@
    "stolen_scanned": {
     "body": "{{reg_number}} was scanned at {{at}}. Location: {{location.city}}.",
     "title": "Your stolen machine was scanned"
+   },
+   "temporary_expired": {
+    "body": "The temporary registration expired and the machine has been marked as exported.",
+    "title": "{{reg_number}} has been deregistered"
+   },
+   "temporary_expiring": {
+    "body": "Extend the registration or register the machine permanently, otherwise it is deregistered as exported.",
+    "title": "Temporary registration for {{reg_number}} expires {{valid_until}}"
    },
    "verified": {
     "body": "{{reg_number}} is now at level {{level}} ({{by}}).",

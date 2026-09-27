@@ -1,0 +1,55 @@
+# Deploy (step 26, docs/runbooks/deploy.md). Migrations and Edge Functions reach staging/production only through here.
+# Staging: automatically after green CI on main. Production: manual, through the "production" environment, which has
+# required reviewers configured in GitHub. The web app is deployed by the Vercel Git integration (preview per PR,
+# production from main after this workflow has migrated the database).
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "staging or production"
+        required: true
+        default: staging
+        type: choice
+        options: [staging, production]
+
+concurrency:
+  group: deploy-${{ github.event.inputs.target || 'staging' }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.target || 'staging' }}
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Link project
+        run: supabase link --project-ref "$SUPABASE_PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
+      - name: Show pending migrations
+        run: supabase migration list
+      - name: Apply migrations
+        run: supabase db push --include-all
+      - name: Deploy Edge Functions
+        run: supabase functions deploy --project-ref "$SUPABASE_PROJECT_REF"
+      - name: Point scheduled jobs at this project and (re)schedule
+        run: |
+          psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -c "update public.app_config set value = to_jsonb('https://${SUPABASE_PROJECT_REF}.supabase.co/functions/v1'::text) where key = 'FUNCTIONS_BASE_URL'" -c "select app.schedule_jobs()"
+      - name: Smoke test
+        run: |
+          curl -fsS "https://${SUPABASE_PROJECT_REF}.supabase.co/functions/v1/health" | tee /dev/stderr | grep -q '"ok":true'

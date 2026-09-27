@@ -5,8 +5,9 @@ import { createAdapters } from "../_shared/shared/adapters/index.ts";
 import { envRecord, userClient } from "../_shared/db.ts";
 import { json, preflight } from "../_shared/http.ts";
 import { createAnthropicOcr } from "../_shared/anthropic-ocr.ts";
+import { withSentry } from "../_shared/sentry.ts";
 
-Deno.serve(async (req) => {
+Deno.serve(withSentry("import-map", async (req) => {
   const pre = preflight(req);
   if (pre) return pre;
   const ctx = await userClient(req).rpc("my_context");
@@ -24,4 +25,4 @@ Deno.serve(async (req) => {
   } catch {
     return json(200, { mapping: heuristic, source: "heuristic" });
   }
-});
+}));

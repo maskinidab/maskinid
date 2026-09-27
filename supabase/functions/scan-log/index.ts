@@ -9,6 +9,7 @@
 // With nfc_uid (Web NFC chip serial, step 25) the response also carries nfc: match | mismatch | unknown.
 import { serviceClient } from "../_shared/db.ts";
 import { ipHash, json, preflight, rpcError } from "../_shared/http.ts";
+import { withSentry } from "../_shared/sentry.ts";
 
 function uaFamily(ua: string | null): string {
   if (!ua) return "unknown";
@@ -21,7 +22,7 @@ function uaFamily(ua: string | null): string {
   return "other";
 }
 
-Deno.serve(async (req) => {
+Deno.serve(withSentry("scan-log", async (req) => {
   const pre = preflight(req);
   if (pre) return pre;
   const url = new URL(req.url);
@@ -46,4 +47,4 @@ Deno.serve(async (req) => {
     nfc = (r.data as { result?: string } | null)?.result;
   }
   return json(200, nfc ? { ...(data as Record<string, unknown>), nfc } : data, { "Cache-Control": "no-store", "X-Robots-Tag": "noindex, nofollow" });
-});
+}));

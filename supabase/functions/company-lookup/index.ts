@@ -5,8 +5,9 @@ import { isValidOrgNumber, normalizeOrgNumber } from "../_shared/shared/identifi
 import { createAdapters } from "../_shared/shared/adapters/index.ts";
 import { envRecord, serviceClient, userClient } from "../_shared/db.ts";
 import { json, preflight, rpcError } from "../_shared/http.ts";
+import { withSentry } from "../_shared/sentry.ts";
 
-Deno.serve(async (req) => {
+Deno.serve(withSentry("company-lookup", async (req) => {
   const pre = preflight(req);
   if (pre) return pre;
   const ctx = await userClient(req).rpc("my_context");
@@ -34,4 +35,4 @@ Deno.serve(async (req) => {
     console.error("company-lookup failed", (e as Error).message);
     return json(502, { code: "LOOKUP_UNAVAILABLE" });
   }
-});
+}));
