@@ -31,10 +31,15 @@ end $$;
 create or replace function seed.user(p_email text, p_name text, p_verified boolean default true) returns uuid language plpgsql as $$
 declare uid uuid := extensions.gen_random_uuid();
 begin
-  insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, raw_user_meta_data, raw_app_meta_data)
+  -- GoTrue scans created_at/updated_at into a non-nullable time.Time and the token columns into non-nullable
+  -- strings, so leaving any of them NULL makes every login fail with "Database error querying schema". They have
+  -- no defaults on auth.users, so set them here.
+  insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, raw_user_meta_data, raw_app_meta_data,
+                          created_at, updated_at, confirmation_token, email_change, email_change_token_new, recovery_token)
   values ('00000000-0000-0000-0000-000000000000', uid, 'authenticated', 'authenticated', p_email,
           extensions.crypt('demo1234', extensions.gen_salt('bf', 6)), now(), jsonb_build_object('full_name', p_name),
-          '{"provider":"email","providers":["email"]}');
+          '{"provider":"email","providers":["email"]}',
+          now(), now(), '', '', '', '');
   insert into auth.identities (id, user_id, provider_id, provider, identity_data, last_sign_in_at, created_at, updated_at)
   values (extensions.gen_random_uuid(), uid, uid::text, 'email', jsonb_build_object('sub', uid::text, 'email', p_email), now(), now(), now());
   if p_verified then
