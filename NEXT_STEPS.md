@@ -21,21 +21,20 @@ file is only what is still open.
 
 ## Pick up here
 
-### 1. Approve the production deploy, then confirm CI on `main` was green
+### 1. Approve the production deploy — it is waiting right now
 
-Merging PR #2 kicked off CI on `main`, and the production Deploy waits for your approval
-("Review deployments" on the run). It applies migrations that are **already applied**, so it should be a
-clean no-op — which is the point: the first end-to-end proof of the pipeline, on a run where a mistake
-costs nothing.
+CI on `main` passed in full, **including e2e**, so the merge that bypassed the check turned out fine. The
+production Deploy is **paused on your approval**: run `36360758403`, status `waiting` since 00:03 UTC.
 
-```bash
-gh run list -R maskinidab/maskinid -b main -L 5
-```
+https://github.com/maskinidab/maskinid/actions/runs/36360758403 → "Review deployments" → approve.
 
-⚠️ **The merge bypassed the e2e check.** It was merged with `--admin` while e2e was still running, so the
-code now on `main` and in production was never validated by CI. It passed 30/30 locally on the same
-serial config, and e2e re-ran on `main` afterwards — **check that run first**. If it failed, the failure
-is already live.
+It applies migrations that are already applied, so it should be a clean no-op — which is the point: the
+first end-to-end proof of the pipeline on a run where a mistake costs nothing. The branch → environment
+mapping is confirmed working (CI on `staging` deployed staging automatically; CI on `main` is gated).
+
+One CI defect was found and fixed while checking this: `supabase/setup-cli@v1` with `version: latest`
+resolves the release over the unauthenticated GitHub API and failed one staging deploy with "rate limit
+exceeded". Both workflows now pin `2.118.0`. **That fix is on `staging` and still needs merging to `main`.**
 
 ### 2. Decide what to do about `invite-user` ⚠️
 
@@ -82,13 +81,14 @@ Better once on Pro: password-protect it instead, so testers need a shared passwo
 finds it sees a working app with nothing in it. Fine for now, but decide before launch whether it should
 be protected until there is real data and a custom domain.
 
-### 6. Watch the e2e runtime on CI
+### 6. e2e runtime — resolved, but keep an eye on it
 
-Serial (`workers: 1`) runs **30/30 in 5 minutes locally**, but the last CI run was still going at ~25
-minutes. Either the runner is simply that much slower, or a test burned time on its two retries — read the
-log to tell which. If a test failed all three attempts it is a real bug, not a blip. The job budget is 60
-minutes, so there is headroom, but a 25-minute suite is worth splitting `dealer.spec.ts` (one test
-covering registration → import → labels → sale with financier → ownership certificate).
+Resolved: CI on `main` finished the whole run in **5m42s including e2e**, matching the 5 minutes the
+serial suite takes locally. The 17–25 minute runs earlier were the two-worker config thrashing, not a slow
+runner. Nothing to do unless it creeps back up.
+
+If it ever does, `dealer.spec.ts` is the one to split — a single test covering registration → import →
+labels → sale with financier → ownership certificate, and the one that used to hit the timeout.
 
 ### 7. Finish the frontend performance work
 
