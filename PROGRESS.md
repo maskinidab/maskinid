@@ -293,3 +293,53 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   i sidfoten (prestanda 59 → 85), och ett säkerhetsfel: "Visa som organisation" kunde skapa supportärenden i
   organisationens namn ⇒ migration `view_as_read_only` (skrivspärr via `require_actor` + triggrar, `VIEW_AS_READ_ONLY`).
   `/status` visar schemalagda jobb. README omskriven: uppstart på 10 minuter. ADR 0024, öppna frågor 34–37.
+
+## Finansieringsrundan (2026-10-10)
+
+Efter produktägarens provkörning inför demon för Alsike Maskin. Tretton punkter, inga krascher – kedjan
+**handlare → MaskinID → bank** slöt sig inte i praktiken. Fem migrationer (`20261010000001`–`20261010000005`),
+ADR 0025–0027.
+
+- **Lösen (`payoff_requests`).** Hela samtalet mellan den som säljer/exporterar och långivaren:
+  `request_payoff` → `submit_payoff_quote` → `submit_payoff_settlement` → `settle_payoff`, plus `decline_payoff`,
+  `list_payoff_requests` och jobbet `expire-payoff-quotes`. **Inget beloppsfält** – summan finns bara i bankens
+  bifogade PDF (ADR 0025, `CLAUDE.md` regel 5). `submit_payoff_settlement` rör inte förbehållet; spärren släpps
+  bara av holder med signatur, och `settle_payoff` släpper den, stänger påminnelserna och låser upp ett väntande
+  ägarbyte i samma transaktion. Tre nya `get_inbox`-kinds, så banken har en kö att beta av i stället för bara en
+  klocknotis. `request_encumbrance_release` delegerar till `request_payoff` och lämnar nu ett spår.
+  `request_trade_in` tar `p_request_payoff`, så långivaren hör av sig redan när handlaren startar inbytet –
+  tidigare nåddes `app.open_transfer` (och notisen) inte förrän ägaren godkänt.
+- **Export bevarar identiteten.** `exported_at`/`export_country`/`export_customs_ref`; `'exported'` borttaget ur
+  listorna som släpper serienumret, märket revokeras inte (`label_disposition = 'kept'`), eget
+  `machine.exported`-event, publika kortet säger vart maskinen gick, och ny `reimport_machine`. Rättar det
+  rapporterade felet att `check_identifier` svarade "finns inte" på en exporterad maskin (ADR 0026).
+- **Banker utanför MaskinID.** `app.resolve_org_by_number` generaliserar `resolve_owner_org`;
+  `app.can_be_financier_holder` används **bara** där en bank *namnges* som holder, medan allt som ger makt
+  fortsätter gå via `app.has_org_type` – en placeholder kan namnges men ingenting annat (ADR 0027).
+  `create_org`-vakten täcker nu placeholders som bär förbehåll, `lookup_company` rapporterar `claimable`, och
+  onboardingen visar claim-vägen i stället för bara "Begär åtkomst".
+- **Anmäld belåning syns direkt.** `app.pending_financing` + `has_pending` i `machine_view`/`machine_list_extras`,
+  tredelad `FinancingBadge`. `initiate_transfer` skapar köparens pending-förbehåll direkt (tidigare först vid
+  `accept_transfer`), så banken hör av sig genast. Finansieringskontrollen svarar fortfarande strikt på *aktivt*
+  förbehåll – det är bankens juridiska svar (SPEC §6.6, §16.3–4).
+- **Bifoga dokument + OCR.** `Ocr.financingDocument` (inga beloppsfält i schemat), Edge Function
+  `ocr-financing-document` som tar PDF via `document`-block, `encumbrances.document_ids`, och
+  `AttachFinancingDialog`/`ManualFinancingDialog` – båda för handlare, bara dokumentvägen för vanliga
+  företagarkonton. `match_financier` löser upp banken ur avtalet; `get_financier_profile` + `financing_defaults`
+  kopplar bankens uppgifter till finansieringen automatiskt.
+- **Inbyte.** `trade_in_lookup` tar `p_serial` och returnerar lösenärendet och långivarens profil. Sidan har tre
+  ingångar: skanna märke, fota VIN/serienummer (`OcrCapture`), skriv serienummer – och erbjuder registrering när
+  maskinen inte finns.
+- **Rättade defekter i samma flöden:** `confirm_encumbrance` behandlade en överlåtelserad som en vanlig
+  pending-rad och utlöste en falsk `double_encumbrance`-konflikt med `critical`-notis till den gamla banken;
+  `approve_transfer_financier('release')` stängde inte påminnelserna; `cancel_transfer`/`expire_transfers`
+  berättade inget för den väntande långivaren och lämnade köparens pending-förbehåll kvar. UI för
+  `reject_encumbrance`, `transfer_encumbrance_holder` och `accept_encumbrance_transfer`, som aldrig anropats
+  från webben.
+- **API/webhooks:** `POST /encumbrances/request`, `/payoffs*`, `/machines/:id/reimport`, nya webhook-typer och
+  ett `exported`-scenario i API-sandlådan.
+- **Seed:** DNB Finans och Santander Consumer onboardade, LF Finans och BNP Paribas Leasing bara i
+  `app.mock_companies` (så de kan namnges och sedan ta över sitt konto). Nya scenarier: finansiering mot en
+  oansluten bank, två lösenärenden i olika läge, en exporterad maskin med bundet märke. 64 maskiner.
+- **Tester:** `23_payoff`, `24_placeholder_financiers`, utökade `02_machines`/`00_seed_data`; e2e `payoff.spec.ts`,
+  `export.spec.ts` och tillägg i `dealer.spec.ts`. Terminologin rättad till "Långivare" (ADR 0002).

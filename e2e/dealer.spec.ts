@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { login, logout, PASSWORD, PDF_FIXTURE, signDemo, sql } from "./helpers";
+import { login, logout, nameplatePng, PASSWORD, PDF_FIXTURE, signDemo, sql, uniqueSerial } from "./helpers";
 
 /** A valid Swedish organisation number (Luhn) that is not in the demo register. */
 function newOrgNumber(): string {
@@ -90,7 +90,7 @@ test("handlare: registrering, import, märken, försäljning med finansiär, äg
   await expect(page.getByText("Bergs Schakt").first()).toBeVisible();
   await page.locator("main input[type=file]").first().setInputFiles({ name: "faktura.pdf", mimeType: "application/pdf", buffer: PDF_FIXTURE });
   await expect(page.locator("main").getByText("faktura.pdf är uppladdad")).toBeVisible({ timeout: 60_000 });
-  await page.getByRole("combobox", { name: "Finansiär" }).selectOption({ label: "Demo Bank Finans" });
+  await page.getByRole("combobox", { name: "Långivare" }).selectOption({ label: "Demo Bank Finans" });
   await page.getByLabel("Slutdatum").fill(new Date(Date.now() + 3 * 365 * 86400000).toISOString().slice(0, 10));
   await page.getByRole("button", { name: "Skicka till köparen" }).click();
   if (await page.getByText("Du signerar").isVisible({ timeout: 5_000 }).catch(() => false)) await signDemo(page);
@@ -129,4 +129,76 @@ test("handlare: registrering, import, märken, försäljning med finansiär, äg
     from public.report_snapshots where kind = 'ownership_certificate' order by created_at desc limit 1`);
   expect(cert.reg).toBe(m.reg_number);
   expect(cert.level).toBe(2);
+});
+
+/**
+ * The trade-in page used to offer only "Skanna märke". A dealer standing at a machine normally has the nameplate
+ * in front of them, not a MaskinID label, so the serial is the practical way in — by photo or by hand.
+ */
+test("handlare: inbyte via fotat serienummer och via manuell inmatning", async ({ page }) => {
+  const base = await login(page, "nordmaskin@demo.se");
+  const [m] = await sql<{ id: string; reg_number: string; serial: string }>(page, `
+    select m.id, m.reg_number, i.value serial from public.machines m
+    join public.machine_identifiers i on i.machine_id = m.id and i.type = 'serial'
+    join public.organizations o on o.id = m.owner_org_id
+    where m.status = 'active' and o.slug = 'bergs-schakt-entreprenad-ab'
+    order by m.reg_number limit 1`);
+
+  // 1. Photograph the nameplate: the OCR reads the serial and the lookup runs on it.
+  await page.goto(`${base}/trade-in`);
+  await page.getByText("Fota VIN/serienummer").click();
+  await page.locator("main input[type=file]").first().setInputFiles({
+    name: "skylt.png", mimeType: "image/png", buffer: nameplatePng({ serial: m.serial }),
+  });
+  await expect(page.getByText(m.reg_number.replace(/^(...)/, "$1-"))).toBeVisible({ timeout: 60_000 });
+
+  // 2. The same machine, found by typing the serial.
+  await page.reload();
+  await page.getByText("Lägg in serienummer manuellt").click();
+  await page.getByLabel("Serienummer, PIN eller VIN").fill(m.serial);
+  await page.locator("main form button[type=submit]").click();
+  await expect(page.getByText(m.reg_number.replace(/^(...)/, "$1-"))).toBeVisible();
+
+  // 3. A serial nobody has registered offers to register the machine for the customer instead of erroring.
+  await page.reload();
+  await page.getByText("Lägg in serienummer manuellt").click();
+  await page.getByLabel("Serienummer, PIN eller VIN").fill(uniqueSerial("NOSUCH"));
+  await page.locator("main form button[type=submit]").click();
+  await expect(page.getByRole("link", { name: "Registrera maskinen" })).toBeVisible();
+});
+
+/**
+ * Reporting a financing has to be visible at once. It used to read "Ej belånad" until the bank confirmed, which
+ * is why choosing a bank looked like it had done nothing.
+ */
+test("handlare: anmäld finansiering syns direkt som \"Belåning anmäld\"", async ({ page }) => {
+  const base = await login(page, "nordmaskin@demo.se");
+  const [m] = await sql<{ id: string }>(page, `
+    select m.id from public.machines m join public.organizations o on o.id = m.owner_org_id
+    where o.slug = 'nordmaskin-ab' and m.status = 'active'
+      and not exists (select 1 from public.encumbrances e where e.machine_id = m.id and e.status in ('active', 'pending'))
+    order by m.reg_number limit 1`);
+
+  await page.goto(`${base}/machines/${m.id}?tab=financing`);
+  // Both the action menu and the financing tab offer this; take the one in the tab.
+  await page.getByRole("tabpanel", { name: "Förbehåll" }).getByRole("button", { name: "Lägg in finansiering manuellt" }).click();
+  const dialog = page.locator("dialog[open]");
+  await dialog.getByRole("combobox", { name: "Långivare" }).selectOption({ label: "DNB Finans (demo)" });
+  await dialog.getByLabel("Slutdatum").fill(new Date(Date.now() + 3 * 365 * 86_400_000).toISOString().slice(0, 10));
+  await dialog.locator("button[type=submit]").click();
+  await expect(page.locator("dialog[open]")).toHaveCount(0);
+
+  // Visible immediately, before the bank has touched it.
+  await expect(page.getByText("Belåning anmäld").first()).toBeVisible();
+  const [enc] = await sql<{ status: string; holder: string }>(page, `
+    select e.status, o.slug holder from public.encumbrances e join public.organizations o on o.id = e.holder_org_id
+    where e.machine_id = $1 order by e.created_at desc limit 1`, [m.id]);
+  expect(enc.status).toBe("pending");
+  expect(enc.holder).toBe("dnb-finans-demo");
+
+  // And the bank has it waiting in their inbox.
+  await logout(page);
+  const bank = await login(page, "dnb@demo.se");
+  await page.goto(`${bank}/inbox`);
+  await expect(page.getByText("Förbehåll att bekräfta")).toBeVisible();
 });

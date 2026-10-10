@@ -21,6 +21,8 @@ test("myndighet: partiell sökning hittar maskinen, ägaren ser inte läsningen"
   // Default: the authority's setting show_authority_reads_to_owner is off.
   await page.goto(`${owner}/machines/${m.id}`);
   await page.getByRole("tab", { name: "Åtkomst" }).click();
-  await expect(page.locator("main table, main .mid-tom, main ul").first()).toBeVisible();
+  // Assert the panel itself, not a table: whether the machine has any visible reads depends on which machine
+  // the random reg numbers put first, and the point of the test is the line below.
+  await expect(page.getByRole("region", { name: "Vem har tittat" })).toBeVisible();
   await expect(page.locator("main")).not.toContainText("Polisen");
 });

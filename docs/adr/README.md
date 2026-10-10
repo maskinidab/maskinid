@@ -28,3 +28,7 @@ the product owner decided otherwise. Format: context → decision → consequenc
 | [0021](0021-stats-export-push-sandbox-merge.md) | Suppressed public statistics, JSON data export, web push (VAPID), fixed-data API sandbox, masked partial search, merging duplicates |
 | [0022](0022-integrations.md) | NFC chip check, ISO 15143-3 telematics, Transportstyrelsen lookup, Larmtjänst sync without auto-flagging, public segment/about/integrations/status pages |
 | [0023](0023-operations.md) | Job table + pg_cron/pg_net, new scheduled rules, server PDFs on Vercel, restore drill, Sentry in functions, health/uptime, deploy workflow |
+| [0024](0024-quality-e2e-a11y-lighthouse.md) | End-to-end suite against the in-browser database, axe accessibility on 21 pages, sampled Lighthouse budgets |
+| [0025](0025-payoff-without-amounts.md) | Payoff ("lösen") as a tracked conversation; the figure lives in the lender's document, never in the register |
+| [0026](0026-export-preserves-identity.md) | Export keeps the QR label, the serial and the history; new `machine.exported` event and re-import |
+| [0027](0027-placeholder-financiers.md) | Financing against a lender outside MaskinID via an unclaimed placeholder; nameable is not capable |
