@@ -343,3 +343,36 @@ ADR 0025–0027.
   oansluten bank, två lösenärenden i olika läge, en exporterad maskin med bundet märke. 64 maskiner.
 - **Tester:** `23_payoff`, `24_placeholder_financiers`, utökade `02_machines`/`00_seed_data`; e2e `payoff.spec.ts`,
   `export.spec.ts` och tillägg i `dealer.spec.ts`. Terminologin rättad till "Långivare" (ADR 0002).
+
+## QR-märket, bankens dokumentväg och granskningens luckor (2026-10-10, efter finansieringsrundan)
+
+- **QR på skärmen.** Ny `QrCode.tsx` (dynamiskt importerad `qrcode`, inline-SVG, så inget hamnar i den publika
+  bundlen) på maskinsidan och per märke i `LabelsPage`. Hela 22-teckenskoden visas inte längre som text –
+  `labelSerial()` (de sex tecken som står på dekalen) i stället, eftersom koden är bäraren i QR-URL:en.
+- **Etikettark.** `labelSheet.ts`: A4 med 18 dekaler, skärmärken, QR + serie + kod i finstilt. Organisationen
+  skriver ut sina oanvända märken från `LabelsPage`, operatören ett helt batch-ark bredvid den befintliga CSV:n.
+  Geometrin är skärmärken och inte en gissad stans – se ADR 0028.
+- **Skanna ett oanvänt märke → registrera maskinen.** Migration 0006 delar `public_machine_card`s hopslagna gren
+  (`unbound_label` vs `unknown_label`) och lägger till `check_label`, så guiden kan säga "märket är ledigt" innan
+  något är ifyllt. Den publika sidan erbjuder registrering; koden rider i URL:en genom `/go` och klarar både
+  inloggning och onboarding. Guiden tar `?code=` och behåller den över autospar och utkaståterupptagning.
+- **Tre buggar i märkeshanteringen.** Koden versaliserades på tre ställen fast alfabetet är base62 (varje typad
+  eller inklistrad kod gav `LABEL_NOT_FOUND`); platshållaren beskrev ett format som aldrig funnits; och ett
+  upptaget märke misslyckades **tyst** vid registrering – `bind_label` returnerar `{ok:false}` utan att raisa,
+  men guiden läste aldrig svaret, så användaren fick "klart" medan ett konfliktärende gick till operatören.
+- **Riktig avläsning utan att tappa Demo-BankID.** `OCR_PROVIDER=anthropic` vinner nu även när `DEMO_MODE=true`
+  (`adapters/index.ts`). Tidigare krävde skarp OCR att hela demoläget slogs av, vilket samtidigt skickar
+  identitetskontrollen till riktig BankID och spräcker kontoregistreringen.
+- **Banken laddar upp sitt eget finansavtal** (Rikards punkt 11): `EncumbranceDialog` har OCR och uppladdning och
+  skickar `p_document_ids`. Dokumentet laddas upp utan maskin-id – `create_document_upload` auktoriserar bara
+  maskinbundna uppladdningar för maskinens parter, och `register_encumbrance` adopterar ett org-dokument.
+- **Export av en belånad maskin** (punkt 5): `DeregisterDialog` låser submit och erbjuder "Begär lösen för
+  export" i stället för att låta användaren gå in i serverfelet; när långivaren godkänt förifylls land och
+  tullreferens från lösenärendet. Exporten sker fortfarande på ägarens egen signatur.
+- **Lösenbesked även vid vanlig försäljning** (punkt 2, resten): `SalePage` frågar långivaren samtidigt, så
+  `purpose='sale'` lever. Långivarens inkorgspost för själva ägarbytet fanns redan.
+- **Bankens egna uppgifter** (punkt 6): `financing_defaults` seedas för fyra långivare och kan redigeras i en ny
+  inställningsflik. Tidigare returnerade `get_financier_profile` alltid `{}`, så varje förifyllning no-oppade.
+- **Tester:** `25_financing_documents_export` (4), utökad `02_machines` (6 nya, inklusive skiftlägeslåset),
+  `labelSheet.test.ts` (4), e2e `labels.spec.ts` (4) plus tillägg i `export.spec.ts` och `financier.spec.ts`.
+  Granskningen påstod att handlarens manuella finansiering var otestad – `dealer.spec.ts:174` täcker den.

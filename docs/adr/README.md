@@ -32,3 +32,4 @@ the product owner decided otherwise. Format: context → decision → consequenc
 | [0025](0025-payoff-without-amounts.md) | Payoff ("lösen") as a tracked conversation; the figure lives in the lender's document, never in the register |
 | [0026](0026-export-preserves-identity.md) | Export keeps the QR label, the serial and the history; new `machine.exported` event and re-import |
 | [0027](0027-placeholder-financiers.md) | Financing against a lender outside MaskinID via an unclaimed placeholder; nameable is not capable |
+| [0028](0028-marken-pa-skarm-och-etikettark.md) | QR labels on screen and as a printable sheet; a scanned unused label becomes the way into the register |

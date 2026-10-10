@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { asUser, login, logout, signDemo, sql } from "./helpers";
+import { asUser, financingPdf, login, logout, signDemo, sql } from "./helpers";
 
 // SPEC §16.15: check → receipt with number → register encumbrance → another lender is blocked; holder and owner notified.
 test("finansiär: kontroll med kvitto, förbehåll, andra finansiären blockeras", async ({ page }) => {
@@ -51,4 +51,44 @@ test("finansiär: kontroll med kvitto, förbehåll, andra finansiären blockeras
   // SPEC §16.4: the holder and the owner are notified; the lender who tried gets the error naming the holder.
   expect(notified.map((x) => x.slug)).toEqual(expect.arrayContaining(["demo-bank-finans", "bergs-schakt-entreprenad-ab"]));
   expect(JSON.stringify(r)).toContain("Demo Bank Finans");
+});
+
+/**
+ * The bank's own way in: upload the finance agreement, let MaskinID read it, check the fields and sign.
+ * Until now only the dealer and the owner could attach a document; the lender had a bare form.
+ */
+test("finansiär: laddar upp finansavtalet, läser av det och signerar", async ({ page }) => {
+  const base = await login(page, "dnb@demo.se");
+  const [m] = await sql<{ id: string; reg_number: string }>(page, `
+    select m.id, m.reg_number from public.machines m join public.organizations o on o.id = m.owner_org_id
+    where o.slug = 'bergs-schakt-entreprenad-ab' and m.status = 'active'
+      and not exists (select 1 from public.encumbrances e where e.machine_id = m.id and e.status in ('active', 'pending'))
+      and not exists (select 1 from public.transfers t where t.machine_id = m.id and t.status in ('draft', 'awaiting_buyer', 'awaiting_financier'))
+    order by m.reg_number desc limit 1`);
+  expect(m, "a clean machine to finance").toBeTruthy();
+
+  await page.goto(`${base}/check`);
+  await page.locator("main input.is-id").fill(m.reg_number);
+  await page.locator("main form button[type=submit]").click();
+  await expect(page.locator(".kvitto")).toBeVisible();
+  await page.getByRole("button", { name: "Registrera förbehåll" }).click();
+  const dialog = page.locator("dialog[open]");
+  await dialog.locator("input[type=file]").first().setInputFiles({
+    name: "leasingavtal.pdf", mimeType: "application/pdf",
+    buffer: financingPdf({ document_kind: "leasing_agreement", encumbrance_type: "leasing", contract_ref: "DNB-E2E-7", end_date: "2031-06-30" }),
+  });
+  // The reading fills in the agreement, so the bank only checks and signs.
+  await expect(dialog.getByRole("textbox", { name: "Avtalsreferens" })).toHaveValue("DNB-E2E-7", { timeout: 120_000 });
+  await dialog.locator("button[type=submit]").click();
+  await signDemo(page);
+  await expect(page.locator("dialog[open]")).toHaveCount(0);
+
+  // Active at once - this is the lender's own declaration - with the agreement attached to it.
+  const [enc] = await sql<{ status: string; holder: string; docs: number }>(page, `
+    select e.status, o.slug holder, coalesce(array_length(e.document_ids, 1), 0) docs
+    from public.encumbrances e join public.organizations o on o.id = e.holder_org_id
+    where e.machine_id = $1 order by e.created_at desc limit 1`, [m.id]);
+  expect(enc.status).toBe("active");
+  expect(enc.holder).toBe("dnb-finans-demo");
+  expect(enc.docs).toBe(1);
 });
