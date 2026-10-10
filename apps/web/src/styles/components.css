@@ -187,3 +187,8 @@
   .mid-sok-rad { flex-direction: column; }
   .mid-sok-rad .mid-knapp { justify-content: center; }
 }
+
+/* QR-koder på skärmen (märken). Inline-SVG, så den skalar med rutan och skrivs ut skarpt. */
+.qr-ruta { display: inline-block; background: #fff; border: 1px solid var(--linje); border-radius: var(--radius-1); padding: var(--space-2); }
+.qr-ruta svg { display: block; width: 100%; height: 100%; }
+.qr-rad { display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap; }

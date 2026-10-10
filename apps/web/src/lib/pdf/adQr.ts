@@ -4,8 +4,9 @@ import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import QRCode from "qrcode";
 import { formatReg } from "../format";
 
-async function qrPng(url: string): Promise<Uint8Array> {
-  const dataUrl = await QRCode.toDataURL(url, { errorCorrectionLevel: "M", margin: 1, width: 600 });
+/** QR as PNG bytes for embedding in a PDF. Exported for the label sheet, which rasterises many at once. */
+export async function qrPng(url: string, width = 600): Promise<Uint8Array> {
+  const dataUrl = await QRCode.toDataURL(url, { errorCorrectionLevel: "M", margin: 1, width });
   const b64 = dataUrl.split(",")[1]!;
   return Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
 }
