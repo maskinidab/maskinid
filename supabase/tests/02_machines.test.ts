@@ -188,9 +188,11 @@ describe("machine visibility (SPEC §16.1–2)", () => {
       }
       const card = await t.rpc("public_machine_card", { p_reg: r.reg_number.toLowerCase().replace(/^(...)/, "$1-") });
       expect(card.found).toBe(true);
+      // SPEC §5.3 plus the two export fields: an exported machine keeps its QR, so the card has to be able to
+      // say where it went (ADR 0026). Still nothing that identifies the owner.
       expect(Object.keys(card.card).sort()).toEqual([
-        "category", "has_registered_owner", "inspection_valid_until", "label_status", "make", "model", "primary_photo_path",
-        "reg_number", "serial_masked", "status", "verification_level", "year",
+        "category", "export_country", "exported_at", "has_registered_owner", "inspection_valid_until", "label_status",
+        "make", "model", "primary_photo_path", "reg_number", "serial_masked", "status", "verification_level", "year",
       ]);
       expect(card.card.serial_masked).toMatch(/^•+[0-9A-Z]{3}$/);
       expect(JSON.stringify(card)).not.toContain("Test Owner A");

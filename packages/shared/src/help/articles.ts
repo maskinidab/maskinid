@@ -153,7 +153,7 @@ All PDFs have a document number and a checksum that can be checked at maskinid.s
   {
     slug: "kontosakerhet", category: "security",
     sv: { title: "Kontosäkerhet", summary: "BankID, tvåstegsverifiering och inloggningar.",
-      body: `Rättsliga åtgärder signeras alltid med BankID. Finansiärer, myndigheter och registerhållaren måste dessutom använda tvåstegsverifiering.
+      body: `Rättsliga åtgärder signeras alltid med BankID. Långivare, myndigheter och registerhållaren måste dessutom använda tvåstegsverifiering.
 
 Under Profil ser du dina senaste inloggningar och kan logga ut från alla enheter.
 

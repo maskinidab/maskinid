@@ -21,8 +21,13 @@
    "title": "Clear flag"
   },
   "deregister": {
+   "export_country": "To which country?",
+   "export_country_hint": "Country code, e.g. NO for Norway. The QR label and the history stay with the machine.",
+   "export_customs_ref": "Customs reference",
+   "export_keeps_identity": "The machine keeps its registration number, its QR label and its history. The export becomes an event in the history, so a foreign owner can keep scanning the machine.",
    "label": "The label",
    "label_destroyed": "Destroyed",
+   "label_kept": "The label stays on the machine",
    "label_removed": "Removed",
    "label_returned": "Returned",
    "reason": "Reason",
@@ -39,12 +44,30 @@
    "end": "End date",
    "end_before_start": "The end date cannot be before the start date.",
    "end_required": "An end date is required for retention of title.",
-   "holder": "Financier",
+   "holder": "Lender",
    "no_amounts": "Amounts are never registered, only that the encumbrance exists.",
    "notes_hint": "Visible only to you and the owner.",
    "start": "Start date",
    "submit": "Sign and register",
    "title": "Register encumbrance"
+  },
+  "financing": {
+   "accept_takeover": "Take over the encumbrance",
+   "accept_takeover_lead": "{{from}} wants to transfer the encumbrance on {{reg}} to you.",
+   "attach": "Attach a document",
+   "attach_lead": "Upload or photograph the bank order, leasing agreement or credit agreement. MaskinID reads the document and fills in as much as it can.",
+   "done": "The financing has been reported to {{holder}}. The bank confirms it.",
+   "manual": "Enter the financing manually",
+   "manual_lead": "Fill in the details yourself. The lender gets a request and confirms it.",
+   "matched": "The document points to {{name}}.",
+   "matched_unknown": "{{name}} does not use MaskinID yet. The financing is registered anyway and waits for the bank.",
+   "read_failed": "Could not read the document. Fill in the details manually.",
+   "reading": "Reading the document…",
+   "reject": "Reject",
+   "reject_reason": "Why is the report rejected?",
+   "submit": "Report the financing",
+   "transfer_holder": "Transfer to another lender",
+   "transfer_holder_lead": "The new lender receives the offer and takes over the encumbrance when they accept."
   },
   "flag": {
    "location": "Location",
@@ -64,6 +87,11 @@
    "scan": "Scan the label",
    "submit": "Attach",
    "title": "Attach label"
+  },
+  "reimport": {
+   "lead": "The machine was exported to {{country}}. Bring it back to make it active in the register again. The export stays in the history.",
+   "submit": "Bring back",
+   "title": "Bring the machine back"
   },
   "release": {
    "reason": "Reason",
@@ -100,7 +128,7 @@
    "email_hint": "The buyer gets a link and creates an account before approving.",
    "email_invalid": "Enter a valid e-mail address.",
    "financier_first": "The machine has an active encumbrance with {{holder}}. They decide before the buyer can approve.",
-   "financing_incomplete": "Choose a financier and, for retention of title, an end date.",
+   "financing_incomplete": "Choose a lender and, for retention of title, an end date.",
    "late_hint": "More than ten days since the sale: the transfer is effective from today.",
    "lead": "The buyer approves with BankID. Only then is the transfer complete.",
    "sale_date": "Date of sale",
@@ -420,6 +448,8 @@
    },
    "machine": {
     "deregistered": "Deregistered",
+    "exported": "Exported",
+    "reimported": "Brought back",
     "scanned_while_stolen": "Stolen machine scanned"
    },
    "market": {
@@ -428,6 +458,10 @@
    },
    "ownership": {
     "transferred": "New owner"
+   },
+   "payoff": {
+    "requested": "Payoff requested",
+    "settled": "Payoff approved"
    },
    "sighting": {
     "reported": "Machine sighted"
@@ -510,7 +544,7 @@
    "GET_lookup_machine": "Exact lookup by reg number, serial, PIN or VIN.",
    "PATCH_update_machine": "Limited fields: hour_meter, description, color.",
    "POST_accept_transfer": "Accept as buyer. Needs a personal BankID signature: returns 202 with signing_url.",
-   "POST_approve_transfer_financier": "Financier decision.",
+   "POST_approve_transfer_financier": "The lender's decision.",
    "POST_bind_label": "Bind a label code.",
    "POST_cancel_transfer": "Cancel or decline.",
    "POST_clear_flag": "Clear a flag.",
@@ -933,6 +967,8 @@
   "financing": {
    "login": "Financing: sign in to see",
    "no": "No registered encumbrance",
+   "pending": "Financing reported",
+   "pending_title": "Reported to {{holder}} – awaiting the lender's confirmation",
    "yes": "Encumbered"
   },
   "loading_skeleton": "Loading",
@@ -1053,11 +1089,17 @@
     "recorded": "Inspected"
    },
    "machine": {
+    "exported": "Exported",
     "registered": "Registered",
+    "reimported": "Brought back",
     "verified": "Verified"
    },
    "ownership": {
     "transferred": "Change of ownership"
+   },
+   "payoff": {
+    "requested": "Payoff requested",
+    "settled": "Payoff approved"
    }
   },
   "import_stock": "Import stock",
@@ -1086,7 +1128,7 @@
   "not_in_stock": "Is the machine not in the register?",
   "reg_or_scan": "Reg number",
   "request_trade_in": "Request trade-in",
-  "sale_lead": "The buyer accepts with BankID. The financier confirms its encumbrance.",
+  "sale_lead": "The buyer approves with BankID. The lender confirms their encumbrance.",
   "sale_next": "The buyer gets an e-mail with a link, sees the machine card and accepts. An ownership certificate is created when the transfer is complete.",
   "sell": "Sell",
   "share_report": "Share report",
@@ -1099,10 +1141,20 @@
   "tab_sold": "Sold",
   "tab_stock": "In stock",
   "tab_trade_in": "Trade-ins",
+  "trade_in_by_label": "Scan the label",
+  "trade_in_by_photo": "Photograph the VIN/serial number",
+  "trade_in_by_serial": "Enter the serial number manually",
   "trade_in_financing": "Encumbrance: {{type}} with {{holder}}. Request a release as part of the deal.",
   "trade_in_lead": "Scan the label on the machine the customer wants to trade in. You see history and encumbrances, the customer approves the trade-in.",
+  "trade_in_not_found": "The machine is not in MaskinID. Register it for the customer to give it a registration number, a QR label and a history.",
   "trade_in_own": "The machine is already yours.",
+  "trade_in_payoff_sent": "Payoff request sent to {{holder}}.",
+  "trade_in_pending_financing": "Financing reported to {{holder}} – not confirmed yet.",
+  "trade_in_photo_lead": "Photograph the nameplate or the VIN. MaskinID reads the serial number and searches the register.",
+  "trade_in_register": "Register the machine",
+  "trade_in_request_payoff": "Request a payoff from {{holder}}",
   "trade_in_sent": "The owner has received a trade-in request.",
+  "trade_in_serial_label": "Serial number, PIN or VIN",
   "trade_in_verify": "The machine is not physically verified. You can verify it on site once the customer has approved the trade-in."
  },
  "department": {
@@ -1124,6 +1176,13 @@
    "expires": "The link is valid for 14 days. If you did not expect the invitation you can ignore it.",
    "heading": "Invitation to {{org_name}}",
    "subject": "{{inviter}} invites you to {{org_name}} in {{app}}"
+  },
+  "invite_financier": {
+   "body": "{{registered_by}} has registered financing with you in MaskinID, the register for heavy machinery. Create the account and your machines are already there – you do not have to enter anything from scratch.",
+   "button": "Claim the account",
+   "free": "Seeing and confirming your own financings is free.",
+   "heading": "Machines are already registered against {{org_name}}",
+   "subject": "{{org_name}} has financings registered in MaskinID"
   },
   "invite_owner": {
    "body": "{{registered_by}} has registered a machine with {{org_name}} as owner in {{app}}. Sign in to see the machine, its history and any encumbrances.",
@@ -1243,6 +1302,7 @@
    "stolen_not_recovered": "Stolen, not recovered"
   },
   "document_type": {
+   "bank_order": "Bank order",
    "buyer_report": "Machine report",
    "ce_declaration": "CE declaration",
    "check_receipt": "Check receipt",
@@ -1255,6 +1315,7 @@
    "manual": "Manual",
    "other": "Other",
    "ownership_certificate": "Certificate of ownership",
+   "payoff_statement": "Payoff statement",
    "photo_label": "Photo of fitted label",
    "photo_machine": "Machine photo",
    "photo_nameplate": "Nameplate photo",
@@ -1435,6 +1496,20 @@
    "retro": "Retrospective registration",
    "transfer_in": "Transfer"
   },
+  "payoff_purpose": {
+   "export": "Export",
+   "owner_request": "Owner request",
+   "sale": "Sale",
+   "trade_in": "Trade-in"
+  },
+  "payoff_status": {
+   "declined": "Declined by the lender",
+   "expired": "The payoff statement has expired",
+   "quoted": "Payoff statement received",
+   "requested": "Awaiting the lender",
+   "settled": "Settled and released",
+   "settlement_submitted": "Proof of settlement submitted"
+  },
   "power_standard": {
    "ece_r120": "ECE R120",
    "iso_14396": "ISO 14396",
@@ -1567,12 +1642,15 @@
   "CONFLICT_NOT_OPEN": "The conflict has already been handled.",
   "DEMO_DB_MISSING": "The demo database is missing. Run npm run demo-db.",
   "DPA_REQUIRED": "Accept the data processing agreement to continue.",
+  "DUPLICATE_IDENTIFIER": "The serial number is already used by another machine.",
   "EMAIL_IN_USE": "There is already an account with that e-mail. Sign in instead.",
   "ENCUMBRANCE_BLOCKS_DEREGISTRATION": "The machine has an active encumbrance held by {{holder}}. It must be released, or the lender must deregister.",
+  "ENCUMBRANCE_IS_TRANSFER": "This is a transfer of an encumbrance. Use \"Take over the encumbrance\".",
   "ENCUMBRANCE_NOT_ACTIVE": "The encumbrance is not active.",
   "ENCUMBRANCE_NOT_PENDING": "The encumbrance is not awaiting confirmation.",
   "ENCUMBRANCE_TRANSFER_PENDING": "A transfer of the encumbrance is already in progress.",
   "FEATURE_DISABLED": "This feature is not enabled.",
+  "FINANCIER_NOT_ELIGIBLE": "The chosen organisation cannot be a lender.",
   "FLAG_ALREADY_ACTIVE": "The flag is already active.",
   "FLAG_NOT_ACTIVE": "The flag is already cleared.",
   "FORBIDDEN": "Your organisation is not allowed to do this.",
@@ -1593,6 +1671,7 @@
   "LOOKUP_REQUIRED": "Look up the organisation number first.",
   "LOOKUP_UNAVAILABLE": "The lookup is not responding right now. Try again shortly.",
   "MACHINE_BLOCKED": "The machine is blocked by an authority or the register operator.",
+  "MACHINE_NOT_EXPORTED": "The machine is not exported.",
   "MACHINE_READ_ONLY": "The machine is deregistered and cannot be changed.",
   "MACHINE_SEIZED": "The machine is seized. Changes are blocked.",
   "MACHINE_STOLEN": "The machine is reported stolen. Transfers, encumbrances and deregistration are blocked.",
@@ -1613,6 +1692,8 @@
   "OTP_FAILED": "The sign-in link could not be sent.",
   "PAYMENTS_DISABLED": "Card payment is not enabled. Contact us to change plan.",
   "PAYMENT_REQUIRED": "This plan has a fee and is chosen with card payment.",
+  "PAYOFF_ALREADY_OPEN": "There is already an open payoff request for this financing.",
+  "PAYOFF_NOT_PENDING": "The payoff request has already been decided.",
   "RATE_LIMITED": "Too many lookups in a short time. Wait a minute and try again.",
   "RENTAL_OVERLAP": "The machine is already rented out in that period.",
   "SIGNATORY_REQUIRED": "Only a signatory can take over the organisation. Ask a signatory for an invitation.",
@@ -1738,6 +1819,7 @@
    "daily_check": "{{actor}} did a daily check",
    "department_set": "{{actor}} changed department",
    "deregistered": "{{actor}} deregistered the machine",
+   "exported": "Exported",
    "factory_data_confirmed": "Factory data confirmed the machine details",
    "hours_reported": "{{actor}} reported {{payload.hours}} hours",
    "merged": "Record {{payload.merged_reg_number}} was merged into the machine",
@@ -1747,6 +1829,7 @@
    "partial_search": "{{actor}} made a partial search",
    "photo_set": "{{actor}} changed the photo",
    "registered": "{{actor}} registered the machine",
+   "reimported": "Brought back",
    "sighting_reported": "Tip about the stolen machine",
    "stock_status_changed": "{{actor}} changed stock status",
    "stolen_scanned": "The stolen machine was scanned",
@@ -1791,6 +1874,7 @@
    "group_unlinked": "Group link ended",
    "suspended": "The organisation was suspended",
    "types_changed": "{{actor}} changed the organisation's roles",
+   "types_extended": "Organisation type extended",
    "updated": "{{actor}} updated the organisation"
   },
   "ownership": {
@@ -1799,6 +1883,14 @@
   },
   "ownership_certificate": {
    "issued": "Ownership certificate issued"
+  },
+  "payoff": {
+   "declined": "Payoff declined",
+   "expired": "Payoff statement expired",
+   "quoted": "Payoff statement sent",
+   "requested": "Payoff requested",
+   "settled": "Payoff approved",
+   "settlement_submitted": "Proof of settlement submitted"
   },
   "register_extract": {
    "created": "{{actor}} produced a register extract"
@@ -1876,6 +1968,25 @@
   "ownerships": "Ownership history",
   "title": "Register extract",
   "verified": "checked against the nameplate"
+ },
+ "financier": {
+  "defaults": {
+   "contact_email": "E-mail for financing enquiries",
+   "contact_phone": "Phone",
+   "contract_ref_prefix": "Contract number prefix",
+   "default_term_months": "Normal term (months)",
+   "default_type": "Most common arrangement",
+   "lead": "This is filled in automatically when a dealer picks you as the lender.",
+   "payoff_instructions": "How we want payoff requests handled",
+   "title": "Financing defaults"
+  },
+  "picker": {
+   "contact": "Contact: {{contact}}",
+   "label": "Lender",
+   "not_connected": "Does not use MaskinID yet",
+   "other": "Another bank – enter its organisation number",
+   "other_hint": "The bank does not need to use MaskinID. The financing is registered against them and is waiting when they join."
+  }
  },
  "fleet": {
   "all_machines": "All machines",
@@ -2096,6 +2207,9 @@
   "encumbrance_takeover": "Encumbrance to take over",
   "handle": "Handle",
   "invitation": "Invitation",
+  "payoff_quote": "Payoff statement received",
+  "payoff_request": "Payoff to answer",
+  "payoff_settlement_review": "Proof of settlement to approve",
   "title": "Waiting for me",
   "trade_in_approve": "Trade-in to approve",
   "transfer_accept": "Accept machine",
@@ -2291,6 +2405,7 @@
   "access_log_lead": "Scans, checks and lookups of the machine. Private individuals are shown without name.",
   "claim": "Report a claim",
   "confirm_encumbrance": "Confirm the encumbrance",
+  "confirm_encumbrance_lead": "Check the details against the agreement and confirm.",
   "doc_status": {
    "failed": "Failed",
    "infected": "Blocked (virus)",
@@ -2327,6 +2442,7 @@
   "released_at": "released {{date}}",
   "rented_from": "Rented from {{org}} until {{date}}.",
   "rented_to": "Rented to {{org}} until {{date}}.",
+  "reported_financing": "Reported financing",
   "set_primary": "Use as main photo",
   "share_closed": "closed",
   "share_links": "Share links",
@@ -2756,6 +2872,10 @@
     "body": "{{by}} registered {{reg_number}} with you as owner.",
     "title": "Machine registered for you"
    },
+   "reimported": {
+    "body": "{{reg_number}} is registered in MaskinID again.",
+    "title": "Machine brought back"
+   },
    "sighting_reported": {
     "body": "A tip about {{reg_number}} has arrived.",
     "title": "Someone has seen your stolen machine"
@@ -2852,6 +2972,32 @@
    "suspended": {
     "body": "{{name}} is suspended: {{reason}}",
     "title": "Organisation suspended"
+   }
+  },
+  "payoff": {
+   "declined": {
+    "body": "{{holder}} declines the payoff of {{reg_number}}.",
+    "title": "Payoff declined"
+   },
+   "expired": {
+    "body": "The payoff statement for {{reg_number}} is no longer valid.",
+    "title": "The payoff statement has expired"
+   },
+   "quoted": {
+    "body": "{{holder}} has sent a payoff statement for {{reg_number}}.",
+    "title": "Payoff statement from {{holder}}"
+   },
+   "requested": {
+    "body": "{{requested_by}} wants to settle {{reg_number}}. Answer with a payoff statement.",
+    "title": "Payoff to answer"
+   },
+   "settled": {
+    "body": "{{holder}} has approved the payoff of {{reg_number}} and released the block.",
+    "title": "Payoff approved"
+   },
+   "settlement_submitted": {
+    "body": "{{submitted_by}} has uploaded proof of settlement for {{reg_number}}.",
+    "title": "Proof of settlement to approve"
    }
   },
   "reminder": {
@@ -3001,6 +3147,9 @@
   "check_import": "Import a list",
   "check_labels": "Order labels",
   "checklist_title": "Get started",
+  "claim_existing": "{{name}} has already been added to MaskinID by someone else, but nobody has claimed the account. Claim it to get everything already registered against you.",
+  "claim_needs_signatory": "Machines or financings are already registered here, so only an authorised signatory can claim the account.",
+  "claim_submit": "Claim the organisation",
   "create": "Add the organisation",
   "create_org_lead": "Enter the organisation number and we fetch name and address. It takes less than three minutes.",
   "create_org_title": "Add your organisation",
@@ -3092,6 +3241,32 @@
   "privacy": "Shows at most 10 matches without owner or encumbrances. Choose a machine to make a full check.",
   "submit": "Search"
  },
+ "payoff": {
+  "decline": "Decline",
+  "decline_reason": "Why is the payoff declined?",
+  "declined_by": "Declined by {{holder}}: {{reason}}",
+  "lead_holder": "Someone wants to settle or take over this machine. Answer with a payoff statement and approve once the credit is settled.",
+  "lead_owner": "Ask the lender to settle. The block is released only once the lender has approved that the credit is settled.",
+  "no_amounts": "The amount is stated in the lender's payoff statement. MaskinID never stores amounts.",
+  "none": "No payoff request.",
+  "open_count_one": "1 payoff request",
+  "open_count_other": "{{count}} payoff requests",
+  "quote": "Send payoff statement",
+  "quote_hint": "Attach the payoff statement as a PDF. The dealer reads the amount in the document.",
+  "quote_open": "Open payoff statement",
+  "quote_reference": "Reference",
+  "quote_valid": "Payoff statement valid until {{date}}",
+  "quote_valid_until": "Valid until",
+  "request": "Request payoff",
+  "request_purpose": "Why is the payoff needed?",
+  "requested_by": "Requested by {{org}}",
+  "settle": "Approve the payoff and release the block",
+  "settle_lead": "You confirm the credit is settled. The encumbrance is released in the same step and the transfer or export can proceed.",
+  "settlement": "Upload proof of settlement",
+  "settlement_hint": "A receipt or statement showing the credit is settled. The lender then approves and releases the block.",
+  "settlement_open": "Open proof of settlement",
+  "title": "Payoff"
+ },
  "pdf": {
   "document_number": "Document number",
   "flags": "Flags",
@@ -3118,6 +3293,8 @@
   "lead_financier": "Machines with your encumbrance: status, flags and transfers in progress.",
   "lead_insurer": "Machines you insure. Set a verification level requirement per policy.",
   "no_requirement": "No requirement",
+  "payoff_status": "Payoff",
+  "payoffs": "Payoff requests",
   "pending": "To confirm",
   "requirement": "Requirement"
  },
@@ -3140,6 +3317,9 @@
   "demo_scrapped": "Look up a scrapped machine",
   "demo_stolen": "Scan a stolen machine",
   "demo_title": "Try the demo",
+  "exported_body": "The machine has left Sweden but keeps its registration number and its history in MaskinID.",
+  "exported_on": "Exported on {{date}}",
+  "exported_to": "Exported to {{country}}",
   "fact_free": "Registration is free and takes less than two minutes.",
   "fact_history": "History cannot be changed afterwards. A checksum is published every day.",
   "fact_independent": "Independent – compatible with other registers' ID numbers.",
@@ -3676,7 +3856,7 @@
   "effective_date": "Effective date",
   "expires": "Expires",
   "financier_body": "Choose whether the encumbrance is released, carried over to the buyer, or the transfer is refused. The decision is signed.",
-  "financier_decision": "Financier's decision",
+  "financier_decision": "The lender's decision",
   "financier_title": "Your encumbrance in the transfer",
   "lead": "From {{from}} to {{to}}",
   "new_financing": "New financing",
@@ -3774,7 +3954,7 @@
   "err_year": "Enter a year between 1950 and next year.",
   "factory_body": "The manufacturer has provided technical data for the serial number.",
   "factory_found": "Factory data found: {{make}} {{model}}",
-  "financing_hint": "The financier receives a request and confirms.",
+  "financing_hint": "The lender receives a request and confirms.",
   "financing_question": "Is there a financing encumbrance",
   "fuel": "Fuel",
   "id_hint_pin": "17 characters, ISO 10261",

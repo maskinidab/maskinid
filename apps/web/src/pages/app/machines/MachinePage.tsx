@@ -12,7 +12,7 @@ import { FinancingBadge, MachineStatusBadge, StatusBadge, VerificationBadge } fr
 import { StatusBanner } from "../../../components/StatusBanner";
 import { Timeline } from "../../../components/Timeline";
 import { rpc, useRpc, useRpcMutation } from "../../../lib/api/query";
-import type { DocumentItem, Encumbrance, Flag, HistoryEvent, MachineView, MarketListing } from "../../../lib/api/types";
+import type { DocumentItem, Encumbrance, Flag, HistoryEvent, MachineView, MarketListing, PayoffRequest } from "../../../lib/api/types";
 import { backend } from "../../../lib/backend";
 import { formatDate, formatDateTime, formatMonth, formatNumber } from "../../../lib/format";
 import { extractPdf } from "../../../lib/pdf/extract";
@@ -23,12 +23,18 @@ import { OperationalNotice } from "./OperationsSection";
 import { PositionBox } from "./PositionBox";
 import { ServiceTab } from "./ServiceTab";
 import {
+  AcceptTakeoverDialog, AttachFinancingDialog, ManualFinancingDialog, PayoffDeclineDialog, PayoffPanel,
+  PayoffQuoteDialog, PayoffSettleDialog, PayoffSettlementDialog, RejectEncumbranceDialog, RequestPayoffDialog,
+  TransferHolderDialog,
+} from "./FinancingActions";
+import {
   BindLabelDialog, ClearFlagDialog, DeregisterDialog, EditMachineDialog, EncumbranceDialog, FlagDialog, ReleaseEncumbranceDialog,
-  RequestReleaseDialog, ShareDialog, TransferDialog, VerificationDialog,
+  ReimportDialog, RequestReleaseDialog, ShareDialog, TransferDialog, VerificationDialog,
 } from "./MachineActions";
 
 type Tab = "overview" | "history" | "documents" | "financing" | "service" | "access";
-type DialogId = "transfer" | "flag" | "deregister" | "share" | "encumbrance" | "label" | "verify" | "edit" | "mandate" | null;
+type DialogId = "transfer" | "flag" | "deregister" | "share" | "encumbrance" | "label" | "verify" | "edit" | "mandate"
+  | "attach_financing" | "manual_financing" | "reimport" | null;
 
 const READ_ONLY: MachineView["status"][] = ["scrapped", "exported", "deregistered"];
 
@@ -39,10 +45,17 @@ export function MachinePage() {
   const { orgId, has, canWrite, minTrustedLevel, path, isAdmin } = useOrg();
   const [params, setParams] = useSearchParams();
   const q = useRpc<MachineView>("get_machine", { p_org_id: orgId, p_machine_id: id });
+  // Payoff requests for this machine. Only parties to the conversation get rows back (RLS + the RPC).
+  const payoffs = useRpc<PayoffRequest[]>("list_payoff_requests", { p_org_id: orgId });
   const [dialog, setDialog] = useState<DialogId>(null);
   const [clearFlag, setClearFlag] = useState<Flag | null>(null);
   const [release, setRelease] = useState<Encumbrance | null>(null);
   const [askRelease, setAskRelease] = useState<Encumbrance | null>(null);
+  const [reject, setReject] = useState<Encumbrance | null>(null);
+  const [handOver, setHandOver] = useState<Encumbrance | null>(null);
+  const [takeOver, setTakeOver] = useState<Encumbrance | null>(null);
+  const [askPayoff, setAskPayoff] = useState<Encumbrance | null>(null);
+  const [payoffAction, setPayoffAction] = useState<"quote" | "settlement" | "settle" | "decline" | null>(null);
   const [pdfError, setPdfError] = useState<unknown>(null);
 
   if (q.isLoading) return <Skeleton lines={8} height={28} />;
@@ -58,7 +71,7 @@ export function MachinePage() {
     { id: "history", label: t("machine.tab_history") },
     ...(full || rel.includes("holder") ? [{ id: "documents" as Tab, label: t("machine.tab_documents") }] : []),
     ...(full ? [{ id: "service" as Tab, label: t("machine.tab_service") }] : []),
-    ...(m.encumbrances ? [{ id: "financing" as Tab, label: t("machine.tab_financing"), count: m.encumbrances.filter((e) => e.status === "active").length }] : []),
+    ...(m.encumbrances ? [{ id: "financing" as Tab, label: t("machine.tab_financing"), count: m.encumbrances.filter((e) => e.status === "active" || e.status === "pending").length }] : []),
     ...(rel.includes("owner") || rel.includes("user") || has("authority") ? [{ id: "access" as Tab, label: t("machine.tab_access") }] : []),
   ];
   const tab: Tab = tabs.some((x) => x.id === tabParam) ? (tabParam as Tab) : "overview";
@@ -77,9 +90,15 @@ export function MachinePage() {
     }
   }
   const flags = m.flags.filter((f) => f.status === "active");
+  const openPayoff = (payoffs.data ?? []).find((p) => p.machine_id === m.id && ["requested", "quoted", "settlement_submitted"].includes(p.status))
+    ?? (payoffs.data ?? []).find((p) => p.machine_id === m.id) ?? null;
 
   // Actions per role (SPEC §9.2). Every legal step opens a summary + signature.
   const actions: { id: Exclude<DialogId, null>; label: string; icon: IconName; danger?: boolean }[] = [];
+  // An exported machine is read-only until it is brought back, so re-import is the one action outside the guard.
+  if (canWrite && readOnly && m.status === "exported" && isOwner) {
+    actions.push({ id: "reimport", label: t("actions.reimport.title"), icon: "byt" });
+  }
   if (canWrite && !readOnly) {
     const blocked = m.status === "stolen" || m.status === "blocked";
     const stolenActive = flags.some((f) => f.type === "stolen");
@@ -96,6 +115,12 @@ export function MachinePage() {
       actions.push({ id: "flag", label: has("authority") ? t("actions.flag.title") : t("actions.flag.report_stolen"), icon: "flagga", danger: true });
     }
     if (isOwner || (rel.includes("holder") && m.financing?.has_active)) actions.push({ id: "deregister", label: t("actions.deregister.title"), icon: "stang", danger: true });
+    // Reporting a financing: "Bifoga dokument" for anyone who owns or sells the machine, and the manual form
+    // for dealers only — a plain company account should not have to get a form right (R10).
+    if ((isOwner || has("dealer")) && !m.financing?.has_active && !m.financing?.has_pending && !blocked) {
+      actions.push({ id: "attach_financing", label: t("actions.financing.attach"), icon: "dokument" });
+      if (has("dealer")) actions.push({ id: "manual_financing", label: t("actions.financing.manual"), icon: "penna" });
+    }
   }
 
   return (
@@ -116,7 +141,7 @@ export function MachinePage() {
           <div className="badge-rad">
             <MachineStatusBadge status={m.status} />
             <VerificationBadge level={m.verification_level} minTrusted={minTrustedLevel} />
-            {m.financing && <FinancingBadge hasActive={m.financing.has_active} />}
+            {m.financing && <FinancingBadge hasActive={m.financing.has_active} pending={m.financing.has_pending} pendingHolder={m.financing.pending?.holder.name} />}
             {typeof m.inspection_valid_until === "string" && <StatusBadge kind="verifierad" icon="bock">{t("machine.inspected_until", { date: formatMonth(m.inspection_valid_until) })}</StatusBadge>}
             {m.inspection_required === true && !m.inspection_valid_until && full && <StatusBadge kind="vantar">{t("machine.inspection_missing")}</StatusBadge>}
             {m.insured === true && <StatusBadge kind="neutral" icon="skold">{t("machine.insured")}</StatusBadge>}
@@ -168,7 +193,11 @@ export function MachinePage() {
         {tab === "history" && <History machineId={m.id} />}
         {tab === "documents" && <Documents m={m} />}
         {tab === "financing" && (
-          <FinancingTab m={m} onRelease={setRelease} onAskRelease={setAskRelease}
+          <FinancingTab m={m} onRelease={setRelease} onAskRelease={setAskRelease} onReject={setReject}
+            onHandOver={setHandOver} onTakeOver={setTakeOver} onAskPayoff={setAskPayoff}
+            payoff={openPayoff} onPayoffAction={setPayoffAction}
+            onAttach={(isOwner || has("dealer")) && canWrite && !readOnly ? () => setDialog("attach_financing") : undefined}
+            onManual={has("dealer") && canWrite && !readOnly ? () => setDialog("manual_financing") : undefined}
             onRegister={has("financier") && !active && canWrite && !readOnly ? () => setDialog("encumbrance") : undefined} />
         )}
         {tab === "service" && <ServiceTab m={m} />}
@@ -187,8 +216,25 @@ export function MachinePage() {
       <ClearFlagDialog m={m} flag={clearFlag} onClose={() => setClearFlag(null)} />
       <ReleaseEncumbranceDialog m={m} e={release} onClose={() => setRelease(null)} />
       <RequestReleaseDialog m={m} e={askRelease} onClose={() => setAskRelease(null)} />
+      <AttachFinancingDialog m={m} open={dialog === "attach_financing"} onClose={() => setDialog(null)} />
+      <ManualFinancingDialog m={m} open={dialog === "manual_financing"} onClose={() => setDialog(null)} />
+      <ReimportDialog m={m} open={dialog === "reimport"} onClose={() => setDialog(null)} />
+      <RejectEncumbranceDialog e={reject} onClose={() => setReject(null)} />
+      <TransferHolderDialog e={handOver} onClose={() => setHandOver(null)} />
+      <AcceptTakeoverDialog e={takeOver} m={m} onClose={() => setTakeOver(null)} />
+      <RequestPayoffDialog e={askPayoff} purpose="owner_request" onClose={() => setAskPayoff(null)} />
+      {payoffAction === "quote" && <PayoffQuoteDialog m={m} payoff={openPayoff} onClose={() => setPayoffAction(null)} />}
+      {payoffAction === "settlement" && <PayoffSettlementDialog m={m} payoff={openPayoff} onClose={() => setPayoffAction(null)} />}
+      {payoffAction === "settle" && <PayoffSettleDialog payoff={openPayoff} onClose={() => setPayoffAction(null)} />}
+      {payoffAction === "decline" && <PayoffDeclineDialog payoff={openPayoff} onClose={() => setPayoffAction(null)} />}
     </div>
   );
+}
+
+/** Opens a document through the signed-URL Edge Function (5 minute expiry). */
+async function openDocument(id: string) {
+  const r = await backend.invoke<{ url: string }>("document-url", { document_id: id });
+  window.open(r.url, "_blank", "noopener");
 }
 
 function Fact({ label, children }: { label: string; children: React.ReactNode }) {
@@ -291,10 +337,7 @@ function Documents({ m }: { m: MachineView }) {
   const q = useRpc<DocumentItem[]>("list_documents", { p_org_id: orgId, p_machine_id: m.id });
   const setPhoto = useRpcMutation<{ p_org_id: string; p_machine_id: string; p_document_id: string }>("set_primary_photo");
   const [type, setType] = useState("photo_machine");
-  async function open(d: DocumentItem) {
-    const r = await backend.invoke<{ url: string }>("document-url", { document_id: d.id });
-    window.open(r.url, "_blank", "noopener");
-  }
+  const open = (d: DocumentItem) => openDocument(d.id);
   const full = m.access === "full";
   return (
     <div className="stack-4">
@@ -303,7 +346,7 @@ function Documents({ m }: { m: MachineView }) {
           <h2 id="ladda-upp" className="t-rubrik-4">{t("machine.upload")}</h2>
           <label className="mid-etikett" htmlFor="doktyp">{t("common.type")}</label>
           <select id="doktyp" className="mid-select" value={type} onChange={(e) => setType(e.target.value)}>
-            {["photo_machine", "photo_nameplate", "invoice", "purchase_agreement", "ce_declaration", "inspection_report", "manual", "other"].map((x) =>
+            {["photo_machine", "photo_nameplate", "invoice", "purchase_agreement", "financing_contract", "bank_order", "payoff_statement", "ce_declaration", "inspection_report", "manual", "other"].map((x) =>
               <option key={x} value={x}>{t(`enum.document_type.${x}`)}</option>)}
           </select>
           <DocumentDropzone orgId={orgId} machineId={m.id} type={type} camera={type.startsWith("photo")} onUploaded={() => void q.refetch()} />
@@ -333,18 +376,40 @@ function Documents({ m }: { m: MachineView }) {
   );
 }
 
-function FinancingTab({ m, onRelease, onAskRelease, onRegister }: {
-  m: MachineView; onRelease(e: Encumbrance): void; onAskRelease(e: Encumbrance): void; onRegister?: () => void;
+/**
+ * Financing tab. Shows what is reported as well as what is confirmed, carries the documents behind a financing,
+ * and holds the payoff conversation. The reject / hand-over / take-over buttons expose RPCs that existed from
+ * the start but had no UI at all.
+ */
+function FinancingTab({ m, onRelease, onAskRelease, onRegister, onAttach, onManual, onReject, onHandOver, onTakeOver, onAskPayoff, payoff, onPayoffAction }: {
+  m: MachineView;
+  onRelease(e: Encumbrance): void;
+  onAskRelease(e: Encumbrance): void;
+  onRegister?: () => void;
+  onAttach?: () => void;
+  onManual?: () => void;
+  onReject(e: Encumbrance): void;
+  onHandOver(e: Encumbrance): void;
+  onTakeOver(e: Encumbrance): void;
+  onAskPayoff(e: Encumbrance): void;
+  payoff: PayoffRequest | null;
+  onPayoffAction(a: "quote" | "settlement" | "settle" | "decline"): void;
 }) {
   const { t } = useTranslation();
   const { orgId } = useOrg();
   const list = m.encumbrances ?? [];
   const isOwner = m.relations.includes("owner");
+  const isHolder = payoff ? payoff.holder?.id === orgId : m.financing?.active?.holder.id === orgId;
   const confirm = useRpcMutation<{ p_org_id: string; p_encumbrance_id: string }>("confirm_encumbrance");
   return (
     <div className="stack-4">
       <p className="t-liten t-sekundar">{t("actions.encumbrance.no_amounts")}</p>
-      {onRegister && <div><button type="button" className="mid-knapp mid-knapp-primar" onClick={onRegister}><Icon name="hanglas" />{t("actions.encumbrance.title")}</button></div>}
+      <div className="mid-rad">
+        {onRegister && <button type="button" className="mid-knapp mid-knapp-primar" onClick={onRegister}><Icon name="hanglas" />{t("actions.encumbrance.title")}</button>}
+        {onAttach && <button type="button" className="mid-knapp mid-knapp-primar" onClick={onAttach}><Icon name="dokument" />{t("actions.financing.attach")}</button>}
+        {onManual && <button type="button" className="mid-knapp mid-knapp-sekundar" onClick={onManual}><Icon name="penna" />{t("actions.financing.manual")}</button>}
+      </div>
+      <PayoffPanel payoff={payoff} isHolder={!!isHolder} onAction={onPayoffAction} />
       {list.length === 0 ? <EmptyState icon="hanglas" title={t("components.financing.no")} /> : list.map((e) => (
         <article key={e.id} className="mid-post stack-2">
           <div className="mid-rad mid-rad-mellan">
@@ -356,16 +421,41 @@ function FinancingTab({ m, onRelease, onAskRelease, onRegister }: {
             {e.contract_ref ? ` · ${t("actions.encumbrance.contract_ref")}: ${e.contract_ref}` : ""}
             {e.released_at ? ` · ${t("machine.released_at", { date: formatDate(e.released_at) })}` : ""}
           </p>
+          {e.rejected_reason && <p className="mid-fel">{e.rejected_reason}</p>}
+          {!!e.documents?.length && (
+            <ul className="lista-punkter t-liten">
+              {e.documents.map((d) => (
+                <li key={d.id}>
+                  <button type="button" className="mid-lank" onClick={() => void openDocument(d.id)}>
+                    {t(`enum.document_type.${d.type}`)} · {d.filename}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
           <div className="mid-rad">
             {e.status === "active" && e.holder.id === orgId && (
               <button type="button" className="mid-knapp mid-knapp-kontur mid-knapp-liten" onClick={() => onRelease(e)}>{t("actions.release.title")}</button>
             )}
-            {e.status === "pending" && e.holder.id === orgId && (
-              <button type="button" className="mid-knapp mid-knapp-primar mid-knapp-liten" disabled={confirm.isPending}
-                onClick={() => confirm.mutate({ p_org_id: orgId, p_encumbrance_id: e.id })}>{t("machine.confirm_encumbrance")}</button>
+            {/* A handover row is accepted, never "confirmed": confirming one used to raise a false conflict. */}
+            {e.status === "pending" && e.holder.id === orgId && e.transferred_from_encumbrance_id && (
+              <button type="button" className="mid-knapp mid-knapp-primar mid-knapp-liten" onClick={() => onTakeOver(e)}>{t("actions.financing.accept_takeover")}</button>
+            )}
+            {e.status === "pending" && e.holder.id === orgId && !e.transferred_from_encumbrance_id && (
+              <>
+                <button type="button" className="mid-knapp mid-knapp-primar mid-knapp-liten" disabled={confirm.isPending}
+                  onClick={() => confirm.mutate({ p_org_id: orgId, p_encumbrance_id: e.id })}>{t("machine.confirm_encumbrance")}</button>
+                <button type="button" className="mid-knapp mid-knapp-kontur mid-knapp-liten" onClick={() => onReject(e)}>{t("actions.financing.reject")}</button>
+              </>
+            )}
+            {e.status === "active" && e.holder.id === orgId && (
+              <button type="button" className="mid-knapp mid-knapp-kontur mid-knapp-liten" onClick={() => onHandOver(e)}>{t("actions.financing.transfer_holder")}</button>
             )}
             {e.status === "active" && isOwner && e.holder.id !== orgId && (
-              <button type="button" className="mid-knapp mid-knapp-kontur mid-knapp-liten" onClick={() => onAskRelease(e)}>{t("actions.request_release.title")}</button>
+              <>
+                <button type="button" className="mid-knapp mid-knapp-kontur mid-knapp-liten" onClick={() => onAskRelease(e)}>{t("actions.request_release.title")}</button>
+                {!payoff && <button type="button" className="mid-knapp mid-knapp-sekundar mid-knapp-liten" onClick={() => onAskPayoff(e)}>{t("payoff.request")}</button>}
+              </>
             )}
           </div>
         </article>

@@ -42,7 +42,9 @@ jobs:
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          # Pinned: `latest` resolves the release through the unauthenticated GitHub API and fails the job
+          # with "rate limit exceeded". A pinned CLI also makes a deploy reproducible.
+          version: 2.118.0
       - name: Show which project is being deployed
         run: echo "Deploying to ${{ github.event.inputs.target || (github.event.workflow_run.head_branch == 'main' && 'production' || 'staging') }} (project $SUPABASE_PROJECT_REF)"
       - name: Link project

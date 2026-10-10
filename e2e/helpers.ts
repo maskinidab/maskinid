@@ -61,3 +61,12 @@ export function nameplatePng(fields: Record<string, string | number>): Buffer {
   const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==", "base64");
   return Buffer.concat([png, Buffer.from(`nameplate:${Object.entries(fields).map(([k, v]) => `${k}=${v}`).join(";")}\n`)]);
 }
+
+/**
+ * A minimal PDF with a financing hint appended, read by mockOcr.financingDocument. Fields map to the
+ * FinancingSuggestion shape: financier_name, financier_org_number, encumbrance_type, contract_ref, start_date,
+ * end_date, term_months, serial, make, model, year. No amount — the register stores none.
+ */
+export function financingPdf(fields: Record<string, string | number>): Buffer {
+  return Buffer.concat([PDF_FIXTURE, Buffer.from(`financing:${Object.entries(fields).map(([k, v]) => `${k}=${v}`).join(";")}\n`)]);
+}

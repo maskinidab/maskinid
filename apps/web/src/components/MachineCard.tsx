@@ -20,7 +20,7 @@ export function MachineCard({ m, to, minTrusted = 0 }: { m: MachineListItem; to:
         <span className="badge-rad">
           {m.status !== "active" && <MachineStatusBadge status={m.status} />}
           <VerificationBadge level={m.verification_level} minTrusted={minTrusted} />
-          {m.has_active_financing && <FinancingBadge hasActive />}
+          {(m.has_active_financing || m.has_pending_financing) && <FinancingBadge hasActive={m.has_active_financing} pending={m.has_pending_financing} />}
         </span>
       </div>
     </Link>

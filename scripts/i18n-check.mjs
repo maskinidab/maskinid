@@ -2,8 +2,11 @@
 // Dynamic keys (template strings) are ignored. Exit code 1 if anything is missing.
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const root = new URL("..", import.meta.url).pathname;
+// fileURLToPath, not URL.pathname: the latter keeps the leading slash before a Windows drive letter and
+// percent-encodes non-ASCII path segments, so the check could not run from a path like "…/Företaget/…".
+const root = fileURLToPath(new URL("..", import.meta.url));
 const sv = JSON.parse(readFileSync(join(root, "packages/shared/src/i18n/sv.json"), "utf8"));
 const flat = {};
 (function walk(o, p) {

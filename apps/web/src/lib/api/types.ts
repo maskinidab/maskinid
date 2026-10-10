@@ -66,6 +66,41 @@ export interface Encumbrance {
   confirmed_at?: string | null;
   released_at?: string | null;
   created_at: string;
+  /** Set when this row is a handover offered by the previous holder: accept it, never "confirm" it. */
+  transferred_from_encumbrance_id?: string | null;
+  rejected_reason?: string | null;
+  /** Bank order / leasing agreement backing the financing, filtered by what the viewer may read. */
+  documents?: DocumentItem[];
+}
+
+/**
+ * A payoff ("lösen") conversation between the party selling/exporting a machine and the lender.
+ * There is deliberately no amount here: the figure lives in the lender's attached document, because the
+ * register stores no amounts (CLAUDE.md rule 5).
+ */
+export interface PayoffRequest {
+  id: string;
+  machine_id: string;
+  encumbrance_id: string;
+  reg_number: string;
+  purpose: "trade_in" | "sale" | "export" | "owner_request";
+  status: "requested" | "quoted" | "settlement_submitted" | "settled" | "declined" | "expired";
+  message: string | null;
+  requested_by: OrgBrief | null;
+  holder: OrgBrief | null;
+  transfer_id: string | null;
+  quote_document_id: string | null;
+  quote_reference: string | null;
+  quote_valid_until: string | null;
+  quoted_at: string | null;
+  settlement_document_id: string | null;
+  settlement_submitted_at: string | null;
+  settled_at: string | null;
+  declined_reason: string | null;
+  export_country: string | null;
+  export_customs_ref: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Flag {
@@ -121,6 +156,9 @@ export interface MachineView {
   primary_photo_path: string | null;
   deregistered_at: string | null;
   deregistration_reason: string | null;
+  exported_at?: string | null;
+  export_country?: string | null;
+  export_customs_ref?: string | null;
   stock_status: string | null;
   created_at: string;
   updated_at: string;
@@ -132,7 +170,9 @@ export interface MachineView {
   owner_ordinal: number;
   identifiers: Identifier[];
   labels: { id: string; code: string; status: string; role: string; bound_at: string | null; serial: string }[] | { has_bound_label: boolean };
-  financing?: { has_active: boolean; active: Encumbrance | null; min_trusted_level: number };
+  financing?: { has_active: boolean; active: Encumbrance | null; min_trusted_level: number;
+    /** Reported to a lender but not confirmed yet. Shown as "Belåning anmäld"; never counted as has_active. */
+    has_pending?: boolean; pending?: Encumbrance | null };
   market_listings?: MarketListing[];
   encumbrances?: Encumbrance[];
   flags: Flag[];
@@ -162,6 +202,7 @@ export interface MachineListItem {
   service_weight_kg: number | null;
   engine_power_kw: number | null;
   has_active_financing: boolean;
+  has_pending_financing?: boolean;
   active_flags: string[];
   open_transfer_status: string | null;
   updated_at: string;
@@ -181,6 +222,8 @@ export interface PublicCard {
   has_registered_owner: boolean;
   label_status: "bound" | "replaced" | "unbound" | null;
   inspection_valid_until: string | null;
+  exported_at?: string | null;
+  export_country?: string | null;
 }
 
 export interface Transfer {
@@ -196,6 +239,8 @@ export interface Transfer {
   status: string;
   is_trade_in: boolean;
   financier_decision: string | null;
+  /** The buyer's financing, reported to their bank as soon as the sale is entered. */
+  new_encumbrance?: { id: string; type: string; status: string; holder: { id: string; name: string } } | null;
   expires_at: string;
   existing_encumbrance: { id: string; type: string; holder: { id: string; name: string } } | null;
   new_financing: Record<string, unknown> | null;

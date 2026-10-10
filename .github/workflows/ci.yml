@@ -39,7 +39,9 @@ jobs:
           cache: npm
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          # Pinned: `latest` resolves the release through the unauthenticated GitHub API and fails the job
+          # with "rate limit exceeded". A pinned CLI also makes a deploy reproducible.
+          version: 2.118.0
       - run: npm ci
       - name: Start local Supabase database and apply migrations + seed
         run: |

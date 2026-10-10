@@ -78,8 +78,15 @@ export function MachinePublicPage() {
       )}
       <div className="behallare sektion stack-6 smal-bred">
         {r.offline && <Notice title={t("public.offline", { date: formatDateTime(r.offline) })} />}
+        {/* Export is an event in the machine's history, not a deletion: the card and the QR keep working. */}
+        {c.status === "exported" && (
+          <Notice title={c.export_country ? t("public.exported_to", { country: c.export_country }) : t("enum.machine_status.exported")}>
+            <p>{t("public.exported_body")}</p>
+            {c.exported_at && <p className="t-liten t-sekundar">{t("public.exported_on", { date: formatDate(c.exported_at) })}</p>}
+          </Notice>
+        )}
         {r.nfc === "mismatch" && <Notice kind="fel" title={t("nfc.mismatch_title")}><p>{t("nfc.mismatch_body")}</p></Notice>}
-        {c.label_status === "replaced" && <Notice title={t("public.label_replaced")}><p><Link className="mid-lank" to={`/r/${c.reg_number}`}>{t("public.label_replaced_link")}</Link></p></Notice>}
+        {c.label_status === "replaced" && c.status !== "exported" && <Notice title={t("public.label_replaced")}><p><Link className="mid-lank" to={`/r/${c.reg_number}`}>{t("public.label_replaced_link")}</Link></p></Notice>}
         <article className="mid-post">
           <div className="mid-post-huvud">
             <div className="stack-3">

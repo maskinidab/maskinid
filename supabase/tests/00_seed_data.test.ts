@@ -27,11 +27,12 @@ describe("demo seed", () => {
       await t.as(null);
       const n = async (sql: string) => Number(await t.val(sql));
       const demo = "(select id from public.organizations where slug not like 'test-%')";
-      expect(await n(`select count(*) from public.machines where owner_org_id in ${demo} or registered_by_org_id in ${demo}`)).toBe(60);
+      // 60 from SPEC §17 plus the four financing-round scenarios (unconnected lender, two payoffs, one export).
+      expect(await n(`select count(*) from public.machines where owner_org_id in ${demo} or registered_by_org_id in ${demo}`)).toBe(64);
       const status = Object.fromEntries((await t.q<any>(`select status, count(*)::int n from public.machines m where m.registered_by_org_id in ${demo} group by 1`)).map((r) => [r.status, r.n]));
-      expect(status).toMatchObject({ draft: 5, stolen: 2, blocked: 1, scrapped: 3 });
-      expect(await n("select count(*) from public.machines where stock_status = 'stock'")).toBe(6);
-      expect(await n(`select count(*) from public.encumbrances where status = 'active' and type in ('leasing', 'ownership_reservation') and holder_org_id in ${demo}`)).toBe(8);
+      expect(status).toMatchObject({ draft: 5, stolen: 2, blocked: 1, scrapped: 3, exported: 1 });
+      expect(await n("select count(*) from public.machines where stock_status = 'stock'")).toBe(7);
+      expect(await n(`select count(*) from public.encumbrances where status = 'active' and type in ('leasing', 'ownership_reservation') and holder_org_id in ${demo}`)).toBe(10);
       expect(await n(`select count(*) from public.rentals where status = 'active' and lessor_org_id in ${demo}`)).toBe(2);
       expect(await n(`select count(*) from public.transfers where status = 'awaiting_buyer' and from_org_id in ${demo}`)).toBe(1);
       expect(await n("select count(*) from public.conflicts where type = 'duplicate_identifier' and status = 'open'")).toBeGreaterThanOrEqual(1);
@@ -39,7 +40,24 @@ describe("demo seed", () => {
       expect(await n("select count(*) from public.market_alerts where type = 'stolen_machine_listed'")).toBe(1);
       expect(await n("select count(*) from public.market_alerts where type = 'duplicate_serial_in_market'")).toBe(1);
       expect(await n(`select count(*) from public.label_batches where assigned_org_id in ${demo} or assigned_org_id is null`)).toBeGreaterThanOrEqual(3);
-      expect(await n("select count(*) from public.labels where status = 'bound'")).toBe(55);
+      // 55 from SPEC §17 plus one bound on purpose to the exported machine: scanning its QR after the export is
+      // the whole point of keeping the label (ADR 0026), so it must not depend on the label budget.
+      expect(await n("select count(*) from public.labels where status = 'bound'")).toBe(56);
+      expect(await n(`select count(*) from public.machines m where m.status = 'exported'
+        and m.export_country = 'NO'
+        and exists (select 1 from public.labels l where l.machine_id = m.id and l.status = 'bound')
+        and exists (select 1 from public.machine_identifiers i where i.machine_id = m.id and i.type = 'serial' and i.unique_active)`)).toBe(1);
+      // A lender that does not use MaskinID yet: an unclaimed placeholder holding a reported financing.
+      expect(await n(`select count(*) from public.organizations o where 'financier' = any (o.types)
+        and not exists (select 1 from public.memberships m where m.org_id = o.id and m.status = 'active')`)).toBe(1);
+      expect(await n(`select count(*) from public.encumbrances e join public.organizations o on o.id = e.holder_org_id
+        where e.status = 'pending' and not exists (select 1 from public.memberships m where m.org_id = o.id and m.status = 'active')`)).toBe(1);
+      // Two payoff conversations: one the lender has answered, one still waiting on them.
+      expect(Object.fromEntries((await t.q<any>("select status, count(*)::int n from public.payoff_requests group by 1")).map((r) => [r.status, r.n])))
+        .toEqual({ requested: 1, quoted: 1 });
+      // The register stores no amounts, so the payoff table must never grow one (CLAUDE.md rule 5).
+      expect(await n(`select count(*) from information_schema.columns where table_name = 'payoff_requests'
+        and column_name ~ 'amount|belopp|sum|price|debt|residual'`)).toBe(0);
       expect(await n("select count(*) from public.events")).toBeGreaterThanOrEqual(400);
       expect(await n("select count(*) from public.event_anchors where published_at is not null")).toBe(30);
       expect(await t.val("select (app.verify_chain() ->> 'ok')::boolean")).toBe(true);
