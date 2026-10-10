@@ -100,6 +100,11 @@ begin
   perform seed.company('212000-2007', 'Kommunfastigheter Väst', 'Göteborg', array['owner', 'client']::public.org_type[], 'kommun@demo.se', 'Karin Kommun');
   perform seed.company('516401-3004', 'Demo Bank Finans', 'Stockholm', array['financier']::public.org_type[], 'bank@demo.se', 'Björn Bank');
   perform seed.company('516401-3012', 'Nordisk Maskinfinans', 'Stockholm', array['financier']::public.org_type[], 'finans@demo.se', 'Frida Finans');
+  -- More than one finance company, so a demo can show the same machine being financed by different lenders and
+  -- the conflict that stops a second one. All fictitious; the "(demo)" suffix follows the convention used for
+  -- Polisen, Tullverket and Volvo CE below, so no real company is presented as a customer.
+  perform seed.company('516401-3020', 'DNB Finans (demo)', 'Stockholm', array['financier']::public.org_type[], 'dnb@demo.se', 'Dagny Nordbank');
+  perform seed.company('516406-0138', 'Santander Consumer (demo)', 'Solna', array['financier']::public.org_type[], 'santander@demo.se', 'Sixten Sander');
   perform seed.company('516401-4002', 'Demo Försäkring', 'Stockholm', array['insurer']::public.org_type[], 'forsakring@demo.se', 'Fredrik Försäkring');
   perform seed.company('202100-0068', 'Polisen (demo)', 'Stockholm', array['authority']::public.org_type[], 'polisen@demo.se', 'Paula Polis');
   perform seed.company('202100-4730', 'Tullverket (demo)', 'Stockholm', array['authority']::public.org_type[], 'tull@demo.se', 'Tove Tull');
@@ -109,4 +114,19 @@ begin
   -- Pending approvals and partner types are approved by the operator (as in production).
   perform seed.act('admin@demo.se');
   perform public.approve_org(o.id) from public.organizations o where o.status = 'pending';
+end $$;
+
+-- ---------- Finance companies that do not use MaskinID yet ----------
+-- Two lenders exist only in the mock company register. A dealer can register financing against them (which
+-- creates an unclaimed placeholder organisation), and the day they sign up they claim it and their machines are
+-- already there. Deliberately created *after* the blanket approve_org above so they stay unapproved, and they
+-- have no user: that is exactly the state app.resolve_org_by_number produces.
+do $$
+begin
+  insert into app.mock_companies (org_number, name, city, address, is_sole_trader) values
+    ('516406-0120', 'LF Finans (demo)', 'Stockholm',
+      jsonb_build_object('street', 'Tegeluddsvägen 11', 'postal_code', '115 41', 'city', 'Stockholm'), false),
+    ('516401-9845', 'BNP Paribas Leasing (demo)', 'Göteborg',
+      jsonb_build_object('street', 'Lindholmspiren 7', 'postal_code', '417 56', 'city', 'Göteborg'), false)
+  on conflict (org_number) do nothing;
 end $$;

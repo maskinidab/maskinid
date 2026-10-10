@@ -61,20 +61,28 @@ insert into seed.machine_plan values
   (57, 'nordmaskin-draft', 'Metso', 'Lokotrack LT106', 'crusher', 2021, 4335, 'METLOKOTR03757', '{}'::text[]),
   (58, 'nordmaskin-draft', 'Volvo', 'EW160E', 'excavator_wheeled', 2015, 3377, 'VCEEW160E78128', '{}'::text[]),
   (59, 'berg-dup', 'Volvo', 'L120H', 'wheel_loader', 2022, 1440, 'VCEL120H93778', array['duplicate_of:7']::text[]),
-  (60, 'syd-extra', 'Volvo', 'EW160E', 'excavator_wheeled', 2012, 8932, 'VCEEW160E09834', '{}'::text[]);
+  (60, 'syd-extra', 'Volvo', 'EW160E', 'excavator_wheeled', 2012, 8932, 'VCEEW160E09834', '{}'::text[]),
+  -- Scenarios for the financing round: a lender that is not a MaskinID customer, two payoff conversations in
+  -- different states, and an exported machine whose QR and history must still resolve.
+  (61, 'nordmaskin', 'Volvo', 'L120H', 'wheel_loader', 2021, 3120, 'VCEL120H61001', array['encnum:516406-0120:leasing','stock','level2']::text[]),
+  (62, 'kommun', 'Caterpillar', '950 GC', 'wheel_loader', 2021, 4210, 'CAT0950GC62002', array['enc:dnb:leasing','payoff:quoted','level2']::text[]),
+  (63, 'kommun', 'Komatsu', 'PC210LCi-11', 'excavator_tracked', 2023, 1880, 'KMTPCPC210L63003', array['enc:santander:ownership_reservation','payoff:requested','level1']::text[]),
+  (64, 'syd', 'Hitachi', 'ZX210', 'excavator_tracked', 2016, 9440, 'HTCZX21064004', array['exported','level2']::text[]);
 
 create or replace function seed.owner(p_key text) returns table (org_id uuid, email text) language sql as $$
   select seed.org(x.slug), x.email from (values
     ('berg', 'bergs-schakt-entreprenad-ab', 'berg@demo.se'), ('lena', 'lena-gravmaskin', 'lena@demo.se'),
     ('kommun', 'kommunfastigheter-vast', 'kommun@demo.se'), ('nordmaskin', 'nordmaskin-ab', 'nordmaskin@demo.se'),
     ('syd', 'entreprenadcenter-syd-ab', 'syd@demo.se'), ('norr', 'skogsmaskiner-norr-ab', 'norr@demo.se'),
-    ('bank', 'demo-bank-finans', 'bank@demo.se'), ('finans', 'nordisk-maskinfinans', 'finans@demo.se'))
+    ('bank', 'demo-bank-finans', 'bank@demo.se'), ('finans', 'nordisk-maskinfinans', 'finans@demo.se'),
+    ('dnb', 'dnb-finans-demo', 'dnb@demo.se'), ('santander', 'santander-consumer-demo', 'santander@demo.se'))
     x(key, slug, email) where x.key = p_key
 $$;
 
 do $$
 declare
   p record; own record; r jsonb; mid uuid; t text; fin record; d jsonb; typ text; params jsonb; sig uuid;
+  po public.payoff_requests; hemail text;
   op uuid := seed.org('maskinid'); insp uuid := seed.org('maskinkontroll-sverige-ab'); nord uuid := seed.org('nordmaskin-ab');
   b1 jsonb; b2 jsonb; b3 jsonb; code text; lbl_org uuid; lbl_email text; bound int := 0;
 begin
@@ -154,6 +162,54 @@ begin
       perform seed.act(own.email);
       sig := seed.sign(own.org_id, 'deregister_machine', mid, '{"reason":"scrapped","label_disposition":"destroyed"}');
       perform public.deregister_machine(own.org_id, mid, 'scrapped', 'destroyed', sig, 'Skrotad hos godkänd skrotfirma');
+    end if;
+    -- A lender that is not a MaskinID customer yet: the dealer/owner reports the financing with the bank's
+    -- organisation number, which creates an unclaimed placeholder (ADR 0027). register_encumbrance cannot be
+    -- used here — there is nobody to act as that bank.
+    foreach t in array p.scenarios loop
+      if t like 'encnum:%' then
+        perform seed.act(own.email);
+        perform public.request_encumbrance(own.org_id, mid, null, split_part(t, ':', 3)::public.encumbrance_type,
+          'AVT-' || p.slot || '-' || upper(left(split_part(t, ':', 2), 3)), (current_date - 20)::date, (current_date + 1000)::date,
+          split_part(t, ':', 2), null, null, '{}');
+      end if;
+    end loop;
+
+    -- Payoff conversations, so a lender has something real to work through in the demo.
+    if p.scenarios @> array['payoff:requested'] or p.scenarios @> array['payoff:quoted'] then
+      fin := app.active_financing(mid);
+      if fin.id is not null then
+        perform seed.act(own.email);
+        perform public.request_payoff(own.org_id, fin.id, 'trade_in', 'Kunden vill byta in maskinen hos Nordmaskin.');
+        if p.scenarios @> array['payoff:quoted'] then
+          select * into po from public.payoff_requests where encumbrance_id = fin.id order by created_at desc limit 1;
+          select email into hemail from public.profiles pr
+            join public.memberships me on me.user_id = pr.user_id and me.status = 'active'
+            where me.org_id = fin.holder_org_id limit 1;
+          perform seed.act(hemail);
+          -- No document in the seed: the point to demonstrate is the status and the validity date. The amount
+          -- would live in the lender's PDF, never in the register.
+          perform public.submit_payoff_quote(fin.holder_org_id, po.id, null,
+            'LOSEN-' || p.slot || '-26', (current_date + 21)::date);
+        end if;
+      end if;
+    end if;
+
+    -- Exported: the QR label stays bound and the serial stays claimed, so the machine can still be scanned and
+    -- looked up from abroad (ADR 0026).
+    if 'exported' = any (p.scenarios) then
+      -- Bound on purpose rather than left to the 55-label budget above: scanning this machine's QR after the
+      -- export is exactly what the change is for, so it must not depend on where it lands in the loop.
+      if (select count(*) from public.labels where machine_id = mid and status = 'bound') = 0 then
+        select l.code into code from public.labels l where l.status = 'printed' and l.machine_id is null
+          and l.assigned_org_id is null order by l.created_at, l.code limit 1;
+        perform seed.act(own.email);
+        perform public.bind_label(own.org_id, mid, code, 'primary');
+      end if;
+      perform seed.act(own.email);
+      sig := seed.sign(own.org_id, 'deregister_machine', mid, '{"reason":"exported","label_disposition":"kept"}');
+      perform public.deregister_machine(own.org_id, mid, 'exported', 'kept', sig, 'Såld till norsk entreprenör.',
+        (current_date - 9)::date, 'NO', 'TULL-2026-55512');
     end if;
     if 'transfer' = any (p.scenarios) then
       perform seed.act(own.email);

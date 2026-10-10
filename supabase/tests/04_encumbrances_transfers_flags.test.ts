@@ -288,6 +288,52 @@ describe("transfers (SPEC §6.7, §16.9)", () => {
     });
   });
 
+  // Both added with the payoff round: a transfer that dies used to leave the lender with a vanished inbox item
+  // and the buyer's bank with a pending request for ever.
+  it("cancelling tells the lender who was deciding, and rejects the buyer's pending financing", async () => {
+    await tx(async (t) => {
+      const m = await registerAs(t, "owner_a");
+      await encumber(t, "financier_a", m.id);
+      await t.as("owner_a");
+      const init = await t.rpc("initiate_transfer", {
+        p_org_id: ORGS.owner_a, p_machine_id: m.id, p_to_org_id: ORGS.owner_b,
+        p_new_financing: { holder_org_id: ORGS.financier_b, type: "leasing", end_date: NEXT_YEAR },
+      });
+      expect(init.transfer.status).toBe("awaiting_financier");
+      await t.as(null);
+      // The buyer's financing is reported from the start, which is what makes it visible before acceptance.
+      const newEnc = await t.val<string>("select id::text from public.encumbrances where machine_id = $1 and holder_org_id = $2", [m.id, ORGS.financier_b]);
+      expect(await t.val("select status from public.encumbrances where id = $1", [newEnc])).toBe("pending");
+      await t.as("owner_a");
+      await t.rpc("cancel_transfer", { p_org_id: ORGS.owner_a, p_transfer_id: init.transfer.id });
+      await t.as(null);
+      const e = await t.one<any>("select status, rejected_reason from public.encumbrances where id = $1", [newEnc]);
+      expect(e).toEqual({ status: "rejected", rejected_reason: "transfer_cancelled" });
+      // Both banks hear about it: the one that was asked to release, and the one whose request is now dead.
+      await t.as("financier_a");
+      expect((await t.rpc<any[]>("list_notifications")).some((x) => x.type === "transfer.cancelled")).toBe(true);
+      await t.as("financier_b");
+      expect((await t.rpc<any[]>("list_notifications")).some((x) => x.type === "encumbrance.rejected")).toBe(true);
+    });
+  });
+
+  it("releasing at a transfer closes the encumbrance reminders", async () => {
+    await tx(async (t) => {
+      const m = await registerAs(t, "owner_a");
+      const enc = await encumber(t, "financier_a", m.id);
+      await t.as(null);
+      expect(Number(await t.val("select count(*) from public.reminders where source_id = $1 and status <> $2", [enc.encumbrance.id, "done"]))).toBeGreaterThan(0);
+      await t.as("owner_a");
+      const init = await t.rpc("initiate_transfer", { p_org_id: ORGS.owner_a, p_machine_id: m.id, p_to_org_id: ORGS.owner_b });
+      await t.as("financier_a");
+      const fsig = await sign(t, ORGS.financier_a, "approve_transfer_financier", init.transfer.id, { decision: "release" });
+      await t.rpc("approve_transfer_financier", { p_org_id: ORGS.financier_a, p_transfer_id: init.transfer.id, p_decision: "release", p_signature_id: fsig });
+      await t.as(null);
+      // A released encumbrance has nothing left to remind anyone about.
+      expect(Number(await t.val("select count(*) from public.reminders where source_id = $1 and status <> $2", [enc.encumbrance.id, "done"]))).toBe(0);
+    });
+  });
+
   it("dealer trade-in: dealer requests, owner approves, dealer accepts", async () => {
     await tx(async (t) => {
       const m = await registerAs(t, "owner_a");
