@@ -6,13 +6,14 @@ import { EmptyState, ErrorNotice, PageHeader, Skeleton } from "../../components/
 import { Icon, type IconName } from "../../components/Icon";
 import { RegNumber } from "../../components/RegNumber";
 import { useRpc } from "../../lib/api/query";
-import type { InboxItem, OrgBrief, Transfer } from "../../lib/api/types";
+import type { InboxItem, OrgBrief, PayoffRequest, Transfer } from "../../lib/api/types";
 import { backend } from "../../lib/backend";
 import { formatDate } from "../../lib/format";
 
 const ICON: Record<string, IconName> = {
   transfer_accept: "byt", transfer_financier: "byt", trade_in_approve: "byt", encumbrance_confirm: "hanglas", encumbrance_takeover: "hanglas",
   verification_review: "sigill", verification_needs_info: "sigill", correction_objection: "skold", conflict: "varning", invitation: "personer",
+  payoff_request: "hanglas", payoff_quote: "dokument", payoff_settlement_review: "hanglas",
 };
 
 function describe(item: InboxItem, t: (k: string, o?: Record<string, unknown>) => string): { reg?: string; text: string; to?: string; machineId?: string } {
@@ -26,6 +27,17 @@ function describe(item: InboxItem, t: (k: string, o?: Record<string, unknown>) =
     case "encumbrance_takeover": {
       const e = item.encumbrance as { type: string };
       return { reg: item.reg_number as string, text: t(`enum.encumbrance_type.${e.type}`), to: `machines/${item.machine_id as string}?tab=financing` };
+    }
+    // Payoff items: the panel that answers them lives on the machine's financing tab.
+    case "payoff_request":
+    case "payoff_quote":
+    case "payoff_settlement_review": {
+      const p = item.payoff as PayoffRequest | undefined;
+      return {
+        reg: p?.reg_number,
+        text: [p ? t(`enum.payoff_purpose.${p.purpose}`) : "", p?.requested_by?.name].filter(Boolean).join(" · "),
+        to: p ? `machines/${p.machine_id}?tab=financing` : undefined,
+      };
     }
     case "verification_review":
     case "verification_needs_info": {

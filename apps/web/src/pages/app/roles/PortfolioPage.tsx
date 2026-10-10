@@ -8,7 +8,7 @@ import { FormField } from "../../../components/FormField";
 import { RegNumber } from "../../../components/RegNumber";
 import { MachineStatusBadge, StatusBadge, VerificationBadge } from "../../../components/StatusBadge";
 import { queryClient, rpc, useRpc } from "../../../lib/api/query";
-import type { Level, MachineStatus } from "../../../lib/api/types";
+import type { Level, MachineStatus, PayoffRequest } from "../../../lib/api/types";
 import { formatDate, formatDateTime } from "../../../lib/format";
 
 interface Item {
@@ -22,10 +22,14 @@ interface Item {
 export function PortfolioPage() {
   const { t } = useTranslation();
   const { orgId, path, has, isAdmin } = useOrg();
-  const q = useRpc<Item[]>("list_portfolio", { p_org_id: orgId });
   const insurer = has("insurer") && !has("financier");
+  const q = useRpc<Item[]>("list_portfolio", { p_org_id: orgId });
+  // Payoff requests waiting on us. Until now a lender had no overview of these at all.
+  const payoffs = useRpc<PayoffRequest[]>("list_payoff_requests", insurer ? null : { p_org_id: orgId });
   const items = q.data ?? [];
   const flagged = items.filter((i) => i.flags.length > 0).length;
+  const openPayoffs = (payoffs.data ?? []).filter((p) => ["requested", "quoted", "settlement_submitted"].includes(p.status));
+  const payoffByMachine = new Map(openPayoffs.map((p) => [p.machine_id, p]));
   return (
     <div className="stack-6">
       <PageHeader title={t("nav.portfolio")} lead={insurer ? t("portfolio.lead_insurer") : t("portfolio.lead_financier")} />
@@ -35,6 +39,7 @@ export function PortfolioPage() {
           <div><dt>{t("portfolio.flagged")}</dt><dd>{flagged}</dd></div>
           {!insurer && <div><dt>{t("portfolio.pending")}</dt><dd>{items.filter((i) => i.status === "pending").length}</dd></div>}
           {!insurer && <div><dt>{t("portfolio.in_transfer")}</dt><dd>{items.filter((i) => i.open_transfer).length}</dd></div>}
+          {!insurer && <div><dt>{t("portfolio.payoffs")}</dt><dd>{openPayoffs.length}</dd></div>}
         </dl>
       )}
       {insurer && isAdmin && <ClaimUrl />}
@@ -54,6 +59,10 @@ export function PortfolioPage() {
                 <VerificationBadge level={i.verification_level} />
                 {i.open_transfer && <StatusBadge kind="vantar">{t("machines.transfer_open")}</StatusBadge>}</span>) },
             ...(insurer ? [{ id: "req", header: t("portfolio.requirement"), value: (i: Item) => i.requires_verification_level ?? 0, cell: (i: Item) => <Requirement item={i} /> }] : []),
+            ...(insurer ? [] : [{ id: "payoff", header: t("portfolio.payoff_status"),
+              value: (i: Item) => payoffByMachine.get(i.machine_id)?.status ?? "",
+              cell: (i: Item) => { const p = payoffByMachine.get(i.machine_id); return p
+                ? <StatusBadge kind="vantar">{t(`enum.payoff_status.${p.status}`)}</StatusBadge> : "–"; } }]),
             { id: "last", header: t("portfolio.last_event"), value: (i) => i.last_event_at, cell: (i) => formatDateTime(i.last_event_at), sortable: true, hideOnMobile: true },
           ]} />
       )}

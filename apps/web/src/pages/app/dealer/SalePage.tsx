@@ -5,11 +5,12 @@ import { useOrg } from "../../../auth/OrgContext";
 import { CompanyLookupField, type CompanyInfo } from "../../../components/CompanyLookupField";
 import { DocumentDropzone } from "../../../components/DocumentDropzone";
 import { ErrorNotice, Notice, PageHeader, Skeleton } from "../../../components/Feedback";
+import { FinancierPicker, type FinancierProfile, type PickedFinancier } from "../../../components/FinancierPicker";
 import { FormField } from "../../../components/FormField";
 import { Icon } from "../../../components/Icon";
 import { RegNumber } from "../../../components/RegNumber";
 import { rpc, useRpc } from "../../../lib/api/query";
-import type { DocumentItem, MachineListItem, MachineView, OrgBrief, Transfer } from "../../../lib/api/types";
+import type { DocumentItem, MachineListItem, MachineView, Transfer } from "../../../lib/api/types";
 import { todayIso } from "../../../lib/format";
 
 /**
@@ -25,7 +26,6 @@ export function SalePage() {
   const machineId = params.get("machine") ?? "";
   const stock = useRpc<{ items: MachineListItem[] }>("list_machines", { p_org_id: orgId, p_scope: "stock", p_limit: 500 });
   const machine = useRpc<MachineView>("get_machine", machineId ? { p_org_id: orgId, p_machine_id: machineId } : null);
-  const financiers = useRpc<OrgBrief[]>("list_partner_orgs", { p_type: "financier" });
   const [mode, setMode] = useState<"org" | "email">("org");
   const [orgNr, setOrgNr] = useState("");
   const [company, setCompany] = useState<CompanyInfo | null>(null);
@@ -33,6 +33,8 @@ export function SalePage() {
   const [saleDate, setSaleDate] = useState(todayIso());
   const [docs, setDocs] = useState<DocumentItem[]>([]);
   const [fin, setFin] = useState({ holder: "", type: "ownership_reservation", ref: "", end: "" });
+  // The buyer's bank may be one we know or one named by organisation number (ADR 0027).
+  const [holder, setHolder] = useState<PickedFinancier | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<unknown>(null);
   const [fieldErr, setFieldErr] = useState<string | null>(null);
@@ -47,13 +49,16 @@ export function SalePage() {
     if (mode === "org" && !company) return setFieldErr(t("actions.transfer.buyer_required"));
     if (mode === "email" && !/^\S+@\S+\.\S+$/.test(email)) return setFieldErr(t("actions.transfer.email_invalid"));
     if (newSaleEligible && newSale && !hasInvoice) return setFieldErr(t("dealer.invoice_required"));
-    if (fin.holder && fin.type === "ownership_reservation" && !fin.end) return setFieldErr(t("actions.encumbrance.end_required"));
+    if (holder && fin.type === "ownership_reservation" && !fin.end) return setFieldErr(t("actions.encumbrance.end_required"));
     setBusy(true);
     try {
       const r = await rpc<{ transfer: Transfer }>("sell_machine", {
         p_org_id: orgId, p_machine_id: m!.id, p_sale_date: saleDate, p_new_sale: newSaleEligible && newSale, p_document_ids: docs.map((d) => d.id),
         p_buyer: mode === "org" ? (company!.existing_org ? { org_id: company!.existing_org.id } : { org_number: company!.org_number }) : { email },
-        p_new_financing: fin.holder ? { holder_org_id: fin.holder, type: fin.type, contract_ref: fin.ref || null, end_date: fin.end || null } : null,
+        p_new_financing: holder
+          ? { holder_org_id: holder.holder_org_id, holder_org_number: holder.holder_org_number, holder_name: holder.holder_name,
+              type: fin.type, contract_ref: fin.ref || null, end_date: fin.end || null }
+          : null,
       });
       nav(path(`transfers/${r.transfer.id}`));
     } catch (e) { setError(e); } finally { setBusy(false); }
@@ -100,13 +105,13 @@ export function SalePage() {
           <fieldset className="stack-3">
             <legend className="mid-etikett">{t("dealer.buyer_financing")} <span className="t-sekundar">({t("common.optional")})</span></legend>
             <div className="rutnat">
-              <FormField className="kol-6" label={t("actions.encumbrance.holder")}>
-                <select className="mid-select" value={fin.holder} onChange={(e) => setFin({ ...fin, holder: e.target.value })}>
-                  <option value="">{t("common.none")}</option>
-                  {(financiers.data ?? []).map((o) => <option key={o.id} value={o.id}>{o.name}</option>)}
-                </select>
-              </FormField>
-              {fin.holder && <>
+              <div className="kol-12">
+                <FinancierPicker value={holder} onChange={setHolder} onProfile={(p: FinancierProfile | null) => {
+                  const d = p?.financing_defaults;
+                  if (d?.default_type) setFin((x) => ({ ...x, type: d.default_type! }));
+                }} />
+              </div>
+              {holder && <>
                 <FormField className="kol-6" label={t("common.type")}>
                   <select className="mid-select" value={fin.type} onChange={(e) => setFin({ ...fin, type: e.target.value })}>
                     {["ownership_reservation", "leasing"].map((x) => <option key={x} value={x}>{t(`enum.encumbrance_type.${x}`)}</option>)}

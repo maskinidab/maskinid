@@ -19,6 +19,8 @@ export function OrgForm({ initialTypes = ["owner"], onCreated }: { initialTypes?
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<unknown>(null);
   const [requested, setRequested] = useState(false);
+  // lookup_company reports whether the organisation has any active member; one without is free to take over.
+  const claimable = !!company?.existing_org?.claimable;
 
   async function create() {
     setBusy(true);
@@ -41,10 +43,28 @@ export function OrgForm({ initialTypes = ["owner"], onCreated }: { initialTypes?
       {!!error && <ErrorNotice error={error} />}
       <div className="mid-faltgrupp">
         <label className="mid-etikett" htmlFor="orgnr">{t("common.org_number")}</label>
-        <CompanyLookupField id="orgnr" value={orgNumber} onChange={setOrgNumber} onFound={setCompany} />
+        {/* A placeholder created for a bank already declares the financier type; carry that into the form so
+            the lender does not have to work out which boxes to tick. */}
+        <CompanyLookupField id="orgnr" value={orgNumber} onChange={setOrgNumber} onFound={(c) => {
+          setCompany(c);
+          const pre = c?.existing_org?.claimable ? c.existing_org.types : null;
+          if (pre?.length) setTypes(pre);
+        }} />
       </div>
       {company?.is_sole_trader && <Notice title={t("onboarding.sole_trader")} />}
-      {company?.existing_org ? (
+      {/*
+        An existing organisation with no active member is a placeholder somebody else created — a dealer who
+        registered a machine for this company, or a dealer who registered a financing against this bank. The SQL
+        has always supported taking it over (create_org claims the row and keeps its id, so everything already
+        registered against the organisation comes with it), but the UI only ever offered "request access", which
+        notifies admins that a placeholder does not have. So claimable placeholders get the create/claim form.
+      */}
+      {claimable && (
+        <Notice kind="info" title={t("onboarding.claim_existing", { name: company!.existing_org!.name })}>
+          {company!.existing_org!.needs_signatory && <p className="t-liten">{t("onboarding.claim_needs_signatory")}</p>}
+        </Notice>
+      )}
+      {company?.existing_org && !claimable ? (
         <Notice title={t("onboarding.existing", { name: company.existing_org.name })}>
           {requested ? <p className="t-liten">{t("onboarding.access_requested")}</p> : (
             <button type="button" className="mid-knapp mid-knapp-kontur mid-knapp-liten" onClick={async () => {
@@ -72,7 +92,7 @@ export function OrgForm({ initialTypes = ["owner"], onCreated }: { initialTypes?
             <span>{t("onboarding.dpa_label", { version: DPA_VERSION })} <Link className="mid-lank" to="/legal/dpa" target="_blank">{t("onboarding.dpa_link")}</Link></span>
           </label>
           <button type="button" className="mid-knapp mid-knapp-primar" disabled={!company || !types.length || !dpa || busy} onClick={() => void create()}>
-            {t("onboarding.create")}
+            {claimable ? t("onboarding.claim_submit") : t("onboarding.create")}
           </button>
         </>
       )}

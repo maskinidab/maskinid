@@ -68,7 +68,7 @@ export function StockPage() {
                 cell: (m) => <><strong>{m.make} {m.model}</strong>{m.year ? ` · ${m.year}` : ""}<br /><span className="t-liten t-sekundar">{m.hour_meter !== null ? `${formatNumber(m.hour_meter)} h` : ""}
                   {m.consignment ? ` · ${t("dealer.consignment_for", { org: (m.consignment as { principal: string }).principal })}` : ""}</span></> },
               { id: "badges", header: t("common.status"), value: (m) => m.verification_level, cell: (m) => (
-                <span className="badge-rad"><VerificationBadge level={m.verification_level} minTrusted={minTrustedLevel} />{m.has_active_financing && <FinancingBadge hasActive />}
+                <span className="badge-rad"><VerificationBadge level={m.verification_level} minTrusted={minTrustedLevel} />{(m.has_active_financing || m.has_pending_financing) && <FinancingBadge hasActive={m.has_active_financing} pending={m.has_pending_financing} />}
                   {m.open_transfer_status && <StatusBadge kind="vantar">{t("machines.transfer_open")}</StatusBadge>}</span>) },
               { id: "actions", header: t("common.actions"), cell: (m) => (
                 <span className="mid-rad">

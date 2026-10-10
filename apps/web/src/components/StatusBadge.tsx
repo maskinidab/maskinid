@@ -43,8 +43,24 @@ export function VerificationBadge({ level, minTrusted = 0 }: { level: Level; min
   );
 }
 
-export function FinancingBadge({ hasActive }: { hasActive: boolean }) {
+/**
+ * Financing marking. Three states, not two: a financing reported to a lender but not yet confirmed used to read
+ * as "Ej belånad", which made it look as if choosing a bank had done nothing.
+ *
+ * `pending` is for the owner/dealer views only. The financing *check* (CheckPage, the receipt and its PDF) must
+ * stay strictly binary on active financing — that answer is the lender's legal one (SPEC §6.6, §16.3–4).
+ */
+export function FinancingBadge({ hasActive, pending = false, pendingHolder }: {
+  hasActive: boolean; pending?: boolean; pendingHolder?: string;
+}) {
   const { t } = useTranslation();
-  return hasActive ? <StatusBadge kind="belanad">{t("components.financing.yes")}</StatusBadge>
-    : <StatusBadge kind="neutral" icon="bock">{t("components.financing.no")}</StatusBadge>;
+  if (hasActive) return <StatusBadge kind="belanad">{t("components.financing.yes")}</StatusBadge>;
+  if (pending) {
+    return (
+      <StatusBadge kind="vantar" title={pendingHolder ? t("components.financing.pending_title", { holder: pendingHolder }) : undefined}>
+        {t("components.financing.pending")}
+      </StatusBadge>
+    );
+  }
+  return <StatusBadge kind="neutral" icon="bock">{t("components.financing.no")}</StatusBadge>;
 }

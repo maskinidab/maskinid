@@ -8,6 +8,7 @@ import { uploadDocument } from "../../../components/DocumentDropzone";
 import { ErrorNotice, Notice, PageHeader, Skeleton } from "../../../components/Feedback";
 import { FormField } from "../../../components/FormField";
 import { Icon } from "../../../components/Icon";
+import { OcrCapture, OcrError, OcrSuggestionList, useOcr } from "../../../components/OcrCapture";
 import { RegNumber } from "../../../components/RegNumber";
 import { ScannerView } from "../../../components/Scanner";
 import { SerialInput, type IdentifierCheck } from "../../../components/SerialInput";
@@ -124,7 +125,12 @@ export function RegisterWizard() {
   const [params, setParams] = useSearchParams();
   const draftParam = params.get("draft");
   const [draftId, setDraftId] = useState<string | null>(draftParam);
-  const [d, setD] = useState<WizardData>(EMPTY);
+  // ?serial=… lets the dealer come straight from a trade-in lookup that found nothing and register the machine
+  // for the customer without typing the number again.
+  const [d, setD] = useState<WizardData>(() => {
+    const serial = params.get("serial");
+    return serial ? { ...EMPTY, serial } : EMPTY;
+  });
   const [loaded, setLoaded] = useState(!draftParam);
   const [savedAt, setSavedAt] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -247,42 +253,20 @@ export function RegisterWizard() {
 
 type Setter = <K extends keyof WizardData>(k: K, v: WizardData[K]) => void;
 
-function toBase64(bytes: Uint8Array): string {
-  let s = "";
-  for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
-  return btoa(s);
-}
-
 function StepIdentity({ d, set, patch, err, onDup, ensureDraft }: {
   d: WizardData; set: Setter; patch(p: Partial<WizardData>): void; err(k: string): string | null; onDup(c: IdentifierCheck | null): void; ensureDraft(): Promise<string>;
 }) {
   const { t } = useTranslation();
   const { orgId } = useOrg();
-  const [ocrBusy, setOcrBusy] = useState(false);
-  const [ocrError, setOcrError] = useState<unknown>(null);
-  const [suggestion, setSuggestion] = useState<Record<string, unknown> | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
+  const ocr = useOcr("ocr-nameplate");
   const [oem, setOem] = useState<IdentifierCheck["oem"]>(null);
-  const cam = useRef<HTMLInputElement>(null);
 
-  async function photo(f: File | undefined) {
-    if (!f) return;
-    setOcrBusy(true);
-    setOcrError(null);
-    setPreview(URL.createObjectURL(f));
-    try {
-      const bytes = new Uint8Array(await f.arrayBuffer());
-      const media = f.type === "image/png" ? "image/png" : "image/jpeg";
-      const s = await backend.invoke<Record<string, unknown>>("ocr-nameplate", { image_base64: toBase64(bytes), media_type: media });
-      setSuggestion(s);
-      const draft = await ensureDraft();
-      const doc = await uploadDocument({ orgId, machineId: draft, type: "photo_nameplate", file: f, visibility: "verifiers" }).catch(() => null);
-      if (doc) patch({ nameplate_doc: doc.id });
-    } catch (e) {
-      setOcrError(e);
-    } finally {
-      setOcrBusy(false);
-    }
+  async function photo(f: File) {
+    const s = await ocr.read(f);
+    if (!s) return;
+    const draft = await ensureDraft();
+    const doc = await uploadDocument({ orgId, machineId: draft, type: "photo_nameplate", file: f, visibility: "verifiers" }).catch(() => null);
+    if (doc) patch({ nameplate_doc: doc.id });
   }
 
   function accept(field: string, value: unknown) {
@@ -291,32 +275,16 @@ function StepIdentity({ d, set, patch, err, onDup, ensureDraft }: {
     const k = map[field];
     if (!k) return;
     patch({ [k]: String(value), ...(field === "pin" ? { id_type: "pin" as const } : {}), ocr_fields: [...d.ocr_fields, field === "pin" ? "serial" : field] });
-    setSuggestion((s) => (s ? Object.fromEntries(Object.entries(s).filter(([x]) => x !== field)) : s));
+    ocr.drop(field);
   }
 
-  const fields = suggestion ? Object.entries(suggestion).filter(([k, v]) => v !== null && v !== "" && !["confidence", "provider"].includes(k)) : [];
   return (
     <div className="stack-4">
       <section className="panel stack-3">
         <p className="t-brodtext">{t("wizard.photo_lead")}</p>
-        <input ref={cam} type="file" accept="image/jpeg,image/png" capture="environment" hidden onChange={(e) => void photo(e.target.files?.[0])} />
-        <div><button type="button" className="mid-knapp mid-knapp-sekundar" onClick={() => cam.current?.click()} disabled={ocrBusy}>
-          <Icon name="kamera" />{ocrBusy ? t("wizard.reading") : t("wizard.photo_nameplate")}</button></div>
-        {preview && <img className="foto-forhand" src={preview} alt={t("wizard.nameplate_alt")} />}
-        {ocrError != null && <ErrorNotice error={ocrError} title={t("wizard.ocr_failed")} />}
-        {fields.length > 0 && (
-          <div className="stack-2" aria-live="polite">
-            <p className="mid-etikett">{t("wizard.ocr_suggestions")}</p>
-            <ul className="radlista">
-              {fields.map(([k, v]) => (
-                <li key={k}>
-                  <span><span className="t-liten t-sekundar">{t(`wizard.ocr_field.${k}`, { defaultValue: k })}</span><br /><strong className="mid-id">{String(v)}</strong></span>
-                  <button type="button" className="mid-knapp mid-knapp-kontur mid-knapp-liten" onClick={() => accept(k, v)}><Icon name="bock" />{t("wizard.use")}</button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        <OcrCapture fn="ocr-nameplate" camera busy={ocr.busy} label={t("wizard.photo_nameplate")} busyLabel={t("wizard.reading")} onFile={photo} />
+        <OcrError error={ocr.error} title={t("wizard.ocr_failed")} />
+        <OcrSuggestionList suggestion={ocr.suggestion} labelKey="wizard.ocr_field" onAccept={accept} />
       </section>
       <fieldset className="stack-2">
         <legend className="mid-etikett">{t("wizard.id_type")}</legend>

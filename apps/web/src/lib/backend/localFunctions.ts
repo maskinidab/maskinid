@@ -141,6 +141,11 @@ export const localFunctions: Record<string, Handler> = {
     return mockOcr.nameplate({ base64: body.image_base64, mediaType: body.media_type ?? "image/jpeg" });
   },
 
+  async "ocr-financing-document"(_ctx, body) {
+    if (!body?.file_base64) throw new ApiError("VALIDATION", { field: "file" });
+    return mockOcr.financingDocument({ base64: body.file_base64, mediaType: body.media_type ?? "application/pdf" });
+  },
+
   async "import-map"(_ctx, body) {
     return { mapping: heuristicColumnMapping(body?.headers ?? [], body?.targets ?? []), source: "heuristic" };
   },

@@ -47,7 +47,7 @@ export function MachinesPage() {
       <span className="badge-rad">
         {m.status !== "active" && <MachineStatusBadge status={m.status} />}
         <VerificationBadge level={m.verification_level} minTrusted={minTrustedLevel} />
-        {m.has_active_financing && <FinancingBadge hasActive />}
+        {(m.has_active_financing || m.has_pending_financing) && <FinancingBadge hasActive={m.has_active_financing} pending={m.has_pending_financing} />}
         {m.open_transfer_status && <span className="mid-status mid-status-vantar">{t("machines.transfer_open")}</span>}
         {typeof m.operational_status === "string" && m.operational_status !== "operational" && (
           <span className={`mid-status ${m.operational_status === "out_of_service" ? "mid-status-sparr" : "mid-status-vantar"}`}>{t(`operations.status.${m.operational_status as string}`)}</span>
@@ -94,8 +94,9 @@ export function MachinesPage() {
             card={(m) => <MachineCard m={m} to={path(`machines/${m.id}`)} minTrusted={minTrustedLevel} />}
             filters={[
               { id: "status", label: t("common.status"), options: STATUSES.map((s) => ({ value: s, label: t(`enum.machine_status.${s}`) })), match: (m, v) => m.status === v },
-              { id: "financing", label: t("machines.filter_financing"), options: [{ value: "yes", label: t("common.yes") }, { value: "no", label: t("common.no") }],
-                match: (m, v) => m.has_active_financing === (v === "yes") },
+              { id: "financing", label: t("machines.filter_financing"),
+                options: [{ value: "yes", label: t("common.yes") }, { value: "pending", label: t("components.financing.pending") }, { value: "no", label: t("common.no") }],
+                match: (m, v) => v === "pending" ? !!m.has_pending_financing : m.has_active_financing === (v === "yes") },
               ...(departments.data?.length ? [{ id: "department", label: t("department.label"), options: departments.data.map((d) => ({ value: d.id, label: d.name })),
                 match: (m: MachineListItem, v: string) => (m.department as { id: string } | null | undefined)?.id === v }] : []),
               { id: "level", label: t("machines.filter_level"), options: [0, 1, 2].map((l) => ({ value: String(l), label: t(`level.${l}.name`) })),

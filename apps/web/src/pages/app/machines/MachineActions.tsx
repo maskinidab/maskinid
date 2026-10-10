@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useOrg } from "../../../auth/OrgContext";
 import { CompanyLookupField, type CompanyInfo } from "../../../components/CompanyLookupField";
 import { Dialog } from "../../../components/Dialog";
+import { FinancierPicker, type PickedFinancier } from "../../../components/FinancierPicker";
 import { ErrorNotice, Notice } from "../../../components/Feedback";
 import { FormField } from "../../../components/FormField";
 import { Icon } from "../../../components/Icon";
@@ -68,7 +69,7 @@ export function TransferDialog({ m, open, onClose }: { m: MachineView; open: boo
   const [email, setEmail] = useState("");
   const [saleDate, setSaleDate] = useState(todayIso());
   const [withFin, setWithFin] = useState(false);
-  const [finHolder, setFinHolder] = useState("");
+  const [finHolder, setFinHolder] = useState<PickedFinancier | null>(null);
   const [finType, setFinType] = useState("ownership_reservation");
   const [finRef, setFinRef] = useState("");
   const [finEnd, setFinEnd] = useState("");
@@ -76,7 +77,7 @@ export function TransferDialog({ m, open, onClose }: { m: MachineView; open: boo
   const docs = useRpc<DocumentItem[]>("list_documents", open ? { p_org_id: orgId, p_machine_id: m.id } : null);
   const privateDocs = (docs.data ?? []).filter((d) => d.visibility === "owner" && d.status === "clean");
   const [err, setErr] = useState<string | null>(null);
-  const financiers = useRpc<OrgBrief[]>("list_partner_orgs", open && withFin ? { p_type: "financier" } : null);
+
   const late = (Date.parse(todayIso()) - Date.parse(saleDate)) / 86_400_000 > 10;
   return (
     <ActionDialog open={open} onClose={onClose} title={t("actions.transfer.title")} submitLabel={t("actions.transfer.submit")} wide
@@ -90,7 +91,10 @@ export function TransferDialog({ m, open, onClose }: { m: MachineView; open: boo
           p_to_org_id: mode === "org" ? company?.existing_org?.id ?? null : null,
           p_to_org_number: mode === "org" && !company?.existing_org ? company?.org_number : null,
           p_to_email: mode === "email" ? email : null,
-          p_new_financing: withFin && finHolder ? { holder_org_id: finHolder, type: finType, contract_ref: finRef || null, end_date: finEnd || null } : null,
+          p_new_financing: withFin && finHolder
+          ? { holder_org_id: finHolder.holder_org_id, holder_org_number: finHolder.holder_org_number, holder_name: finHolder.holder_name,
+              type: finType, contract_ref: finRef || null, end_date: finEnd || null }
+          : null,
           p_document_ids: docIds,
         });
         onClose();
@@ -131,12 +135,9 @@ export function TransferDialog({ m, open, onClose }: { m: MachineView; open: boo
       <label className="mid-kryss"><input type="checkbox" checked={withFin} onChange={(e) => setWithFin(e.target.checked)} /> {t("actions.transfer.with_financing")}</label>
       {withFin && (
         <div className="rutnat">
-          <FormField className="kol-6" label={t("actions.encumbrance.holder")}>
-            <select className="mid-select" value={finHolder} onChange={(e) => setFinHolder(e.target.value)}>
-              <option value="">{t("common.select")}</option>
-              {(financiers.data ?? []).map((o) => <option key={o.id} value={o.id}>{o.name}</option>)}
-            </select>
-          </FormField>
+          <div className="kol-12">
+            <FinancierPicker value={finHolder} onChange={setFinHolder} />
+          </div>
           <FormField className="kol-3" label={t("common.type")}>
             <select className="mid-select" value={finType} onChange={(e) => setFinType(e.target.value)}>
               {["ownership_reservation", "leasing"].map((x) => <option key={x} value={x}>{t(`enum.encumbrance_type.${x}`)}</option>)}
@@ -243,12 +244,26 @@ export function DeregisterDialog({ m, open, onClose }: { m: MachineView; open: b
   const [label, setLabel] = useState("destroyed");
   const [date, setDate] = useState(todayIso());
   const [note, setNote] = useState("");
+  const [country, setCountry] = useState("");
+  const [customsRef, setCustomsRef] = useState("");
+  const [err, setErr] = useState<string | null>(null);
+  // Export keeps the label on the machine: that is what lets a foreign owner, or a buyer back home, scan it and
+  // find the history. The other reasons still revoke it.
+  const exporting = reason === "exported";
+  const disposition = exporting ? "kept" : label;
   return (
     <ActionDialog open={open} onClose={onClose} danger title={t("actions.deregister.title")} submitLabel={t("actions.deregister.submit")}
       onSubmit={async () => {
-        const sig = await sign(orgId, "deregister_machine", m.id, { reason, label_disposition: label });
-        await rpc("deregister_machine", { p_org_id: orgId, p_machine_id: m.id, p_reason: reason, p_label_disposition: label,
-          p_signature_id: sig, p_note: note || null, p_date: date });
+        setErr(null);
+        if (exporting && country.trim() && !/^[A-Za-z]{2}$/.test(country.trim())) {
+          setErr(t("wizard.err_country"));
+          throw new FieldError();
+        }
+        const sig = await sign(orgId, "deregister_machine", m.id, { reason, label_disposition: disposition });
+        await rpc("deregister_machine", { p_org_id: orgId, p_machine_id: m.id, p_reason: reason, p_label_disposition: disposition,
+          p_signature_id: sig, p_note: note || null, p_date: date,
+          p_export_country: exporting ? country.trim().toUpperCase() || null : null,
+          p_export_customs_ref: exporting ? customsRef.trim() || null : null });
         onClose();
       }}>
       <MachineSummary m={m} />
@@ -262,14 +277,52 @@ export function DeregisterDialog({ m, open, onClose }: { m: MachineView; open: b
             <option key={x} value={x}>{t(`enum.deregistration_reason.${x}`)}</option>)}
         </select>
       </FormField>
-      <FormField label={t("actions.deregister.label")}>
-        <select className="mid-select" value={label} onChange={(e) => setLabel(e.target.value)}>
-          {["destroyed", "removed", "returned"].map((x) => <option key={x} value={x}>{t(`actions.deregister.label_${x}`)}</option>)}
-        </select>
-      </FormField>
+      {exporting ? (
+        <>
+          <Notice kind="info" title={t("actions.deregister.export_keeps_identity")} />
+          <div className="rutnat">
+            <FormField className="kol-6" label={t("actions.deregister.export_country")} hint={t("actions.deregister.export_country_hint")} error={err}>
+              <input className="mid-input is-id" maxLength={2} value={country} onChange={(e) => setCountry(e.target.value)}
+                autoCapitalize="characters" placeholder="NO" />
+            </FormField>
+            <FormField className="kol-6" label={t("actions.deregister.export_customs_ref")} optional>
+              <input className="mid-input is-id" value={customsRef} onChange={(e) => setCustomsRef(e.target.value)} />
+            </FormField>
+          </div>
+          <p className="mid-hjalp">{t("actions.deregister.label_kept")}</p>
+        </>
+      ) : (
+        <FormField label={t("actions.deregister.label")}>
+          <select className="mid-select" value={label} onChange={(e) => setLabel(e.target.value)}>
+            {["destroyed", "removed", "returned"].map((x) => <option key={x} value={x}>{t(`actions.deregister.label_${x}`)}</option>)}
+          </select>
+        </FormField>
+      )}
       <FormField label={t("common.date")}>
         <input className="mid-input" type="date" value={date} max={todayIso()} onChange={(e) => setDate(e.target.value)} />
       </FormField>
+      <FormField label={t("common.note")} optional>
+        <textarea className="mid-textarea" rows={2} value={note} onChange={(e) => setNote(e.target.value)} />
+      </FormField>
+    </ActionDialog>
+  );
+}
+
+/** Brings an exported machine back into the register. The export stays in its history (ADR 0026). */
+export function ReimportDialog({ m, open, onClose }: { m: MachineView; open: boolean; onClose(): void }) {
+  const { t } = useTranslation();
+  const { orgId } = useOrg();
+  const sign = useSign();
+  const [note, setNote] = useState("");
+  return (
+    <ActionDialog open={open} onClose={onClose} title={t("actions.reimport.title")} submitLabel={t("actions.reimport.submit")}
+      onSubmit={async () => {
+        const sig = await sign(orgId, "reimport_machine", m.id, {});
+        await rpc("reimport_machine", { p_org_id: orgId, p_machine_id: m.id, p_signature_id: sig, p_note: note || null });
+        onClose();
+      }}>
+      <MachineSummary m={m} />
+      <p className="t-liten">{t("actions.reimport.lead", { country: m.export_country ?? "–" })}</p>
       <FormField label={t("common.note")} optional>
         <textarea className="mid-textarea" rows={2} value={note} onChange={(e) => setNote(e.target.value)} />
       </FormField>

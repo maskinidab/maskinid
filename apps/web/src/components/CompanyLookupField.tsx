@@ -6,13 +6,21 @@ import type { OrgBrief } from "../lib/api/types";
 import { useErrorMessage } from "./Feedback";
 import { Icon } from "./Icon";
 
+/**
+ * An existing organisation may be an unclaimed placeholder someone else created (a dealer registering a machine
+ * or a financing for a company that does not use MaskinID yet). `claimable` says it has no active members and can
+ * therefore be taken over; `needs_signatory` says it already carries machines or financings, so only an
+ * authorised signatory may claim it.
+ */
+export type ExistingOrg = OrgBrief & { claimable?: boolean; needs_signatory?: boolean };
+
 export interface CompanyInfo {
   name: string;
   city: string | null;
   org_number: string;
   is_sole_trader: boolean;
   source: string;
-  existing_org: OrgBrief | null;
+  existing_org: ExistingOrg | null;
 }
 
 /** Org number → company name/address via CompanyLookup (Roaring/Bolagsverket, mock in DEMO_MODE). */
