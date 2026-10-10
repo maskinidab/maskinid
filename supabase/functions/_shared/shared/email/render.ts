@@ -7,7 +7,7 @@ import { APP_LEGAL_NAME, APP_NAME, SUPPORT_EMAIL } from "../config.ts";
 import { translator, type Locale } from "../i18n/index.ts";
 import { formatSek } from "../billing.ts";
 
-export const EMAIL_TEMPLATES = ["notification", "invite", "invite_owner", "transfer_invite", "weekly_digest", "ownership_certificate", "support_reply", "invoice", "notification_digest", "sms"] as const;
+export const EMAIL_TEMPLATES = ["notification", "invite", "invite_owner", "invite_financier", "transfer_invite", "weekly_digest", "ownership_certificate", "support_reply", "invoice", "notification_digest", "sms"] as const;
 export type EmailTemplate = (typeof EMAIL_TEMPLATES)[number];
 
 export interface OutboxMessage {
@@ -87,6 +87,15 @@ export function renderEmail(msg: OutboxMessage, opts: { baseUrl: string }): Rend
       subject = t("email.invite_owner.subject", vars);
       block = { heading: t("email.invite_owner.heading", vars), paragraphs: [t("email.invite_owner.body", vars), t("email.invite_owner.free")],
         button: { label: t("email.invite_owner.button"), url: `${base}/invite/${encodeURIComponent(str(d.token))}` }, footnote: t("email.invite.expires") };
+      break;
+    // A dealer registered financing against a bank that does not use MaskinID yet. notify_org writes nothing for
+    // an organisation without members, so this e-mail is the only thing that knocks on the door (ADR 0027).
+    case "invite_financier":
+      subject = t("email.invite_financier.subject", vars);
+      block = { heading: t("email.invite_financier.heading", vars),
+        paragraphs: [t("email.invite_financier.body", vars), t("email.invite_financier.free")],
+        button: { label: t("email.invite_financier.button"), url: `${base}/invite/${encodeURIComponent(str(d.token))}` },
+        footnote: t("email.invite.expires") };
       break;
     case "transfer_invite":
       subject = t("email.transfer_invite.subject", vars);

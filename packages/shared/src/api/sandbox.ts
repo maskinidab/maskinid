@@ -10,10 +10,12 @@ const reg = (payload: string) => payload + regCheckChar(payload);
 
 export interface SandboxMachine {
   id: string; reg_number: string; serial: string; make: string; model: string; year: number; category: string;
-  status: "active" | "stolen" | "disputed" | "scrapped";
-  scenario: "clean" | "financed" | "stolen" | "disputed" | "scrapped";
+  status: "active" | "stolen" | "disputed" | "scrapped" | "exported";
+  scenario: "clean" | "financed" | "stolen" | "disputed" | "scrapped" | "exported";
   financing: { type: string; holder: string; start_date: string } | null;
   flags: { type: string; raised_at: string }[];
+  /** Set for the exported machine: export keeps the identity, so an integration must still resolve it. */
+  export_country?: string;
 }
 
 export const SANDBOX_MACHINES: SandboxMachine[] = [
@@ -27,6 +29,10 @@ export const SANDBOX_MACHINES: SandboxMachine[] = [
     category: "excavator_tracked", status: "disputed", scenario: "disputed", financing: null, flags: [{ type: "disputed", raised_at: "2026-07-02T09:30:00Z" }] },
   { id: "5a4db0c0-0000-4000-8000-000000000005", reg_number: reg("T5T2AX"), serial: "SBXSCRAP0005", make: "JCB", model: "3CX", year: 2009,
     category: "backhoe", status: "scrapped", scenario: "scrapped", financing: null, flags: [] },
+  // Exported, but still fully identifiable: export is an event in the machine's history, not a deletion, so the
+  // QR label stays bound and the serial still resolves. An integration must handle looking this one up.
+  { id: "5a4db0c0-0000-4000-8000-000000000006", reg_number: reg("T5T2AE"), serial: "SBXEXPORT06", make: "Komatsu", model: "PC210", year: 2017,
+    category: "excavator_tracked", status: "exported", scenario: "exported", financing: null, flags: [], export_country: "NO" },
 ];
 
 export interface SandboxResponse { status: number; body: unknown }
@@ -41,7 +47,8 @@ function find(value: unknown): SandboxMachine | undefined {
 function machineView(m: SandboxMachine) {
   return { sandbox: true, id: m.id, reg_number: m.reg_number, make: m.make, model: m.model, year: m.year, category: m.category, status: m.status,
     identifiers: [{ type: "serial", value: m.serial, verified: true }], verification_level: m.scenario === "clean" ? 2 : 1,
-    flags: m.flags.map((f) => ({ ...f, status: "active" })), financing: { has_active: !!m.financing, active: m.financing } };
+    flags: m.flags.map((f) => ({ ...f, status: "active" })), financing: { has_active: !!m.financing, active: m.financing },
+    ...(m.export_country ? { export_country: m.export_country } : {}) };
 }
 
 function checkResult(m: SandboxMachine | undefined, orgName: string, now: string) {
@@ -54,6 +61,26 @@ function checkResult(m: SandboxMachine | undefined, orgName: string, now: string
 
 let seq = 0;
 const fakeId = () => `5a4db0c0-${(++seq).toString(16).padStart(4, "0")}-4000-8000-${Date.now().toString(16).padStart(12, "0").slice(-12)}`;
+
+const str = (v: unknown) => (v === undefined || v === null || v === "" ? null : String(v));
+
+/**
+ * A payoff request in the sandbox. Note there is no amount field here either: the payoff figure belongs in the
+ * document the lender attaches, never in the register (CLAUDE.md rule 5).
+ */
+function payoffFor(m: SandboxMachine, status: string, now: string) {
+  return {
+    id: fakeId(), machine_id: m.id, reg_number: m.reg_number, encumbrance_id: "5a4db0c0-0000-4000-8000-0000000000e1",
+    purpose: "trade_in", status,
+    requested_by: { name: "Sandbox Handlare AB" }, holder: { name: m.financing?.holder ?? "Sandbox Finans AB" },
+    quote_document_id: status === "requested" ? null : "5a4db0c0-0000-4000-8000-0000000000d1",
+    quote_reference: status === "requested" ? null : "SANDBOX-LOSEN-1",
+    quote_valid_until: status === "requested" ? null : now.slice(0, 10),
+    settlement_document_id: ["settlement_submitted", "settled"].includes(status) ? "5a4db0c0-0000-4000-8000-0000000000d2" : null,
+    settled_at: status === "settled" ? now : null,
+    created_at: now, updated_at: now,
+  };
+}
 
 /** Answers one API call from the sandbox dataset. */
 export function sandboxHandle(route: Route, req: ApiRequest & { method: string }, opts: { orgName?: string; now?: () => Date } = {}): SandboxResponse {
@@ -128,6 +155,43 @@ export function sandboxHandle(route: Route, req: ApiRequest & { method: string }
     }
     case "confirm_encumbrance": case "release_encumbrance":
       return ok({ ok: true, id: req.params.id });
+    case "request_encumbrance": {
+      const m = byId(body.machine_id);
+      if (!m) return err(404, "NOT_FOUND");
+      if (m.status === "stolen") return err(409, "MACHINE_STOLEN");
+      if (m.financing) return err(409, "ACTIVE_ENCUMBRANCE_EXISTS", { holder: m.financing.holder, since: m.financing.start_date });
+      if (!body.holder_org_id && !body.holder_org_number) return err(422, "VALIDATION", { field: "holder_org_id" });
+      // A lender named by organisation number but unknown to us is registered against an unclaimed placeholder.
+      const unclaimed = !body.holder_org_id;
+      return ok({ id: fakeId(), machine_id: m.id, type: body.type ?? "leasing", status: "pending",
+        holder: { id: fakeId(), name: unclaimed ? "Sandbox Finans (ej ansluten)" : "Sandbox Finans AB" }, holder_unclaimed: unclaimed });
+    }
+    // Payoff. The sandbox never carries an amount either — the figure belongs in the attached document.
+    case "list_payoff_requests":
+      return list([payoffFor(SANDBOX_MACHINES[1]!, "quoted", now)]);
+    case "request_payoff": {
+      if (!body.encumbrance_id) return err(422, "VALIDATION", { field: "encumbrance_id" });
+      return ok(payoffFor(SANDBOX_MACHINES[1]!, "requested", now));
+    }
+    case "submit_payoff_quote":
+      return ok({ ...payoffFor(SANDBOX_MACHINES[1]!, "quoted", now), id: req.params.id,
+        quote_reference: str(body.reference) ?? "SANDBOX-LOSEN-1", quote_valid_until: str(body.valid_until) ?? null });
+    case "submit_payoff_settlement": {
+      if (!body.document_id) return err(422, "VALIDATION", { field: "document_id" });
+      return ok({ ...payoffFor(SANDBOX_MACHINES[1]!, "settlement_submitted", now), id: req.params.id });
+    }
+    case "settle_payoff":
+      return ok({ ...payoffFor(SANDBOX_MACHINES[1]!, "settled", now), id: req.params.id,
+        encumbrance: { id: fakeId(), status: body.release === false ? "active" : "released" } });
+    case "decline_payoff":
+      return ok({ ...payoffFor(SANDBOX_MACHINES[1]!, "declined", now), id: req.params.id, declined_reason: str(body.reason) ?? null });
+    case "reimport_machine": {
+      const m = byId(req.params.id);
+      if (!m) return err(404, "NOT_FOUND");
+      // Only the exported test machine can come back. Re-import needs a personal signature, like accept_transfer.
+      if (m.status !== "exported") return err(409, "MACHINE_NOT_EXPORTED", { status: m.status });
+      return { status: 202, body: { sandbox: true, code: "SIGNATURE_REQUIRED", signing_url: "https://maskinid.se/api-docs#sandbox" } };
+    }
     case "initiate_transfer": {
       const m = byId(body.machine_id);
       if (!m) return err(404, "NOT_FOUND");

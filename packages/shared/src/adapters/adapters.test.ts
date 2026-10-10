@@ -32,6 +32,21 @@ describe("adapters", () => {
     expect(await mockOcr.nameplate({ base64: img, mediaType: "image/jpeg" })).toMatchObject({ make: "Cat", serial: "CAT0320XYZ123", year: 2020 });
   });
 
+  it("mock OCR reads a financing document hint, and never returns an amount", async () => {
+    // The hint sits at the end of the file, as it does in a real PDF fixture (e2e/helpers.ts financingPdf).
+    const pdf = btoa("%PDF-1.4\nsome agreement text\nfinancing:financier_name=LF Finans;encumbrance_type=leasing;contract_ref=LF-77;term_months=60;serial=CAT0320XYZ123;amount=250000\n");
+    const r = await mockOcr.financingDocument({ base64: pdf, mediaType: "application/pdf" });
+    expect(r).toMatchObject({ financier_name: "LF Finans", encumbrance_type: "leasing", contract_ref: "LF-77", term_months: 60, serial: "CAT0320XYZ123" });
+    // Nothing in the suggestion type carries money; an "amount" in the document must not reach the register.
+    expect(Object.keys(r)).not.toContain("amount");
+  });
+
+  it("mock OCR falls back to a plausible financing suggestion with no hint", async () => {
+    const r = await mockOcr.financingDocument({ base64: btoa("%PDF-1.4 no hint here"), mediaType: "application/pdf" });
+    expect(r.encumbrance_type).toBe("leasing");
+    expect(r.confidence).toBeGreaterThan(0.5);
+  });
+
   it("heuristic column mapping recognises Swedish headers", () => {
     const m = heuristicColumnMapping(["Fabrikat", "Modell", "Serienummer", "Årsmodell", "Drifttimmar", "Övrigt"], ["make", "model", "serial", "year", "hour_meter", "vin"]);
     expect(m).toEqual({ make: "Fabrikat", model: "Modell", serial: "Serienummer", year: "Årsmodell", hour_meter: "Drifttimmar", vin: null });

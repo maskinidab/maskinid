@@ -11,18 +11,49 @@ const call = (method: string, path: string, body: Record<string, unknown> = {}, 
 describe("API sandbox", () => {
   it("test machines have valid registration numbers and cover every scenario", () => {
     expect(SANDBOX_MACHINES.every((m) => isValidRegNumber(m.reg_number) && hasMixedGroups(m.reg_number))).toBe(true);
-    expect(SANDBOX_MACHINES.map((m) => m.scenario)).toEqual(["clean", "financed", "stolen", "disputed", "scrapped"]);
+    expect(SANDBOX_MACHINES.map((m) => m.scenario)).toEqual(["clean", "financed", "stolen", "disputed", "scrapped", "exported"]);
   });
 
   it("answers every route without falling through", () => {
     for (const r of ROUTES) {
-      const path = r.path.replace(":id", SANDBOX_MACHINES[0]!.id);
-      const res = sandboxHandle(r, { method: r.method, params: { id: SANDBOX_MACHINES[0]!.id }, query: { reg: SANDBOX_MACHINES[0]!.reg_number, q: "SBXCLEAN" },
-        body: { machine_id: SANDBOX_MACHINES[0]!.id, type: "leasing", make: "Volvo", model: "EC", category: "excavator_tracked", identifiers: [{ type: "serial", value: "NEW1" }], query: { value: "x" } }, orgId: "o" });
+      // Re-import only applies to the exported machine; asking it of an active one is a real 409, not a gap.
+      const subject = r.rpc === "reimport_machine" ? SANDBOX_MACHINES.find((m) => m.scenario === "exported")! : SANDBOX_MACHINES[0]!;
+      const path = r.path.replace(":id", subject.id);
+      const res = sandboxHandle(r, { method: r.method, params: { id: subject.id }, query: { reg: subject.reg_number, q: "SBXCLEAN" },
+        body: { machine_id: subject.id, type: "leasing", make: "Volvo", model: "EC", category: "excavator_tracked", identifiers: [{ type: "serial", value: "NEW1" }], query: { value: "x" },
+          holder_org_id: "5a4db0c0-0000-4000-8000-0000000000f1", encumbrance_id: "5a4db0c0-0000-4000-8000-0000000000e1", document_id: "5a4db0c0-0000-4000-8000-0000000000d1" }, orgId: "o" });
       expect([200, 201, 202], `${r.method} ${path}`).toContain(res.status);
       const b = res.body as { sandbox?: boolean }[] | { sandbox: boolean };
       expect(Array.isArray(b) ? b.every((x) => x.sandbox) : b.sandbox).toBe(true);
     }
+  });
+
+  it("an exported machine is still fully identifiable", () => {
+    const exp = SANDBOX_MACHINES.find((m) => m.scenario === "exported")!;
+    const r = call("GET", "/machines/lookup", {}, { serial: exp.serial });
+    expect(r.status).toBe(200);
+    expect(r.body).toMatchObject({ status: "exported", export_country: "NO", reg_number: exp.reg_number });
+  });
+
+  it("payoff: the lender quotes and settles, and no response ever carries an amount", () => {
+    const fin = SANDBOX_MACHINES[1]!;
+    const req = call("POST", "/payoffs", { encumbrance_id: "5a4db0c0-0000-4000-8000-0000000000e1", purpose: "trade_in" });
+    expect(req.status).toBe(201);
+    expect(req.body).toMatchObject({ status: "requested", holder: { name: fin.financing!.holder } });
+    const quote = call("POST", `/payoffs/${(req.body as { id: string }).id}/quote`, { document_id: "d1", reference: "L-9", valid_until: "2026-12-01" });
+    expect(quote.body).toMatchObject({ status: "quoted", quote_reference: "L-9" });
+    const settled = call("POST", `/payoffs/${(req.body as { id: string }).id}/settle`, {});
+    expect(settled.body).toMatchObject({ status: "settled", encumbrance: { status: "released" } });
+    for (const res of [req, quote, settled]) {
+      expect(JSON.stringify(res.body)).not.toMatch(/amount|belopp|restskuld|residual/i);
+    }
+  });
+
+  it("reporting a financing against a bank that does not use MaskinID yields an unclaimed holder", () => {
+    const clean = SANDBOX_MACHINES[0]!;
+    const r = call("POST", "/encumbrances/request", { machine_id: clean.id, type: "leasing", holder_org_number: "516406-0120" });
+    expect(r.status).toBe(201);
+    expect(r.body).toMatchObject({ status: "pending", holder_unclaimed: true });
   });
 
   it("financed machine: check shows the holder and a second encumbrance is a 409", () => {

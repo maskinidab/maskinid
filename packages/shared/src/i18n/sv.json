@@ -21,8 +21,13 @@
    "title": "Ta bort flagga"
   },
   "deregister": {
+   "export_country": "Till vilket land?",
+   "export_country_hint": "Landskod, t.ex. NO för Norge. QR-märket och historiken följer med maskinen.",
+   "export_customs_ref": "Tullreferens",
+   "export_keeps_identity": "Maskinen behåller sitt registreringsnummer, sitt QR-märke och sin historik. Exporten blir en händelse i historiken, så en utländsk ägare kan fortsätta skanna maskinen.",
    "label": "Märket",
    "label_destroyed": "Förstört",
+   "label_kept": "Märket sitter kvar på maskinen",
    "label_removed": "Borttaget",
    "label_returned": "Returnerat",
    "reason": "Orsak",
@@ -39,12 +44,30 @@
    "end": "Slutdatum",
    "end_before_start": "Slutdatum kan inte vara före startdatum.",
    "end_required": "Slutdatum krävs för äganderättsförbehåll.",
-   "holder": "Finansiär",
+   "holder": "Långivare",
    "no_amounts": "Belopp registreras aldrig, bara att förbehållet finns.",
    "notes_hint": "Syns bara för er och ägaren.",
    "start": "Startdatum",
    "submit": "Signera och registrera",
    "title": "Registrera förbehåll"
+  },
+  "financing": {
+   "accept_takeover": "Överta förbehållet",
+   "accept_takeover_lead": "{{from}} vill överlåta förbehållet på {{reg}} till er.",
+   "attach": "Bifoga dokument",
+   "attach_lead": "Ladda upp eller fota bankbeställningen, leasingavtalet eller finansavtalet. MaskinID läser av dokumentet och fyller i så mycket som möjligt.",
+   "done": "Finansieringen är anmäld till {{holder}}. Banken bekräftar den.",
+   "manual": "Lägg in finansiering manuellt",
+   "manual_lead": "Fyll i uppgifterna själv. Långivaren får en förfrågan och bekräftar.",
+   "matched": "Dokumentet pekar på {{name}}.",
+   "matched_unknown": "{{name}} finns inte i MaskinID än. Finansieringen registreras ändå och väntar på banken.",
+   "read_failed": "Kunde inte läsa dokumentet. Fyll i uppgifterna manuellt.",
+   "reading": "Läser dokumentet…",
+   "reject": "Avvisa",
+   "reject_reason": "Varför avvisas anmälan?",
+   "submit": "Anmäl finansieringen",
+   "transfer_holder": "Överlåt till annan långivare",
+   "transfer_holder_lead": "Den nya långivaren får erbjudandet och övertar förbehållet när de accepterar."
   },
   "flag": {
    "location": "Plats",
@@ -64,6 +87,11 @@
    "scan": "Skanna märket",
    "submit": "Koppla",
    "title": "Koppla märke"
+  },
+  "reimport": {
+   "lead": "Maskinen är exporterad till {{country}}. Återinför den så blir den aktiv i registret igen. Exporten står kvar i historiken.",
+   "submit": "Återinför",
+   "title": "Återinför maskinen"
   },
   "release": {
    "reason": "Orsak",
@@ -100,7 +128,7 @@
    "email_hint": "Köparen får en länk och skapar konto innan hen godkänner.",
    "email_invalid": "Ange en giltig e-postadress.",
    "financier_first": "Maskinen har ett aktivt förbehåll hos {{holder}}. De får ta ställning innan köparen kan godkänna.",
-   "financing_incomplete": "Välj finansiär och, för äganderättsförbehåll, slutdatum.",
+   "financing_incomplete": "Välj långivare och, för äganderättsförbehåll, slutdatum.",
    "late_hint": "Mer än tio dagar sedan försäljningen: ägarbytet gäller från i dag.",
    "lead": "Köparen godkänner med BankID. Ägarbytet är klart först då.",
    "sale_date": "Försäljningsdatum",
@@ -420,6 +448,8 @@
    },
    "machine": {
     "deregistered": "Avregistrerad",
+    "exported": "Exporterad",
+    "reimported": "Återinförd",
     "scanned_while_stolen": "Stulen maskin skannad"
    },
    "market": {
@@ -428,6 +458,10 @@
    },
    "ownership": {
     "transferred": "Ny ägare"
+   },
+   "payoff": {
+    "requested": "Lösen begärd",
+    "settled": "Lösen godkänd"
    },
    "sighting": {
     "reported": "Maskinen har setts"
@@ -510,7 +544,7 @@
    "GET_lookup_machine": "Exakt uppslag på regnr, serienummer, PIN eller VIN.",
    "PATCH_update_machine": "Begränsade fält: timmar, beskrivning, färg.",
    "POST_accept_transfer": "Godkänn som köpare. Kräver personlig BankID-signering: svar 202 med signing_url.",
-   "POST_approve_transfer_financier": "Finansiärens beslut.",
+   "POST_approve_transfer_financier": "Långivarens beslut.",
    "POST_bind_label": "Knyt ett märke.",
    "POST_cancel_transfer": "Avbryt eller avböj.",
    "POST_clear_flag": "Ta bort flagga.",
@@ -695,7 +729,7 @@
    },
    "financier": {
     "for": "För banker och finansbolag med förbehåll och portfölj",
-    "name": "Finansiär"
+    "name": "Långivare"
    },
    "free": {
     "for": "För ägare, beställare och mindre handlare",
@@ -933,6 +967,8 @@
   "financing": {
    "login": "Finansieringsförbehåll: logga in för att se",
    "no": "Ingen registrerad belåning",
+   "pending": "Belåning anmäld",
+   "pending_title": "Anmäld till {{holder}} – väntar på bankens bekräftelse",
    "yes": "Belånad"
   },
   "loading_skeleton": "Laddar",
@@ -1053,11 +1089,17 @@
     "recorded": "Besiktigad"
    },
    "machine": {
+    "exported": "Exporterad",
     "registered": "Registrerad",
+    "reimported": "Återinförd",
     "verified": "Verifierad"
    },
    "ownership": {
     "transferred": "Ägarbyte"
+   },
+   "payoff": {
+    "requested": "Lösen begärd",
+    "settled": "Lösen godkänd"
    }
   },
   "import_stock": "Importera lager",
@@ -1086,7 +1128,7 @@
   "not_in_stock": "Finns maskinen inte i registret?",
   "reg_or_scan": "Regnr",
   "request_trade_in": "Begär inbyte",
-  "sale_lead": "Köparen godkänner med BankID. Finansiären bekräftar sitt förbehåll.",
+  "sale_lead": "Köparen godkänner med BankID. Långivaren bekräftar sitt förbehåll.",
   "sale_next": "Köparen får e-post med en länk, ser maskinkortet och godkänner. Ägarbevis skapas när ägarbytet är klart.",
   "sell": "Sälj",
   "share_report": "Dela rapport",
@@ -1099,10 +1141,20 @@
   "tab_sold": "Sålda",
   "tab_stock": "I lager",
   "tab_trade_in": "Inbyten",
+  "trade_in_by_label": "Skanna märke",
+  "trade_in_by_photo": "Fota VIN/serienummer",
+  "trade_in_by_serial": "Lägg in serienummer manuellt",
   "trade_in_financing": "Förbehåll: {{type}} hos {{holder}}. Begär frisläppning som del av affären.",
   "trade_in_lead": "Skanna märket på maskinen kunden vill byta in. Ni ser historik och förbehåll, kunden godkänner inbytet.",
+  "trade_in_not_found": "Maskinen finns inte i MaskinID. Registrera den för kunden så får den regnr, QR-märke och historik.",
   "trade_in_own": "Maskinen ägs redan av er.",
+  "trade_in_payoff_sent": "Lösenförfrågan skickad till {{holder}}.",
+  "trade_in_pending_financing": "Belåning anmäld till {{holder}} – inte bekräftad än.",
+  "trade_in_photo_lead": "Fota märkskylten eller VIN-numret. MaskinID läser av serienumret och söker i registret.",
+  "trade_in_register": "Registrera maskinen",
+  "trade_in_request_payoff": "Begär lösen hos {{holder}}",
   "trade_in_sent": "Ägaren har fått en förfrågan om inbyte.",
+  "trade_in_serial_label": "Serienummer, PIN eller VIN",
   "trade_in_verify": "Maskinen är inte fysiskt verifierad. Ni kan verifiera den på plats när kunden har godkänt inbytet."
  },
  "department": {
@@ -1124,6 +1176,13 @@
    "expires": "Länken gäller i 14 dagar. Om du inte väntade dig inbjudan kan du bortse från den.",
    "heading": "Inbjudan till {{org_name}}",
    "subject": "{{inviter}} bjuder in dig till {{org_name}} i {{app}}"
+  },
+  "invite_financier": {
+   "body": "{{registered_by}} har registrerat finansiering hos er i MaskinID, registret för tunga arbetsmaskiner. Skapa kontot så ser ni era maskiner direkt – ni behöver inte lägga in något från början.",
+   "button": "Ta över kontot",
+   "free": "Att se och bekräfta era egna finansieringar kostar ingenting.",
+   "heading": "Maskiner är redan registrerade på {{org_name}}",
+   "subject": "{{org_name}} har finansieringar registrerade i MaskinID"
   },
   "invite_owner": {
    "body": "{{registered_by}} har registrerat en maskin med {{org_name}} som ägare i {{app}}. Logga in för att se maskinen, dess historik och eventuella förbehåll.",
@@ -1243,6 +1302,7 @@
    "stolen_not_recovered": "Stulen och inte återfunnen"
   },
   "document_type": {
+   "bank_order": "Bankbeställning",
    "buyer_report": "Maskinrapport",
    "ce_declaration": "CE-försäkran",
    "check_receipt": "Kontrollkvitto",
@@ -1255,6 +1315,7 @@
    "manual": "Instruktionsbok",
    "other": "Övrigt",
    "ownership_certificate": "Ägarbevis",
+   "payoff_statement": "Lösenbesked",
    "photo_label": "Foto av monterat märke",
    "photo_machine": "Foto av maskinen",
    "photo_nameplate": "Foto av typskylt",
@@ -1435,6 +1496,20 @@
    "retro": "Efterregistrering",
    "transfer_in": "Ägarbyte"
   },
+  "payoff_purpose": {
+   "export": "Export",
+   "owner_request": "Begäran från ägaren",
+   "sale": "Försäljning",
+   "trade_in": "Inbyte"
+  },
+  "payoff_status": {
+   "declined": "Nekad av långivaren",
+   "expired": "Lösenbeskedet har gått ut",
+   "quoted": "Lösenbesked mottaget",
+   "requested": "Väntar på långivaren",
+   "settled": "Löst och spärren släppt",
+   "settlement_submitted": "Lösenbevis inskickat"
+  },
   "power_standard": {
    "ece_r120": "ECE R120",
    "iso_14396": "ISO 14396",
@@ -1567,12 +1642,15 @@
   "CONFLICT_NOT_OPEN": "Konflikten är redan hanterad.",
   "DEMO_DB_MISSING": "Demodatabasen saknas. Kör npm run demo-db.",
   "DPA_REQUIRED": "Godkänn personuppgiftsbiträdesavtalet för att fortsätta.",
+  "DUPLICATE_IDENTIFIER": "Serienumret används redan av en annan maskin.",
   "EMAIL_IN_USE": "Det finns redan ett konto med den e-postadressen. Logga in i stället.",
   "ENCUMBRANCE_BLOCKS_DEREGISTRATION": "Maskinen har ett aktivt förbehåll hos {{holder}}. Förbehållet måste släppas eller långivaren avregistrera.",
+  "ENCUMBRANCE_IS_TRANSFER": "Det här är en överlåtelse av ett förbehåll. Använd \"Överta förbehållet\".",
   "ENCUMBRANCE_NOT_ACTIVE": "Förbehållet är inte aktivt.",
   "ENCUMBRANCE_NOT_PENDING": "Förbehållet väntar inte på bekräftelse.",
   "ENCUMBRANCE_TRANSFER_PENDING": "En överlåtelse av förbehållet pågår redan.",
   "FEATURE_DISABLED": "Funktionen är inte aktiverad.",
+  "FINANCIER_NOT_ELIGIBLE": "Den valda organisationen kan inte vara långivare.",
   "FLAG_ALREADY_ACTIVE": "Flaggan är redan aktiv.",
   "FLAG_NOT_ACTIVE": "Flaggan är redan avslutad.",
   "FORBIDDEN": "Din organisation har inte behörighet att göra det här.",
@@ -1593,6 +1671,7 @@
   "LOOKUP_REQUIRED": "Organisationsnumret behöver slås upp först.",
   "LOOKUP_UNAVAILABLE": "Uppslaget svarar inte just nu. Försök igen om en stund.",
   "MACHINE_BLOCKED": "Maskinen är spärrad av myndighet eller registerhållare.",
+  "MACHINE_NOT_EXPORTED": "Maskinen är inte exporterad.",
   "MACHINE_READ_ONLY": "Maskinen är avregistrerad och kan inte ändras.",
   "MACHINE_SEIZED": "Maskinen är i beslag. Ändringar är spärrade.",
   "MACHINE_STOLEN": "Maskinen är anmäld stulen. Ägarbyten, förbehåll och avregistrering är spärrade.",
@@ -1613,6 +1692,8 @@
   "OTP_FAILED": "Inloggningslänken kunde inte skickas.",
   "PAYMENTS_DISABLED": "Kortbetalning är inte aktiverad. Kontakta oss för att byta plan.",
   "PAYMENT_REQUIRED": "Planen kostar och väljs med kortbetalning.",
+  "PAYOFF_ALREADY_OPEN": "Det finns redan en öppen lösenförfrågan för den här finansieringen.",
+  "PAYOFF_NOT_PENDING": "Lösenförfrågan är redan avgjord.",
   "RATE_LIMITED": "För många uppslag på kort tid. Vänta en minut och försök igen.",
   "RENTAL_OVERLAP": "Maskinen är redan uthyrd under den perioden.",
   "SIGNATORY_REQUIRED": "Bara en firmatecknare kan ta över organisationen. Be en firmatecknare om en inbjudan.",
@@ -1738,6 +1819,7 @@
    "daily_check": "{{actor}} gjorde daglig kontroll",
    "department_set": "{{actor}} ändrade avdelning",
    "deregistered": "{{actor}} avregistrerade maskinen",
+   "exported": "Exporterad",
    "factory_data_confirmed": "Fabriksdata bekräftade maskinens uppgifter",
    "hours_reported": "{{actor}} rapporterade {{payload.hours}} timmar",
    "merged": "Post {{payload.merged_reg_number}} slogs ihop med maskinen",
@@ -1747,6 +1829,7 @@
    "partial_search": "{{actor}} gjorde en delsökning",
    "photo_set": "{{actor}} bytte foto",
    "registered": "{{actor}} registrerade maskinen",
+   "reimported": "Återinförd",
    "sighting_reported": "Tips om den stulna maskinen",
    "stock_status_changed": "{{actor}} ändrade lagerstatus",
    "stolen_scanned": "Den stulna maskinen skannades",
@@ -1791,6 +1874,7 @@
    "group_unlinked": "Koncernkoppling avslutad",
    "suspended": "Organisationen stängdes av",
    "types_changed": "{{actor}} ändrade organisationens roller",
+   "types_extended": "Organisationstyp utökad",
    "updated": "{{actor}} ändrade organisationens uppgifter"
   },
   "ownership": {
@@ -1799,6 +1883,14 @@
   },
   "ownership_certificate": {
    "issued": "Ägarbevis utfärdat"
+  },
+  "payoff": {
+   "declined": "Lösen nekad",
+   "expired": "Lösenbesked utgånget",
+   "quoted": "Lösenbesked skickat",
+   "requested": "Lösen begärd",
+   "settled": "Lösen godkänd",
+   "settlement_submitted": "Lösenbevis inskickat"
   },
   "register_extract": {
    "created": "{{actor}} tog fram ett registerutdrag"
@@ -1876,6 +1968,25 @@
   "ownerships": "Ägarhistorik",
   "title": "Registerutdrag",
   "verified": "kontrollerad mot skylten"
+ },
+ "financier": {
+  "defaults": {
+   "contact_email": "E-post för finansieringsfrågor",
+   "contact_phone": "Telefon",
+   "contract_ref_prefix": "Prefix för avtalsnummer",
+   "default_term_months": "Normal löptid (månader)",
+   "default_type": "Vanligaste upplägget",
+   "lead": "Det här fylls i automatiskt när en handlare väljer er som långivare.",
+   "payoff_instructions": "Så vill vi få lösenförfrågningar",
+   "title": "Standarduppgifter för finansiering"
+  },
+  "picker": {
+   "contact": "Kontakt: {{contact}}",
+   "label": "Långivare",
+   "not_connected": "Använder inte MaskinID än",
+   "other": "Annan bank – ange organisationsnummer",
+   "other_hint": "Banken behöver inte använda MaskinID. Finansieringen registreras på dem och ligger kvar när de ansluter."
+  }
  },
  "fleet": {
   "all_machines": "Alla maskiner",
@@ -2096,6 +2207,9 @@
   "encumbrance_takeover": "Förbehåll att ta över",
   "handle": "Hantera",
   "invitation": "Inbjudan",
+  "payoff_quote": "Lösenbesked mottaget",
+  "payoff_request": "Lösen att besvara",
+  "payoff_settlement_review": "Lösenbevis att godkänna",
   "title": "Väntar på mig",
   "trade_in_approve": "Inbyte att godkänna",
   "transfer_accept": "Ta emot maskin",
@@ -2291,6 +2405,7 @@
   "access_log_lead": "Skanningar, kontroller och uppslag på maskinen. Privatpersoner visas utan namn.",
   "claim": "Anmäl skada",
   "confirm_encumbrance": "Bekräfta förbehållet",
+  "confirm_encumbrance_lead": "Kontrollera uppgifterna mot avtalet och bekräfta.",
   "doc_status": {
    "failed": "Misslyckades",
    "infected": "Spärrad (virus)",
@@ -2327,6 +2442,7 @@
   "released_at": "släppt {{date}}",
   "rented_from": "Inhyrd från {{org}} till {{date}}.",
   "rented_to": "Uthyrd till {{org}} till {{date}}.",
+  "reported_financing": "Anmäld belåning",
   "set_primary": "Använd som huvudbild",
   "share_closed": "stängd",
   "share_links": "Delningslänkar",
@@ -2756,6 +2872,10 @@
     "body": "{{by}} registrerade {{reg_number}} med er som ägare.",
     "title": "Maskin registrerad för er"
    },
+   "reimported": {
+    "body": "{{reg_number}} är åter registrerad i MaskinID.",
+    "title": "Maskin återinförd"
+   },
    "sighting_reported": {
     "body": "Ett tips om {{reg_number}} har kommit in.",
     "title": "Någon har sett din stulna maskin"
@@ -2852,6 +2972,32 @@
    "suspended": {
     "body": "{{name}} är avstängd: {{reason}}",
     "title": "Organisationen är avstängd"
+   }
+  },
+  "payoff": {
+   "declined": {
+    "body": "{{holder}} nekar lösen av {{reg_number}}.",
+    "title": "Lösen nekad"
+   },
+   "expired": {
+    "body": "Lösenbeskedet för {{reg_number}} är inte längre giltigt.",
+    "title": "Lösenbeskedet har gått ut"
+   },
+   "quoted": {
+    "body": "{{holder}} har skickat ett lösenbesked för {{reg_number}}.",
+    "title": "Lösenbesked från {{holder}}"
+   },
+   "requested": {
+    "body": "{{requested_by}} vill lösa {{reg_number}}. Svara med ett lösenbesked.",
+    "title": "Lösen att besvara"
+   },
+   "settled": {
+    "body": "{{holder}} har godkänt lösen av {{reg_number}} och släppt spärren.",
+    "title": "Lösen godkänd"
+   },
+   "settlement_submitted": {
+    "body": "{{submitted_by}} har laddat upp lösenbevis för {{reg_number}}.",
+    "title": "Lösenbevis att godkänna"
    }
   },
   "reminder": {
@@ -3001,6 +3147,9 @@
   "check_import": "Importera lista",
   "check_labels": "Beställ märken",
   "checklist_title": "Kom igång",
+  "claim_existing": "{{name}} är redan upplagd i MaskinID av någon annan, men ingen har tagit över kontot. Ta över det så får ni allt som redan är registrerat på er.",
+  "claim_needs_signatory": "Det finns redan maskiner eller finansieringar registrerade här, så kontot kan bara tas över av en firmatecknare.",
+  "claim_submit": "Ta över organisationen",
   "create": "Lägg till organisationen",
   "create_org_lead": "Skriv organisationsnumret så hämtar vi namn och adress. Det tar under tre minuter.",
   "create_org_title": "Lägg till din organisation",
@@ -3092,6 +3241,32 @@
   "privacy": "Visar högst 10 träffar utan ägare eller förbehåll. Välj en maskin för att göra en fullständig kontroll.",
   "submit": "Sök"
  },
+ "payoff": {
+  "decline": "Neka",
+  "decline_reason": "Varför nekas lösen?",
+  "declined_by": "Nekad av {{holder}}: {{reason}}",
+  "lead_holder": "Någon vill lösa eller överta den här maskinen. Svara med ett lösenbesked och godkänn när krediten är löst.",
+  "lead_owner": "Begär lösen hos långivaren. Spärren släpps först när långivaren har godkänt att krediten är löst.",
+  "no_amounts": "Beloppet står i långivarens lösenbesked. MaskinID lagrar aldrig belopp.",
+  "none": "Ingen lösenförfrågan.",
+  "open_count_one": "1 lösenförfrågan",
+  "open_count_other": "{{count}} lösenförfrågningar",
+  "quote": "Skicka lösenbesked",
+  "quote_hint": "Bifoga lösenbeskedet som PDF. Handlaren ser beloppet i dokumentet.",
+  "quote_open": "Öppna lösenbesked",
+  "quote_reference": "Referens",
+  "quote_valid": "Lösenbesked giltigt t.o.m. {{date}}",
+  "quote_valid_until": "Giltigt t.o.m.",
+  "request": "Begär lösen",
+  "request_purpose": "Varför behövs lösen?",
+  "requested_by": "Begärd av {{org}}",
+  "settle": "Godkänn lösen och släpp spärren",
+  "settle_lead": "Du bekräftar att krediten är löst. Förbehållet släpps i samma steg och ägarbyte eller export kan gå vidare.",
+  "settlement": "Ladda upp lösenbevis",
+  "settlement_hint": "Kvitto eller besked som visar att krediten är löst. Långivaren godkänner sedan och släpper spärren.",
+  "settlement_open": "Öppna lösenbevis",
+  "title": "Lösen"
+ },
  "pdf": {
   "document_number": "Dokumentnummer",
   "flags": "Flaggor",
@@ -3118,6 +3293,8 @@
   "lead_financier": "Maskiner med ert förbehåll: status, flaggor och pågående ägarbyten.",
   "lead_insurer": "Maskiner ni försäkrar. Ställ krav på verifieringsnivå per försäkring.",
   "no_requirement": "Inget krav",
+  "payoff_status": "Lösen",
+  "payoffs": "Lösenförfrågningar",
   "pending": "Att bekräfta",
   "requirement": "Krav"
  },
@@ -3140,6 +3317,9 @@
   "demo_scrapped": "Slå upp en skrotad maskin",
   "demo_stolen": "Skanna en stulen maskin",
   "demo_title": "Prova demon",
+  "exported_body": "Maskinen är utförd ur Sverige men behåller sitt registreringsnummer och sin historik i MaskinID.",
+  "exported_on": "Exporterad {{date}}",
+  "exported_to": "Exporterad till {{country}}",
   "fact_free": "Registrering är gratis och tar under två minuter.",
   "fact_history": "Historiken kan inte ändras i efterhand. Varje dag publiceras ett kontrollvärde.",
   "fact_independent": "Fristående och oberoende – kompatibelt med andra registers id-nummer.",
@@ -3366,7 +3546,7 @@
    "p3_title": "Bevakning av portföljen",
    "p4_body": "BankID-signering, tvåstegsverifiering, händelsekedja med dagliga kontrollvärden och personuppgiftsbiträdesavtal.",
    "p4_title": "Byggt för bankens krav",
-   "short": "Finansiärer",
+   "short": "Långivare",
    "title": "För banker och finansbolag"
   },
   "forsakring": {
@@ -3676,7 +3856,7 @@
   "effective_date": "Tillträde",
   "expires": "Utgår",
   "financier_body": "Välj om förbehållet släpps, följer med till köparen eller om ägarbytet nekas. Beslutet signeras.",
-  "financier_decision": "Finansiärens beslut",
+  "financier_decision": "Långivarens beslut",
   "financier_title": "Ert förbehåll vid ägarbytet",
   "lead": "Från {{from}} till {{to}}",
   "new_financing": "Ny finansiering",
@@ -3774,7 +3954,7 @@
   "err_year": "Ange ett årtal mellan 1950 och nästa år.",
   "factory_body": "Tillverkaren har lämnat tekniska uppgifter för serienumret.",
   "factory_found": "Fabriksdata hittad: {{make}} {{model}}",
-  "financing_hint": "Finansiären får en förfrågan och bekräftar.",
+  "financing_hint": "Långivaren får en förfrågan och bekräftar.",
   "financing_question": "Finns finansieringsförbehåll",
   "fuel": "Drivmedel",
   "id_hint_pin": "17 tecken, ISO 10261",

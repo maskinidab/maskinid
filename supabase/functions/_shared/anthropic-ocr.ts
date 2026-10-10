@@ -4,7 +4,7 @@
 // Env: ANTHROPIC_API_KEY
 import Anthropic from "npm:@anthropic-ai/sdk";
 import { z } from "npm:zod@4";
-import type { NameplateSuggestion, Ocr } from "./shared/adapters/types.ts";
+import type { FinancingSuggestion, NameplateSuggestion, Ocr } from "./shared/adapters/types.ts";
 
 const MODEL = "claude-opus-5";
 
@@ -21,6 +21,34 @@ const Nameplate = z.object({
 });
 
 const ListingImage = z.object({ is_nameplate: z.boolean(), serial: z.string().nullable(), confidence: z.number() });
+
+// Financing document (bank order / leasing or credit agreement). Note the absence of any amount field: the
+// register stores no amounts (CLAUDE.md rule 5), so the model is never asked for one.
+const FINANCING_FIELDS = [
+  "document_kind", "financier_name", "financier_org_number", "encumbrance_type", "contract_ref",
+  "start_date", "end_date", "term_months", "serial", "pin", "make", "model", "year",
+  "customer_name", "customer_org_number",
+] as const;
+
+const Financing = z.object({
+  document_kind: z.enum(["bank_order", "leasing_agreement", "credit_agreement", "payoff_statement", "other"]).nullable(),
+  financier_name: z.string().nullable(),
+  financier_org_number: z.string().nullable(),
+  encumbrance_type: z.enum(["ownership_reservation", "leasing", "rental", "other"]).nullable(),
+  contract_ref: z.string().nullable(),
+  start_date: z.string().nullable(),
+  end_date: z.string().nullable(),
+  term_months: z.number().int().nullable(),
+  serial: z.string().nullable(),
+  pin: z.string().nullable(),
+  make: z.string().nullable(),
+  model: z.string().nullable(),
+  year: z.number().int().nullable(),
+  customer_name: z.string().nullable(),
+  customer_org_number: z.string().nullable(),
+  confidence: z.number(),
+  field_confidence: z.record(z.string(), z.number()),
+});
 
 // JSON schemas for output_config.format (all properties required, no additional properties).
 const nullable = (type: string) => ({ type: [type, "null"] });
@@ -40,6 +68,38 @@ const NAMEPLATE_SCHEMA = {
 const LISTING_SCHEMA = {
   type: "object", additionalProperties: false, required: ["is_nameplate", "serial", "confidence"],
   properties: { is_nameplate: { type: "boolean" }, serial: nullable("string"), confidence: { type: "number" } },
+};
+const FINANCING_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  required: [...FINANCING_FIELDS, "confidence", "field_confidence"],
+  properties: {
+    document_kind: { type: ["string", "null"], enum: ["bank_order", "leasing_agreement", "credit_agreement", "payoff_statement", "other", null] },
+    financier_name: nullable("string"),
+    financier_org_number: nullable("string"),
+    encumbrance_type: { type: ["string", "null"], enum: ["ownership_reservation", "leasing", "rental", "other", null] },
+    contract_ref: nullable("string"),
+    start_date: nullable("string"),
+    end_date: nullable("string"),
+    term_months: nullable("integer"),
+    serial: nullable("string"),
+    pin: nullable("string"),
+    make: nullable("string"),
+    model: nullable("string"),
+    year: nullable("integer"),
+    customer_name: nullable("string"),
+    customer_org_number: nullable("string"),
+    confidence: { type: "number" },
+    field_confidence: {
+      type: "object",
+      additionalProperties: false,
+      required: ["financier_name", "encumbrance_type", "contract_ref", "serial", "end_date"],
+      properties: {
+        financier_name: { type: "number" }, encumbrance_type: { type: "number" }, contract_ref: { type: "number" },
+        serial: { type: "number" }, end_date: { type: "number" },
+      },
+    },
+  },
 };
 
 export class OcrRefused extends Error {}
@@ -68,6 +128,12 @@ export function createAnthropicOcr(apiKey = Deno.env.get("ANTHROPIC_API_KEY")): 
     source: { type: "base64", media_type: mediaType as "image/jpeg" | "image/png", data: base64 },
   });
 
+  // Financing agreements are nearly always PDFs, which go in a document block rather than an image block.
+  const fileBlock = (base64: string, mediaType: string): Anthropic.Beta.BetaContentBlockParam =>
+    mediaType === "application/pdf"
+      ? { type: "document", source: { type: "base64", media_type: "application/pdf", data: base64 } } as Anthropic.Beta.BetaContentBlockParam
+      : image(base64, mediaType);
+
   return {
     name: "anthropic",
     async nameplate({ base64, mediaType }): Promise<NameplateSuggestion> {
@@ -93,6 +159,34 @@ export function createAnthropicOcr(apiKey = Deno.env.get("ANTHROPIC_API_KEY")): 
         { type: "text", text: "Is this image a close-up of a machine nameplate (type plate)? If it is, read the serial number or PIN exactly as printed (null if not legible). Give a confidence between 0 and 1." },
       ], LISTING_SCHEMA, (v) => ListingImage.parse(v));
       return { isNameplate: r.is_nameplate, serial: r.serial ?? undefined, confidence: r.confidence };
+    },
+    async financingDocument({ base64, mediaType }): Promise<FinancingSuggestion> {
+      const r = await structured([
+        fileBlock(base64, mediaType),
+        {
+          type: "text",
+          text: "This is a financing document for a heavy machine: a bank order (Swedish \"bankbeställning\"), a leasing " +
+            "agreement, a credit/instalment agreement with retention of title, or a payoff statement. Read it exactly as " +
+            "written and return: which kind of document it is; the financing company's name and Swedish organisation " +
+            "number; whether the arrangement is leasing, retention of title (äganderättsförbehåll/avbetalning), rental, " +
+            "or something else; the contract/agreement number; start and end dates as ISO dates (YYYY-MM-DD); the term in " +
+            "months; the machine's serial number, PIN, make, model and year of manufacture; and the customer's name and " +
+            "organisation number. Use null for anything that is not stated in the document – never guess, never infer a " +
+            "date from a term, and never correct characters (do not change O to 0 or I to 1). " +
+            "Do NOT return any monetary amount, price, instalment, residual value or debt figure, even if the document " +
+            "states one: this register stores no amounts. Give an overall confidence and a per-field confidence between 0 and 1.",
+        },
+      ], FINANCING_SCHEMA, (v) => Financing.parse(v));
+      const undef = <T>(x: T | null): T | undefined => (x === null ? undefined : x);
+      return {
+        document_kind: undef(r.document_kind), financier_name: undef(r.financier_name),
+        financier_org_number: undef(r.financier_org_number), encumbrance_type: undef(r.encumbrance_type),
+        contract_ref: undef(r.contract_ref), start_date: undef(r.start_date), end_date: undef(r.end_date),
+        term_months: undef(r.term_months), serial: undef(r.serial), pin: undef(r.pin), make: undef(r.make),
+        model: undef(r.model), year: undef(r.year), customer_name: undef(r.customer_name),
+        customer_org_number: undef(r.customer_org_number),
+        confidence: r.confidence, field_confidence: r.field_confidence,
+      };
     },
     async mapColumns({ headers, sample, targets }) {
       const schema = {

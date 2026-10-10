@@ -1,7 +1,7 @@
 import { normalizeOrgNumber, isSoleTraderNumber } from "../identifiers.ts";
 import type {
-  CompanyLookup, Email, IdentityProvider, Ocr, SignatureProvider, TheftRegistrySync, VehicleRegistryLookup,
-  TheftReport, VirusScanner,
+  CompanyLookup, Email, FinancingSuggestion, IdentityProvider, Ocr, SignatureProvider, TheftRegistrySync,
+  VehicleRegistryLookup, TheftReport, VirusScanner,
 } from "./types.ts";
 
 /** Detects the EICAR test string so the quarantine path can be exercised without a real scanner. */
@@ -108,24 +108,66 @@ export const mockOcr: Ocr = {
     if (hint?.serial) return { isNameplate: true, serial: String(hint.serial), confidence: 0.93 };
     return { isNameplate: false, confidence: 0.9 };
   },
+  async financingDocument(file) {
+    const hint = decodeHint(file.base64, "financing");
+    if (hint) {
+      // Pick only known fields. The real adapter maps an explicit list too, so an amount in the document (or in a
+      // demo hint) can never reach the register — it stores none (CLAUDE.md rule 5).
+      const out: Record<string, unknown> = { confidence: 0.96 };
+      for (const k of FINANCING_HINT_FIELDS) if (hint[k] !== undefined) out[k] = hint[k];
+      return out as unknown as FinancingSuggestion;
+    }
+    return {
+      document_kind: "bank_order",
+      financier_name: "LF Finans (demo)",
+      financier_org_number: "516406-0120",
+      encumbrance_type: "leasing",
+      contract_ref: "LF-2026-114477",
+      start_date: "2026-10-01",
+      end_date: "2031-09-30",
+      term_months: 60,
+      serial: "VCEC220EV00123K7",
+      make: "Volvo",
+      model: "EC220E",
+      year: 2021,
+      confidence: 0.92,
+    };
+  },
   async mapColumns({ headers, targets }) {
     return heuristicColumnMapping(headers, targets);
   },
 };
 
-function decodeHint(base64: string): Record<string, string | number> | null {
+const NUMERIC_HINTS = new Set(["year", "weight_kg", "term_months"]);
+
+/** The only fields a financing hint may contribute — see mockOcr.financingDocument. */
+const FINANCING_HINT_FIELDS = [
+  "document_kind", "financier_name", "financier_org_number", "encumbrance_type", "contract_ref",
+  "start_date", "end_date", "term_months", "serial", "pin", "make", "model", "year",
+  "customer_name", "customer_org_number",
+] as const;
+
+/**
+ * Reads a "<prefix>:k=v;k=v" hint out of the file bytes, which is how the demo fixtures carry their expected
+ * result (see nameplatePng / financingPdf in e2e/helpers.ts). Financing documents are PDFs whose hint sits at
+ * the end of the file, so the whole payload is decoded rather than just the first few KB.
+ */
+function decodeHint(base64: string, prefix = "nameplate"): Record<string, string | number> | null {
   let text = "";
   try {
-    text = typeof atob === "function" ? atob(base64.slice(0, 4096)) : "";
+    if (typeof atob !== "function") return null;
+    // atob rejects a trailing partial group, so decode on a 4-char boundary.
+    const whole = prefix === "nameplate" ? base64.slice(0, 4096) : base64;
+    text = atob(whole.slice(0, whole.length - (whole.length % 4)));
   } catch {
     return null;
   }
-  const m = text.match(/nameplate:([^\n\0]*)/);
+  const m = text.match(new RegExp(`${prefix}:([^\\n\\0]*)`));
   if (!m) return null;
   const out: Record<string, string | number> = {};
   for (const part of m[1]!.split(";")) {
     const [k, v] = part.split("=");
-    if (k && v) out[k.trim()] = k.trim() === "year" || k.trim() === "weight_kg" ? Number(v) : v.trim();
+    if (k && v) out[k.trim()] = NUMERIC_HINTS.has(k.trim()) ? Number(v) : v.trim();
   }
   return out;
 }
