@@ -40,7 +40,10 @@ export function createAdapters(env: Env, ocr: Ocr = mockOcr): Adapters {
     theftRegistry: want("THEFT_REGISTRY_PROVIDER", "larmtjanst")
       ? createLarmtjanstSync({ url: env.LARMTJANST_API_URL ?? "", apiKey: env.LARMTJANST_API_KEY ?? "" })
       : createMockTheftRegistry(),
-    ocr: demo || (env.OCR_PROVIDER ?? "anthropic") !== "anthropic" ? mockOcr : ocr,
+    // OCR is the one adapter that may opt IN to the real provider while demo mode is on: reading a real bank
+    // order is the point of a demo, and it touches nothing else. OCR_PROVIDER=anthropic + an API key is enough,
+    // so BankID, the company lookup and e-mail all stay mocked.
+    ocr: (env.OCR_PROVIDER ?? (demo ? "mock" : "anthropic")) === "anthropic" ? ocr : mockOcr,
     email: !demo && (env.EMAIL_PROVIDER ?? "resend") === "resend" && env.RESEND_API_KEY
       ? createResendEmail({ apiKey: env.RESEND_API_KEY, from: env.EMAIL_FROM ?? "MaskinID <noreply@maskinid.se>" })
       : createConsoleEmail(),

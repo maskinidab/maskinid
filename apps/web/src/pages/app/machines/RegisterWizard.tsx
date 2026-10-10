@@ -9,8 +9,10 @@ import { ErrorNotice, Notice, PageHeader, Skeleton } from "../../../components/F
 import { FormField } from "../../../components/FormField";
 import { Icon } from "../../../components/Icon";
 import { OcrCapture, OcrError, OcrSuggestionList, useOcr } from "../../../components/OcrCapture";
+import { QrCode } from "../../../components/QrCode";
 import { RegNumber } from "../../../components/RegNumber";
 import { ScannerView } from "../../../components/Scanner";
+import { isLabelCode, labelCodeFromScan, labelSerial } from "@maskinid/shared/identifiers.ts";
 import { SerialInput, type IdentifierCheck } from "../../../components/SerialInput";
 import { VerificationBadge } from "../../../components/StatusBadge";
 import { rpc, useRpc } from "../../../lib/api/query";
@@ -86,7 +88,7 @@ export function toRegisterData(d: WizardData): Record<string, unknown> {
     owner_org_number: d.owner === "other" ? d.owner_org_number.trim() || null : null,
     owner_email: d.owner === "other" ? d.owner_email.trim() || null : null,
     owner_name: d.owner === "other" ? d.owner_name.trim() || null : null,
-    label_code: d.label_code.trim().toUpperCase() || null,
+    label_code: d.label_code.trim() || null,
   };
 }
 
@@ -107,6 +109,7 @@ export function validateStep(d: WizardData, step: number, dup: IdentifierCheck |
     if (d.registration_type === "temporary" && !d.valid_until) e.valid_until = "common.required";
     if (d.registration_type === "temporary" && !/^[A-Za-z]{2}$/.test(d.origin_country.trim())) e.origin_country = "wizard.err_country";
   }
+  if (step === 4 && d.label_code.trim() && !isLabelCode(d.label_code.trim())) e.label_code = "wizard.err_label_code";
   if (step === 3) {
     if (d.owner === "other" && !d.owner_org_number.trim()) e.owner_org_number = "common.required";
     if (d.owner === "other" && d.owner_email && !/^\S+@\S+\.\S+$/.test(d.owner_email)) e.owner_email = "wizard.err_email";
@@ -116,7 +119,15 @@ export function validateStep(d: WizardData, step: number, dup: IdentifierCheck |
   return e;
 }
 
-type Result = { id: string; reg_number: string; status: string; owner_org_id?: string; existing_reg_number: string | null; warnings: { code: string }[]; factory_data: boolean };
+/** check_label's answer: may this märke be attached, and if not, why. */
+type LabelCheck = { found: boolean; bindable?: boolean; reason?: string; serial?: string; machine_id?: string; is_mine?: boolean };
+
+type Result = {
+  id: string; reg_number: string; status: string; owner_org_id?: string; existing_reg_number: string | null;
+  warnings: { code: string }[]; factory_data: boolean;
+  /** bind_label's answer, present only when a label code was sent. ok:false means the machine was registered but the label was not attached. */
+  label?: { ok?: boolean; error?: string; unchanged?: boolean };
+};
 
 /** Register machine wizard (SPEC §6.2): 4 steps, autosaved draft, < 2 minutes on mobile. */
 export function RegisterWizard() {
@@ -127,9 +138,12 @@ export function RegisterWizard() {
   const [draftId, setDraftId] = useState<string | null>(draftParam);
   // ?serial=… lets the dealer come straight from a trade-in lookup that found nothing and register the machine
   // for the customer without typing the number again.
+  // ?code=… comes from scanning a märke that is not on a machine yet: the sticker is already in the user's
+  // hand, so it is attached from the start and bound when the machine is saved.
+  const scannedCode = labelCodeFromScan(params.get("code") ?? "");
   const [d, setD] = useState<WizardData>(() => {
     const serial = params.get("serial");
-    return serial ? { ...EMPTY, serial } : EMPTY;
+    return { ...EMPTY, ...(serial ? { serial } : {}), ...(scannedCode ? { label_code: scannedCode } : {}) };
   });
   const [loaded, setLoaded] = useState(!draftParam);
   const [savedAt, setSavedAt] = useState<string | null>(null);
@@ -149,10 +163,10 @@ export function RegisterWizard() {
     if (!draftParam || draftParam === createdDraft.current) return;
     void rpc<{ id: string; draft_data: Partial<WizardData> }[]>("list_machine_drafts", { p_org_id: orgId }).then((list) => {
       const found = list.find((x) => x.id === draftParam);
-      if (found) setD({ ...EMPTY, ...found.draft_data });
+      if (found) setD({ ...EMPTY, ...found.draft_data, ...(scannedCode ? { label_code: scannedCode } : {}) });
       setLoaded(true);
     });
-  }, [draftParam, orgId]);
+  }, [draftParam, orgId, scannedCode]);
 
   // Autosave (debounced) while the user types.
   useEffect(() => {
@@ -163,7 +177,7 @@ export function RegisterWizard() {
         if (!draftId) {
           createdDraft.current = r.id;
           setDraftId(r.id);
-          setParams({ draft: r.id }, { replace: true });
+          setParams((p) => { p.set("draft", r.id); return p; }, { replace: true });
         }
         setSavedAt(r.saved_at);
       } catch {
@@ -194,12 +208,12 @@ export function RegisterWizard() {
     const r = await rpc<{ id: string }>("save_machine_draft", { p_org_id: orgId, p_data: d, p_draft_id: null });
     createdDraft.current = r.id;
     setDraftId(r.id);
-    setParams({ draft: r.id }, { replace: true });
+    setParams((p) => { p.set("draft", r.id); return p; }, { replace: true });
     return r.id;
   }
 
   async function register() {
-    for (const s of [1, 2, 3]) {
+    for (const s of [1, 2, 3, 4]) {
       const e = validateStep(d, s, dup);
       if (Object.keys(e).length) { setErrors(e); patch({ step: s }); return; }
     }
@@ -232,13 +246,17 @@ export function RegisterWizard() {
           <li key={s} aria-current={d.step === i + 1 ? "step" : undefined} className={d.step > i + 1 ? "is-klar" : undefined}><span>{s}</span></li>
         ))}
       </ol>
+      {/* The scanned märke is already on the machine physically, so say so from step one - not only on step 4. */}
+      {isLabelCode(d.label_code.trim()) && (
+        <Notice kind="info" title={t("wizard.label_attached", { serial: labelSerial(d.label_code.trim()) })} />
+      )}
       <p className="t-liten t-sekundar" aria-live="polite">{savedAt ? t("wizard.saved", { at: formatDateTime(savedAt) }) : t("wizard.autosave")}</p>
       <form className="stack-5" noValidate onSubmit={(e) => { e.preventDefault(); if (d.step < 4) next(); else void register(); }}>
         <h2 ref={heading} tabIndex={-1} className="t-rubrik-3">{t("wizard.step_n", { n: d.step, total: 4 })}: {steps[d.step - 1]}</h2>
         {d.step === 1 && <StepIdentity d={d} set={set} patch={patch} err={err} onDup={setDup} ensureDraft={ensureDraft} />}
         {d.step === 2 && <StepMachine d={d} set={set} patch={patch} err={err} ensureDraft={ensureDraft} />}
         {d.step === 3 && <StepOwner d={d} set={set} err={err} orgName={org.name} />}
-        {d.step === 4 && <StepLabel d={d} set={set} />}
+        {d.step === 4 && <StepLabel d={d} set={set} error={errors.label_code} />}
         {error != null && <ErrorNotice error={error} />}
         <div className="mid-rad mid-rad-mellan">
           {d.step > 1 ? <button type="button" className="mid-knapp mid-knapp-kontur" onClick={() => patch({ step: d.step - 1 })}><Icon name="pil-vanster" />{t("common.back")}</button> : <span />}
@@ -504,23 +522,62 @@ function StepOwner({ d, set, err, orgName }: { d: WizardData; set: Setter; err(k
   );
 }
 
-function StepLabel({ d, set }: { d: WizardData; set: Setter }) {
+function StepLabel({ d, set, error }: { d: WizardData; set: Setter; error?: string }) {
   const { t } = useTranslation();
+  const { orgId, path } = useOrg();
   const [scan, setScan] = useState(false);
   const [skip, setSkip] = useState(!d.label_code);
+  // Ask the register about the code while the user is still on this step. Without it a taken or mistyped
+  // code is only discovered by register_machine, which raises and throws away the whole registration.
+  const [checked, setChecked] = useState<{ code: string; r: LabelCheck } | null>(null);
+  const code = d.label_code.trim();
+  useEffect(() => {
+    if (!isLabelCode(code)) return;
+    let live = true;
+    const timer = setTimeout(() => {
+      void rpc<LabelCheck>("check_label", { p_org_id: orgId, p_code: code })
+        .then((r) => { if (live) setChecked({ code, r }); })
+        .catch(() => undefined);
+    }, 300);
+    return () => { live = false; clearTimeout(timer); };
+  }, [code, orgId]);
+  const check = checked?.code === code ? checked.r : null;
   return (
     <div className="stack-4">
       <p className="t-brodtext">{t("wizard.label_lead")}</p>
+      {isLabelCode(code) && (
+        <div className="qr-rad">
+          <QrCode url={`${location.origin}/m/${code}`} size={112} alt={t("labels.qr_alt", { serial: labelSerial(code) })} />
+          <div className="stack-2">
+            {check?.bindable && <p className="t-liten t-sekundar">{t("wizard.label_free")}</p>}
+            {check && !check.bindable && check.reason === "already_bound" && (
+              <p className="mid-fel">
+                {t("wizard.label_taken")}{" "}
+                {check.machine_id && <Link className="mid-lank" to={path(`machines/${check.machine_id}`)}>{t("wizard.label_open_machine")}</Link>}
+              </p>
+            )}
+            {check && !check.bindable && check.reason !== "already_bound" && <p className="mid-fel">{t(`errors.${check.reason}`)}</p>}
+            {check?.found === false && <p className="mid-fel">{t("errors.LABEL_NOT_FOUND")}</p>}
+            <button type="button" className="mid-knapp mid-knapp-text mid-knapp-liten"
+              onClick={() => { set("label_code", ""); setSkip(true); }}>{t("wizard.label_remove")}</button>
+          </div>
+        </div>
+      )}
       {scan ? (
         <ScannerView onResult={(r) => { if (r.kind === "label") { set("label_code", r.code); setScan(false); setSkip(false); } }} />
-      ) : (
+      ) : !isLabelCode(code) && (
         <div className="mid-rad">
           <button type="button" className="mid-knapp mid-knapp-sekundar" onClick={() => setScan(true)}><Icon name="qr" />{t("wizard.label_scan")}</button>
           <button type="button" className="mid-knapp mid-knapp-text" onClick={() => { set("label_code", ""); setSkip(true); }}>{t("wizard.label_skip")}</button>
         </div>
       )}
-      <FormField label={t("actions.label.code")} optional>
-        <input className="mid-input is-id" value={d.label_code} onChange={(e) => { set("label_code", e.target.value); setSkip(false); }} autoCapitalize="characters" placeholder="MID-XXXX-XXXX" />
+      <FormField label={t("actions.label.code")} optional hint={t("actions.label.code_hint")} error={error && t(error)}>
+        <input className="mid-input is-id" value={d.label_code} onChange={(e) => { set("label_code", e.target.value); setSkip(false); }}
+          onPaste={(e) => {
+            const found = labelCodeFromScan(e.clipboardData.getData("text"));
+            if (found) { e.preventDefault(); set("label_code", found); setSkip(false); }
+          }}
+          autoCapitalize="none" autoCorrect="off" spellCheck={false} placeholder={t("actions.label.code_placeholder")} />
       </FormField>
       {skip && !d.label_code && <p className="t-liten t-sekundar">{t("wizard.label_reminder")}</p>}
       <section className="panel stack-2" aria-labelledby="sammanfattning">
@@ -555,6 +612,11 @@ function Done({ r, withLabel, onNext }: { r: Result; withLabel: boolean; onNext(
         )}
         {r.warnings.some((w) => w.code === "vtr_owner_mismatch") && <Notice kind="info" title={t("wizard.vtr_mismatch")} />}
         {r.factory_data && <p className="t-liten"><Icon name="bock" className="ikon-inline" /> {t("wizard.done_factory")}</p>}
+        {r.label?.ok === false && (
+          <Notice kind="fel" title={t("wizard.label_rejected")}>
+            <p className="t-liten">{t(`errors.${r.label.error ?? "LABEL_NOT_FOUND"}`)}</p>
+          </Notice>
+        )}
         {!withLabel && <p className="t-liten t-sekundar">{t("wizard.label_reminder")}</p>}
         {!!pdfError && <ErrorNotice error={pdfError} />}
         <div className="mid-rad">

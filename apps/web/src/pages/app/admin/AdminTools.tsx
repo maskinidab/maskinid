@@ -39,6 +39,20 @@ export function AdminLabelsPage() {
   const print = useRpcMutation<{ p_batch_id: string; p_printer_ref: string | null }>("print_label_batch");
   const setStatus = useRpcMutation<{ p_batch_id: string; p_status: string }>("admin_set_label_batch_status");
   const [error, setError] = useState<unknown>(null);
+  const [sheetBusy, setSheetBusy] = useState<string | null>(null);
+  async function printSheet(b: Batch) {
+    setError(null);
+    setSheetBusy(b.id);
+    try {
+      const codes = await rpc<string[]>("admin_label_batch_codes", { p_batch_id: b.id });
+      const { labelSheetPdf } = await import("../../../lib/pdf/labelSheet");
+      downloadBytes(await labelSheetPdf(codes, t, APP_BASE_URL), `markesark-${b.id.slice(0, 8)}.pdf`);
+    } catch (e) {
+      setError(e);
+    } finally {
+      setSheetBusy(null);
+    }
+  }
   async function printFile(b: Batch) {
     setError(null);
     try {
@@ -75,7 +89,11 @@ export function AdminLabelsPage() {
                   <button type="button" className="mid-knapp mid-knapp-text mid-knapp-liten" onClick={() => setStatus.mutate({ p_batch_id: b.id, p_status: "cancelled" })}>{t("common.cancel")}</button>
                 </>}
                 {(b.status === "printed" || b.status === "shipped") && (
-                  <button type="button" className="mid-knapp mid-knapp-kontur mid-knapp-liten" onClick={() => void printFile(b)}><Icon name="nedladdning" />{t("admin.labels.print_file")}</button>
+                  <>
+                    <button type="button" className="mid-knapp mid-knapp-kontur mid-knapp-liten" onClick={() => void printFile(b)}><Icon name="nedladdning" />{t("admin.labels.print_file")}</button>
+                    <button type="button" className="mid-knapp mid-knapp-kontur mid-knapp-liten" disabled={sheetBusy === b.id}
+                      onClick={() => void printSheet(b)}><Icon name="nedladdning" />{t("admin.labels.print_sheet")}</button>
+                  </>
                 )}
                 {b.status === "printed" && (
                   <button type="button" className="mid-knapp mid-knapp-kontur mid-knapp-liten" onClick={() => setStatus.mutate({ p_batch_id: b.id, p_status: "shipped" })}>{t("admin.labels.mark_shipped")}</button>

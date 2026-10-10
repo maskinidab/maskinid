@@ -7,12 +7,16 @@ import { useOrg } from "../../../auth/OrgContext";
 import { DataTable } from "../../../components/DataTable";
 import { EmptyState, ErrorNotice, Notice, PageHeader, Skeleton } from "../../../components/Feedback";
 import { FormField } from "../../../components/FormField";
+import { Icon } from "../../../components/Icon";
+import { LabelQrDialog } from "../../../components/QrCode";
 import { RegNumber } from "../../../components/RegNumber";
 import { StatusBadge } from "../../../components/StatusBadge";
 import { queryClient, rpc, useRpc } from "../../../lib/api/query";
 import { formatDate } from "../../../lib/format";
 import { currentLocale } from "../../../i18n";
 import { nfcSupported, readNfcOnce } from "../../../lib/nfc";
+import { labelSheetPdf } from "../../../lib/pdf/labelSheet";
+import { downloadBytes } from "../../../lib/pdf/receipt";
 
 interface Labels {
   batches: { id: string; quantity: number; status: string; created_at: string; shipping_address: Record<string, string> | null }[];
@@ -31,10 +35,26 @@ export function LabelsPage() {
   const [medium, setMedium] = useState<"qr" | "nfc">("qr");
   const [addr, setAddr] = useState({ street: "", postal_code: "", city: org.city ?? "" });
   const [done, setDone] = useState(false);
+  const [qr, setQr] = useState<string | null>(null);
+  const [sheetBusy, setSheetBusy] = useState(false);
   const [error, setError] = useState<unknown>(null);
   return (
     <div className="stack-6">
-      <PageHeader title={t("nav.labels")} lead={t("labels.lead")} />
+      <PageHeader title={t("nav.labels")} lead={t("labels.lead")} actions={canWrite && (
+        <button type="button" className="mid-knapp mid-knapp-sekundar" disabled={sheetBusy}
+          onClick={async () => {
+            setError(null);
+            const codes = (q.data?.labels ?? []).filter((l) => !l.machine_id && (l.status === "assigned" || l.status === "printed")).map((l) => l.code);
+            if (!codes.length) { setError(new Error(t("labels.print_sheet_none"))); return; }
+            setSheetBusy(true);
+            // One canvas rasterisation per code, so this can take a moment for a few hundred labels.
+            try { downloadBytes(await labelSheetPdf(codes, t, location.origin), "marken.pdf"); }
+            catch (e) { setError(e); }
+            finally { setSheetBusy(false); }
+          }}>
+          <Icon name="uppladdning" />{t("labels.print_sheet")}
+        </button>
+      )} />
       {canWrite && (
         <form className="panel stack-3" onSubmit={async (e) => {
           e.preventDefault();
@@ -93,13 +113,20 @@ export function LabelsPage() {
               { id: "role", header: t("labels.role"), value: (l) => l.role, cell: (l) => t(`labels.role_${l.role}`), hideOnMobile: true },
               { id: "machine", header: t("machines.col_machine"), value: (l) => l.reg_number, cell: (l) => l.machine_id && l.reg_number ? <Link to={path(`machines/${l.machine_id}`)}><RegNumber value={l.reg_number} /></Link> : "–" },
               { id: "bound", header: t("labels.bound_at"), value: (l) => l.bound_at, cell: (l) => formatDate(l.bound_at) || "–", hideOnMobile: true },
+              { id: "qr", header: t("labels.qr_show"), cell: (l) => (l.medium === "nfc" ? "–" : (
+                <button type="button" className="mid-knapp mid-knapp-text mid-knapp-liten" onClick={() => setQr(l.code)}>
+                  <Icon name="qr" />{t("labels.qr_show")}
+                </button>
+              )) },
               { id: "medium", header: t("labels.medium"), value: (l) => l.medium ?? "qr", hideOnMobile: true,
                 cell: (l) => (l.medium === "nfc"
                   ? (l.nfc_registered ? t("labels.nfc_registered") : l.status === "bound" && canWrite ? <RegisterChip code={l.code} /> : t("labels.medium_nfc"))
                   : t("labels.medium_qr")) },
             ]} />
+          <p className="t-liten t-sekundar">{t("labels.print_sheet_hint")}</p>
         </>
       )}
+      <LabelQrDialog code={qr ?? ""} open={!!qr} onClose={() => setQr(null)} />
     </div>
   );
 }

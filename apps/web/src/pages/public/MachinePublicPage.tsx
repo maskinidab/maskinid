@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { labelSerial } from "@maskinid/shared/identifiers.ts";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider";
 import { ErrorNotice, Notice, Skeleton } from "../../components/Feedback";
@@ -59,10 +60,17 @@ export function MachinePublicPage() {
   if (q.error) return <div className="behallare sektion"><ErrorNotice error={q.error} /></div>;
   const r = q.data!;
   if (!r.found || !r.card) {
+    if (r.reason === "unbound_label" && code) return <FreshLabel code={code} />;
+    const title = r.reason === "invalid_reg_number"
+      ? "errors.INVALID_REG"
+      : r.reason === "invalid_code" ? "public.invalid_code" : "public.not_in_register";
+    const body = r.reason === "invalid_code"
+      ? "public.invalid_code_body"
+      : r.reason === "unknown_label" ? "public.unknown_label_body" : "public.not_in_register_body";
     return (
       <div className="behallare sektion stack-4 smal-bred">
-        <h1 className="t-rubrik-2">{t(r.reason === "invalid_reg_number" ? "errors.INVALID_REG" : "public.not_in_register")}</h1>
-        <p className="t-brodtext">{t("public.not_in_register_body")}</p>
+        <h1 className="t-rubrik-2">{t(title)}</h1>
+        <p className="t-brodtext">{t(body)}</p>
         <Link className="mid-knapp mid-knapp-sekundar" to="/">{t("common.to_start")}</Link>
       </div>
     );
@@ -169,6 +177,34 @@ function Sighting({ code, reg }: { code?: string; reg?: string }) {
       </div>
       <p className="t-liten">{t("public.sighting_consent")}</p>
       {state === "error" && <p role="alert">{t("errors.UNKNOWN")}</p>}
+    </div>
+  );
+}
+
+/**
+ * A genuine märke nobody has used yet: offer to register the machine it is about to go on.
+ *
+ * The code travels in the URL and nowhere else. A signed-in visitor goes straight to their own register,
+ * named in the button so a member of several organisations can see which one. Everyone else goes through
+ * /go, which already carries a destination through login and onboarding (routes.tsx:36-52) - so the code
+ * survives signing up for an account without any state of our own.
+ */
+function FreshLabel({ code }: { code: string }) {
+  const { t } = useTranslation();
+  const { session, context } = useAuth();
+  const m = context?.memberships.find((x) => x.org.id === context.last_active_org_id) ?? context?.memberships[0];
+  const target = `/machines/new?code=${code}`;
+  return (
+    <div className="behallare sektion stack-4 smal-bred">
+      <h1 className="t-rubrik-2">{t("public.fresh_label_title")}</h1>
+      <p className="mid-id">{t("public.fresh_label_serial", { serial: labelSerial(code) })}</p>
+      <p className="t-brodtext">{t("public.fresh_label_body")}</p>
+      <div className="mid-rad">
+        {session && m
+          ? <Link className="mid-knapp mid-knapp-primar" to={`/o/${m.org.slug}${target}`}>{t("public.fresh_label_register_in", { org: m.org.name })}</Link>
+          : <Link className="mid-knapp mid-knapp-primar" to={`/go?to=${encodeURIComponent(target)}`}>{t("public.fresh_label_register")}</Link>}
+        <Link className="mid-knapp mid-knapp-sekundar" to="/">{t("common.to_start")}</Link>
+      </div>
     </div>
   );
 }

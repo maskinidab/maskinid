@@ -58,7 +58,7 @@ function FinancingDialog({ open, onClose, title, submitLabel, onSubmit, children
  * One in-flight document upload. `await settle()` resolves to the uploaded document, waiting for an upload
  * that is still running — so a submit cannot outrun the file and silently save without its evidence.
  */
-function useUpload() {
+export function useUpload() {
   const [doc, setDoc] = useState<DocumentItem | null>(null);
   const [uploading, setUploading] = useState(false);
   const inFlight = useRef<Promise<DocumentItem | null> | null>(null);
@@ -341,6 +341,7 @@ export function RequestPayoffDialog({ e, purpose, onClose }: {
   const { orgId } = useOrg();
   const [message, setMessage] = useState("");
   const [country, setCountry] = useState("");
+  const [customsRef, setCustomsRef] = useState("");
   return (
     <FinancingDialog
       open={!!e}
@@ -351,6 +352,7 @@ export function RequestPayoffDialog({ e, purpose, onClose }: {
         await rpc("request_payoff", {
           p_org_id: orgId, p_encumbrance_id: e!.id, p_purpose: purpose, p_message: message || null,
           p_export_country: purpose === "export" ? country.trim().toUpperCase() || null : null,
+          p_export_customs_ref: purpose === "export" ? customsRef.trim() || null : null,
         });
         onClose();
       }}
@@ -358,9 +360,17 @@ export function RequestPayoffDialog({ e, purpose, onClose }: {
       <p className="t-liten t-sekundar">{t("payoff.lead_owner")}</p>
       <p className="t-liten t-sekundar">{t("payoff.no_amounts")}</p>
       {purpose === "export" && (
-        <FormField label={t("actions.deregister.export_country")} hint={t("actions.deregister.export_country_hint")} optional>
-          <input className="mid-input is-id" maxLength={2} value={country} onChange={(ev) => setCountry(ev.target.value)} placeholder="NO" />
-        </FormField>
+        <>
+          <p className="t-liten t-sekundar">{t("payoff.lead_export")}</p>
+          <div className="rutnat">
+            <FormField className="kol-6" label={t("actions.deregister.export_country")} hint={t("actions.deregister.export_country_hint")} optional>
+              <input className="mid-input is-id" maxLength={2} value={country} onChange={(ev) => setCountry(ev.target.value)} placeholder="NO" />
+            </FormField>
+            <FormField className="kol-6" label={t("actions.deregister.export_customs_ref")} optional>
+              <input className="mid-input is-id" value={customsRef} onChange={(ev) => setCustomsRef(ev.target.value)} />
+            </FormField>
+          </div>
+        </>
       )}
       <FormField label={t("common.note")} optional>
         <textarea className="mid-textarea" rows={3} value={message} onChange={(ev) => setMessage(ev.target.value)} />

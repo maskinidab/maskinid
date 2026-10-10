@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { useOrg } from "../../../auth/OrgContext";
+import { labelSerial } from "@maskinid/shared/identifiers.ts";
+import { QrCode } from "../../../components/QrCode";
+import { lotTagPdf } from "../../../lib/pdf/adQr";
 import { DataTable } from "../../../components/DataTable";
 import { DocumentDropzone } from "../../../components/DocumentDropzone";
 import { EmptyState, ErrorNotice, Notice, PageHeader, Skeleton, Tabs } from "../../../components/Feedback";
@@ -55,6 +58,7 @@ export function MachinePage() {
   const [handOver, setHandOver] = useState<Encumbrance | null>(null);
   const [takeOver, setTakeOver] = useState<Encumbrance | null>(null);
   const [askPayoff, setAskPayoff] = useState<Encumbrance | null>(null);
+  const [payoffPurpose, setPayoffPurpose] = useState<"owner_request" | "export">("owner_request");
   const [payoffAction, setPayoffAction] = useState<"quote" | "settlement" | "settle" | "decline" | null>(null);
   const [pdfError, setPdfError] = useState<unknown>(null);
 
@@ -194,7 +198,7 @@ export function MachinePage() {
         {tab === "documents" && <Documents m={m} />}
         {tab === "financing" && (
           <FinancingTab m={m} onRelease={setRelease} onAskRelease={setAskRelease} onReject={setReject}
-            onHandOver={setHandOver} onTakeOver={setTakeOver} onAskPayoff={setAskPayoff}
+            onHandOver={setHandOver} onTakeOver={setTakeOver} onAskPayoff={(e) => { setPayoffPurpose("owner_request"); setAskPayoff(e); }}
             payoff={openPayoff} onPayoffAction={setPayoffAction}
             onAttach={(isOwner || has("dealer")) && canWrite && !readOnly ? () => setDialog("attach_financing") : undefined}
             onManual={has("dealer") && canWrite && !readOnly ? () => setDialog("manual_financing") : undefined}
@@ -206,7 +210,8 @@ export function MachinePage() {
 
       <TransferDialog m={m} open={dialog === "transfer"} onClose={() => setDialog(null)} />
       <FlagDialog m={m} open={dialog === "flag"} onClose={() => setDialog(null)} />
-      <DeregisterDialog m={m} open={dialog === "deregister"} onClose={() => setDialog(null)} />
+      <DeregisterDialog m={m} open={dialog === "deregister"} onClose={() => setDialog(null)} payoff={openPayoff}
+        onRequestPayoff={active ? () => { setDialog(null); setPayoffPurpose("export"); setAskPayoff(active); } : undefined} />
       <ShareDialog m={m} open={dialog === "share"} onClose={() => setDialog(null)} />
       {dialog === "mandate" && <GrantMandateDialog machine={m} onClose={() => setDialog(null)} />}
       <EncumbranceDialog m={m} open={dialog === "encumbrance"} onClose={() => setDialog(null)} />
@@ -222,7 +227,7 @@ export function MachinePage() {
       <RejectEncumbranceDialog e={reject} onClose={() => setReject(null)} />
       <TransferHolderDialog e={handOver} onClose={() => setHandOver(null)} />
       <AcceptTakeoverDialog e={takeOver} m={m} onClose={() => setTakeOver(null)} />
-      <RequestPayoffDialog e={askPayoff} purpose="owner_request" onClose={() => setAskPayoff(null)} />
+      <RequestPayoffDialog e={askPayoff} purpose={payoffPurpose} onClose={() => setAskPayoff(null)} />
       {payoffAction === "quote" && <PayoffQuoteDialog m={m} payoff={openPayoff} onClose={() => setPayoffAction(null)} />}
       {payoffAction === "settlement" && <PayoffSettlementDialog m={m} payoff={openPayoff} onClose={() => setPayoffAction(null)} />}
       {payoffAction === "settle" && <PayoffSettleDialog payoff={openPayoff} onClose={() => setPayoffAction(null)} />}
@@ -263,6 +268,8 @@ function Overview({ m, flags, onClearFlag }: { m: MachineView; flags: Flag[]; on
   const { orgId, canWrite } = useOrg();
   const tech = m.technical;
   const labels = Array.isArray(m.labels) ? m.labels : null;
+  const bound = labels?.find((l) => l.status === "bound" && l.role === "primary") ?? null;
+  const [labelError, setLabelError] = useState<unknown>(null);
   return (
     <>
       {flags.length > 0 && (
@@ -290,13 +297,28 @@ function Overview({ m, flags, onClearFlag }: { m: MachineView; flags: Flag[]; on
           ))}
           <Fact label={t("level.label")}>{t(`level.${m.verification_level}.name`)}{m.verified_by ? ` · ${m.verified_by}` : ""}{m.verified_at ? ` · ${formatDate(m.verified_at)}` : ""}</Fact>
           <Fact label={t("machine.origin")}>{t(`enum.origin.${m.origin}`)}</Fact>
-          {labels && <Fact label={t("machine.label")}>{labels.filter((l) => l.status === "bound").map((l) => <span key={l.id} className="mid-id">{l.code} </span>)}
+          {labels && <Fact label={t("machine.label")}>{labels.filter((l) => l.status === "bound").map((l) => <span key={l.id} className="mid-id">{labelSerial(l.code)} </span>)}
             {!labels.some((l) => l.status === "bound") && t("machine.no_label")}</Fact>}
           {!labels && <Fact label={t("machine.label")}>{(m.labels as { has_bound_label: boolean }).has_bound_label ? t("common.yes") : t("common.no")}</Fact>}
+          {bound && (
+            <Fact label={t("machine.label_qr")}>
+              <span className="qr-rad">
+                <a href={`/m/${bound.code}`} target="_blank" rel="noopener">
+                  <QrCode url={`${location.origin}/m/${bound.code}`} size={128} alt={t("labels.qr_alt", { serial: labelSerial(bound.code) })} />
+                </a>
+                <button type="button" className="mid-knapp mid-knapp-sekundar mid-knapp-liten"
+                  onClick={() => { setLabelError(null); lotTagPdf({ ...m, label_code: bound.code }, t, location.origin)
+                    .then((b) => downloadBytes(b, `marke-${m.reg_number}.pdf`)).catch(setLabelError); }}>
+                  <Icon name="uppladdning" />{t("machine.label_print")}
+                </button>
+              </span>
+            </Fact>
+          )}
           {m.registered_by && <Fact label={t("machine.registered_by")}>{m.registered_by.name} · {formatDate(m.created_at)}</Fact>}
           {m.user_org && <Fact label={t("machine.user_org")}>{m.user_org.name}</Fact>}
           {m.last_transfer_date && <Fact label={t("machine.last_transfer")}>{formatDate(m.last_transfer_date)}</Fact>}
         </dl>
+        {!!labelError && <ErrorNotice error={labelError} />}
       </section>
       <section className="stack-3" aria-labelledby="teknik">
         <h2 id="teknik" className="t-rubrik-4">{t("machine.technical")}</h2>

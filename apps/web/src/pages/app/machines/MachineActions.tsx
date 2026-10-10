@@ -9,6 +9,10 @@ import { ErrorNotice, Notice } from "../../../components/Feedback";
 import { FormField } from "../../../components/FormField";
 import { Icon } from "../../../components/Icon";
 import { ScannerView, type ScanResult } from "../../../components/Scanner";
+import { labelCodeFromScan } from "@maskinid/shared/identifiers.ts";
+import { OcrCapture, OcrError, OcrSuggestionList, useOcr } from "../../../components/OcrCapture";
+import { uploadDocument } from "../../../components/DocumentDropzone";
+import { useUpload } from "./FinancingActions";
 import { useSign } from "../../../components/Signature";
 import { queryClient, rpc, useRpc } from "../../../lib/api/query";
 import type { DocumentItem, Encumbrance, Flag, MachineView, OrgBrief, Transfer } from "../../../lib/api/types";
@@ -18,8 +22,11 @@ import { formatDate, formatReg, todayIso } from "../../../lib/format";
 class FieldError extends Error {}
 
 /** Shared frame for a register action: summary + form, an error inline, busy state, never a bare "OK" (SPEC §10). */
-function ActionDialog({ open, onClose, title, submitLabel, onSubmit, children, danger = false, wide = false }: {
-  open: boolean; onClose(): void; title: string; submitLabel: string; onSubmit(): Promise<void>; children: ReactNode; danger?: boolean; wide?: boolean;
+function ActionDialog({ open, onClose, title, submitLabel, onSubmit, children, danger = false, wide = false, disabled = false }: {
+  open: boolean; onClose(): void; title: string; submitLabel: string; onSubmit(): Promise<void>; children: ReactNode;
+  danger?: boolean; wide?: boolean;
+  /** Blocks submit when the action cannot succeed yet, so the user is not sent into a server error. */
+  disabled?: boolean;
 }) {
   const { t } = useTranslation();
   const [busy, setBusy] = useState(false);
@@ -45,7 +52,7 @@ function ActionDialog({ open, onClose, title, submitLabel, onSubmit, children, d
         {error != null && <ErrorNotice error={error} />}
         <div className="mid-rad mid-rad-slut">
           <button type="button" className="mid-knapp mid-knapp-text" onClick={onClose}>{t("common.cancel")}</button>
-          <button type="submit" className={danger ? "mid-knapp mid-knapp-fara" : "mid-knapp mid-knapp-primar"} disabled={busy}>
+          <button type="submit" className={danger ? "mid-knapp mid-knapp-fara" : "mid-knapp mid-knapp-primar"} disabled={busy || disabled}>
             {busy ? t("common.loading") : submitLabel}
           </button>
         </div>
@@ -236,7 +243,12 @@ export function ClearFlagDialog({ m, flag, onClose }: { m: MachineView; flag: Fl
 }
 
 // ---------- Deregistration (SPEC §6.9) ----------
-export function DeregisterDialog({ m, open, onClose }: { m: MachineView; open: boolean; onClose(): void }) {
+export function DeregisterDialog({ m, open, onClose, payoff, onRequestPayoff }: {
+  m: MachineView; open: boolean; onClose(): void;
+  /** The open or settled payoff for this machine, if any: its country and customs reference prefill the export. */
+  payoff?: { status: string; export_country?: string | null; export_customs_ref?: string | null } | null;
+  onRequestPayoff?(): void;
+}) {
   const { t } = useTranslation();
   const { orgId } = useOrg();
   const sign = useSign();
@@ -244,15 +256,25 @@ export function DeregisterDialog({ m, open, onClose }: { m: MachineView; open: b
   const [label, setLabel] = useState("destroyed");
   const [date, setDate] = useState(todayIso());
   const [note, setNote] = useState("");
-  const [country, setCountry] = useState("");
-  const [customsRef, setCustomsRef] = useState("");
+  // The lender has settled the credit, so what the owner told them at the time is what we export with.
+  // Derived, not initialised: this dialog is mounted before the payoff is loaded.
+  const [typedCountry, setTypedCountry] = useState<string | null>(null);
+  const [typedCustoms, setTypedCustoms] = useState<string | null>(null);
+  const country = typedCountry ?? payoff?.export_country ?? "";
+  const customsRef = typedCustoms ?? payoff?.export_customs_ref ?? "";
+  const setCountry = setTypedCountry;
+  const setCustomsRef = setTypedCustoms;
   const [err, setErr] = useState<string | null>(null);
   // Export keeps the label on the machine: that is what lets a foreign owner, or a buyer back home, scan it and
   // find the history. The other reasons still revoke it.
   const exporting = reason === "exported";
   const disposition = exporting ? "kept" : label;
+  // The block is only released by the lender, with a signature (ADR 0025). Until then, do not let the user
+  // submit into a server error - send them to the payoff instead.
+  const blockedByFinancing = !!m.financing?.has_active && !m.relations.includes("holder");
   return (
     <ActionDialog open={open} onClose={onClose} danger title={t("actions.deregister.title")} submitLabel={t("actions.deregister.submit")}
+      disabled={blockedByFinancing}
       onSubmit={async () => {
         setErr(null);
         if (exporting && country.trim() && !/^[A-Za-z]{2}$/.test(country.trim())) {
@@ -268,8 +290,16 @@ export function DeregisterDialog({ m, open, onClose }: { m: MachineView; open: b
       }}>
       <MachineSummary m={m} />
       <Notice kind="info" title={t("actions.deregister.warning")} />
-      {m.financing?.has_active && !m.relations.includes("holder") && (
-        <Notice kind="fel" title={t("errors.ENCUMBRANCE_BLOCKS_DEREGISTRATION", { holder: m.financing.active?.holder.name ?? "" })} />
+      {blockedByFinancing && (
+        <Notice kind="fel" title={t("errors.ENCUMBRANCE_BLOCKS_DEREGISTRATION", { holder: m.financing!.active?.holder.name ?? "" })}>
+          {onRequestPayoff && (payoff && ["requested", "quoted", "settlement_submitted"].includes(payoff.status)
+            ? <p className="t-liten">{t("payoff.export_waiting")}</p>
+            : <p>
+                <button type="button" className="mid-knapp mid-knapp-sekundar mid-knapp-liten" onClick={onRequestPayoff}>
+                  {t("payoff.request_for_export")}
+                </button>
+              </p>)}
+        </Notice>
       )}
       <FormField label={t("actions.deregister.reason")}>
         <select className="mid-select" value={reason} onChange={(e) => setReason(e.target.value)}>
@@ -387,6 +417,8 @@ export function ShareDialog({ m, open, onClose }: { m: MachineView; open: boolea
   );
 }
 
+const ENC_KINDS = ["ownership_reservation", "leasing", "rental", "other"];
+
 // ---------- Encumbrances (SPEC §6.5) ----------
 export function EncumbranceDialog({ m, open, onClose }: { m: Pick<MachineView, "id" | "reg_number" | "make" | "model" | "year" | "owner">; open: boolean; onClose(): void }) {
   const { t } = useTranslation();
@@ -398,7 +430,21 @@ export function EncumbranceDialog({ m, open, onClose }: { m: Pick<MachineView, "
   const [end, setEnd] = useState("");
   const [notes, setNotes] = useState("");
   const [endErr, setEndErr] = useState<string | null>(null);
+  const ocr = useOcr("ocr-financing-document");
+  const upload = useUpload();
   const endRequired = type === "ownership_reservation";
+
+  async function onFile(file: File) {
+    const sug = await ocr.read(file);
+    // Upload with no machine id: create_document_upload only authorises machine-scoped uploads for the
+    // machine's own parties, and register_encumbrance adopts an org-level document onto the machine.
+    void upload.start(uploadDocument({ orgId, machineId: null, type: "financing_contract", file, visibility: "owner_and_financier" }));
+    if (!sug) return;
+    if (typeof sug.encumbrance_type === "string" && ENC_KINDS.includes(sug.encumbrance_type)) setType(sug.encumbrance_type as Encumbrance["type"]);
+    if (typeof sug.contract_ref === "string") setRef(sug.contract_ref);
+    if (typeof sug.start_date === "string") setStart(sug.start_date);
+    if (typeof sug.end_date === "string") setEnd(sug.end_date);
+  }
   return (
     <ActionDialog open={open} onClose={onClose} title={t("actions.encumbrance.title")} submitLabel={t("actions.encumbrance.submit")}
       onSubmit={async () => {
@@ -406,14 +452,28 @@ export function EncumbranceDialog({ m, open, onClose }: { m: Pick<MachineView, "
         if (endRequired && !end) { setEndErr(t("actions.encumbrance.end_required")); throw new FieldError(); }
         if (end && end < start) { setEndErr(t("actions.encumbrance.end_before_start")); throw new FieldError(); }
         const params = { type, contract_ref: ref || null, start_date: start, end_date: end || null };
+        const doc = await upload.settle();
         const sig = await sign(orgId, "register_encumbrance", m.id, params);
         const r = await rpc<{ ok: boolean }>("register_encumbrance", { p_org_id: orgId, p_machine_id: m.id, p_type: type, p_contract_ref: params.contract_ref,
-          p_start_date: start, p_end_date: params.end_date, p_counterparty_org_id: m.owner?.id ?? null, p_notes: notes || null, p_signature_id: sig });
+          p_start_date: start, p_end_date: params.end_date, p_counterparty_org_id: m.owner?.id ?? null, p_notes: notes || null, p_signature_id: sig,
+          p_document_ids: doc ? [doc.id] : [] });
         if (r.ok) onClose();
       }}>
       <MachineSummary m={m} />
       {m.owner && <p className="t-liten">{t("actions.encumbrance.counterparty", { name: m.owner.name })}</p>}
       <p className="t-liten t-sekundar">{t("actions.encumbrance.no_amounts")}</p>
+      <p className="t-liten t-sekundar">{t("actions.encumbrance.attach_lead")}</p>
+      <OcrCapture fn="ocr-financing-document" busy={ocr.busy || upload.uploading} label={t("components.dropzone.choose")}
+        busyLabel={t("actions.financing.reading")} onFile={onFile} />
+      <OcrError error={ocr.error} title={t("actions.financing.read_failed")} />
+      {upload.doc && <Notice kind="ok" title={t("components.dropzone.uploaded", { name: upload.doc.filename })} />}
+      <OcrSuggestionList suggestion={ocr.suggestion} labelKey="financing.ocr_field" onAccept={(field, value) => {
+        if (field === "contract_ref") setRef(String(value));
+        else if (field === "start_date") setStart(String(value));
+        else if (field === "end_date") setEnd(String(value));
+        else if (field === "encumbrance_type" && ENC_KINDS.includes(String(value))) setType(String(value) as Encumbrance["type"]);
+        ocr.drop(field);
+      }} />
       <div className="rutnat">
         <FormField className="kol-6" label={t("common.type")}>
           <select className="mid-select" value={type} onChange={(e) => setType(e.target.value as Encumbrance["type"])}>
@@ -486,7 +546,8 @@ export function BindLabelDialog({ m, open, onClose }: { m: MachineView; open: bo
   return (
     <ActionDialog open={open} onClose={onClose} title={t("actions.label.title")} submitLabel={t("actions.label.submit")}
       onSubmit={async () => {
-        await rpc("bind_label", { p_org_id: orgId, p_machine_id: m.id, p_code: code.trim().toUpperCase(), p_role: "primary" });
+        // Never upper-case: a code is 22 characters of base62, so "aB…" and "Ab…" are two different labels.
+        await rpc("bind_label", { p_org_id: orgId, p_machine_id: m.id, p_code: code.trim(), p_role: "primary" });
         onClose();
       }}>
       <MachineSummary m={m} />
@@ -494,8 +555,14 @@ export function BindLabelDialog({ m, open, onClose }: { m: MachineView; open: bo
       {scan ? <ScannerView onResult={(r: ScanResult) => { if (r.kind === "label") { setCode(r.code); setScan(false); } }} /> : (
         <button type="button" className="mid-knapp mid-knapp-sekundar" onClick={() => setScan(true)}><Icon name="qr" />{t("actions.label.scan")}</button>
       )}
-      <FormField label={t("actions.label.code")}>
-        <input className="mid-input is-id" value={code} onChange={(e) => setCode(e.target.value)} autoCapitalize="characters" placeholder="MID-XXXX-XXXX" />
+      <FormField label={t("actions.label.code")} hint={t("actions.label.code_hint")}>
+        <input className="mid-input is-id" value={code} onChange={(e) => setCode(e.target.value)}
+          onPaste={(e) => {
+            // Pasting the whole https://…/m/<code> URL is the realistic case: the sticker prints only 6 characters.
+            const found = labelCodeFromScan(e.clipboardData.getData("text"));
+            if (found) { e.preventDefault(); setCode(found); }
+          }}
+          autoCapitalize="none" autoCorrect="off" spellCheck={false} placeholder={t("actions.label.code_placeholder")} />
       </FormField>
     </ActionDialog>
   );

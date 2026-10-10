@@ -12,12 +12,12 @@ const base: WizardData = {
 
 describe("register wizard", () => {
   it("builds the register payload: identifiers, numbers, owner only when another org", () => {
-    const d = toRegisterData({ ...base, road_reg: "ABC123", owner_org_number: "556701-1001", label_code: "mid-abcd" });
+    const d = toRegisterData({ ...base, road_reg: "ABC123", owner_org_number: "556701-1001", label_code: " aZ3kQ0pR7mTx2bV9nL4sWd " });
     expect(d.identifiers).toEqual([
       { type: "serial", value: "VCE0EC220E00012345", source: "nameplate_ocr" },
       { type: "road_reg", value: "ABC123", external_system: "transportstyrelsen" },
     ]);
-    expect(d).toMatchObject({ year: 2021, hour_meter: 4250, engine_power_kw: 128.5, service_weight_kg: 22500, owner_org_number: null, label_code: "MID-ABCD",
+    expect(d).toMatchObject({ year: 2021, hour_meter: 4250, engine_power_kw: 128.5, service_weight_kg: 22500, owner_org_number: null, label_code: "aZ3kQ0pR7mTx2bV9nL4sWd",
       valid_until: null, origin_country: null });
     expect(toRegisterData({ ...base, owner: "other", owner_org_number: "556701-1001" }).owner_org_number).toBe("556701-1001");
   });

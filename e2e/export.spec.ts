@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { login, signDemo, sql } from "./helpers";
+import { login, logout, signDemo, sql } from "./helpers";
 
 /**
  * Export keeps the machine's identity (ADR 0026).
@@ -89,4 +89,74 @@ test("export: den seedade exporterade maskinen går att skanna", async ({ page }
   await page.goto(`/m/${m.code}`);
   await expect(page.getByText("EXPORTERAD", { exact: true })).toBeVisible();
   await expect(page.getByText(`Exporterad till ${m.export_country}`, { exact: true })).toBeVisible();
+});
+
+/**
+ * Exporting a financed machine (Rikard's point 5). The block must stop the export, the owner asks the lender
+ * for a payoff from inside the deregistration dialog, and only the lender's approval releases it.
+ */
+test("export: en belånad maskin går först efter att långivaren godkänt lösen", async ({ page }) => {
+  let base = await login(page, "berg@demo.se");
+  const [m] = await sql<{ id: string; holder_slug: string }>(page, `
+    select m.id, ho.name, ho.slug holder_slug from public.machines m
+    join public.encumbrances e on e.machine_id = m.id and e.status = 'active'
+    join public.organizations ho on ho.id = e.holder_org_id
+    join public.organizations o on o.id = m.owner_org_id
+    where o.slug = 'bergs-schakt-entreprenad-ab' and m.status = 'active'
+      and exists (select 1 from public.memberships me where me.org_id = ho.id and me.status = 'active')
+      and not exists (select 1 from public.payoff_requests p where p.encumbrance_id = e.id and p.status in ('requested', 'quoted', 'settlement_submitted'))
+      and not exists (select 1 from public.transfers t where t.machine_id = m.id and t.status in ('draft', 'awaiting_buyer', 'awaiting_financier'))
+    order by m.reg_number limit 1`);
+  expect(m, "a financed machine of ours").toBeTruthy();
+
+  // The dialog refuses to submit and offers the payoff instead of a server error.
+  await page.goto(`${base}/machines/${m.id}`);
+  await page.getByRole("button", { name: "Avregistrera" }).click();
+  const dialog = page.locator("dialog[open]");
+  await expect(dialog.locator("button[type=submit]")).toBeDisabled();
+  await dialog.getByRole("button", { name: "Begär lösen för export" }).click();
+  const payoff = page.locator("dialog[open]");
+  await payoff.getByLabel("Till vilket land?").fill("NO");
+  await payoff.getByLabel("Tullreferens").fill("TULL-EXP-1");
+  await payoff.locator("button[type=submit]").click();
+  await expect(page.locator("dialog[open]")).toHaveCount(0);
+  const [req] = await sql<{ purpose: string; export_country: string }>(page, `
+    select purpose, export_country from public.payoff_requests where machine_id = $1 order by created_at desc limit 1`, [m.id]);
+  expect(req.purpose).toBe("export");
+  expect(req.export_country).toBe("NO");
+
+  // The lender approves and releases in one signed step.
+  await logout(page);
+  const lender = await sql<{ email: string }>(page, `
+    select p.email from public.profiles p join public.memberships me on me.user_id = p.user_id and me.status = 'active'
+    join public.organizations o on o.id = me.org_id where o.slug = $1 limit 1`, [m.holder_slug]).then((r) => r[0].email);
+  base = await login(page, lender);
+  await page.goto(`${base}/machines/${m.id}?tab=financing`);
+  await page.getByRole("button", { name: "Godkänn lösen och släpp spärren" }).click();
+  await page.locator("dialog[open] button[type=submit]").click();
+  await signDemo(page);
+  await expect(page.locator("dialog[open]")).toHaveCount(0);
+
+  // Now the owner can export, with the country and customs reference already filled in from the payoff.
+  await logout(page);
+  base = await login(page, "berg@demo.se");
+  await page.goto(`${base}/machines/${m.id}`);
+  await page.getByRole("button", { name: "Avregistrera" }).click();
+  const again = page.locator("dialog[open]");
+  await again.locator("select").first().selectOption("exported");
+  await expect(again.getByLabel("Till vilket land?")).toHaveValue("NO");
+  await expect(again.getByLabel("Tullreferens")).toHaveValue("TULL-EXP-1");
+  await again.locator("button[type=submit]").click();
+  await signDemo(page);
+  await expect(page.locator("dialog[open]")).toHaveCount(0);
+  const [after] = await sql<{ status: string; enc: string; exported: number; events: number }>(page, `
+    select m.status, (select e.status::text from public.encumbrances e where e.machine_id = m.id order by e.created_at desc limit 1) enc,
+      (select count(*)::int from public.events e where e.machine_id = m.id and e.type = 'machine.exported') exported,
+      (select count(*)::int from public.events e where e.machine_id = m.id) events
+    from public.machines m where m.id = $1`, [m.id]);
+  expect(after.status).toBe("exported");
+  expect(after.enc).toBe("released");
+  expect(after.exported).toBe(1);
+  // The export is one more event in the machine's life, not a reset: the earlier history is still there.
+  expect(after.events).toBeGreaterThan(3);
 });

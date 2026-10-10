@@ -42,6 +42,7 @@ export function SalePage() {
   const newSaleEligible = !!m && !m.first_sale_date && m.owner_ordinal <= 1;
   const [newSale, setNewSale] = useState(true);
   const hasInvoice = docs.some((d) => d.type === "invoice");
+  const [askPayoff, setAskPayoff] = useState(true);
 
   async function submit() {
     setFieldErr(null);
@@ -60,6 +61,12 @@ export function SalePage() {
               type: fin.type, contract_ref: fin.ref || null, end_date: fin.end || null }
           : null,
       });
+      if (askPayoff && m!.financing?.active) {
+        await rpc("request_payoff", {
+          p_org_id: orgId, p_encumbrance_id: m!.financing.active.id, p_purpose: "sale",
+          p_transfer_id: r.transfer.id, p_message: null,
+        }).catch(() => undefined); // The sale is done either way; the payoff can be asked for again from the machine.
+      }
       nav(path(`transfers/${r.transfer.id}`));
     } catch (e) { setError(e); } finally { setBusy(false); }
   }
@@ -80,7 +87,14 @@ export function SalePage() {
       {m && (
         <form className="stack-5" noValidate onSubmit={(e) => { e.preventDefault(); void submit(); }}>
           <p><RegNumber value={m.reg_number} framed /> <strong>{m.make} {m.model}</strong></p>
-          {m.financing?.has_active && <Notice kind="info" title={t("actions.transfer.financier_first", { holder: m.financing.active?.holder.name ?? "" })} />}
+          {m.financing?.has_active && (
+            <Notice kind="info" title={t("actions.transfer.financier_first", { holder: m.financing.active?.holder.name ?? "" })}>
+              <label className="mid-kryss">
+                <input type="checkbox" checked={askPayoff} onChange={(e) => setAskPayoff(e.target.checked)} />
+                <span>{t("payoff.request_with_sale", { holder: m.financing.active?.holder.name ?? "" })}</span>
+              </label>
+            </Notice>
+          )}
           <fieldset className="stack-3">
             <legend className="mid-etikett">{t("actions.transfer.buyer")}</legend>
             <div className="mid-val">
