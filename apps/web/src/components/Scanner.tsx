@@ -75,7 +75,7 @@ export function ScannerView({ onResult, active = true }: { onResult(r: ScanResul
       }}>
         <label className="visually-hidden" htmlFor="skanner-manuell">{t("components.scan_manual")}</label>
         <input id="skanner-manuell" className="mid-input is-id" value={manual} onChange={(e) => { setManual(e.target.value); setInvalid(false); }}
-          placeholder={t("components.scan_manual")} autoCapitalize="characters" spellCheck={false} />
+          placeholder={t("components.scan_manual")} autoCapitalize="none" autoCorrect="off" spellCheck={false} />
         <button type="submit" className="mid-knapp mid-knapp-sekundar">{t("common.open")}</button>
       </form>
     </div>
