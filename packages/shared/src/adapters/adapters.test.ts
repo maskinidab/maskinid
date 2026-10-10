@@ -14,6 +14,23 @@ describe("adapters", () => {
       .toEqual(["bankid", "bankid", "roaring", "transportstyrelsen", "resend"]);
   });
 
+  // The demo needs real document reading without real BankID: a bank order has to be read for what it says,
+  // while signing stays Demo-BankID. OCR is the only adapter allowed to opt in like this.
+  it("OCR_PROVIDER=anthropic opts in to real reading while demo mode stays on", () => {
+    const real = { name: "anthropic" } as unknown as Parameters<typeof createAdapters>[1];
+    const a = createAdapters({ DEMO_MODE: "true", OCR_PROVIDER: "anthropic" }, real);
+    expect(a.ocr.name).toBe("anthropic");
+    // Everything else is untouched by the opt-in.
+    expect([a.identity.name, a.signature.name, a.company.name, a.email.name]).toEqual(["mock", "mock", "mock", "console"]);
+  });
+
+  it("demo mode still mocks OCR when nothing opts in, and OCR_PROVIDER=mock wins outside demo mode", () => {
+    const real = { name: "anthropic" } as unknown as Parameters<typeof createAdapters>[1];
+    expect(createAdapters({ DEMO_MODE: "true" }, real).ocr.name).toBe("mock");
+    expect(createAdapters({ DEMO_MODE: "false", OCR_PROVIDER: "mock" }, real).ocr.name).toBe("mock");
+    expect(createAdapters({ DEMO_MODE: "false" }, real).ocr.name).toBe("anthropic");
+  });
+
   it("mock company lookup mirrors the SQL mock", async () => {
     const c = await mockCompanyLookup.lookup("5566778899");
     expect(c).toMatchObject({ orgNumber: "556677-8899", name: "Demoföretag 556677 AB", isSoleTrader: false });
