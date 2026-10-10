@@ -111,6 +111,22 @@ begin
   perform seed.company('556701-5002', 'Maskinkontroll Sverige AB', 'Örebro', array['inspector']::public.org_type[], 'kontroll@demo.se', 'Kurt Kontroll');
   perform seed.company('556701-6000', 'Volvo Construction Equipment (demo)', 'Eskilstuna', array['manufacturer']::public.org_type[], 'tillverkare@demo.se', 'Tina Tillverkare');
   perform seed.company('556701-7008', 'Maskinmarknaden (demo)', 'Stockholm', array['marketplace']::public.org_type[], 'marknad@demo.se', 'Max Marknad');
+  -- Each lender's own financing details, so picking them in a sale actually fills something in. Without this,
+  -- get_financier_profile returns an empty object and every prefill in FinancierPicker is a no-op.
+  update public.organizations set settings = coalesce(settings, '{}'::jsonb) || jsonb_build_object('financing_defaults', d.v)
+  from (values
+    ('516401-3004', jsonb_build_object('contract_ref_prefix', 'DBF-', 'default_type', 'ownership_reservation', 'default_term_months', 60,
+      'contact_email', 'finansiering@demobank.example', 'payoff_instructions', 'Skicka lösenförfrågan via MaskinID. Vi svarar med lösenbesked inom en bankdag.')),
+    ('516401-3012', jsonb_build_object('contract_ref_prefix', 'NMF-', 'default_type', 'leasing', 'default_term_months', 48,
+      'contact_email', 'leasing@nordiskmaskinfinans.example', 'payoff_instructions', 'Lösen hanteras av vår backoffice. Ange avtalsnummer i förfrågan.')),
+    ('516401-3020', jsonb_build_object('contract_ref_prefix', 'DNB-', 'default_type', 'leasing', 'default_term_months', 60,
+      'contact_email', 'maskin@dnbdemo.example', 'contact_phone', '08-123 45 00',
+      'payoff_instructions', 'Vi lämnar lösenbesked med 14 dagars giltighet.')),
+    ('516406-0138', jsonb_build_object('contract_ref_prefix', 'SC-', 'default_type', 'ownership_reservation', 'default_term_months', 72,
+      'contact_email', 'maskinfinans@santanderdemo.example', 'payoff_instructions', 'Bifoga lösenbevis i MaskinID, vi godkänner och släpper spärren.'))
+  ) as d(orgnr, v)
+  where public.organizations.org_number_hash = app.org_number_hash(d.orgnr);
+
   -- Pending approvals and partner types are approved by the operator (as in production).
   perform seed.act('admin@demo.se');
   perform public.approve_org(o.id) from public.organizations o where o.status = 'pending';

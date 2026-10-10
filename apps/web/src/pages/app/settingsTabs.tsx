@@ -4,11 +4,14 @@ import { DepartmentSettings, GroupSettings } from "./org/GroupSettings";
 import { ApiSettings } from "./settings/ApiSettings";
 import { BillingSettings } from "./settings/BillingSettings";
 import { DataExportSettings } from "./settings/DataExportSettings";
+import { FinancierSettings } from "./settings/FinancierSettings";
 import { IntegrationsSettings } from "./settings/IntegrationsSettings";
 
 /** Extra settings tabs registered by later steps (API keys, webhooks, label orders, billing). */
-export function settingsTabs({ isAdmin }: { isAdmin: boolean; has(t: OrgType): boolean }): { id: string; label: string; Component: ComponentType }[] {
+export function settingsTabs({ isAdmin, has }: { isAdmin: boolean; has(t: OrgType): boolean }): { id: string; label: string; Component: ComponentType }[] {
   return isAdmin ? [
+    // A lender fills in its own details once, and they follow every financing it is named in.
+    ...(has("financier") ? [{ id: "financier", label: "settings.tab_financier", Component: FinancierSettings }] : []),
     { id: "api", label: "settings.tab_api", Component: ApiSettings },
     { id: "group", label: "settings.tab_group", Component: GroupSettings },
     { id: "departments", label: "settings.tab_departments", Component: DepartmentSettings },
