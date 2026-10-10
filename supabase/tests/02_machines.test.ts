@@ -247,6 +247,100 @@ describe("labels (SPEC §5.2)", () => {
     });
   });
 
+  // A fresh label and a code that is not ours used to give the same answer, so a scanner could not tell
+  // "a real märke, not used yet" from "not a MaskinID code" — which is exactly what scan-to-register needs.
+  it("the public card tells an unused märke apart from a code that is not ours", async () => {
+    await tx(async (t) => {
+      const [free] = await printedLabels(t, null, 1);
+      await t.as("anon");
+      expect(await t.rpc("public_machine_card", { p_code: "inte-en-kod" })).toEqual({ found: false, reason: "invalid_code" });
+      // Well formed, 22 base62 characters, but no such label.
+      expect(await t.rpc("public_machine_card", { p_code: "Zz9900112233445566778x" }))
+        .toEqual({ found: false, reason: "unknown_label" });
+      expect(await t.rpc("public_machine_card", { p_code: free })).toEqual({ found: false, reason: "unbound_label" });
+    });
+  });
+
+  it("log_public_scan passes the unbound reason through, so the scan page sees it", async () => {
+    await tx(async (t) => {
+      const [free] = await printedLabels(t, null, 1);
+      await t.as("service");
+      const r = await t.rpc("log_public_scan", { p_code: free, p_reg: null, p_ip_hash: "test-ip-unbound" });
+      expect(r).toMatchObject({ found: false, reason: "unbound_label" });
+    });
+  });
+
+  it("check_label answers whether a scanned märke can be used, without naming another org", async () => {
+    await tx(async (t) => {
+      const [free, mine] = await printedLabels(t, null, 2);
+      const [theirs] = await printedLabels(t, ORGS.dealer, 1);
+      const m = await registerAs(t, "owner_a");
+      await t.as("owner_a");
+      expect(await t.rpc("check_label", { p_org_id: ORGS.owner_a, p_code: free }))
+        .toMatchObject({ found: true, bindable: true, serial: free.slice(-6), status: "printed" });
+      expect((await t.rpc("bind_label", { p_org_id: ORGS.owner_a, p_machine_id: m.id, p_code: mine })).ok).toBe(true);
+      const own = await t.rpc("check_label", { p_org_id: ORGS.owner_a, p_code: mine });
+      expect(own).toMatchObject({ found: true, bindable: false, reason: "already_bound", is_mine: true, reg_number: m.reg_number });
+      expect(own.machine_id).toBeTruthy();
+      // A label another organisation has been allocated: refused, and we do not say who holds it.
+      const other = await t.rpc("check_label", { p_org_id: ORGS.owner_a, p_code: theirs });
+      expect(other).toMatchObject({ found: true, bindable: false, reason: "other_org" });
+      expect(JSON.stringify(other)).not.toContain("Dealer");
+      expect(await t.rpc("check_label", { p_org_id: ORGS.owner_a, p_code: "Zz9900112233445566778x" }))
+        .toEqual({ found: false, reason: "unknown_label" });
+      expect(await t.rpc("check_label", { p_org_id: ORGS.owner_a, p_code: "kort" })).toEqual({ found: false, reason: "invalid_code" });
+    });
+  });
+
+  it("someone else's machine hides its id from check_label, and a read-only member may still ask", async () => {
+    await tx(async (t) => {
+      const [c] = await printedLabels(t, null, 1);
+      const m = await registerAs(t, "owner_a");
+      await t.as("owner_a");
+      await t.rpc("bind_label", { p_org_id: ORGS.owner_a, p_machine_id: m.id, p_code: c });
+      await t.as("owner_b");
+      const seen = await t.rpc("check_label", { p_org_id: ORGS.owner_b, p_code: c });
+      expect(seen).toMatchObject({ found: true, bindable: false, reason: "already_bound", is_mine: false });
+      expect(seen.machine_id).toBeUndefined();
+      await t.as("owner_a_readonly");
+      expect((await t.rpc("check_label", { p_org_id: ORGS.owner_a, p_code: c })).found).toBe(true);
+      await t.as("anon");
+      expect((await t.rpcError("check_label", { p_org_id: ORGS.owner_a, p_code: c })).code).toBeTruthy();
+    });
+  });
+
+  // The client used to upper-case a typed code before sending it. A code is base62, so that silently
+  // turned a valid märke into LABEL_NOT_FOUND. Keep bind_label case-exact and keep the client honest.
+  it("label codes are case-sensitive", async () => {
+    await tx(async (t) => {
+      const codes = await printedLabels(t, null, 12);
+      const mixed = codes.find((c) => c !== c.toUpperCase());
+      expect(mixed, "a base62 code containing a lowercase letter").toBeTruthy();
+      const m = await registerAs(t, "owner_a");
+      await t.as("owner_a");
+      expect((await t.rpcError("bind_label", { p_org_id: ORGS.owner_a, p_machine_id: m.id, p_code: mixed!.toUpperCase() })).code)
+        .toBe("LABEL_NOT_FOUND");
+      expect((await t.rpc("bind_label", { p_org_id: ORGS.owner_a, p_machine_id: m.id, p_code: mixed! })).ok).toBe(true);
+    });
+  });
+
+  // register_machine merges bind_label's answer instead of raising, so the wizard has to read it.
+  it("registering with an already-used märke keeps the machine and reports the label as rejected", async () => {
+    await tx(async (t) => {
+      const [c] = await printedLabels(t, null, 1);
+      const first = await registerAs(t, "owner_a");
+      await t.as("owner_a");
+      await t.rpc("bind_label", { p_org_id: ORGS.owner_a, p_machine_id: first.id, p_code: c });
+      const second = await t.rpc("register_machine", {
+        p_org_id: ORGS.owner_a,
+        p_data: { ...machineData(), identifiers: [{ type: "serial", value: serial() }], label_code: c },
+      });
+      expect(second.id).toBeTruthy();
+      expect(second.label).toMatchObject({ ok: false, error: "LABEL_ALREADY_USED" });
+      expect(second.label.conflict_id).toBeTruthy();
+    });
+  });
+
   it("dealers order labels; only operators print", async () => {
     await tx(async (t) => {
       await t.as("dealer");
