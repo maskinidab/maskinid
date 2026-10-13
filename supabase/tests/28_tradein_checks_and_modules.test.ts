@@ -6,10 +6,11 @@ import { ORGS, tx } from "./helpers.ts";
  * The dealer's view (ADR 0031): Inbytestest of its own, and the four fleet modules a dealer does not get.
  */
 
-/** Every item answered, optionally failing one by id. */
+/** Every item answered, optionally failing one by id. Stringified: an array parameter would otherwise reach
+ *  Postgres as an array literal rather than as jsonb. */
 async function answers(t: any, template: string, fail?: string) {
   const items = (await t.val("select items from public.checklist_templates where id = $1", [template])) as { id: string }[];
-  return items.map((i) => ({ id: i.id, ok: i.id !== fail }));
+  return JSON.stringify(items.map((i) => ({ id: i.id, ok: i.id !== fail })));
 }
 
 async function builtinTemplate(t: any, name = "Daglig kontroll – grundmaskin"): Promise<string> {
@@ -75,9 +76,9 @@ describe("Inbytestest: the dealer's own check of a machine it does not own (ADR 
     await tx(async (t) => {
       await t.as("dealer");
       const tpl = await builtinTemplate(t);
-      const all = await answers(t, tpl);
+      const all = JSON.parse(await answers(t, tpl)) as unknown[];
       expect((await t.rpcError("submit_tradein_check", {
-        p_org_id: ORGS.dealer, p_template_id: tpl, p_answers: all.slice(0, 3), p_serial: "HALV-1",
+        p_org_id: ORGS.dealer, p_template_id: tpl, p_answers: JSON.stringify(all.slice(0, 3)), p_serial: "HALV-1",
       })).code).toBe("VALIDATION");
     });
   });

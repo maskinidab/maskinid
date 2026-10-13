@@ -193,7 +193,10 @@ describe("a lender keeps reading what it just released (ADR 0030)", () => {
       await t.as("financier_a");
       const view = await t.rpc<any>("get_machine", { p_org_id: ORGS.financier_a, p_machine_id: m.id });
       expect(view.encumbrances.map((x: any) => x.id)).toEqual([own]);
-      expect(JSON.stringify(view.encumbrances)).not.toMatch(/financing_amount|monthly_cost/);
+      // Its own row is a rental with nothing filled in, so the terms object is there with null in every field.
+      // What must never appear is a figure – least of all the 500 000 the other lender just registered.
+      expect(JSON.stringify(view.encumbrances))
+        .not.toMatch(/"(financing_amount|down_payment|residual_value|monthly_cost|total_credit_amount|interest_rate|amortization_months)":\s*\d/);
     });
   });
 });

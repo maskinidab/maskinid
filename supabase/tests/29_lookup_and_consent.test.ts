@@ -29,7 +29,7 @@ describe("looking up a serial as any account type (ADR 0032)", () => {
       expect(hit.financing.active).toBeNull();
       expect(JSON.stringify(hit)).not.toMatch(/financing_amount|monthly_cost/);
       // Nor the owner, nor an unmasked serial.
-      expect(hit.owner).toBeUndefined();
+      expect(hit.owner ?? null).toBeNull();
       expect(hit.identifiers[0].value).not.toBe(await t.val("select value from public.machine_identifiers where machine_id = $1", [m.id]));
     });
   });
@@ -187,6 +187,7 @@ describe("consent: asking the owner for the full history (ADR 0032)", () => {
       const r = await t.rpc("request_mandate", {
         p_org_id: ORGS.owner_a, p_principal_org_id: null, p_machine_id: m.id, p_scopes: ["view"], p_valid_to: NEXT_YEAR,
       });
+      await t.as("owner_b");
       const sig = await sign(t, ORGS.owner_b, "grant_mandate", ORGS.owner_b, {
         agent_org_id: ORGS.owner_a, machine_id: m.id, scopes: "view", valid_to: NEXT_YEAR,
       });
@@ -216,6 +217,7 @@ describe("consent: asking the owner for the full history (ADR 0032)", () => {
       await t.as("financier_a");
       expect((await t.rpcError("get_machine", { p_org_id: ORGS.financier_a, p_machine_id: a.id })).code).toBe("NOT_FOUND");
 
+      await t.as("owner_b");
       const sig = await sign(t, ORGS.owner_b, "grant_mandate", ORGS.owner_b, {
         agent_org_id: ORGS.financier_a, machine_id: "", scopes: "view", valid_to: NEXT_YEAR,
       });
@@ -243,6 +245,7 @@ describe("consent: asking the owner for the full history (ADR 0032)", () => {
       const r = await t.rpc("request_mandate", {
         p_org_id: ORGS.owner_a, p_principal_org_id: null, p_machine_id: m.id, p_scopes: ["fleet"], p_valid_to: NEXT_YEAR,
       });
+      await t.as("owner_b");
       const sig = await sign(t, ORGS.owner_b, "grant_mandate", ORGS.owner_b, {
         agent_org_id: ORGS.owner_a, machine_id: m.id, scopes: "fleet", valid_to: NEXT_YEAR,
       });
@@ -299,6 +302,7 @@ describe("consent: asking the owner for the full history (ADR 0032)", () => {
   it("the decision is in the chain and the requester is told", async () => {
     await tx(async (t) => {
       const { m, request } = await askForMachine(t);
+      await t.as("owner_b");
       const sig = await sign(t, ORGS.owner_b, "grant_mandate", ORGS.owner_b, {
         agent_org_id: ORGS.owner_a, machine_id: m.id, scopes: "view", valid_to: NEXT_YEAR,
       });

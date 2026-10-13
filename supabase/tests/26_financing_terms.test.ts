@@ -117,6 +117,8 @@ describe("financing terms: who may read them (ADR 0029)", () => {
       const share = await t.rpc<any>("create_share_link", { p_org_id: ORGS.owner_a, p_machine_id: m.id, p_scope: "buyer_report", p_days: 7 });
       await t.as("anon");
       expect(JSON.stringify(await t.rpc("public_machine_card", { p_code: null, p_reg: reg }))).not.toMatch(AMOUNT_RX);
+      // get_share_view is service-only: the page calls it through an Edge Function, not from the browser.
+      await t.as("service");
       expect(JSON.stringify(await t.rpc("get_share_view", { p_token: share.token }))).not.toMatch(AMOUNT_RX);
     });
   });
