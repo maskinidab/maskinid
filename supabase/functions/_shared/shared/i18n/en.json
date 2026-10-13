@@ -1686,6 +1686,8 @@
   "MACHINE_SEIZED": "The machine is seized. Changes are blocked.",
   "MACHINE_STOLEN": "The machine is reported stolen. Transfers, encumbrances and deregistration are blocked.",
   "MACHINE_UNDER_INVESTIGATION": "The machine is under investigation. Changes are blocked.",
+  "MANDATE_ALREADY_ACTIVE": "You already have access.",
+  "MANDATE_ALREADY_OPEN": "There is already an open request or power of attorney.",
   "MEMBER_EXISTS": "The person is already a member.",
   "MFA_FAILED": "Two-factor sign-in could not be enabled.",
   "MFA_INVALID_CODE": "The code is wrong. Check your app and try again.",
@@ -1698,6 +1700,7 @@
   "NO_PAYMENT_METHOD": "There is no payment card on file.",
   "ORG_EXISTS": "The organisation already exists. Ask an administrator for an invitation.",
   "ORG_NOT_APPROVED": "The organisation is suspended. Contact the register operator.",
+  "ORG_NOT_IN_REGISTER": "The company is not in MaskinID. There has to be an account that can approve the request.",
   "ORG_REQUIRED": "Choose an organisation first.",
   "OTP_FAILED": "The sign-in link could not be sent.",
   "PAYMENTS_DISABLED": "Card payment is not enabled. Contact us to change plan.",
@@ -1864,6 +1867,9 @@
    "accepted": "{{actor}} accepted a mandate",
    "declined": "{{actor}} declined a mandate",
    "granted": "{{actor}} granted a mandate",
+   "request_approved": "{{actor}} approved access",
+   "request_declined": "{{actor}} declined the access request",
+   "requested": "{{actor}} requested access",
    "revoked": "{{actor}} revoked a mandate",
    "used": "{{actor}} started a transfer under a mandate"
   },
@@ -2255,6 +2261,7 @@
   "encumbrance_takeover": "Encumbrance to take over",
   "handle": "Handle",
   "invitation": "Invitation",
+  "mandate_request": "Access request to approve",
   "payoff_quote": "Payoff statement received",
   "payoff_request": "Payoff to answer",
   "payoff_settlement_review": "Proof of settlement to approve",
@@ -2565,6 +2572,10 @@
   "action": "Mandate / consignment",
   "agent": "Agent",
   "all_machines": "All machines",
+  "approve": "Approve access",
+  "approve_lead": "{{agent}} will be able to see {{what}} until {{until}}. You can revoke the access at any time.",
+  "awaiting_agent": "Waiting for the recipient",
+  "awaiting_principal": "Waiting for the owner",
   "decline": "Decline",
   "direction": "Direction",
   "from": "From {{org}}",
@@ -2580,10 +2591,20 @@
    "power_of_attorney": "The agent may manage the machine according to the permissions below."
   },
   "lead": "Give a dealer a consignment to sell a machine, or another organisation a mandate to manage your machines. You always remain the registered owner and seller; everything done under the mandate is logged.",
+  "no_terms_note": "Consent gives the history. Financing terms and amounts are never shared – they are visible only to the owner and the lender.",
   "none": "No mandates",
   "none_body": "Mandates you grant or receive are shown here.",
   "party": "Counterparty",
   "received": "Received",
+  "request_fleet": "Request a view of the machine fleet",
+  "request_fleet_lead": "The company gets a request and decides. An approved consent runs until the end date and can be revoked at any time.",
+  "request_history": "Request the full history",
+  "request_history_lead": "The machine's owner gets a request and decides whether the history is shared. You can already see the basic information and whether the machine is financed.",
+  "request_message": "Why do you need access?",
+  "request_principal": "The company's organisation number",
+  "request_sent": "The request has been sent. The owner decides.",
+  "request_valid_to": "Access until",
+  "requested_status": "Waiting for the owner's approval",
   "revoke": "Revoke",
   "scope": {
    "fleet": "Manage operation and service",
@@ -2604,11 +2625,15 @@
    "declined": "Declined",
    "expired": "Expired",
    "pending": "Awaiting answer",
+   "requested": "Requested",
    "revoked": "Revoked"
   },
   "to": "To {{org}}",
   "valid_hint": "At most two years.",
-  "valid_to": "Valid until"
+  "valid_to": "Valid until",
+  "what_fleet": "your whole machine fleet",
+  "what_machine": "the machine's full history",
+  "withdraw": "Withdraw"
  },
  "market": {
   "candidate_seen": "seen on {{source}} {{date}}",
@@ -2975,6 +3000,18 @@
    "granted": {
     "body": "Accept or decline under Mandates.",
     "title": "{{principal}} has granted you a mandate"
+   },
+   "request_approved": {
+    "body": "{{principal}} approved your request. The access runs until {{valid_to}}.",
+    "title": "Access approved"
+   },
+   "request_declined": {
+    "body": "{{principal}} declined your access request.",
+    "title": "Access declined"
+   },
+   "requested": {
+    "body": "{{agent}} is requesting access to information about your machines. Approve or decline in the inbox.",
+    "title": "Access request"
    },
    "revoked": {
     "body": "Revoked by {{by}}.",

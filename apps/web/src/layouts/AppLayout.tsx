@@ -8,7 +8,8 @@ import { Skeleton } from "../components/Feedback";
 import { Icon } from "../components/Icon";
 import { RegNumber } from "../components/RegNumber";
 import { ScanButton } from "../components/Scanner";
-import { MachineStatusBadge } from "../components/StatusBadge";
+import { RequestMachineHistoryDialog } from "../components/MandateRequest";
+import { FinancingBadge, MachineStatusBadge } from "../components/StatusBadge";
 import { useRpc } from "../lib/api/query";
 import type { MachineView } from "../lib/api/types";
 import { backend } from "../lib/backend";
@@ -100,11 +101,12 @@ function OrgSwitcher() {
 /** Global exact search by reg number or serial (Ctrl/Cmd+K, SPEC §9.3). */
 function GlobalSearch() {
   const { t } = useTranslation();
-  const { orgId, path } = useOrg();
+  const { orgId, path, isAdmin } = useOrg();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const [submitted, setSubmitted] = useState<string | null>(null);
+  const [askHistory, setAskHistory] = useState<string | null>(null);
   const res = useRpc<MachineView[]>("lookup_machine", submitted ? { p_org_id: orgId, p_query: submitted } : null);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -132,13 +134,31 @@ function GlobalSearch() {
           <ul className="sokresultat">
             {res.data.map((m) => (
               <li key={m.id}>
-                <button type="button" className="sokresultat-rad" onClick={() => { setOpen(false); navigate(path(`machines/${m.id}`)); }}>
-                  <RegNumber value={m.reg_number} /> <span>{m.make} {m.model}</span> <MachineStatusBadge status={m.status} />
-                </button>
+                {/* Every account type can search a serial and see the machine and whether it is financed (ADR 0032).
+                    Without a relation there is no machine page to open, so the row shows what there is and offers
+                    the owner's consent as the way to more. */}
+                {m.access === "basic" ? (
+                  <div className="sokresultat-rad is-platt">
+                    <RegNumber value={m.reg_number} /> <span>{m.make} {m.model}{m.year ? ` · ${m.year}` : ""}</span>
+                    <MachineStatusBadge status={m.status} />
+                    {m.financing && <FinancingBadge hasActive={m.financing.has_active} pending={m.financing.has_pending} />}
+                    {isAdmin && (
+                      <button type="button" className="mid-knapp mid-knapp-kontur mid-knapp-liten" onClick={() => setAskHistory(m.id)}>
+                        {t("mandate.request_history")}
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <button type="button" className="sokresultat-rad" onClick={() => { setOpen(false); navigate(path(`machines/${m.id}`)); }}>
+                    <RegNumber value={m.reg_number} /> <span>{m.make} {m.model}</span> <MachineStatusBadge status={m.status} />
+                    {m.financing && <FinancingBadge hasActive={m.financing.has_active} pending={m.financing.has_pending} />}
+                  </button>
+                )}
               </li>
             ))}
           </ul>
         ))}
+        {askHistory && <RequestMachineHistoryDialog machineId={askHistory} open onClose={() => setAskHistory(null)} />}
       </Dialog>
     </>
   );

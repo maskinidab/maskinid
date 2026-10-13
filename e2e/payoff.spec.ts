@@ -81,10 +81,14 @@ test("lösen: inbyte av bankägd maskin, offert, lösenbevis och godkännande", 
 
   // Rikard's defect: the button was there but opening it said "du har inte behörighet". The dealer uploads
   // nothing and owns nothing here — it is a party to the payoff, and that is what grants the read (ADR 0030).
-  const [quoteDoc] = await sql<{ id: string }>(page, `
-    select p.quote_document_id id from public.payoff_requests p where p.machine_id = $1 order by p.created_at desc limit 1`, [m.id]);
-  expect(quoteDoc.id, "the lender's payoff statement is on the request").toBeTruthy();
-  const opened = await asUser<{ filename: string }>(page, "authorize_document_download", { p_document_id: quoteDoc.id });
+  // Through the dealer's own RPC rather than the sql() helper: sql() runs as the database owner and would prove
+  // nothing about the permission, which is the whole point here.
+  const orgId = new URL(page.url()).pathname.split("/")[2]!;
+  const mine = await asUser<{ id: string; quote_document_id: string | null; machine_id: string }[]>(
+    page, "list_payoff_requests", { p_org_id: await sql<{ id: string }>(page, "select id from public.organizations where slug = $1", [orgId]).then((r) => r[0].id) });
+  const quoteDocId = mine.find((p) => p.machine_id === m.id)?.quote_document_id;
+  expect(quoteDocId, "the lender's payoff statement is on the dealer's own request").toBeTruthy();
+  const opened = await asUser<{ filename: string }>(page, "authorize_document_download", { p_document_id: quoteDocId! });
   expect(opened.filename).toBe("losenbesked.pdf");
   // Clicking it shows no error either.
   await page.getByRole("button", { name: "Öppna lösenbesked" }).click();

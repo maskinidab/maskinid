@@ -1686,6 +1686,8 @@
   "MACHINE_SEIZED": "Maskinen är i beslag. Ändringar är spärrade.",
   "MACHINE_STOLEN": "Maskinen är anmäld stulen. Ägarbyten, förbehåll och avregistrering är spärrade.",
   "MACHINE_UNDER_INVESTIGATION": "Maskinen är under utredning. Ändringar är spärrade.",
+  "MANDATE_ALREADY_ACTIVE": "Ni har redan åtkomst.",
+  "MANDATE_ALREADY_OPEN": "Det finns redan en öppen förfrågan eller fullmakt.",
   "MEMBER_EXISTS": "Personen är redan medlem.",
   "MFA_FAILED": "Tvåfaktorsinloggningen kunde inte aktiveras.",
   "MFA_INVALID_CODE": "Koden stämmer inte. Kontrollera appen och försök igen.",
@@ -1698,6 +1700,7 @@
   "NO_PAYMENT_METHOD": "Det finns inget betalkort registrerat.",
   "ORG_EXISTS": "Organisationen finns redan i registret. Be en administratör om en inbjudan.",
   "ORG_NOT_APPROVED": "Organisationen är avstängd. Kontakta registerhållaren.",
+  "ORG_NOT_IN_REGISTER": "Företaget finns inte i MaskinID. Det måste finnas ett konto som kan godkänna förfrågan.",
   "ORG_REQUIRED": "Välj en organisation först.",
   "OTP_FAILED": "Inloggningslänken kunde inte skickas.",
   "PAYMENTS_DISABLED": "Kortbetalning är inte aktiverad. Kontakta oss för att byta plan.",
@@ -1864,6 +1867,9 @@
    "accepted": "{{actor}} accepterade fullmakt",
    "declined": "{{actor}} avböjde fullmakt",
    "granted": "{{actor}} gav fullmakt",
+   "request_approved": "{{actor}} godkände åtkomst",
+   "request_declined": "{{actor}} avslog åtkomstbegäran",
+   "requested": "{{actor}} begärde åtkomst",
    "revoked": "{{actor}} återkallade fullmakt",
    "used": "{{actor}} påbörjade ägarbyte med fullmakt"
   },
@@ -2255,6 +2261,7 @@
   "encumbrance_takeover": "Förbehåll att ta över",
   "handle": "Hantera",
   "invitation": "Inbjudan",
+  "mandate_request": "Begäran om åtkomst att godkänna",
   "payoff_quote": "Lösenbesked mottaget",
   "payoff_request": "Lösen att besvara",
   "payoff_settlement_review": "Lösenbevis att godkänna",
@@ -2565,7 +2572,11 @@
   "action": "Fullmakt / kommission",
   "agent": "Ombud",
   "all_machines": "Alla maskiner",
-  "decline": "Avböj",
+  "approve": "Godkänn åtkomst",
+  "approve_lead": "{{agent}} får se {{what}} till och med {{until}}. Du kan återkalla åtkomsten när som helst.",
+  "awaiting_agent": "Väntar på mottagaren",
+  "awaiting_principal": "Väntar på ägaren",
+  "decline": "Avslå",
   "direction": "Riktning",
   "from": "Från {{org}}",
   "grant_for": "Fullmakt eller kommission för {{reg}}",
@@ -2580,10 +2591,20 @@
    "power_of_attorney": "Ombudet får sköta maskinen enligt behörigheterna nedan."
   },
   "lead": "Ge en handlare kommission att sälja en maskin, eller en annan organisation fullmakt att sköta era maskiner. Ni är alltid registrerad ägare och säljare; allt som görs med fullmakten loggas.",
+  "no_terms_note": "Samtycke ger historiken. Finansieringsvillkor och belopp delas aldrig – de syns bara för ägaren och långivaren.",
   "none": "Inga fullmakter",
   "none_body": "Fullmakter ni ger eller får visas här.",
   "party": "Motpart",
   "received": "Mottagna",
+  "request_fleet": "Begär insyn i maskinflottan",
+  "request_fleet_lead": "Företaget får en förfrågan och avgör själv. Godkänt samtycke gäller till och med slutdatumet och kan återkallas när som helst.",
+  "request_history": "Begär full historik",
+  "request_history_lead": "Maskinens ägare får en förfrågan och avgör själv om historiken ska delas. Du ser grundinformation och om maskinen är belånad redan nu.",
+  "request_message": "Varför behöver ni åtkomst?",
+  "request_principal": "Företagets organisationsnummer",
+  "request_sent": "Förfrågan är skickad. Ägaren avgör.",
+  "request_valid_to": "Åtkomst till och med",
+  "requested_status": "Väntar på ägarens godkännande",
   "revoke": "Återkalla",
   "scope": {
    "fleet": "Sköta drift och service",
@@ -2604,11 +2625,15 @@
    "declined": "Avböjd",
    "expired": "Utgången",
    "pending": "Väntar på svar",
+   "requested": "Begärd",
    "revoked": "Återkallad"
   },
   "to": "Till {{org}}",
   "valid_hint": "Högst två år.",
-  "valid_to": "Giltig till"
+  "valid_to": "Giltig till",
+  "what_fleet": "hela er maskinflotta",
+  "what_machine": "maskinens fullständiga historik",
+  "withdraw": "Dra tillbaka"
  },
  "market": {
   "candidate_seen": "sedd hos {{source}} {{date}}",
@@ -2975,6 +3000,18 @@
    "granted": {
     "body": "Acceptera eller avböj under Fullmakter.",
     "title": "{{principal}} har gett er fullmakt"
+   },
+   "request_approved": {
+    "body": "{{principal}} godkände er begäran. Åtkomsten gäller till {{valid_to}}.",
+    "title": "Åtkomst godkänd"
+   },
+   "request_declined": {
+    "body": "{{principal}} avslog er begäran om åtkomst.",
+    "title": "Åtkomst avslagen"
+   },
+   "requested": {
+    "body": "{{agent}} begär åtkomst till uppgifter om era maskiner. Godkänn eller avslå i inkorgen.",
+    "title": "Begäran om åtkomst"
    },
    "revoked": {
     "body": "Återkallad av {{by}}.",

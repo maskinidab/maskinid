@@ -11,6 +11,7 @@ import { RegNumber } from "../../../components/RegNumber";
 import { useSign } from "../../../components/Signature";
 import { StatusBadge } from "../../../components/StatusBadge";
 import { rpc, useRpc, useRpcMutation } from "../../../lib/api/query";
+import { DecideMandateDialog } from "../../../components/MandateRequest";
 import type { OrgBrief } from "../../../lib/api/types";
 import { formatDate, formatReg } from "../../../lib/format";
 
@@ -18,8 +19,13 @@ interface Mandate {
   id: string; kind: "consignment" | "power_of_attorney"; scopes: string[]; valid_from: string; valid_to: string; note: string | null;
   status: string; effective_status: string; direction: "granted" | "received"; principal: OrgBrief; agent: OrgBrief;
   machine: { id: string; reg_number: string; make: string; model: string } | null;
+  machine_id: string | null;
+  /** Who started it, and therefore who has to act (ADR 0032). */
+  requested_by?: "principal" | "agent";
+  request_message: string | null;
+  awaiting?: "principal" | "agent" | null;
 }
-const KIND = { pending: "vantar", active: "verifierad", expired: "neutral", revoked: "neutral", declined: "neutral", completed: "neutral" } as const;
+const KIND = { requested: "vantar", pending: "vantar", active: "verifierad", expired: "neutral", revoked: "neutral", declined: "neutral", completed: "neutral" } as const;
 
 /** Fullmakter och kommission (step 21): what the org has granted and received. */
 export function MandatesPage() {
@@ -27,6 +33,7 @@ export function MandatesPage() {
   const { orgId, path, isAdmin, has } = useOrg();
   const q = useRpc<Mandate[]>("list_mandates", { p_org_id: orgId });
   const [granting, setGranting] = useState(false);
+  const [decide, setDecide] = useState<Mandate | null>(null);
   const respond = useRpcMutation<{ p_org_id: string; p_mandate_id: string; p_accept: boolean }>("respond_mandate");
   const revoke = useRpcMutation<{ p_org_id: string; p_mandate_id: string }>("revoke_mandate");
   return (
@@ -51,18 +58,28 @@ export function MandatesPage() {
               cell: (d) => <StatusBadge kind={KIND[d.effective_status as keyof typeof KIND] ?? "neutral"}>{t(`mandate.status.${d.effective_status}`)}</StatusBadge> },
             { id: "act", header: "", value: () => "", cell: (d) => isAdmin && (
               <div className="mid-rad">
+                {/* A request someone made to us: only the owner of the data decides, and the decision is signed
+                    (ADR 0032). respond_mandate deliberately cannot touch a `requested` row. */}
+                {d.direction === "granted" && d.status === "requested" && (
+                  <button type="button" className="mid-knapp mid-knapp-primar mid-knapp-liten"
+                    onClick={() => setDecide(d)}>{t("mandate.approve")}</button>
+                )}
                 {d.direction === "received" && d.status === "pending" && <>
                   <button type="button" className="mid-knapp mid-knapp-primar mid-knapp-liten" onClick={() => respond.mutate({ p_org_id: orgId, p_mandate_id: d.id, p_accept: true })}>{t("mandate.accept")}</button>
                   <button type="button" className="mid-knapp mid-knapp-text mid-knapp-liten" onClick={() => respond.mutate({ p_org_id: orgId, p_mandate_id: d.id, p_accept: false })}>{t("mandate.decline")}</button>
                 </>}
-                {["pending", "active"].includes(d.status) && !(d.direction === "received" && d.status === "pending") && (
-                  <button type="button" className="mid-knapp mid-knapp-text mid-knapp-liten" onClick={() => revoke.mutate({ p_org_id: orgId, p_mandate_id: d.id })}>{t("mandate.revoke")}</button>
+                {["requested", "pending", "active"].includes(d.status) && !(d.direction === "received" && d.status === "pending") && (
+                  <button type="button" className="mid-knapp mid-knapp-text mid-knapp-liten" onClick={() => revoke.mutate({ p_org_id: orgId, p_mandate_id: d.id })}>
+                    {/* The requester withdrawing its own request is not a revocation of anything granted. */}
+                    {d.status === "requested" && d.direction === "received" ? t("mandate.withdraw") : t("mandate.revoke")}
+                  </button>
                 )}
               </div>
             ) },
           ]} />
       )}
       {granting && <GrantMandateDialog onClose={() => setGranting(false)} />}
+      <DecideMandateDialog request={decide} onClose={() => setDecide(null)} />
     </div>
   );
 }

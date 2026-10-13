@@ -33,7 +33,8 @@ the product owner decided otherwise. Format: context → decision → consequenc
 | [0026](0026-export-preserves-identity.md) | Export keeps the QR label, the serial and the history; new `machine.exported` event and re-import |
 | [0027](0027-placeholder-financiers.md) | Financing against a lender outside MaskinID via an unclaimed placeholder; nameable is not capable |
 | [0028](0028-marken-pa-skarm-och-etikettark.md) | QR labels on screen and as a printable sheet; a scanned unused label becomes the way into the register |
-| [0033](0033-pricing-flag-and-client-flag-reads.md) | Price information off behind `FEATURE_PRICING`; the client learns to read flags (`useFlag` / `useFlagState`) |
 | [0029](0029-financing-terms-for-owner-and-lender.md) | Financing terms on the encumbrance, readable by the machine owner and the holding lender only; supersedes the amounts part of 0025 |
 | [0030](0030-payoff-document-access-and-release-grace.md) | A payoff's documents belong to the payoff, not the machine; a lender keeps reading what it just released for 90 days |
 | [0031](0031-dealer-view-tradein-check-and-modules.md) | Inbytestest as its own table and RPC sharing only the checklist; the four fleet modules per organisation, defaulted from the org type |
+| [0032](0032-open-lookup-and-consent-for-history.md) | Any account type may look up a serial and see whether a machine is financed; the full history needs the owner's signed, revocable consent (a mandate) |
+| [0033](0033-pricing-flag-and-client-flag-reads.md) | Price information off behind `FEATURE_PRICING`; the client learns to read flags (`useFlag` / `useFlagState`) |

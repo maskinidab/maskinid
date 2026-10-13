@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider";
 import { useOrg } from "../../auth/OrgContext";
 import { EmptyState, ErrorNotice, PageHeader, Skeleton } from "../../components/Feedback";
 import { Icon, type IconName } from "../../components/Icon";
+import { DecideMandateDialog, type MandateRequestRow } from "../../components/MandateRequest";
 import { RegNumber } from "../../components/RegNumber";
 import { useRpc } from "../../lib/api/query";
 import type { InboxItem, OrgBrief, PayoffRequest, Transfer } from "../../lib/api/types";
@@ -13,7 +15,7 @@ import { formatDate } from "../../lib/format";
 const ICON: Record<string, IconName> = {
   transfer_accept: "byt", transfer_financier: "byt", trade_in_approve: "byt", encumbrance_confirm: "hanglas", encumbrance_takeover: "hanglas",
   verification_review: "sigill", verification_needs_info: "sigill", correction_objection: "skold", conflict: "varning", invitation: "personer",
-  payoff_request: "hanglas", payoff_quote: "dokument", payoff_settlement_review: "hanglas",
+  payoff_request: "hanglas", payoff_quote: "dokument", payoff_settlement_review: "hanglas", mandate_request: "sigill",
 };
 
 function describe(item: InboxItem, t: (k: string, o?: Record<string, unknown>) => string): { reg?: string; text: string; to?: string; machineId?: string } {
@@ -53,6 +55,15 @@ function describe(item: InboxItem, t: (k: string, o?: Record<string, unknown>) =
       const c = item.conflict as { type: string; machine: { id: string; reg_number: string } | null };
       return { reg: c.machine?.reg_number, text: t(`enum.conflict_type.${c.type}`), to: c.machine ? `machines/${c.machine.id}` : undefined };
     }
+    // A consent request waiting for us as the owner of the data (ADR 0032). Decided in the dialog below rather
+    // than on another page: the decision is the whole item.
+    case "mandate_request": {
+      const d = item.mandate as MandateRequestRow & { agent?: OrgBrief | null };
+      return {
+        reg: d.machine?.reg_number,
+        text: [d.agent?.name, d.machine_id ? t("mandate.what_machine") : t("mandate.what_fleet")].filter(Boolean).join(" · "),
+      };
+    }
     case "invitation":
       return { text: (item.org as OrgBrief).name };
     default:
@@ -64,6 +75,7 @@ export function InboxList({ items }: { items: InboxItem[] }) {
   const { t } = useTranslation();
   const { path } = useOrg();
   const { refresh } = useAuth();
+  const [decide, setDecide] = useState<MandateRequestRow | null>(null);
   if (!items.length) return <p className="t-sekundar">{t("inbox.empty")}</p>;
   return (
     <ul className="inkorg">
@@ -81,10 +93,14 @@ export function InboxList({ items }: { items: InboxItem[] }) {
                 await backend.rpc("accept_invite", { p_membership_id: item.id });
                 await refresh();
               }}>{t("onboarding.accept")}</button>
+            ) : item.kind === "mandate_request" ? (
+              <button type="button" className="mid-knapp mid-knapp-sekundar mid-knapp-liten"
+                onClick={() => setDecide(item.mandate as MandateRequestRow)}>{t("inbox.handle")}</button>
             ) : d.to ? <Link className="mid-knapp mid-knapp-sekundar mid-knapp-liten" to={path(d.to)}>{t("inbox.handle")}</Link> : null}
           </li>
         );
       })}
+      <DecideMandateDialog request={decide} onClose={() => setDecide(null)} />
     </ul>
   );
 }

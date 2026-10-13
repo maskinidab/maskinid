@@ -99,7 +99,8 @@ test("export: en belånad maskin går först efter att långivaren godkänt lös
   let base = await login(page, "berg@demo.se");
   const [m] = await sql<{ id: string; holder_slug: string }>(page, `
     select m.id, ho.name, ho.slug holder_slug from public.machines m
-    join public.encumbrances e on e.machine_id = m.id and e.status = 'active'
+    -- A financing, not any encumbrance: a rental is also an active encumbrance and does not block a deregistration.
+    join public.encumbrances e on e.machine_id = m.id and e.status = 'active' and e.type in ('leasing', 'ownership_reservation')
     join public.organizations ho on ho.id = e.holder_org_id
     join public.organizations o on o.id = m.owner_org_id
     where o.slug = 'bergs-schakt-entreprenad-ab' and m.status = 'active'
