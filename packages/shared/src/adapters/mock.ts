@@ -111,8 +111,8 @@ export const mockOcr: Ocr = {
   async financingDocument(file) {
     const hint = decodeHint(file.base64, "financing");
     if (hint) {
-      // Pick only known fields. The real adapter maps an explicit list too, so an amount in the document (or in a
-      // demo hint) can never reach the register — it stores none (CLAUDE.md rule 5).
+      // Pick only known fields, exactly as the real adapter does: anything the document says that is not on the
+      // list below never reaches the register. A purchase price or a payoff figure is not on the list (ADR 0029).
       const out: Record<string, unknown> = { confidence: 0.96 };
       for (const k of FINANCING_HINT_FIELDS) if (hint[k] !== undefined) out[k] = hint[k];
       return out as unknown as FinancingSuggestion;
@@ -126,6 +126,10 @@ export const mockOcr: Ocr = {
       start_date: "2026-10-01",
       end_date: "2031-09-30",
       term_months: 60,
+      financing_amount: 1_250_000,
+      down_payment: 250_000,
+      residual_value: 200_000,
+      interest_rate: 6.45,
       serial: "VCEC220EV00123K7",
       make: "Volvo",
       model: "EC220E",
@@ -138,13 +142,14 @@ export const mockOcr: Ocr = {
   },
 };
 
-const NUMERIC_HINTS = new Set(["year", "weight_kg", "term_months"]);
+const NUMERIC_HINTS = new Set(["year", "weight_kg", "term_months", "financing_amount", "down_payment", "residual_value", "interest_rate"]);
 
 /** The only fields a financing hint may contribute — see mockOcr.financingDocument. */
 const FINANCING_HINT_FIELDS = [
   "document_kind", "financier_name", "financier_org_number", "encumbrance_type", "contract_ref",
   "start_date", "end_date", "term_months", "serial", "pin", "make", "model", "year",
   "customer_name", "customer_org_number",
+  "financing_amount", "down_payment", "residual_value", "interest_rate",
 ] as const;
 
 /**

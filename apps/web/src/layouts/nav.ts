@@ -13,9 +13,31 @@ export interface NavGroup {
   items: NavItem[];
 }
 
+/** The fleet modules an organisation can have switched off (ADR 0031). Mirrors app.module_names() in SQL. */
+export const MODULES = ["daily_check", "rentals", "climate", "operators", "attachments"] as const;
+export type ModuleName = (typeof MODULES)[number];
+
+/**
+ * What a module defaults to when nothing is stored, mirroring app.module_default(). A dealer does not get the
+ * four fleet modules: the product owner asked for Daglig kontroll, Uthyrning, Bränsle & klimat and Förare to be
+ * gone from the dealer view, and Nordmaskin is both `dealer` and `owner`, which is why they showed up at all.
+ *
+ * Duplicated here on purpose so a stale or missing `my_context` can never blank the menu — the database stays
+ * the authority for writes.
+ */
+export function defaultModules(types: OrgType[]): Record<ModuleName, boolean> {
+  const dealer = types.includes("dealer");
+  return {
+    daily_check: !dealer, rentals: !dealer, climate: !dealer, operators: !dealer, attachments: true,
+  };
+}
+
 /** Sidebar grouped per role (SPEC §9.2, §9.3). Only the org's effective types are shown. */
-export function navGroups(types: OrgType[], isAdmin: boolean, isOperator: boolean, canWrite = true): NavGroup[] {
+export function navGroups(types: OrgType[], isAdmin: boolean, isOperator: boolean, canWrite = true,
+  modules: Partial<Record<ModuleName, boolean>> = {}): NavGroup[] {
   const has = (t: OrgType) => types.includes(t);
+  const defaults = defaultModules(types);
+  const on = (m: ModuleName) => modules[m] ?? defaults[m];
   const register: NavItem[] = [
     { to: "dashboard", label: "nav.dashboard", icon: "hem" },
     { to: "machines", label: "nav.machines", icon: "maskin" },
@@ -27,14 +49,23 @@ export function navGroups(types: OrgType[], isAdmin: boolean, isOperator: boolea
   }
   const role: NavItem[] = [];
   if (has("owner")) {
-    role.push({ to: "fleet", label: "nav.fleet", icon: "bygg" }, { to: "daily-check", label: "nav.daily_check", icon: "bock" },
-      { to: "rentals", label: "nav.rentals", icon: "byt" }, { to: "attachments", label: "nav.attachments", icon: "verktyg" },
-      { to: "operators", label: "nav.operators", icon: "personer" }, { to: "climate", label: "nav.climate", icon: "diagram" });
+    role.push({ to: "fleet", label: "nav.fleet", icon: "bygg" });
+    // Each of these is a module an organisation can have off. A dealer has the four off by default (ADR 0031);
+    // they come back from Inställningar → Moduler, and the RPCs refuse writes while they are off.
+    if (on("daily_check")) role.push({ to: "daily-check", label: "nav.daily_check", icon: "bock" });
+    if (on("rentals")) role.push({ to: "rentals", label: "nav.rentals", icon: "byt" });
+    if (on("attachments")) role.push({ to: "attachments", label: "nav.attachments", icon: "verktyg" });
+    if (on("operators")) role.push({ to: "operators", label: "nav.operators", icon: "personer" });
+    if (on("climate")) role.push({ to: "climate", label: "nav.climate", icon: "diagram" });
   }
   if (has("dealer")) {
     role.push(
       { to: "stock", label: "nav.stock", icon: "tagg" }, { to: "sales/new", label: "nav.sales_new", icon: "pil-hoger" },
-      { to: "trade-in", label: "nav.trade_in", icon: "qr" }, { to: "leads", label: "nav.leads", icon: "personer" },
+      { to: "trade-in", label: "nav.trade_in", icon: "qr" },
+      // Inbytestest: the dealer's own check of a machine before taking it in trade. Always available to a dealer,
+      // which is what replaces Daglig kontroll in this view (ADR 0031).
+      { to: "tradein-check", label: "nav.tradein_check", icon: "bock" },
+      { to: "leads", label: "nav.leads", icon: "personer" },
       { to: "customers", label: "nav.customers", icon: "lista" },
     );
   }

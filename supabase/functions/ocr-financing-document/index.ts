@@ -1,13 +1,16 @@
 // Edge Function: ocr-financing-document — "Bifoga dokument" in the financing section.
 // POST { file_base64, media_type } (signed-in user) → suggestion { document_kind, financier_name,
-// financier_org_number, encumbrance_type, contract_ref, start_date, end_date, term_months, serial, pin, make,
-// model, year, customer_name, customer_org_number, confidence }.
+// financier_org_number, encumbrance_type, contract_ref, start_date, end_date, term_months, financing_amount,
+// down_payment, residual_value, interest_rate, serial, pin, make, model, year, customer_name,
+// customer_org_number, confidence }.
 //
 // The user confirms every field; nothing is written to the register here. Mock OCR in DEMO_MODE.
 // Financing agreements are usually PDFs, so application/pdf is accepted alongside photos and the size limit
 // follows RULES.maxUploadBytes rather than the 8 MB a nameplate photo needs.
 //
-// No amount is ever extracted or returned — the register stores none (CLAUDE.md rule 5, SPEC §0).
+// The financing terms (amount, down payment, residual value, interest) ARE extracted and pre-fill the finance
+// calculator; they are stored on the encumbrance where only the machine's owner and the lender can read them
+// (ADR 0029). A purchase price, an outstanding debt and a payoff figure are never extracted (ADR 0025).
 import { createAdapters } from "../_shared/shared/adapters/index.ts";
 import { RULES } from "../_shared/shared/config.ts";
 import { envRecord, userClient } from "../_shared/db.ts";

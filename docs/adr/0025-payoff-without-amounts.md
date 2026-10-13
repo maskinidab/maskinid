@@ -1,5 +1,10 @@
 # 0025 – Payoff ("lösen") without amounts
 
+> **Superseded in part by [0029](0029-financing-terms-for-owner-and-lender.md).** The financing *terms* (amount,
+> down payment, residual value, amortisation period, interest) are now stored on the encumbrance and readable by
+> the machine's owner and the holding lender. Everything below still holds for the payoff itself:
+> `payoff_requests` remains amount-free and the payoff figure lives only inside the lender's document.
+
 **Context.** A dealer taking in a machine the bank owns through leasing has to know what must be settled before the
 trade-in can happen, and the bank has to be able to answer. Until now the only way to ask a lender to release a
 financing was `request_encumbrance_release`, which wrote a single bell notification linked to `/machines/:id`. It

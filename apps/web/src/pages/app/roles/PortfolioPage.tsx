@@ -5,6 +5,8 @@ import { useOrg } from "../../../auth/OrgContext";
 import { DataTable } from "../../../components/DataTable";
 import { EmptyState, ErrorNotice, PageHeader, Skeleton } from "../../../components/Feedback";
 import { FormField } from "../../../components/FormField";
+import { Icon } from "../../../components/Icon";
+import { RequestFleetAccessDialog } from "../../../components/MandateRequest";
 import { RegNumber } from "../../../components/RegNumber";
 import { MachineStatusBadge, StatusBadge, VerificationBadge } from "../../../components/StatusBadge";
 import { queryClient, rpc, useRpc } from "../../../lib/api/query";
@@ -23,6 +25,7 @@ export function PortfolioPage() {
   const { t } = useTranslation();
   const { orgId, path, has, isAdmin } = useOrg();
   const insurer = has("insurer") && !has("financier");
+  const [askFleet, setAskFleet] = useState(false);
   const q = useRpc<Item[]>("list_portfolio", { p_org_id: orgId });
   // Payoff requests waiting on us. Until now a lender had no overview of these at all.
   const payoffs = useRpc<PayoffRequest[]>("list_payoff_requests", insurer ? null : { p_org_id: orgId });
@@ -42,6 +45,19 @@ export function PortfolioPage() {
           {!insurer && <div><dt>{t("portfolio.payoffs")}</dt><dd>{openPayoffs.length}</dd></div>}
         </dl>
       )}
+      {/* A lender sees the machines it finances and nothing else. For a credit assessment it can ask the company
+          for a view of the rest of the fleet; the company decides, time-limits it and can revoke it (ADR 0032). */}
+      {!insurer && isAdmin && (
+        <section className="panel stack-2">
+          <p className="t-liten">{t("mandate.request_fleet_lead")}</p>
+          <div>
+            <button type="button" className="mid-knapp mid-knapp-kontur" onClick={() => setAskFleet(true)}>
+              <Icon name="sigill" />{t("mandate.request_fleet")}
+            </button>
+          </div>
+        </section>
+      )}
+      <RequestFleetAccessDialog open={askFleet} onClose={() => setAskFleet(false)} />
       {insurer && isAdmin && <ClaimUrl />}
       {q.isLoading ? <Skeleton lines={6} /> : q.error ? <ErrorNotice error={q.error} /> : (
         <DataTable caption={t("nav.portfolio")} rows={items} getKey={(i) => i.id} exportName="portfolj"

@@ -24,6 +24,8 @@ export interface Membership {
   org: OrgBrief;
   effective_types: OrgType[];
   min_trusted_level: number;
+  /** Effective fleet modules for this organisation (ADR 0031). Resolved by my_context, not stored raw. */
+  modules?: Partial<Record<string, boolean>>;
 }
 
 export interface MyContext {
@@ -71,6 +73,21 @@ export interface Encumbrance {
   rejected_reason?: string | null;
   /** Bank order / leasing agreement backing the financing, filtered by what the viewer may read. */
   documents?: DocumentItem[];
+  /**
+   * The financing terms (ADR 0029). Present only for the machine's owner and for the lender holding this very
+   * financing — app.machine_view_extras adds the object for nobody else, so the mere presence of this field is
+   * the permission check. Numbers arrive as strings from Postgres numeric.
+   */
+  terms?: {
+    financing_amount: number | string | null;
+    down_payment: number | string | null;
+    residual_value: number | string | null;
+    amortization_months: number | null;
+    interest_rate: number | string | null;
+    monthly_cost: number | string | null;
+    total_credit_amount: number | string | null;
+    terms_overridden: boolean;
+  } | null;
 }
 
 /**

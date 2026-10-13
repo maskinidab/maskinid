@@ -11,12 +11,14 @@ import { EmptyState, ErrorNotice, Notice, PageHeader, Skeleton, Tabs } from "../
 import { Icon, type IconName } from "../../../components/Icon";
 import { MachinePhoto } from "../../../components/MachinePhoto";
 import { RegNumber } from "../../../components/RegNumber";
+import { FinancingTermsSummary } from "../../../components/FinancingTerms";
+import { RequestMachineHistoryDialog } from "../../../components/MandateRequest";
 import { FinancingBadge, MachineStatusBadge, StatusBadge, VerificationBadge } from "../../../components/StatusBadge";
 import { StatusBanner } from "../../../components/StatusBanner";
 import { Timeline } from "../../../components/Timeline";
 import { rpc, useRpc, useRpcMutation } from "../../../lib/api/query";
 import type { DocumentItem, Encumbrance, Flag, HistoryEvent, MachineView, MarketListing, PayoffRequest } from "../../../lib/api/types";
-import { backend } from "../../../lib/backend";
+import { backend, isApiError } from "../../../lib/backend";
 import { formatDate, formatDateTime, formatMonth, formatNumber } from "../../../lib/format";
 import { extractPdf } from "../../../lib/pdf/extract";
 import { downloadCertificate, downloadMachineReport } from "../../../lib/pdf/downloads";
@@ -26,7 +28,7 @@ import { OperationalNotice } from "./OperationsSection";
 import { PositionBox } from "./PositionBox";
 import { ServiceTab } from "./ServiceTab";
 import {
-  AcceptTakeoverDialog, AttachFinancingDialog, ManualFinancingDialog, PayoffDeclineDialog, PayoffPanel,
+  AcceptTakeoverDialog, AttachFinancingDialog, EditFinancingTermsDialog, ManualFinancingDialog, PayoffDeclineDialog, PayoffPanel,
   PayoffQuoteDialog, PayoffSettleDialog, PayoffSettlementDialog, RejectEncumbranceDialog, RequestPayoffDialog,
   TransferHolderDialog,
 } from "./FinancingActions";
@@ -60,9 +62,27 @@ export function MachinePage() {
   const [askPayoff, setAskPayoff] = useState<Encumbrance | null>(null);
   const [payoffPurpose, setPayoffPurpose] = useState<"owner_request" | "export">("owner_request");
   const [payoffAction, setPayoffAction] = useState<"quote" | "settlement" | "settle" | "decline" | null>(null);
+  const [editTerms, setEditTerms] = useState<Encumbrance | null>(null);
   const [pdfError, setPdfError] = useState<unknown>(null);
 
   if (q.isLoading) return <Skeleton lines={8} height={28} />;
+  // An action can end the very relation that made this page readable: a lender releasing a block, an owner
+  // deregistering or completing a sale, an agent revoking a mandate. The action succeeded and then the refetch
+  // comes back NOT_FOUND, which used to replace the page with "Uppgiften finns inte eller så har du inte
+  // behörighet" – read as a failure (ADR 0030). Say what actually happened instead.
+  if (isApiError(q.error, "NOT_FOUND")) {
+    return (
+      <div className="stack-4">
+        <Notice kind="info" title={t("machine.gone_from_you")}>
+          <p>{t("machine.gone_from_you_body")}</p>
+        </Notice>
+        <div className="mid-rad">
+          <Link className="mid-knapp mid-knapp-primar" to={path("machines")}>{t("nav.machines")}</Link>
+          <Link className="mid-knapp mid-knapp-kontur" to={path("inbox")}>{t("nav.inbox")}</Link>
+        </div>
+      </div>
+    );
+  }
   if (q.error || !q.data) return <ErrorNotice error={q.error} />;
   const m = q.data;
   const rel = m.relations;
@@ -199,7 +219,7 @@ export function MachinePage() {
         {tab === "financing" && (
           <FinancingTab m={m} onRelease={setRelease} onAskRelease={setAskRelease} onReject={setReject}
             onHandOver={setHandOver} onTakeOver={setTakeOver} onAskPayoff={(e) => { setPayoffPurpose("owner_request"); setAskPayoff(e); }}
-            payoff={openPayoff} onPayoffAction={setPayoffAction}
+            payoff={openPayoff} onPayoffAction={setPayoffAction} onEditTerms={setEditTerms}
             onAttach={(isOwner || has("dealer")) && canWrite && !readOnly ? () => setDialog("attach_financing") : undefined}
             onManual={has("dealer") && canWrite && !readOnly ? () => setDialog("manual_financing") : undefined}
             onRegister={has("financier") && !active && canWrite && !readOnly ? () => setDialog("encumbrance") : undefined} />
@@ -228,6 +248,7 @@ export function MachinePage() {
       <TransferHolderDialog e={handOver} onClose={() => setHandOver(null)} />
       <AcceptTakeoverDialog e={takeOver} m={m} onClose={() => setTakeOver(null)} />
       <RequestPayoffDialog e={askPayoff} purpose={payoffPurpose} onClose={() => setAskPayoff(null)} />
+      <EditFinancingTermsDialog e={editTerms} onClose={() => setEditTerms(null)} />
       {payoffAction === "quote" && <PayoffQuoteDialog m={m} payoff={openPayoff} onClose={() => setPayoffAction(null)} />}
       {payoffAction === "settlement" && <PayoffSettlementDialog m={m} payoff={openPayoff} onClose={() => setPayoffAction(null)} />}
       {payoffAction === "settle" && <PayoffSettleDialog payoff={openPayoff} onClose={() => setPayoffAction(null)} />}
@@ -341,11 +362,32 @@ function Overview({ m, flags, onClearFlag }: { m: MachineView; flags: Flag[]; on
 }
 
 function History({ machineId }: { machineId: string }) {
-  const { orgId } = useOrg();
+  const { t } = useTranslation();
+  const { orgId, isAdmin } = useOrg();
   const [before, setBefore] = useState<number | null>(null);
   const [pages, setPages] = useState<HistoryEvent[]>([]);
+  const [ask, setAsk] = useState(false);
   const q = useRpc<HistoryEvent[]>("get_machine_history", { p_org_id: orgId, p_machine_id: machineId, p_limit: 50, p_before_seq: before });
   if (q.isLoading && pages.length === 0) return <Skeleton lines={6} />;
+  // Everyone can search a serial and see whether the machine is financed; the history needs the owner's consent
+  // (ADR 0032). So a NOT_FOUND here is not an error — it is the point at which you ask.
+  if (isApiError(q.error, "NOT_FOUND")) {
+    return (
+      <div className="stack-4">
+        <Notice kind="info" title={t("mandate.request_history")}>
+          <p>{t("mandate.request_history_lead")}</p>
+        </Notice>
+        {isAdmin && (
+          <div>
+            <button type="button" className="mid-knapp mid-knapp-primar" onClick={() => setAsk(true)}>
+              <Icon name="sigill" />{t("mandate.request_history")}
+            </button>
+          </div>
+        )}
+        <RequestMachineHistoryDialog machineId={machineId} open={ask} onClose={() => setAsk(false)} />
+      </div>
+    );
+  }
   if (q.error) return <ErrorNotice error={q.error} />;
   const all = [...pages, ...(q.data ?? []).filter((e) => !pages.some((p) => p.seq === e.seq))];
   const last = all[all.length - 1];
@@ -403,7 +445,7 @@ function Documents({ m }: { m: MachineView }) {
  * and holds the payoff conversation. The reject / hand-over / take-over buttons expose RPCs that existed from
  * the start but had no UI at all.
  */
-function FinancingTab({ m, onRelease, onAskRelease, onRegister, onAttach, onManual, onReject, onHandOver, onTakeOver, onAskPayoff, payoff, onPayoffAction }: {
+function FinancingTab({ m, onRelease, onAskRelease, onRegister, onAttach, onManual, onReject, onHandOver, onTakeOver, onAskPayoff, onEditTerms, payoff, onPayoffAction }: {
   m: MachineView;
   onRelease(e: Encumbrance): void;
   onAskRelease(e: Encumbrance): void;
@@ -414,6 +456,7 @@ function FinancingTab({ m, onRelease, onAskRelease, onRegister, onAttach, onManu
   onHandOver(e: Encumbrance): void;
   onTakeOver(e: Encumbrance): void;
   onAskPayoff(e: Encumbrance): void;
+  onEditTerms(e: Encumbrance): void;
   payoff: PayoffRequest | null;
   onPayoffAction(a: "quote" | "settlement" | "settle" | "decline"): void;
 }) {
@@ -444,6 +487,12 @@ function FinancingTab({ m, onRelease, onAskRelease, onRegister, onAttach, onManu
             {e.released_at ? ` · ${t("machine.released_at", { date: formatDate(e.released_at) })}` : ""}
           </p>
           {e.rejected_reason && <p className="mid-fel">{e.rejected_reason}</p>}
+          {/* Only ever present for the owner and the holder: machine_view_extras adds the terms object for
+              nobody else (ADR 0029), so there is no visibility decision to make here. */}
+          {e.terms && <FinancingTermsSummary terms={e.terms} />}
+          {e.terms && (e.holder.id === orgId || isOwner) && (e.status === "active" || e.status === "pending") && (
+            <div><button type="button" className="mid-knapp mid-knapp-text mid-knapp-liten" onClick={() => onEditTerms(e)}>{t("financing.terms.edit")}</button></div>
+          )}
           {!!e.documents?.length && (
             <ul className="lista-punkter t-liten">
               {e.documents.map((d) => (

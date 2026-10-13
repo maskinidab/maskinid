@@ -140,7 +140,8 @@ describe("fleet (SPEC §7.1)", () => {
       expect((await t.rpc<any[]>("list_rentals", { p_org_id: ORGS.owner_b }))[0]).toMatchObject({ direction: "in", lessor: "Test Owner A AB" });
       const lv = await t.rpc("get_machine", { p_org_id: ORGS.owner_b, p_machine_id: m.id });
       expect(lv.relations).toContain("lessee");
-      expect(lv.financing).toBeUndefined();
+      // The yes/no is there for every account type now (ADR 0032), and a rental is not financing: false.
+      expect(lv.financing).toMatchObject({ has_active: false, has_pending: false, active: null, pending: null });
       await t.as("owner_a");
       await t.rpc("return_rental", { p_org_id: ORGS.owner_a, p_rental_id: r.id });
       expect((await t.q<any>("select status from public.encumbrances where id = $1", [r.encumbrance_id]))[0].status).toBe("released");

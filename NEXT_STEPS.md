@@ -11,8 +11,8 @@ instructions live in **[docs/WORKFLOW.md](docs/WORKFLOW.md)** — this file is o
 |---|---|
 | Production Supabase | ✅ `ogpqatvgamzgwwhgtlcr` · eu-north-1 · **no data** |
 | Staging Supabase | ✅ `okgwcmgjdvtmbgjhvwwt` · eu-west-1 · demo seed |
-| `main` | Last release `750aed6`; the financing round is **not** on `main` yet |
-| `staging` | The financing round plus the earlier CI fixes — ahead of `main` |
+| `main` | Carries the financing round and Rikard's second round (ADR 0029–0033) |
+| `staging` | Merged into `main`; the two branches are level |
 | Vercel production | https://maskinid.vercel.app — public, empty register |
 | Vercel staging | https://maskinid-git-staging-maskinid.vercel.app — public, demo data |
 | Pipeline | CI on both branches, `main` protected, production deploy needs approval |
@@ -20,6 +20,29 @@ instructions live in **[docs/WORKFLOW.md](docs/WORKFLOW.md)** — this file is o
 ---
 
 ## Pick up here
+
+### 0. Run Rikard's second round on staging ⚠️
+
+Thirteen points, landed as ADR 0029–0033 and seven migrations (`20261013000001`–`20261013000007`). `docs/TESTGUIDE.md`
+rounds **8–13** are the script; the e2e suite covers all of it against the in-browser database, but the in-browser
+stub is more forgiving than real Supabase, so click through at least these:
+
+1. **Finanssnurran** (`nordmaskin@demo.se` → Förbehåll → Lägg in finansiering manuellt → `Nordic Finance (demo)`):
+   submitting with no agreement number must be refused, and 1 250 000 / 250 000 / 200 000 / 60 mån / 6,45 % must
+   show **16 709 kr**. Then log in as `syd@demo.se` and confirm the **amounts are not visible** there.
+2. **Lösenbeskedet** (runda 12): the dealer must be able to *open* it, and the bank must get **"Spärren släppt"**
+   instead of a permission error.
+3. **Inbytestest** (`nordmaskin@demo.se` → Inbytestest → `JCB3CX04278`), and that Daglig kontroll, Uthyrning,
+   Bränsle & klimat and Förare are gone from that menu while `berg@demo.se` still has all four.
+4. **Samtycket** (`lena@demo.se` searches `JCB3CX04278` → sees **Belånad**, no history → Begär full historik →
+   `berg@demo.se` approves in the inbox with Demo-BankID → history appears, amounts still do not).
+5. **Priserna**: logged out, no price link in the header, the footer or `/for/handlare`, and `/pricing` redirects.
+
+The migrations need a reseed to show the new demo data (Nordic Finance, the machine with filled-in terms, the
+rentals moved to Bergs Schakt) — `docs/TESTGUIDE.md` section 5 has the procedure.
+
+**`staging-walkthrough.mjs` is stale.** It predates this round and clicks Daglig kontroll and Uthyrning in the
+dealer view, which are no longer there. Either update it or run `npm run test:e2e` instead.
 
 ### 1. Try the financing round on staging, then take it to production
 
@@ -157,6 +180,7 @@ Measure: `npm run build && npm run preview -w @maskinid/web -- --host 127.0.0.1 
 | | `syd@demo.se`, `norr@demo.se` | Entreprenadcenter Syd, Skogsmaskiner Norr |
 | Lender | `bank@demo.se`, `finans@demo.se` | Demo Bank Finans, Nordisk Maskinfinans |
 | | `dnb@demo.se`, `santander@demo.se` | DNB Finans (demo), Santander Consumer (demo) |
+| | `nordic@demo.se` | **Nordic Finance (demo)** `516401-3038` — the fifth lender, holds the machine with filled-in financing terms (`CAT0D606695`) |
 | | *(no account)* | **LF Finans (demo)** `516406-0120` and **BNP Paribas Leasing (demo)** `516401-9845` exist only in the mock company register, so you can register financing against them and then claim the account |
 | Insurer | `forsakring@demo.se` | Demo Försäkring |
 | Authority | `polisen@demo.se`, `tull@demo.se` | Polisen, Tullverket |
@@ -165,7 +189,7 @@ Measure: `npm run build && npm run preview -w @maskinid/web -- --host 127.0.0.1 
 
 Good demo path: sign in as `berg@demo.se`, grant a consignment to Nordmaskin AB, then sign in as
 `nordmaskin@demo.se` to accept it and watch the machine appear in their stock. For the financing story, follow the
-seven steps under point 1 above.
+seven steps under point 1 above; for everything from Rikard's second round, `docs/TESTGUIDE.md` rounds 8–13.
 
 ---
 

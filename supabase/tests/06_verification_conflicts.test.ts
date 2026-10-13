@@ -192,7 +192,7 @@ describe("inbox (step 7)", () => {
       await t.rpc("initiate_transfer", { p_org_id: ORGS.owner_a, p_machine_id: m.id, p_to_org_id: ORGS.owner_b });
       const m2 = await registerAs(t, "owner_a");
       await t.as("owner_a");
-      await t.rpc("request_encumbrance", { p_org_id: ORGS.owner_a, p_machine_id: m2.id, p_holder_org_id: ORGS.financier_a, p_type: "rental" });
+      await t.rpc("request_encumbrance", { p_org_id: ORGS.owner_a, p_machine_id: m2.id, p_holder_org_id: ORGS.financier_a, p_type: "rental", p_contract_ref: "AVT-INBOX" });
       await t.as("financier_a");
       const inbox = await t.rpc("get_inbox", { p_org_id: ORGS.financier_a });
       expect(inbox.items.map((i: any) => i.kind).sort()).toEqual(["encumbrance_confirm", "transfer_financier"]);

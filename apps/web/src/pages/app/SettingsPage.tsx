@@ -8,6 +8,7 @@ import { ErrorNotice, Notice, PageHeader, Skeleton, Tabs } from "../../component
 import { FormField } from "../../components/FormField";
 import { StatusBadge } from "../../components/StatusBadge";
 import { rpc, useRpc, useRpcMutation } from "../../lib/api/query";
+import { useFlag } from "../../lib/flags";
 import { settingsTabs } from "./settingsTabs";
 
 interface OrgDetails {
@@ -194,7 +195,7 @@ export function SettingsPage() {
   const { t } = useTranslation();
   const { isAdmin, has } = useOrg();
   const [params, setParams] = useSearchParams();
-  const extra = settingsTabs({ isAdmin, has });
+  const extra = settingsTabs({ isAdmin, has, pricing: useFlag("FEATURE_PRICING") });
   const tabs = [
     { id: "org", label: t("org.settings_title") },
     { id: "members", label: t("org.members_title") },

@@ -5,6 +5,7 @@ import { ErrorNotice, Skeleton } from "../../components/Feedback";
 import { Icon } from "../../components/Icon";
 import { StatusBadge } from "../../components/StatusBadge";
 import { useRpc } from "../../lib/api/query";
+import { useFlag } from "../../lib/flags";
 import { formatDate, formatDateTime } from "../../lib/format";
 
 export const SEGMENTS = ["agare", "handlare", "finansiarer", "forsakring", "myndigheter"] as const;
@@ -15,6 +16,7 @@ export function SegmentPage() {
   const { t } = useTranslation();
   const { segment } = useParams();
   const s = (SEGMENTS as readonly string[]).includes(segment ?? "") ? (segment as Segment) : "agare";
+  const pricing = useFlag("FEATURE_PRICING");
   return (
     <div className="behallare sektion stack-7 smal-bred">
       <nav aria-label={t("segments.nav")} className="mid-rad">
@@ -33,7 +35,7 @@ export function SegmentPage() {
       ))}
       <div className="mid-rad">
         <Link className="mid-knapp mid-knapp-primar" to="/login">{t(`segments.${s}.cta`)}</Link>
-        <Link className="mid-knapp mid-knapp-kontur" to="/pricing">{t("nav.pricing")}</Link>
+        {pricing && <Link className="mid-knapp mid-knapp-kontur" to="/pricing">{t("nav.pricing")}</Link>}
       </div>
     </div>
   );

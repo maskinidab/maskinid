@@ -178,6 +178,9 @@
 .notis-critical > svg { color: var(--status-sparr); }
 .sokresultat-rad { width: 100%; display: flex; gap: var(--space-3); align-items: center; padding: var(--space-3); background: var(--yta); border: 1px solid var(--linje); cursor: pointer; font: inherit; color: var(--text); text-align: left; }
 .sokresultat-rad:hover { border-color: var(--text); }
+/* A hit with no machine page behind it: shown, not clickable (ADR 0032). */
+.sokresultat-rad.is-platt { cursor: default; flex-wrap: wrap; }
+.sokresultat-rad.is-platt:hover { border-color: var(--linje); }
 
 /* ---------- Receipt ---------- */
 .kvitto-nummer { margin: 0; text-align: right; }

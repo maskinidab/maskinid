@@ -91,7 +91,12 @@ test("handlare: registrering, import, märken, försäljning med finansiär, äg
   await page.locator("main input[type=file]").first().setInputFiles({ name: "faktura.pdf", mimeType: "application/pdf", buffer: PDF_FIXTURE });
   await expect(page.locator("main").getByText("faktura.pdf är uppladdad")).toBeVisible({ timeout: 60_000 });
   await page.getByRole("combobox", { name: "Långivare" }).selectOption({ label: "Demo Bank Finans" });
+  // Filled explicitly rather than relying on the lender's prefix autofill, which arrives asynchronously.
+  // The agreement number is mandatory as soon as a bank is named (ADR 0029).
+  await page.getByLabel("Avtalsreferens").fill("DBF-2026-SALE");
   await page.getByLabel("Slutdatum").fill(new Date(Date.now() + 3 * 365 * 86400000).toISOString().slice(0, 10));
+  await page.getByLabel("Finansieringsbelopp").fill("900000");
+  await page.getByLabel("Amorteringstid (mån)").fill("48");
   await page.getByRole("button", { name: "Skicka till köparen" }).click();
   if (await page.getByText("Du signerar").isVisible({ timeout: 5_000 }).catch(() => false)) await signDemo(page);
   await page.waitForURL(/transfers\//);
@@ -184,6 +189,8 @@ test("handlare: anmäld finansiering syns direkt som \"Belåning anmäld\"", asy
   await page.getByRole("tabpanel", { name: "Förbehåll" }).getByRole("button", { name: "Lägg in finansiering manuellt" }).click();
   const dialog = page.locator("dialog[open]");
   await dialog.getByRole("combobox", { name: "Långivare" }).selectOption({ label: "DNB Finans (demo)" });
+  // Filled explicitly: the prefix autofill arrives asynchronously and the agreement number is mandatory (ADR 0029).
+  await dialog.getByLabel("Avtalsreferens").fill("DNB-2026-4711");
   await dialog.getByLabel("Slutdatum").fill(new Date(Date.now() + 3 * 365 * 86_400_000).toISOString().slice(0, 10));
   await dialog.locator("button[type=submit]").click();
   await expect(page.locator("dialog[open]")).toHaveCount(0);

@@ -9,6 +9,10 @@ test("kommission: ägaren ger handlaren uppdrag att sälja, handlaren accepterar
     join public.organizations o on o.id = m.owner_org_id where o.org_number = '556701-2009' and m.status = 'active'
       and not exists (select 1 from public.flags f where f.machine_id = m.id and f.status = 'active')
       and not exists (select 1 from public.encumbrances e where e.machine_id = m.id and e.status in ('active', 'pending'))
+      -- One open consignment per machine (mandates_one_consignment), and the seed already has one. Registration
+      -- numbers are generated, so without this the pick landed on the seeded machine on some reseeds.
+      and not exists (select 1 from public.mandates d where d.machine_id = m.id and d.kind = 'consignment'
+        and d.status in ('requested', 'pending', 'active'))
     order by m.reg_number desc limit 1`);
   await page.goto(`${berg}/machines/${m!.id}`);
   await page.getByRole("button", { name: "Fullmakt / kommission" }).click();

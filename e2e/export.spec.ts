@@ -99,7 +99,8 @@ test("export: en belånad maskin går först efter att långivaren godkänt lös
   let base = await login(page, "berg@demo.se");
   const [m] = await sql<{ id: string; holder_slug: string }>(page, `
     select m.id, ho.name, ho.slug holder_slug from public.machines m
-    join public.encumbrances e on e.machine_id = m.id and e.status = 'active'
+    -- A financing, not any encumbrance: a rental is also an active encumbrance and does not block a deregistration.
+    join public.encumbrances e on e.machine_id = m.id and e.status = 'active' and e.type in ('leasing', 'ownership_reservation')
     join public.organizations ho on ho.id = e.holder_org_id
     join public.organizations o on o.id = m.owner_org_id
     where o.slug = 'bergs-schakt-entreprenad-ab' and m.status = 'active'
@@ -135,7 +136,9 @@ test("export: en belånad maskin går först efter att långivaren godkänt lös
   await page.getByRole("button", { name: "Godkänn lösen och släpp spärren" }).click();
   await page.locator("dialog[open] button[type=submit]").click();
   await signDemo(page);
-  await expect(page.locator("dialog[open]")).toHaveCount(0);
+  // Releasing ends the lender's relation to the machine, so the dialog confirms instead of closing into a page
+  // it can no longer read (ADR 0030).
+  await expect(page.locator("dialog[open]").getByText("Spärren släppt", { exact: false }).first()).toBeVisible();
 
   // Now the owner can export, with the country and customs reference already filled in from the payoff.
   await logout(page);

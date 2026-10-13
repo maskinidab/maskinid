@@ -105,9 +105,13 @@ export type FinancingDocumentKind = "bank_order" | "leasing_agreement" | "credit
 /**
  * Read off a bank order, leasing agreement or credit agreement so the user only has to confirm.
  *
- * There are deliberately NO monetary fields here. The register stores no amounts (CLAUDE.md rule 5, SPEC §0),
- * so the model is never asked for one and we cannot accidentally persist one. A payoff figure lives only inside
- * the document itself.
+ * The financing terms ARE read (ADR 0029): the product owner asked to be able to fill in or read in the amount,
+ * the residual value and the amortisation period, and they are stored on the encumbrance where only the machine's
+ * owner and the lender can see them. Every value is shown in the finance calculator and can be corrected before
+ * anything is signed; a reading on its own writes nothing.
+ *
+ * Still deliberately absent: a purchase price, an outstanding debt and a payoff figure. The payoff amount lives
+ * only inside the lender's own document (ADR 0025).
  */
 export interface FinancingSuggestion {
   document_kind?: FinancingDocumentKind;
@@ -118,6 +122,12 @@ export interface FinancingSuggestion {
   start_date?: string; // ISO date
   end_date?: string; // ISO date
   term_months?: number;
+  /** Financing terms, in kronor. Confirmed by the user before being stored (ADR 0029). */
+  financing_amount?: number;
+  down_payment?: number;
+  residual_value?: number;
+  /** Nominal yearly interest rate in percent. */
+  interest_rate?: number;
   serial?: string;
   pin?: string;
   make?: string;
@@ -134,7 +144,7 @@ export interface Ocr {
   nameplate(image: { base64: string; mediaType: string }): Promise<NameplateSuggestion>;
   /** Classifies a listing image and extracts a serial if it shows a nameplate. */
   listingImage(image: { base64: string; mediaType: string }): Promise<{ isNameplate: boolean; serial?: string; confidence: number }>;
-  /** Reads a financing document (PDF or photo). Never returns amounts – see FinancingSuggestion. */
+  /** Reads a financing document (PDF or photo). Returns the terms but never a payoff figure – see FinancingSuggestion. */
   financingDocument(file: { base64: string; mediaType: string }): Promise<FinancingSuggestion>;
   /** Suggests a column mapping for an import file (header + sample rows). */
   mapColumns(input: { headers: string[]; sample: string[][]; targets: string[] }): Promise<Record<string, string | null>>;

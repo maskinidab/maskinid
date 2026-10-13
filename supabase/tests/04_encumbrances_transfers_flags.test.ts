@@ -102,7 +102,7 @@ describe("encumbrances (SPEC §16 points 3–5)", () => {
     });
   });
 
-  it("insurers and unrelated owners see yes/no or nothing; financiers see the holder name but not contract details (§16.3, §2.6)", async () => {
+  it("insurers and unrelated owners see yes/no; financiers see the holder name but not contract details (§16.3, §2.6)", async () => {
     await tx(async (t) => {
       const s = serial("FIN");
       const m = await registerAs(t, "owner_a", machineData({ identifiers: [{ type: "serial", value: s }] }));
@@ -114,7 +114,10 @@ describe("encumbrances (SPEC §16 points 3–5)", () => {
       expect(await t.q("select id from public.encumbrances where machine_id = $1", [m.id])).toHaveLength(0);
       await t.as("owner_b");
       const [own] = await t.rpc<any[]>("lookup_machine", { p_org_id: ORGS.owner_b, p_query: s });
-      expect(own.financing).toBeUndefined();
+      // Every account type gets the encumbered yes/no on a serial it searched for (ADR 0032); who the lender
+      // is stays as narrow as before.
+      expect(own.financing.has_active).toBe(true);
+      expect(own.financing.active).toBeNull();
       await t.as("financier_b");
       const [fb] = await t.rpc<any[]>("lookup_machine", { p_org_id: ORGS.financier_b, p_query: s });
       expect(fb.financing.has_active).toBe(true);
@@ -130,6 +133,7 @@ describe("encumbrances (SPEC §16 points 3–5)", () => {
       await t.as("owner_a");
       const req = await t.rpc("request_encumbrance", {
         p_org_id: ORGS.owner_a, p_machine_id: m.id, p_holder_org_id: ORGS.financier_a, p_type: "leasing", p_end_date: NEXT_YEAR,
+        p_contract_ref: "AVT-REQ-1",
       });
       expect(req.encumbrance.status).toBe("pending");
       await t.as("financier_b");
@@ -259,7 +263,7 @@ describe("transfers (SPEC §6.7, §16.9)", () => {
       await t.as("owner_a");
       const init = await t.rpc("initiate_transfer", {
         p_org_id: ORGS.owner_a, p_machine_id: m.id, p_to_email: "newcomer@acme-test.se",
-        p_new_financing: { holder_org_id: ORGS.financier_b, type: "ownership_reservation", end_date: NEXT_YEAR },
+        p_new_financing: { holder_org_id: ORGS.financier_b, type: "ownership_reservation", contract_ref: "AVT-NF-1", end_date: NEXT_YEAR },
       });
       await t.as(null);
       const mail = await t.one<any>("select data from public.email_outbox where template = 'transfer_invite' order by created_at desc limit 1");
@@ -297,7 +301,7 @@ describe("transfers (SPEC §6.7, §16.9)", () => {
       await t.as("owner_a");
       const init = await t.rpc("initiate_transfer", {
         p_org_id: ORGS.owner_a, p_machine_id: m.id, p_to_org_id: ORGS.owner_b,
-        p_new_financing: { holder_org_id: ORGS.financier_b, type: "leasing", end_date: NEXT_YEAR },
+        p_new_financing: { holder_org_id: ORGS.financier_b, type: "leasing", contract_ref: "AVT-NF-2", end_date: NEXT_YEAR },
       });
       expect(init.transfer.status).toBe("awaiting_financier");
       await t.as(null);

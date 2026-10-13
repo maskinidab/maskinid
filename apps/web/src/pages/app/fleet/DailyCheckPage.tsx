@@ -9,27 +9,20 @@ import { FormField } from "../../../components/FormField";
 import { Icon } from "../../../components/Icon";
 import { RegNumber } from "../../../components/RegNumber";
 import { StatusBadge } from "../../../components/StatusBadge";
+import { ChecklistItems, CheckResultBadge, itemLabel, useChecklistAnswers,
+  type ChecklistItem, type ChecklistTemplate } from "../../../components/ChecklistForm";
 import { useRpc, useRpcMutation } from "../../../lib/api/query";
 import { formatDateTime } from "../../../lib/format";
 import { MachineSelect } from "./EquipmentPages";
 
-export interface ChecklistItem { id: string; sv: string; en?: string; critical?: boolean }
-interface Template { id: string; name: string; items: ChecklistItem[]; builtin: boolean; categories: string[] }
+// The checklist itself lives in components/ChecklistForm so Inbytestest renders the identical control points,
+// texts and tick boxes (ADR 0031). Re-exported here because OperationsSection imports them from this page.
+export { CheckResultBadge, itemLabel, type ChecklistItem };
+type Template = ChecklistTemplate;
 export interface DailyCheck {
   id: string; machine_id: string; reg_number: string; make: string; model: string; result: "ok" | "remarks" | "failed"; created_at: string;
   template_name: string; items: ChecklistItem[]; answers: { id: string; ok: boolean; note: string | null }[]; hours: number | null;
   note: string | null; operator: string | null; by: string | null;
-}
-
-const RESULT_KIND = { ok: "verifierad", remarks: "vantar", failed: "sparr" } as const;
-
-export function CheckResultBadge({ result }: { result: DailyCheck["result"] }) {
-  const { t } = useTranslation();
-  return <StatusBadge kind={RESULT_KIND[result]}>{t(`daily.result.${result}`)}</StatusBadge>;
-}
-
-export function itemLabel(i: ChecklistItem, lang: string) {
-  return (lang.startsWith("en") ? i.en : i.sv) || i.sv || i.en || i.id;
 }
 
 /** Daglig kontroll: the operator goes through the machine's checklist on the phone; a failed critical item stops the machine. */
@@ -51,22 +44,21 @@ export function DailyCheckPage() {
 }
 
 function NewCheck() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { orgId, path } = useOrg();
   const [params] = useSearchParams();
   const [machine, setMachine] = useState(params.get("machine") ?? "");
   const templates = useRpc<Template[]>("list_checklist_templates", machine ? { p_org_id: orgId, p_machine_id: machine } : null);
   const operators = useRpc<{ id: string; name: string; active: boolean }[]>("list_operators", { p_org_id: orgId });
   const [templateId, setTemplateId] = useState("");
-  const [answers, setAnswers] = useState<Record<string, { ok: boolean | null; note: string }>>({});
+  const list = useChecklistAnswers();
   const [hours, setHours] = useState("");
   const [operator, setOperator] = useState("");
   const [note, setNote] = useState("");
   const [done, setDone] = useState<{ result: DailyCheck["result"]; operational_status: string } | null>(null);
   const submit = useRpcMutation<Record<string, unknown>, { result: DailyCheck["result"]; operational_status: string }>("submit_daily_check", { onSuccess: (r) => setDone(r) });
   const tpl = templates.data?.find((x) => x.id === templateId) ?? templates.data?.[0];
-  const missing = tpl ? tpl.items.filter((i) => answers[i.id]?.ok == null).length : 0;
-  const set = (id: string, v: Partial<{ ok: boolean | null; note: string }>) => setAnswers((a) => ({ ...a, [id]: { ...{ ok: null, note: "" }, ...a[id], ...v } }));
+  const missing = tpl ? list.missing(tpl.items) : 0;
 
   if (done) {
     return (
@@ -76,7 +68,7 @@ function NewCheck() {
         </Notice>
         <div className="mid-rad">
           <Link className="mid-knapp mid-knapp-kontur" to={path(`machines/${machine}`)}>{t("wizard.done_open")}</Link>
-          <button type="button" className="mid-knapp mid-knapp-primar" onClick={() => { setDone(null); setAnswers({}); setMachine(""); setHours(""); setNote(""); }}>{t("daily.next")}</button>
+          <button type="button" className="mid-knapp mid-knapp-primar" onClick={() => { setDone(null); list.reset(); setMachine(""); setHours(""); setNote(""); }}>{t("daily.next")}</button>
         </div>
       </section>
     );
@@ -87,15 +79,15 @@ function NewCheck() {
       if (!tpl || missing) return;
       submit.mutate({ p_org_id: orgId, p_machine_id: machine, p_template_id: tpl.id, p_hours: hours ? Number(hours.replace(/\s/g, "")) : null,
         p_operator_id: operator || null, p_note: note || null,
-        p_answers: tpl.items.map((i) => ({ id: i.id, ok: answers[i.id]!.ok, note: answers[i.id]!.note || null })) });
+        p_answers: list.payload(tpl.items) });
     }}>
-      <FormField label={t("machines.col_machine")}><MachineSelect value={machine} onChange={(v) => { setMachine(v); setTemplateId(""); setAnswers({}); }} /></FormField>
+      <FormField label={t("machines.col_machine")}><MachineSelect value={machine} onChange={(v) => { setMachine(v); setTemplateId(""); list.reset(); }} /></FormField>
       {machine && templates.isLoading && <Skeleton lines={4} />}
       {tpl && (
         <>
           {(templates.data?.length ?? 0) > 1 && (
             <FormField label={t("daily.template")}>
-              <select className="mid-select" value={tpl.id} onChange={(e) => { setTemplateId(e.target.value); setAnswers({}); }}>
+              <select className="mid-select" value={tpl.id} onChange={(e) => { setTemplateId(e.target.value); list.reset(); }}>
                 {templates.data!.map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}
               </select>
             </FormField>
@@ -109,35 +101,13 @@ function NewCheck() {
             </FormField>
             <FormField className="kol-6" label={t("machine.hours")} optional><input className="mid-input" inputMode="numeric" value={hours} onChange={(e) => setHours(e.target.value)} /></FormField>
           </div>
-          <fieldset className="stack-3">
-            <legend className="mid-etikett">{tpl.name}</legend>
-            <ol className="checklista">
-              {tpl.items.map((i) => {
-                const a = answers[i.id];
-                return (
-                  <li key={i.id} className={a?.ok === false ? "is-fel" : a?.ok ? "is-ok" : undefined}>
-                    <div className="checklista-rad">
-                      <span>{itemLabel(i, i18n.language)}{i.critical && <span className="t-liten t-sekundar"> · {t("daily.critical")}</span>}</span>
-                      <span className="checklista-val" role="radiogroup" aria-label={itemLabel(i, i18n.language)}>
-                        <button type="button" role="radio" aria-checked={a?.ok === true} className={`mid-knapp mid-knapp-liten ${a?.ok === true ? "mid-knapp-primar" : "mid-knapp-kontur"}`}
-                          onClick={() => set(i.id, { ok: true })}><Icon name="bock" />{t("daily.ok")}</button>
-                        <button type="button" role="radio" aria-checked={a?.ok === false} className={`mid-knapp mid-knapp-liten ${a?.ok === false ? "mid-knapp-fara" : "mid-knapp-kontur"}`}
-                          onClick={() => set(i.id, { ok: false })}><Icon name="varning" />{t("daily.fault")}</button>
-                      </span>
-                    </div>
-                    {a?.ok === false && <input className="mid-input" aria-label={t("daily.fault_note")} placeholder={t("daily.fault_note")} value={a.note}
-                      onChange={(e) => set(i.id, { note: e.target.value })} />}
-                  </li>
-                );
-              })}
-            </ol>
-          </fieldset>
+          <ChecklistItems items={tpl.items} answers={list.answers} set={list.set} legend={tpl.name} />
           <FormField label={t("common.notes")} optional><textarea className="mid-input" rows={2} value={note} onChange={(e) => setNote(e.target.value)} /></FormField>
           {submit.error && <ErrorNotice error={submit.error} />}
           <div className="mid-rad">
             <button type="submit" className="mid-knapp mid-knapp-primar" disabled={!!missing || submit.isPending}>
               {missing ? t("daily.missing", { count: missing }) : t("daily.submit")}</button>
-            <button type="button" className="mid-knapp mid-knapp-text" onClick={() => setAnswers(Object.fromEntries(tpl.items.map((i) => [i.id, { ok: true, note: "" }])))}>
+            <button type="button" className="mid-knapp mid-knapp-text" onClick={() => list.allOk(tpl.items)}>
               {t("daily.all_ok")}</button>
           </div>
         </>

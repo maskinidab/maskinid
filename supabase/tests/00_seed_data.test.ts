@@ -32,7 +32,7 @@ describe("demo seed", () => {
       const status = Object.fromEntries((await t.q<any>(`select status, count(*)::int n from public.machines m where m.registered_by_org_id in ${demo} group by 1`)).map((r) => [r.status, r.n]));
       expect(status).toMatchObject({ draft: 5, stolen: 2, blocked: 1, scrapped: 3, exported: 1 });
       expect(await n("select count(*) from public.machines where stock_status = 'stock'")).toBe(7);
-      expect(await n(`select count(*) from public.encumbrances where status = 'active' and type in ('leasing', 'ownership_reservation') and holder_org_id in ${demo}`)).toBe(10);
+      expect(await n(`select count(*) from public.encumbrances where status = 'active' and type in ('leasing', 'ownership_reservation') and holder_org_id in ${demo}`)).toBe(11);
       expect(await n(`select count(*) from public.rentals where status = 'active' and lessor_org_id in ${demo}`)).toBe(2);
       expect(await n(`select count(*) from public.transfers where status = 'awaiting_buyer' and from_org_id in ${demo}`)).toBe(1);
       expect(await n("select count(*) from public.conflicts where type = 'duplicate_identifier' and status = 'open'")).toBeGreaterThanOrEqual(1);
@@ -66,6 +66,13 @@ describe("demo seed", () => {
       expect(await n("select count(*) from public.projects p join public.organizations o on o.id = p.org_id where o.slug = 'bergs-schakt-entreprenad-ab'")).toBe(2);
       expect(await n("select count(*) from public.memberships m join public.organizations o on o.id = m.org_id where o.slug = 'nordmaskin-ab' and m.status = 'active'")).toBe(3);
       expect(await t.val("select is_sole_trader and org_number is null from public.organizations where slug = 'lena-gravmaskin'")).toBe(true);
+      // Nordic Finance: a fifth lender with its own account, so the demo can register financing against it and
+      // the bank then confirms it from its own inbox (Rikard's request).
+      expect(await t.q(`select o.status::text, o.settings -> 'financing_defaults' ->> 'contract_ref_prefix' as prefix,
+          (select count(*)::int from public.memberships m where m.org_id = o.id and m.status = 'active') as members,
+          (select count(*)::int from public.encumbrances e where e.holder_org_id = o.id and e.status = 'active') as active
+        from public.organizations o where o.slug = 'nordic-finance-demo' and 'financier' = any (o.types)`))
+        .toEqual([{ status: "approved", prefix: "NF-", members: 1, active: 1 }]);
       expect((await t.rpc<any[]>("public_stolen_list", {})).length).toBe(2);
       expect(await n("select count(*) from public.tips where machine_id is not null")).toBe(1);
       expect(await n("select count(*) from public.support_tickets where status = 'waiting_customer'")).toBe(1);

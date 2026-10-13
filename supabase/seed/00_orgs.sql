@@ -105,6 +105,7 @@ begin
   -- Polisen, Tullverket and Volvo CE below, so no real company is presented as a customer.
   perform seed.company('516401-3020', 'DNB Finans (demo)', 'Stockholm', array['financier']::public.org_type[], 'dnb@demo.se', 'Dagny Nordbank');
   perform seed.company('516406-0138', 'Santander Consumer (demo)', 'Solna', array['financier']::public.org_type[], 'santander@demo.se', 'Sixten Sander');
+  perform seed.company('516401-3038', 'Nordic Finance (demo)', 'Stockholm', array['financier']::public.org_type[], 'nordic@demo.se', 'Nina Nordic');
   perform seed.company('516401-4002', 'Demo Försäkring', 'Stockholm', array['insurer']::public.org_type[], 'forsakring@demo.se', 'Fredrik Försäkring');
   perform seed.company('202100-0068', 'Polisen (demo)', 'Stockholm', array['authority']::public.org_type[], 'polisen@demo.se', 'Paula Polis');
   perform seed.company('202100-4730', 'Tullverket (demo)', 'Stockholm', array['authority']::public.org_type[], 'tull@demo.se', 'Tove Tull');
@@ -123,7 +124,10 @@ begin
       'contact_email', 'maskin@dnbdemo.example', 'contact_phone', '08-123 45 00',
       'payoff_instructions', 'Vi lämnar lösenbesked med 14 dagars giltighet.')),
     ('516406-0138', jsonb_build_object('contract_ref_prefix', 'SC-', 'default_type', 'ownership_reservation', 'default_term_months', 72,
-      'contact_email', 'maskinfinans@santanderdemo.example', 'payoff_instructions', 'Bifoga lösenbevis i MaskinID, vi godkänner och släpper spärren.'))
+      'contact_email', 'maskinfinans@santanderdemo.example', 'payoff_instructions', 'Bifoga lösenbevis i MaskinID, vi godkänner och släpper spärren.')),
+    ('516401-3038', jsonb_build_object('contract_ref_prefix', 'NF-', 'default_type', 'leasing', 'default_term_months', 60,
+      'contact_email', 'maskin@nordicfinancedemo.example', 'contact_phone', '08-555 12 00',
+      'payoff_instructions', 'Ange avtalsnummer i lösenförfrågan. Vi svarar med lösenbesked inom en bankdag.'))
   ) as d(orgnr, v)
   where public.organizations.org_number_hash = app.org_number_hash(d.orgnr);
 

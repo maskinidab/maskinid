@@ -224,7 +224,7 @@ describe("financing against a lender outside MaskinID", () => {
       await t.as("dealer");
       const tr = await t.rpc("initiate_transfer", {
         p_org_id: ORGS.dealer, p_machine_id: m.id, p_sale_date: TODAY, p_to_org_id: ORGS.owner_b,
-        p_new_financing: { holder_org_number: BANK_A, holder_name: "LF Finans", type: "leasing", end_date: NEXT_YEAR },
+        p_new_financing: { holder_org_number: BANK_A, holder_name: "LF Finans", type: "leasing", contract_ref: "LF-2026-1", end_date: NEXT_YEAR },
       });
       // The bank is told at once, rather than only when the buyer accepts.
       expect(tr.transfer.new_encumbrance.status).toBe("pending");

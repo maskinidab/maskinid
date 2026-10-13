@@ -1,6 +1,6 @@
 import { useState, type FormEvent, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useOrg } from "../../../auth/OrgContext";
 import { CompanyLookupField, type CompanyInfo } from "../../../components/CompanyLookupField";
 import { Dialog } from "../../../components/Dialog";
@@ -12,6 +12,7 @@ import { ScannerView, type ScanResult } from "../../../components/Scanner";
 import { labelCodeFromScan } from "@maskinid/shared/identifiers.ts";
 import { OcrCapture, OcrError, OcrSuggestionList, useOcr } from "../../../components/OcrCapture";
 import { uploadDocument } from "../../../components/DocumentDropzone";
+import { EMPTY_TERMS, FinancingTermsFields, termsError, termsPayload, type TermsForm } from "../../../components/FinancingTerms";
 import { useUpload } from "./FinancingActions";
 import { useSign } from "../../../components/Signature";
 import { queryClient, rpc, useRpc } from "../../../lib/api/query";
@@ -430,6 +431,9 @@ export function EncumbranceDialog({ m, open, onClose }: { m: Pick<MachineView, "
   const [end, setEnd] = useState("");
   const [notes, setNotes] = useState("");
   const [endErr, setEndErr] = useState<string | null>(null);
+  const [refErr, setRefErr] = useState<string | null>(null);
+  const [terms, setTerms] = useState<TermsForm>(EMPTY_TERMS);
+  const setTerm = <K extends keyof TermsForm>(k: K, v: TermsForm[K]) => setTerms((f) => ({ ...f, [k]: v }));
   const ocr = useOcr("ocr-financing-document");
   const upload = useUpload();
   const endRequired = type === "ownership_reservation";
@@ -444,19 +448,29 @@ export function EncumbranceDialog({ m, open, onClose }: { m: Pick<MachineView, "
     if (typeof sug.contract_ref === "string") setRef(sug.contract_ref);
     if (typeof sug.start_date === "string") setStart(sug.start_date);
     if (typeof sug.end_date === "string") setEnd(sug.end_date);
+    if (typeof sug.term_months === "number") setTerm("amortization_months", String(sug.term_months));
+    for (const k of ["financing_amount", "down_payment", "residual_value", "interest_rate"] as const) {
+      if (typeof sug[k] === "number") setTerm(k, String(sug[k]));
+    }
   }
   return (
     <ActionDialog open={open} onClose={onClose} title={t("actions.encumbrance.title")} submitLabel={t("actions.encumbrance.submit")}
       onSubmit={async () => {
         setEndErr(null);
+        setRefErr(null);
+        // Mandatory so the lender can tie the machine to the right financing agreement on its own side; SQL
+        // enforces it again in app.require_contract_ref.
+        if (!ref.trim()) { setRefErr(t("actions.encumbrance.contract_ref_required")); throw new FieldError(); }
+        const badTerms = termsError(terms, t);
+        if (badTerms) { setRefErr(badTerms); throw new FieldError(); }
         if (endRequired && !end) { setEndErr(t("actions.encumbrance.end_required")); throw new FieldError(); }
         if (end && end < start) { setEndErr(t("actions.encumbrance.end_before_start")); throw new FieldError(); }
-        const params = { type, contract_ref: ref || null, start_date: start, end_date: end || null };
+        const params = { type, contract_ref: ref, start_date: start, end_date: end || null };
         const doc = await upload.settle();
         const sig = await sign(orgId, "register_encumbrance", m.id, params);
         const r = await rpc<{ ok: boolean }>("register_encumbrance", { p_org_id: orgId, p_machine_id: m.id, p_type: type, p_contract_ref: params.contract_ref,
           p_start_date: start, p_end_date: params.end_date, p_counterparty_org_id: m.owner?.id ?? null, p_notes: notes || null, p_signature_id: sig,
-          p_document_ids: doc ? [doc.id] : [] });
+          p_document_ids: doc ? [doc.id] : [], p_terms: termsPayload(terms) });
         if (r.ok) onClose();
       }}>
       <MachineSummary m={m} />
@@ -472,6 +486,8 @@ export function EncumbranceDialog({ m, open, onClose }: { m: Pick<MachineView, "
         else if (field === "start_date") setStart(String(value));
         else if (field === "end_date") setEnd(String(value));
         else if (field === "encumbrance_type" && ENC_KINDS.includes(String(value))) setType(String(value) as Encumbrance["type"]);
+        else if (field === "term_months") setTerm("amortization_months", String(value));
+        else if (field === "financing_amount" || field === "down_payment" || field === "residual_value" || field === "interest_rate") setTerm(field, String(value));
         ocr.drop(field);
       }} />
       <div className="rutnat">
@@ -480,7 +496,7 @@ export function EncumbranceDialog({ m, open, onClose }: { m: Pick<MachineView, "
             {["ownership_reservation", "leasing", "rental", "other"].map((x) => <option key={x} value={x}>{t(`enum.encumbrance_type.${x}`)}</option>)}
           </select>
         </FormField>
-        <FormField className="kol-6" label={t("actions.encumbrance.contract_ref")} optional>
+        <FormField className="kol-6" label={t("actions.encumbrance.contract_ref")} hint={t("actions.encumbrance.contract_ref_hint")} error={refErr}>
           <input className="mid-input is-id" value={ref} onChange={(e) => setRef(e.target.value)} />
         </FormField>
         <FormField className="kol-6" label={t("actions.encumbrance.start")}>
@@ -490,6 +506,7 @@ export function EncumbranceDialog({ m, open, onClose }: { m: Pick<MachineView, "
           <input className="mid-input" type="date" value={end} min={start} onChange={(e) => setEnd(e.target.value)} />
         </FormField>
       </div>
+      <FinancingTermsFields form={terms} set={setTerm} />
       <FormField label={t("common.note")} optional hint={t("actions.encumbrance.notes_hint")}>
         <textarea className="mid-textarea" rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} />
       </FormField>
@@ -497,17 +514,37 @@ export function EncumbranceDialog({ m, open, onClose }: { m: Pick<MachineView, "
   );
 }
 
+/**
+ * The lender releases the block. This ends its own `holder` relation to the machine, so the page behind the dialog
+ * stops being readable in the same transaction — which is why closing straight away showed "ingen behörighet"
+ * instead of a confirmation (ADR 0030). The dialog stays open on a receipt instead.
+ */
 export function ReleaseEncumbranceDialog({ m, e, onClose }: { m: MachineView; e: Encumbrance | null; onClose(): void }) {
   const { t } = useTranslation();
-  const { orgId } = useOrg();
+  const { orgId, path } = useOrg();
   const sign = useSign();
   const [reason, setReason] = useState("");
+  const [done, setDone] = useState(false);
+  if (e && done) {
+    return (
+      <Dialog open onClose={onClose} title={t("actions.release.confirmed")}>
+        <div className="stack-4">
+          <Notice kind="ok" title={t("actions.release.confirmed")}>
+            <p>{t("actions.release.confirmed_body", { reg: formatReg(m.reg_number) })}</p>
+          </Notice>
+          <div className="mid-rad mid-rad-slut">
+            <Link className="mid-knapp mid-knapp-primar" to={path("portfolio")} onClick={onClose}>{t("nav.portfolio")}</Link>
+          </div>
+        </div>
+      </Dialog>
+    );
+  }
   return (
     <ActionDialog open={!!e} onClose={onClose} title={t("actions.release.title")} submitLabel={t("actions.release.submit")}
       onSubmit={async () => {
         const sig = await sign(orgId, "release_encumbrance", e!.id, {});
         await rpc("release_encumbrance", { p_org_id: orgId, p_encumbrance_id: e!.id, p_signature_id: sig, p_reason: reason || null });
-        onClose();
+        setDone(true);
       }}>
       <MachineSummary m={m} />
       {e && <p className="t-liten">{t(`enum.encumbrance_type.${e.type}`)} · {e.holder.name} · {formatDate(e.start_date)}</p>}

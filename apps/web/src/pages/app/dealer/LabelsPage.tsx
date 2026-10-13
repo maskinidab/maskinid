@@ -29,8 +29,10 @@ export function LabelsPage() {
   const { t } = useTranslation();
   const { orgId, org, path, canWrite, has } = useOrg();
   const q = useRpc<Labels>("list_labels", { p_org_id: orgId });
-  const prices = useRpc<{ price_items: Record<string, number>; vat_rate: number }>("list_plans", {});
-  const billed = !(has("authority") || has("inspector") || has("operator"));
+  const prices = useRpc<{ pricing_enabled: boolean; price_items: Record<string, number>; vat_rate: number }>("list_plans", {});
+  // Authorities, inspectors and the operator are never invoiced for märken; nobody sees a price while
+  // FEATURE_PRICING is off, and list_plans then returns an empty price_items (ADR 0033).
+  const billed = !(has("authority") || has("inspector") || has("operator")) && prices.data?.pricing_enabled !== false;
   const [qty, setQty] = useState(50);
   const [medium, setMedium] = useState<"qr" | "nfc">("qr");
   const [addr, setAddr] = useState({ street: "", postal_code: "", city: org.city ?? "" });
