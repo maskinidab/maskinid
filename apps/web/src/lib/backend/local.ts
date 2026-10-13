@@ -75,6 +75,22 @@ function readyMarker(): boolean {
 }
 
 /**
+ * PGlite takes its time zone from the host offset at boot, so it settles on a fixed-offset zone such as Etc/GMT-1
+ * and never follows daylight saving. The browser does follow it, so during summer time the first hour after
+ * midnight had the page one day ahead of the database: a sale dated today was refused as being in the future.
+ * Pin the session to the browser's own zone instead.
+ */
+async function adoptBrowserTimeZone(db: PGlite): Promise<PGlite> {
+  try {
+    const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (zone) await db.exec(`set time zone '${zone.replace(/'/g, "''")}'`);
+  } catch {
+    /* a zone this build of Postgres does not know: keep the default rather than fail to open the database */
+  }
+  return db;
+}
+
+/**
  * Opens the browser database. The first time, the prebuilt demo data directory is loaded and flushed completely to
  * IndexedDB; a marker in localStorage records that the copy is complete. Without the marker any partial copy is
  * discarded, so an interrupted first load never leaves an empty or half-written database behind.
@@ -92,7 +108,7 @@ async function openDatabase(): Promise<PGlite> {
       const existing = new PGlite(dataDir, { extensions });
       await existing.waitReady;
       const r = await existing.query<{ ok: boolean }>("select to_regclass('public.machines') is not null as ok");
-      if (r.rows[0]?.ok) return existing;
+      if (r.rows[0]?.ok) return await adoptBrowserTimeZone(existing);
       await existing.close();
     } catch {
       /* fall through to a fresh load */
@@ -111,12 +127,12 @@ async function openDatabase(): Promise<PGlite> {
     } catch {
       /* private mode: the database still works for this tab */
     }
-    return db;
+    return await adoptBrowserTimeZone(db);
   } catch {
     // IndexedDB unavailable (private mode): keep the database in memory for this tab.
     const db = new PGlite({ extensions, loadDataDir: blob });
     await db.waitReady;
-    return db;
+    return await adoptBrowserTimeZone(db);
   }
 }
 
