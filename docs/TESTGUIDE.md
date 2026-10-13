@@ -65,6 +65,7 @@ konflikten som stoppar en andra finansiering.
 | `finans@demo.se` | Frida Finans | Nordisk Maskinfinans (516401-3012) | Andra banken. Avtalsprefix `NMF-`, förvald typ *leasing*, 48 månader. Använd den för att visa att det blir rätt när man byter bank. |
 | `dnb@demo.se` | Dagny Nordbank | DNB Finans (demo) (516401-3020) | Har ett **besvarat** lösenärende – de har redan skickat lösenbesked. Avtalsprefix `DNB-`, leasing, 60 månader, lösenbesked med 14 dagars giltighet. |
 | `santander@demo.se` | Sixten Sander | Santander Consumer (demo) (516406-0138) | Har ett **obesvarat** lösenärende liggande i inkorgen. Avtalsprefix `SC-`, äganderättsförbehåll, 72 månader. |
+| `nordic@demo.se` | Nina Nordic | Nordic Finance (demo) (516401-3038) | Femte långivaren, tillagd på Rikards begäran. Avtalsprefix `NF-`, leasing, 60 månader. Håller ett aktivt leasingförbehåll på `CAT0D606695` med fullständiga finansieringsuppgifter, så finanssnurran har något att visa. |
 
 ### Banker utan konto – platshållare
 
@@ -110,6 +111,11 @@ rutan högst upp. Numren inom parentes är de som gällde 2026-10-11.
 | `CAT032013280` | Caterpillar 320 2015 | Bergs Schakt | **Skrotad** – avregistrerad, märket förstört. |
 
 Totalt ligger 64 maskiner och 200 QR-märken i staging.
+
+| Serienummer | Maskin | Ägare | Scenario |
+|---|---|---|---|
+| `CAT0D606695` | Caterpillar D6 2023 | Bergs Schakt | Leasing hos **Nordic Finance (demo)** med ifyllda finansieringsuppgifter – belopp, kontantinsats, restvärde, amorteringstid och ränta. Maskinen att visa finanssnurran på. |
+| `VCEECR25E45597` | Volvo ECR25 Electric | Bergs Schakt | **Uthyrd** till Kommunfastigheter. Uthyrning ligger hos en ägare, inte hos handlaren (se runda 11). |
 
 ---
 
@@ -218,10 +224,88 @@ långivaren godkänt lösen är land och tullreferens redan ifyllda när du gör
 | Exportkontroll | `tull@demo.se` → slå upp en maskin och se belåning, flaggor och exportstatus. |
 | Konflikt | `admin@demo.se` → **Konflikter** → dubbletten på `VCEL120H93778`. |
 | Besiktning | `kontroll@demo.se` → **Besiktningar** och **Registrera besiktning**, och höj en maskins verifieringsnivå. |
-| Flotta | `berg@demo.se` → **Flotta**, **Daglig kontroll**, **Uthyrning**, **Bränsle & klimat**. |
+| Flotta | `berg@demo.se` → **Flotta**, **Daglig kontroll**, **Uthyrning**, **Bränsle & klimat**, **Förare**. Samma menyval finns *inte* hos `nordmaskin@demo.se` – se runda 11. |
 | Fullmakt och kommission | `berg@demo.se` → maskin → **Fullmakt / kommission** (eller **Fullmakter** i menyn) → ge Nordmaskin rätt att sälja → `nordmaskin@demo.se` accepterar och maskinen dyker upp i deras lager. |
 | Operatörsvyn | `admin@demo.se` → godkännandekö, märkesbatcher, händelselogg med ankarverifiering, API-användning. |
-| Publika sidor | Utloggad: `/`, `/security`, `/pricing`, `/stolen`, `/api-docs`. |
+| Publika sidor | Utloggad: `/`, `/security`, `/stolen`, `/api-docs`. `/pricing` skickar nu vidare till startsidan – prisinformationen är avstängd, se runda 13. |
+
+### Runda 8 – Finanssnurran och det obligatoriska avtalsnumret
+
+Rikards första punkt: det ska gå att fylla i amorteringstid, restvärde och finansieringsbelopp, och
+avtalsnummer ska vara obligatoriskt.
+
+1. `nordmaskin@demo.se` → en maskin i lagret utan belåning → fliken **Förbehåll** → **Lägg in finansiering
+   manuellt**. Välj `Nordic Finance (demo)`.
+2. Klicka **Anmäl finansieringen** utan att fylla i något. Du får **"Avtalsnummer krävs."** – det är hela
+   poängen: banken måste kunna koppla maskinen till rätt finansieringsavtal.
+3. Fyll i avtalsnummer, och sedan finanssnurran: finansieringsbelopp `1 250 000`, kontantinsats `250 000`,
+   restvärde `200 000`, amorteringstid `60`, ränta `6,45`. **Månadskostnaden räknas fram till 16 709 kr** och
+   totalt kreditbelopp till 1 000 000 kr.
+4. **Skriv över månadskostnaden** om du vill – den sparas då som överskriven, så en senare formeländring aldrig
+   skriver om bankens siffra.
+5. Signera. Logga in som `nordic@demo.se` → **Väntar på mig** → bekräfta. Banken ser samma uppgifter.
+6. **Det viktiga provet:** logga in som `syd@demo.se` (en annan handlare) eller `polisen@demo.se` och slå upp
+   maskinen. Du ser att den är belånad och vem långivaren är, men **inga belopp**. De syns bara för ägaren och
+   för den bank som håller förbehållet.
+7. Prova även **Bifoga dokument** på en annan maskin: avläsningen fyller nu i beloppen också, och varje värde
+   går att rätta innan du signerar.
+
+### Runda 9 – Inbytestest
+
+1. `nordmaskin@demo.se` → **Inbytestest** i menyn.
+2. Skriv serienummer `JCB3CX04278` (Bergs maskin – handlaren äger den inte). Du ser maskinen, att den är
+   belånad och vem som håller förbehållet.
+3. Samma kontrollpunkter, texter och bockrutor som den dagliga kontrollen dyker upp. **Markera alla OK**, sätt
+   sedan **Inga hydraulläckage** till **Fel** och skriv en kommentar. Fyll i timmätare och en bedömning.
+4. Spara. Resultatet blir **allvarliga fel** – men maskinen tas **inte** ur drift och ägarens timmätare ändras
+   inte. Bedömningen är handlarens egen: `berg@demo.se` ser den inte.
+5. Prova också ett serienummer som inte finns i registret, till exempel `OKAND-123`. Testet går att göra ändå
+   och sparas mot serienumret – en inbytesmaskin behöver inte vara registrerad.
+6. Efteråt erbjuds **Begär inbyte**, som fortsätter in i det vanliga inbytesflödet (runda 2).
+
+### Runda 10 – Enskild firma söker, och ägaren godkänner historiken
+
+Rikards punkter om att enskild firma inte såg historiken, och att alla kontotyper ska kunna söka.
+
+1. `lena@demo.se` (enskild firma) → sökrutan högst upp (**Ctrl+K**) → `JCB3CX04278`.
+2. Du ser maskin, modell, status och **Belånad** – men inte vem långivaren är och inte historiken.
+3. Klicka **Begär full historik**, skriv en motivering och skicka.
+4. `berg@demo.se` → **Väntar på mig** → *Begäran om åtkomst att godkänna* → **Hantera** → **Godkänn åtkomst** →
+   signera med Demo-BankID.
+5. Tillbaka som `lena@demo.se`: maskinen går att öppna och **Historik** är full. Finansieringsbeloppen syns
+   fortfarande inte – avtalet mellan Berg och banken är inte Bergs att dela vidare.
+6. `berg@demo.se` → **Fullmakter** → **Återkalla**. Historiken stängs igen direkt.
+
+### Runda 11 – Handlarvyn och modulerna
+
+1. `nordmaskin@demo.se`: **Daglig kontroll**, **Uthyrning**, **Bränsle & klimat** och **Förare** är borta ur
+   menyn. **Inbytestest** står där i stället.
+2. Skriv `/o/nordmaskin-ab/rentals` i adressfältet. Sidan säger att modulen inte är aktiverad – att gömma ett
+   menyval räcker inte, så servern vägrar också skrivningen.
+3. **Inställningar → Moduler** → slå på **Uthyrning**. Menyvalet kommer tillbaka direkt. Det är så ni aktiverar
+   funktionen för de handlare som vill ha den.
+4. `berg@demo.se`: alla fyra finns kvar. En vanlig maskinägare påverkas inte.
+
+### Runda 12 – Lösenbeskedet och bekräftelsen (de två rättade felen)
+
+1. Kör runda 2 till och med bankens lösenbesked.
+2. Som `nordmaskin@demo.se`: klicka **Öppna lösenbesked**. Det **öppnas** – tidigare stod det "ingen
+   behörighet", eftersom handlaren inte har någon relation till maskinen förrän ägaren godkänt inbytet.
+3. Ladda upp lösenbevis, och som `bank@demo.se`: **Godkänn lösen och släpp spärren** → signera. Nu kommer en
+   **bekräftelse: "Spärren släppt"** med väg vidare till Portföljen – tidigare blev hela sidan ett
+   behörighetsfel, eftersom banken tappar sin relation till maskinen i samma ögonblick som den släpper spärren.
+4. Banken kan fortfarande se maskinen och sin egen förbehållshistorik i 90 dagar, men inte ägarens övriga
+   historik.
+
+### Runda 13 – Bankens insyn i en maskinflotta, och priserna
+
+1. `bank@demo.se` → **Portfölj**. Banken ser bara de maskiner den själv finansierar – så är det utan samtycke.
+2. Klicka **Begär insyn i maskinflottan**, ange `556701-2009` (Bergs Schakt) och ett slutdatum.
+3. `berg@demo.se` godkänner i inkorgen med Demo-BankID. Nu ser banken hela Bergs flotta och historiken, till och
+   med slutdatumet, och Berg kan återkalla när som helst.
+4. Priserna: utloggad finns ingen prislänk i sidhuvudet, footern eller på `/for/handlare`, och `/pricing`
+   skickar vidare till startsidan. Fliken **Betalning** är borta ur inställningarna och märkesbeställningen
+   visar inget pris. Allt finns kvar i koden: `admin@demo.se` → **Funktionsflaggor** → `FEATURE_PRICING` → På.
 
 ---
 
@@ -235,8 +319,11 @@ långivaren godkänt lösen är land och tullreferens redan ifyllda när du gör
   övertagandet via **+ Lägg till ny organisation** i stället.
 - **E-post skickas inte.** Notiser hamnar i appen, inte i någon inkorg.
 - **BankID är Demo-BankID.** Signeringsrutan dyker upp som vanligt, men du klickar bara Signera.
-- **Belopp finns aldrig.** Varken lånebelopp, restskuld eller köpeskilling lagras någonstans – det är ett
-  medvetet beslut. Summan lever i bankens bifogade lösenbesked.
+- **Belopp: bara finansieringsvillkoren, bara för två parter.** Finansieringsbelopp, kontantinsats, restvärde,
+  amorteringstid och ränta lagras på förbehållet och syns **bara för maskinägaren och för den långivare som
+  håller förbehållet** (ADR 0029). Ingen annan ser dem – inte handlaren vid inbyte, inte myndigheten, inte
+  försäkringsgivaren, inte operatören, inte publika kort eller delningslänkar. Köpeskilling och restskuld lagras
+  fortfarande aldrig, och **lösenbeloppet** finns bara i bankens bifogade lösenbesked.
 - **Ingen riktig bank är ansluten.** API-ytan och webhookarna täcker hela lösen- och finansieringsflödet,
   men ingen bankspecifik integration är byggd.
 
@@ -274,6 +361,12 @@ Har du testat sönder något, eller vill börja om inför en demo:
 5. Kontrollera: `curl https://okgwcmgjdvtmbgjhvwwt.supabase.co/functions/v1/health` ska svara
    `"ok":true`.
 
-Hela guiden går också att provköra automatiskt – `test-results/staging-walkthrough.mjs` kör de sju
+Hela guiden går också att provköra automatiskt – `test-results/staging-walkthrough.mjs` kör de sju första
 huvudrundorna i en headless webbläsare, och `test-results/verify-seed.mjs` kontrollerar att demodatan
 ligger rätt efter en omseedning.
+
+> **Obs:** `staging-walkthrough.mjs` skrevs före den här rundan och klickar bland annat på **Daglig kontroll**
+> och **Uthyrning** i handlarvyn, som nu är borta där (runda 11). Rundorna 8–13 täcks i stället av
+> `e2e/`-sviten: `financier.spec.ts` (finanssnurran), `dealer-view.spec.ts` (Inbytestest och modulerna),
+> `consent.spec.ts` (sök och samtycke), `payoff.spec.ts` (lösenbeskedet och bekräftelsen) och
+> `public.spec.ts` (priserna). Kör `npm run test:e2e` för hela svepet.

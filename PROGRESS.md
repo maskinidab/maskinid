@@ -294,6 +294,71 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   organisationens namn ⇒ migration `view_as_read_only` (skrivspärr via `require_actor` + triggrar, `VIEW_AS_READ_ONLY`).
   `/status` visar schemalagda jobb. README omskriven: uppstart på 10 minuter. ADR 0024, öppna frågor 34–37.
 
+## Rikards andra runda (2026-10-13): belopp, inbytestest, handlarvyn, behörigheter
+
+Tretton punkter efter produktägarens andra provkörning. Sju migrationer (`20261013000001`–`20261013000007`),
+ADR 0029–0033, fyra nya databastestfiler och två nya e2e-specar. Allt grönt: `lint`, `typecheck`, `test`,
+`test:e2e`, `check:functions`, `i18n-check`.
+
+- **Finansieringsvillkor för ägare och långivare (ADR 0029).** Åtta kolumner på `encumbrances`:
+  `financing_amount`, `down_payment`, `residual_value`, `amortization_months`, `interest_rate` plus de uträknade
+  `monthly_cost`, `total_credit_amount` och flaggan `terms_overridden`. Hård regel 5 är **smalnad, inte slopad**:
+  ingen köpeskilling, ingen restskuld, `payoff_requests` fortfarande beloppsfri. Villkoren ligger i ett **eget**
+  JSON-objekt (`app.encumbrance_terms_json`), aldrig på `encumbrance_json`s `p_full` – som är sant även för
+  operatör och myndighet. `26_financing_terms.test.ts` går igenom varje serialiseringsväg.
+  - Den väg som nästan missades: `transfers.new_financing` lagras ordagrant och `transfer_json` returnerade den
+    rått, medan `open_transfer` visas för myndighet och för handlare vid inbyte. `app.open_new_financing`
+    strippar nu beloppen ur överlåtelseraden i samma transaktion som de kopieras till förbehållet.
+  - **Finanssnurran:** annuitet med restvärde, i `packages/shared/src/financing.ts` och igen som
+    `app.annuity_monthly`, eftersom `register_encumbrance` är nåbar över `api-v1` utan webbläsare. Ett db-test kör
+    båda över samma falltabell och jämför på öret.
+  - **Avtalsnummer obligatoriskt** från alla tre dörrar (`register_encumbrance`, `request_encumbrance`,
+    `app.open_new_financing`) – i RPC:erna, inte som kolumnvillkor: en `CHECK` gäller även vid `UPDATE`, och
+    hade gjort det omöjligt för en bank att släppa ett förbehåll som registrerats innan kravet fanns.
+  - `update_encumbrance_terms` för rättning, `list_portfolio` visar villkoren för långivaren, och OCR:n läser nu
+    ut beloppen och förifyller snurran.
+- **Två "ingen behörighet"-fel (ADR 0030)**, samma modelleringsmiss i båda ändar av lösenflödet.
+  - Handlaren kunde se att ett lösenbesked kommit men inte öppna det: den hade ingen relation till maskinen,
+    eftersom `request_trade_in` lämnar överlåtelsen i `draft`. Ett lösenärendes dokument tillhör nu **ärendet** –
+    dess två parter läser dess två dokument. `authorize_document_download` skiljer dessutom på behörighet och
+    beredskap (`DOCUMENT_NOT_READY`), så en pågående virusskanning inte ser ut som samma fel.
+  - Att släppa spärren avslutade bankens egen holder-relation i samma transaktion, så sidan bakom dialogen blev
+    oläsbar. Ny relation `former_holder` i 90 dagar (medvetet **inte** i `has_full_access`), dialogerna slutar i
+    ett kvitto i stället för att stänga, och `MachinePage` slutar behandla ett `NOT_FOUND` vid refetch som ett
+    fel – samma buggklass gällde `deregister_machine`, `accept_transfer` och `revoke_mandate`.
+- **Inbytestest och handlarvyn (ADR 0031).** Egen tabell och RPC som delar checklistkomponenten med Daglig
+  kontroll: `submit_daily_check` kräver att man äger maskinen, och en inbytesmaskin är någon annans – eller inte i
+  registret alls, därav `machine_id` nullable. Rör aldrig ägarens timmätare eller driftstatus, och ägaren kan
+  inte läsa handlarens värdering (RLS, och eventet loggas med `machine_id = null`).
+  De fyra flottmodulerna blev en per-organisation-inställning med **typhärledd default**, spärrad av
+  insert-triggrar (`appRoutes` har ingen rollmetadata, så ett gömt menyval är inte ett skydd) och omställbar av
+  organisationen själv under Inställningar → Moduler. De seedade uthyrningarna flyttade från Nordmaskin till
+  Bergs Schakt.
+- **Sök för alla kontotyper och samtycke för historiken (ADR 0032).** Det var aldrig `is_sole_trader` – ingen
+  behörighetsväg läser den flaggan. Det var organisationstypen: `machine_view_extras` gav bara
+  `financing`-blocket till en relation eller en partnertyp. Nu `sees_yes_no := p_org_id is not null`, så alla
+  autentiserade ser *om* maskinen är belånad, medan långivarens namn och villkoren förblir smala.
+  - Det är **`lookup_machine`** som öppnats, inte `perform_check`: den senare har en metringstrigger på 49 kr per
+    kontroll, ger `checker`-relation i 24 timmar och föder risksignalen `many_recent_checks`. Hela ändringen är en
+    `app.rate_limit_hit`-rad.
+  - Samtycket är en **fullmakt**, inte en ny tabell. Nytt status `requested` – och det är en säkerhetsgräns, inte
+    städning: `pending` betyder "agenten ska acceptera", och `respond_mandate` matchar `agent_org_id = actor and
+    status = 'pending'`, så en agent-initierad `pending`-rad hade låtit den som frågar godkänna sin egen begäran.
+    `app.can_read_event` känner nu fullmakter, nycklat på **scope** (`view` ger hela historiken, `fleet` bara
+    `machine.*`), eftersom relationen `agent` sätts för `view|sell|fleet` lika.
+  - Svaret på bankfrågan: **utan samtycke ser banken bara det den finansierar.** Med ett signerat, tidsbegränsat
+    och återkalleligt samtycke ser den hela eller delar av flottan. Samtycke ger historiken, aldrig villkoren.
+- **Priserna bort bakom `FEATURE_PRICING` (ADR 0033)**, default av och medvetet **inte** OR:ad med demoläget –
+  staging kör demoläge, och det är där priserna ska vara borta. `list_plans` svarar med tom prislista i stället
+  för att raisa, eftersom den är anon-grantad och anroparna indexerar `price_items` direkt. Detta är klientens
+  *första* flaggläsning, så den kom med plumbing: `useFlag` (svarar direkt med default, så en länk inte blinkar)
+  och `useFlagState` (rapporterar även `loading`, för när svaret styr en redirect).
+- **Nordic Finance (demo)** tillagd som femte långivare, `516401-3038` / `nordic@demo.se`, med
+  `financing_defaults` och ett aktivt leasingförbehåll med fullständiga villkor att visa snurran på.
+- **Rättade i förbifarten:** `scripts/sync-functions-shared.mjs` kunde inte köra på en OneDrive-katalog
+  (`cpSync` föll på att unlinka målet, errno 0), och `nav.ts` pekade på en `reports`-route som inte finns.
+
+
 ## Finansieringsrundan (2026-10-10)
 
 Efter produktägarens provkörning inför demon för Alsike Maskin. Tretton punkter, inga krascher – kedjan

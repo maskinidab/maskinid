@@ -36,3 +36,4 @@ supabase/.branches
 .smoke/
 lighthouse-report
 .tmp-claude/
+.tmp/
