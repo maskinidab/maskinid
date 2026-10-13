@@ -22,12 +22,15 @@ const Nameplate = z.object({
 
 const ListingImage = z.object({ is_nameplate: z.boolean(), serial: z.string().nullable(), confidence: z.number() });
 
-// Financing document (bank order / leasing or credit agreement). Note the absence of any amount field: the
-// register stores no amounts (CLAUDE.md rule 5), so the model is never asked for one.
+// Financing document (bank order / leasing or credit agreement). The terms are read and stored on the
+// encumbrance, where only the machine's owner and the lender can see them (ADR 0029). A purchase price, an
+// outstanding debt and a payoff figure are still never asked for: the payoff amount lives only in the lender's
+// own document (ADR 0025).
 const FINANCING_FIELDS = [
   "document_kind", "financier_name", "financier_org_number", "encumbrance_type", "contract_ref",
   "start_date", "end_date", "term_months", "serial", "pin", "make", "model", "year",
   "customer_name", "customer_org_number",
+  "financing_amount", "down_payment", "residual_value", "interest_rate",
 ] as const;
 
 const Financing = z.object({
@@ -46,6 +49,10 @@ const Financing = z.object({
   year: z.number().int().nullable(),
   customer_name: z.string().nullable(),
   customer_org_number: z.string().nullable(),
+  financing_amount: z.number().nullable(),
+  down_payment: z.number().nullable(),
+  residual_value: z.number().nullable(),
+  interest_rate: z.number().nullable(),
   confidence: z.number(),
   field_confidence: z.record(z.string(), z.number()),
 });
@@ -89,6 +96,10 @@ const FINANCING_SCHEMA = {
     year: nullable("integer"),
     customer_name: nullable("string"),
     customer_org_number: nullable("string"),
+    financing_amount: nullable("number"),
+    down_payment: nullable("number"),
+    residual_value: nullable("number"),
+    interest_rate: nullable("number"),
     confidence: { type: "number" },
     field_confidence: {
       type: "object",
@@ -171,10 +182,14 @@ export function createAnthropicOcr(apiKey = Deno.env.get("ANTHROPIC_API_KEY")): 
             "number; whether the arrangement is leasing, retention of title (äganderättsförbehåll/avbetalning), rental, " +
             "or something else; the contract/agreement number; start and end dates as ISO dates (YYYY-MM-DD); the term in " +
             "months; the machine's serial number, PIN, make, model and year of manufacture; and the customer's name and " +
-            "organisation number. Use null for anything that is not stated in the document – never guess, never infer a " +
-            "date from a term, and never correct characters (do not change O to 0 or I to 1). " +
-            "Do NOT return any monetary amount, price, instalment, residual value or debt figure, even if the document " +
-            "states one: this register stores no amounts. Give an overall confidence and a per-field confidence between 0 and 1.",
+            "organisation number. Also return the financing terms in kronor: the financed amount (finansieringsbelopp), " +
+            "the down payment (kontantinsats/handpenning), the residual value (restvärde), and the nominal yearly " +
+            "interest rate as a percentage. Amounts are plain numbers of kronor without thousands separators or " +
+            "currency; ignore VAT lines. Use null for anything that is not stated in the document – never guess, never " +
+            "infer a date from a term, never compute an amount from other amounts, and never correct characters (do not " +
+            "change O to 0 or I to 1). " +
+            "Do NOT return a purchase price, an outstanding debt or a payoff/settlement figure, even if the document " +
+            "states one. Give an overall confidence and a per-field confidence between 0 and 1.",
         },
       ], FINANCING_SCHEMA, (v) => Financing.parse(v));
       const undef = <T>(x: T | null): T | undefined => (x === null ? undefined : x);
@@ -185,6 +200,8 @@ export function createAnthropicOcr(apiKey = Deno.env.get("ANTHROPIC_API_KEY")): 
         term_months: undef(r.term_months), serial: undef(r.serial), pin: undef(r.pin), make: undef(r.make),
         model: undef(r.model), year: undef(r.year), customer_name: undef(r.customer_name),
         customer_org_number: undef(r.customer_org_number),
+        financing_amount: undef(r.financing_amount), down_payment: undef(r.down_payment),
+        residual_value: undef(r.residual_value), interest_rate: undef(r.interest_rate),
         confidence: r.confidence, field_confidence: r.field_confidence,
       };
     },

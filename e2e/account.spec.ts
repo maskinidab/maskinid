@@ -55,6 +55,9 @@ test("support och Visa som organisation", async ({ page }) => {
 // Point 22 (SPEC §20.9): prices excl. VAT with VAT separate, a demo payment of an open invoice, invoice PDF, plan change.
 test("betalning: faktura betalas i demoläge, PDF, planbyte", async ({ page }) => {
   const base = await login(page, "nordmaskin@demo.se");
+  // Billing is hidden while FEATURE_PRICING is off (ADR 0033). Turning it on is what a customer who wants to see
+  // their invoices gets; the flow itself is unchanged.
+  await sql(page, "update public.app_config set value = 'true' where key = 'FEATURE_PRICING'");
   await page.goto(`${base}/settings?tab=billing`);
   await expect(page.getByText(/Moms 25 %/)).toBeVisible();
   // Seed invoice numbers depend on insert order; take Nordmaskin's open invoice from the register.

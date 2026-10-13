@@ -41,12 +41,14 @@
   "encumbrance": {
    "attach_lead": "Upload the finance agreement and let MaskinID read it. Check the details and sign.",
    "contract_ref": "Contract reference",
+   "contract_ref_hint": "The lender's agreement number. Required, so the lender can tie the machine to the right financing agreement.",
+   "contract_ref_required": "An agreement number is required.",
    "counterparty": "Counterparty: {{name}}",
    "end": "End date",
    "end_before_start": "The end date cannot be before the start date.",
    "end_required": "An end date is required for retention of title.",
    "holder": "Lender",
-   "no_amounts": "Amounts are never registered, only that the encumbrance exists.",
+   "no_amounts": "The financing details are visible only to the machine owner and the lender.",
    "notes_hint": "Visible only to you and the owner.",
    "start": "Start date",
    "submit": "Sign and register",
@@ -97,6 +99,8 @@
    "title": "Bring the machine back"
   },
   "release": {
+   "confirmed": "The block has been released",
+   "confirmed_body": "{{reg}} is no longer financed by you. The owner has been notified. The encumbrance stays in your history for 90 days.",
    "reason": "Reason",
    "reason_placeholder": "For example: paid in full",
    "submit": "Sign and release",
@@ -1646,6 +1650,7 @@
   "CHAIN_BROKEN": "The event chain does not verify.",
   "CONFLICT_NOT_OPEN": "The conflict has already been handled.",
   "DEMO_DB_MISSING": "The demo database is missing. Run npm run demo-db.",
+  "DOCUMENT_NOT_READY": "The document is being checked. Try again in a moment.",
   "DPA_REQUIRED": "Accept the data processing agreement to continue.",
   "DUPLICATE_IDENTIFIER": "The serial number is already used by another machine.",
   "EMAIL_IN_USE": "There is already an account with that e-mail. Sign in instead.",
@@ -1761,6 +1766,9 @@
    "objected": "Objection to the correction",
    "proposed": "An owner correction was proposed"
   },
+  "dealer": {
+   "tradein_check": "{{actor}} made a trade-in check"
+  },
   "document": {
    "archived": "{{actor}} archived a document",
    "quarantined": "A document was stopped by the virus scan",
@@ -1778,6 +1786,7 @@
    "release_requested": "{{actor}} requested a release",
    "released": "{{actor}} released the encumbrance",
    "requested": "{{actor}} requested an encumbrance",
+   "terms_updated": "{{actor}} updated the financing details",
    "transfer_initiated": "{{actor}} started transferring the encumbrance"
   },
   "fallback": "Register event",
@@ -1880,6 +1889,7 @@
    "data_exported": "{{actor}} exported the organisation's data",
    "group_linked": "Linked to a group",
    "group_unlinked": "Group link ended",
+   "modules_changed": "{{actor}} changed the organisation's modules",
    "suspended": "The organisation was suspended",
    "types_changed": "{{actor}} changed the organisation's roles",
    "types_extended": "Organisation type extended",
@@ -1996,6 +2006,34 @@
    "not_connected": "Does not use MaskinID yet",
    "other": "Another bank – enter its organisation number",
    "other_hint": "The bank does not need to use MaskinID. The financing is registered against them and is waiting when they join."
+  }
+ },
+ "financing": {
+  "ocr_field": {
+   "down_payment": "Down payment",
+   "financing_amount": "Financing amount",
+   "interest_rate": "Interest rate",
+   "residual_value": "Residual value"
+  },
+  "terms": {
+   "amortization_months": "Amortisation period (months)",
+   "calculated": "Calculated",
+   "down_payment": "Down payment",
+   "edit": "Change the financing details",
+   "financing_amount": "Financing amount",
+   "incomplete": "Fill in an amount and an amortisation period to get a monthly cost.",
+   "interest_rate": "Interest rate (%)",
+   "lead": "Fill in what the agreement says. The monthly cost is calculated, but you can override it.",
+   "monthly_cost": "Monthly cost",
+   "none": "No financing details filled in.",
+   "overridden": "Overridden",
+   "override": "Override the monthly cost",
+   "reset": "Reset to calculated",
+   "residual_too_high": "The residual value cannot exceed the credit amount.",
+   "residual_value": "Residual value",
+   "saved": "The financing details have been updated.",
+   "title": "Financing details",
+   "total_credit_amount": "Total credit amount"
   }
  },
  "fleet": {
@@ -2433,6 +2471,8 @@
   },
   "flag_by": "Flagged by {{org}}",
   "flags": "Active flags",
+  "gone_from_you": "You no longer have access to this machine",
+  "gone_from_you_body": "The action went through. Once your encumbrance or your role ends, the machine stops being shown here.",
   "hours": "Hour meter",
   "identity": "Identity",
   "in_conflict": "in conflict",
@@ -2658,6 +2698,7 @@
   "stock": "Stock",
   "support": "Support",
   "trade_in": "Receive trade-in",
+  "tradein_check": "Trade-in check",
   "verify": "Verification queue",
   "watchlist": "Watchlist"
  },
@@ -2786,6 +2827,10 @@
    "released": {
     "body": "{{holder}} released the encumbrance on {{reg_number}}.",
     "title": "Encumbrance released"
+   },
+   "terms_updated": {
+    "body": "{{by}} changed the financing details for {{reg_number}}.",
+    "title": "Financing details updated"
    },
    "transfer_accepted": {
     "body": "{{to}} has taken over the encumbrance on {{reg_number}}.",
@@ -3233,6 +3278,18 @@
   "members_title": "Members",
   "min_trusted_level": "Minimum trusted verification level",
   "min_trusted_level_hint": "Machines below this level are shown with a clear warning.",
+  "module": {
+   "attachments": "Attachments",
+   "climate": "Fuel & climate",
+   "daily_check": "Daily check",
+   "operators": "Operators",
+   "rentals": "Rentals"
+  },
+  "module_off": "{{module}} is not enabled for your organisation",
+  "module_off_body": "The feature is still in the system. An administrator can turn it on under Settings → Modules.",
+  "modules_dealer_note": "Dealers have the four fleet modules off by default. The trade-in check is always available.",
+  "modules_lead": "Turn on the parts of the fleet features your organisation needs. Modules that are off are hidden from the menu and cannot be written to.",
+  "modules_title": "Modules",
   "no_org_title": "You are not in any organisation",
   "notifications_title": "Notifications and e-mail",
   "postal_code": "Postal code",
@@ -3270,7 +3327,7 @@
   "lead_export": "The lender gets the question straight away and answers with a payoff statement. The block is released only once the credit is settled and the lender has approved it.",
   "lead_holder": "Someone wants to settle or take over this machine. Answer with a payoff statement and approve once the credit is settled.",
   "lead_owner": "Ask the lender to settle. The block is released only once the lender has approved that the credit is settled.",
-  "no_amounts": "The amount is stated in the lender's payoff statement. MaskinID never stores amounts.",
+  "no_amounts": "The payoff figure is stated in the lender's payoff statement. MaskinID never stores a payoff amount.",
   "none": "No payoff request.",
   "open_count_one": "1 payoff request",
   "open_count_other": "{{count}} payoff requests",
@@ -3286,6 +3343,8 @@
   "request_with_sale": "Also ask {{holder}} for a payoff statement",
   "requested_by": "Requested by {{org}}",
   "settle": "Approve the payoff and release the block",
+  "settle_confirmed": "The block has been released. The payoff is approved and the financing is closed.",
+  "settle_confirmed_body": "{{reg}} is no longer financed by you. The encumbrance and the case stay in your history for 90 days.",
   "settle_lead": "You confirm the credit is settled. The encumbrance is released in the same step and the transfer or export can proceed.",
   "settlement": "Upload proof of settlement",
   "settlement_hint": "A receipt or statement showing the credit is settled. The lender then approves and releases the block.",
@@ -3297,7 +3356,7 @@
   "flags": "Flags",
   "issued_by": "Issued for",
   "market": "Market observations",
-  "no_amounts": "The register never contains amounts. The receipt shows the register content at the time of the check.",
+  "no_amounts": "The receipt contains no amounts. It shows what the register held at the time of the check.",
   "no_caps": "NO – no active encumbrance",
   "page": "Page {{page}} of {{pages}}",
   "performed_at": "Check performed",
@@ -3870,6 +3929,29 @@
   "sent_body": "We will review it and contact the police if needed.",
   "submit": "Send the tip",
   "title": "Report a tip about a machine"
+ },
+ "tradein_check": {
+  "by_label": "Scan a märke",
+  "by_photo": "Photograph the nameplate",
+  "by_serial": "Type the serial number",
+  "done": {
+   "failed": "The trade-in check is saved with serious faults",
+   "ok": "The trade-in check is saved with no remarks",
+   "remarks": "The trade-in check is saved with remarks"
+  },
+  "done_body": "The check is visible only to you. The machine's owner is unaffected and the machine is not taken out of service.",
+  "hours_hint": "The hour meter reading at the time of the check. It is not written into the owner's hour meter.",
+  "lead": "Go through the machine before taking it in trade. The same control points as the daily check, but the result is yours alone – the owner does not see it.",
+  "next": "Check the next machine",
+  "none": "No trade-in checks yet.",
+  "note": "Appraisal",
+  "note_hint": "Your own notes, for instance the basis for a price reduction. Visible only to you.",
+  "serial_hint": "Serial number, PIN or VIN from the machine's nameplate. The machine does not have to be in MaskinID.",
+  "submit": "Save the trade-in check",
+  "tab_history": "Earlier checks",
+  "tab_new": "New trade-in check",
+  "unknown_machine": "The machine is not in MaskinID",
+  "unknown_machine_body": "No result for {{serial}}. You can still do the check – it is saved against the serial number."
  },
  "transfer": {
   "accept": "Sign and approve",

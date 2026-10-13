@@ -41,12 +41,14 @@
   "encumbrance": {
    "attach_lead": "Ladda upp finansavtalet och låt MaskinID läsa av det. Kontrollera uppgifterna och signera.",
    "contract_ref": "Avtalsreferens",
+   "contract_ref_hint": "Bankens avtalsnummer. Obligatoriskt, så att långivaren kan koppla maskinen till rätt finansieringsavtal.",
+   "contract_ref_required": "Avtalsnummer krävs.",
    "counterparty": "Motpart: {{name}}",
    "end": "Slutdatum",
    "end_before_start": "Slutdatum kan inte vara före startdatum.",
    "end_required": "Slutdatum krävs för äganderättsförbehåll.",
    "holder": "Långivare",
-   "no_amounts": "Belopp registreras aldrig, bara att förbehållet finns.",
+   "no_amounts": "Finansieringsuppgifterna syns bara för maskinägaren och långivaren.",
    "notes_hint": "Syns bara för er och ägaren.",
    "start": "Startdatum",
    "submit": "Signera och registrera",
@@ -97,6 +99,8 @@
    "title": "Återinför maskinen"
   },
   "release": {
+   "confirmed": "Spärren släppt",
+   "confirmed_body": "{{reg}} är inte längre belånad hos er. Ägaren är underrättad. Förbehållet finns kvar i er historik i 90 dagar.",
    "reason": "Orsak",
    "reason_placeholder": "Till exempel: slutbetalt",
    "submit": "Signera och släpp",
@@ -1646,6 +1650,7 @@
   "CHAIN_BROKEN": "Händelsekedjan stämmer inte.",
   "CONFLICT_NOT_OPEN": "Konflikten är redan hanterad.",
   "DEMO_DB_MISSING": "Demodatabasen saknas. Kör npm run demo-db.",
+  "DOCUMENT_NOT_READY": "Dokumentet kontrolleras just nu. Försök igen om en stund.",
   "DPA_REQUIRED": "Godkänn personuppgiftsbiträdesavtalet för att fortsätta.",
   "DUPLICATE_IDENTIFIER": "Serienumret används redan av en annan maskin.",
   "EMAIL_IN_USE": "Det finns redan ett konto med den e-postadressen. Logga in i stället.",
@@ -1761,6 +1766,9 @@
    "objected": "Invändning mot rättelsen",
    "proposed": "Rättelse av ägare föreslogs"
   },
+  "dealer": {
+   "tradein_check": "{{actor}} gjorde ett inbytestest"
+  },
   "document": {
    "archived": "{{actor}} arkiverade ett dokument",
    "quarantined": "Ett dokument stoppades i virusskanningen",
@@ -1778,6 +1786,7 @@
    "release_requested": "{{actor}} begärde frisläppning",
    "released": "{{actor}} släppte förbehållet",
    "requested": "{{actor}} begärde förbehåll",
+   "terms_updated": "{{actor}} uppdaterade finansieringsuppgifterna",
    "transfer_initiated": "{{actor}} började överlåta förbehållet"
   },
   "fallback": "Registerhändelse",
@@ -1880,6 +1889,7 @@
    "data_exported": "{{actor}} exporterade organisationens data",
    "group_linked": "Kopplad till koncern",
    "group_unlinked": "Koncernkoppling avslutad",
+   "modules_changed": "{{actor}} ändrade organisationens moduler",
    "suspended": "Organisationen stängdes av",
    "types_changed": "{{actor}} ändrade organisationens roller",
    "types_extended": "Organisationstyp utökad",
@@ -1996,6 +2006,34 @@
    "not_connected": "Använder inte MaskinID än",
    "other": "Annan bank – ange organisationsnummer",
    "other_hint": "Banken behöver inte använda MaskinID. Finansieringen registreras på dem och ligger kvar när de ansluter."
+  }
+ },
+ "financing": {
+  "ocr_field": {
+   "down_payment": "Kontantinsats",
+   "financing_amount": "Finansieringsbelopp",
+   "interest_rate": "Ränta",
+   "residual_value": "Restvärde"
+  },
+  "terms": {
+   "amortization_months": "Amorteringstid (mån)",
+   "calculated": "Beräknad",
+   "down_payment": "Kontantinsats",
+   "edit": "Ändra finansieringsuppgifter",
+   "financing_amount": "Finansieringsbelopp",
+   "incomplete": "Fyll i belopp och amorteringstid för att få en månadskostnad.",
+   "interest_rate": "Ränta (%)",
+   "lead": "Fyll i det som står i avtalet. Månadskostnaden räknas fram, men går att skriva över.",
+   "monthly_cost": "Månadskostnad",
+   "none": "Inga finansieringsuppgifter ifyllda.",
+   "overridden": "Överskriven",
+   "override": "Skriv över månadskostnaden",
+   "reset": "Återställ till beräknat",
+   "residual_too_high": "Restvärdet kan inte vara större än kreditbeloppet.",
+   "residual_value": "Restvärde",
+   "saved": "Finansieringsuppgifterna är uppdaterade.",
+   "title": "Finansieringsuppgifter",
+   "total_credit_amount": "Totalt kreditbelopp"
   }
  },
  "fleet": {
@@ -2433,6 +2471,8 @@
   },
   "flag_by": "Flaggad av {{org}}",
   "flags": "Aktiva flaggor",
+  "gone_from_you": "Du har inte längre åtkomst till den här maskinen",
+  "gone_from_you_body": "Åtgärden gick igenom. När ditt förbehåll eller din roll upphör slutar maskinen att visas här.",
   "hours": "Timmätare",
   "identity": "Identitet",
   "in_conflict": "i konflikt",
@@ -2658,6 +2698,7 @@
   "stock": "Lager",
   "support": "Support",
   "trade_in": "Ta emot inbyte",
+  "tradein_check": "Inbytestest",
   "verify": "Verifieringskö",
   "watchlist": "Bevakning"
  },
@@ -2786,6 +2827,10 @@
    "released": {
     "body": "{{holder}} släppte förbehållet på {{reg_number}}.",
     "title": "Förbehållet är släppt"
+   },
+   "terms_updated": {
+    "body": "{{by}} ändrade finansieringsuppgifterna för {{reg_number}}.",
+    "title": "Finansieringsuppgifter uppdaterade"
    },
    "transfer_accepted": {
     "body": "{{to}} har tagit över förbehållet på {{reg_number}}.",
@@ -3233,6 +3278,18 @@
   "members_title": "Medlemmar",
   "min_trusted_level": "Lägsta betrodda verifieringsnivå",
   "min_trusted_level_hint": "Maskiner under nivån visas med en tydlig varning.",
+  "module": {
+   "attachments": "Redskap",
+   "climate": "Bränsle & klimat",
+   "daily_check": "Daglig kontroll",
+   "operators": "Förare",
+   "rentals": "Uthyrning"
+  },
+  "module_off": "{{module}} är inte aktiverad för er organisation",
+  "module_off_body": "Funktionen finns kvar i systemet. En administratör kan slå på den under Inställningar → Moduler.",
+  "modules_dealer_note": "Handlare har de fyra flottmodulerna avstängda som standard. Inbytestest finns alltid.",
+  "modules_lead": "Slå på de delar av flottfunktionerna er organisation behöver. Avstängda moduler göms i menyn och går inte att skriva i.",
+  "modules_title": "Moduler",
   "no_org_title": "Du är inte med i någon organisation",
   "notifications_title": "Notiser och e-post",
   "postal_code": "Postnummer",
@@ -3270,7 +3327,7 @@
   "lead_export": "Långivaren får frågan direkt och svarar med ett lösenbesked. Spärren släpps först när krediten är löst och långivaren har godkänt det.",
   "lead_holder": "Någon vill lösa eller överta den här maskinen. Svara med ett lösenbesked och godkänn när krediten är löst.",
   "lead_owner": "Begär lösen hos långivaren. Spärren släpps först när långivaren har godkänt att krediten är löst.",
-  "no_amounts": "Beloppet står i långivarens lösenbesked. MaskinID lagrar aldrig belopp.",
+  "no_amounts": "Lösenbeloppet står i långivarens lösenbesked. MaskinID lagrar aldrig ett lösenbelopp.",
   "none": "Ingen lösenförfrågan.",
   "open_count_one": "1 lösenförfrågan",
   "open_count_other": "{{count}} lösenförfrågningar",
@@ -3286,6 +3343,8 @@
   "request_with_sale": "Begär lösenbesked från {{holder}} samtidigt",
   "requested_by": "Begärd av {{org}}",
   "settle": "Godkänn lösen och släpp spärren",
+  "settle_confirmed": "Spärren släppt. Lösen är godkänd och finansieringen avslutad.",
+  "settle_confirmed_body": "{{reg}} är inte längre belånad hos er. Förbehållet och ärendet finns kvar i er historik i 90 dagar.",
   "settle_lead": "Du bekräftar att krediten är löst. Förbehållet släpps i samma steg och ägarbyte eller export kan gå vidare.",
   "settlement": "Ladda upp lösenbevis",
   "settlement_hint": "Kvitto eller besked som visar att krediten är löst. Långivaren godkänner sedan och släpper spärren.",
@@ -3297,7 +3356,7 @@
   "flags": "Flaggor",
   "issued_by": "Utfärdad för",
   "market": "Marknadsobservationer",
-  "no_amounts": "Registret innehåller aldrig belopp. Kvittot visar registrets innehåll vid kontrolltillfället.",
+  "no_amounts": "Kvittot innehåller inga belopp. Det visar registrets innehåll vid kontrolltillfället.",
   "no_caps": "NEJ – inget aktivt förbehåll",
   "page": "Sida {{page}} av {{pages}}",
   "performed_at": "Kontroll utförd",
@@ -3870,6 +3929,29 @@
   "sent_body": "Vi går igenom det och kontaktar polisen om det behövs.",
   "submit": "Skicka tipset",
   "title": "Tipsa om en maskin"
+ },
+ "tradein_check": {
+  "by_label": "Skanna märke",
+  "by_photo": "Fota typskylten",
+  "by_serial": "Skriv serienummer",
+  "done": {
+   "failed": "Inbytestestet är sparat med allvarliga fel",
+   "ok": "Inbytestestet är sparat utan anmärkning",
+   "remarks": "Inbytestestet är sparat med anmärkningar"
+  },
+  "done_body": "Testet syns bara för er. Maskinens ägare påverkas inte och maskinen tas inte ur drift.",
+  "hours_hint": "Timmätarställning vid testet. Skrivs inte in i ägarens timmätare.",
+  "lead": "Gå igenom maskinen innan du tar in den i inbyte. Samma kontrollpunkter som den dagliga kontrollen, men resultatet är ditt eget – ägaren ser det inte.",
+  "next": "Testa nästa maskin",
+  "none": "Inga inbytestester än.",
+  "note": "Bedömning",
+  "note_hint": "Dina egna anteckningar, till exempel underlag för prisavdrag. Syns bara för er.",
+  "serial_hint": "Serienummer, PIN eller VIN från maskinens typskylt. Maskinen behöver inte finnas i MaskinID.",
+  "submit": "Spara inbytestest",
+  "tab_history": "Tidigare test",
+  "tab_new": "Nytt inbytestest",
+  "unknown_machine": "Maskinen finns inte i MaskinID",
+  "unknown_machine_body": "Inget resultat för {{serial}}. Du kan ändå göra testet – det sparas mot serienumret."
  },
  "transfer": {
   "accept": "Signera och godkänn",

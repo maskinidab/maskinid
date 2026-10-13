@@ -79,6 +79,17 @@ test("lösen: inbyte av bankägd maskin, offert, lösenbevis och godkännande", 
   await expect(page.getByText("Lösenbesked mottaget")).toBeVisible();
   await expect(page.getByRole("button", { name: "Öppna lösenbesked" })).toBeVisible();
 
+  // Rikard's defect: the button was there but opening it said "du har inte behörighet". The dealer uploads
+  // nothing and owns nothing here — it is a party to the payoff, and that is what grants the read (ADR 0030).
+  const [quoteDoc] = await sql<{ id: string }>(page, `
+    select p.quote_document_id id from public.payoff_requests p where p.machine_id = $1 order by p.created_at desc limit 1`, [m.id]);
+  expect(quoteDoc.id, "the lender's payoff statement is on the request").toBeTruthy();
+  const opened = await asUser<{ filename: string }>(page, "authorize_document_download", { p_document_id: quoteDoc.id });
+  expect(opened.filename).toBe("losenbesked.pdf");
+  // Clicking it shows no error either.
+  await page.getByRole("button", { name: "Öppna lösenbesked" }).click();
+  await expect(page.locator("main").getByText("behörighet", { exact: false })).toHaveCount(0);
+
   // Still on the trade-in page: a dealer who is only a party to the transfer has no financing tab on the
   // machine page, so the proof of settlement is uploaded where the deal is being made.
   await page.getByRole("button", { name: "Ladda upp lösenbevis" }).click();
@@ -105,7 +116,12 @@ test("lösen: inbyte av bankägd maskin, offert, lösenbevis och godkännande", 
   await page.getByRole("button", { name: "Godkänn lösen och släpp spärren" }).click();
   await page.locator("dialog[open] button[type=submit]").click();
   await signDemo(page);
-  await expect(page.locator("dialog[open]")).toHaveCount(0);
+  // Rikard's second defect: releasing ends the lender's own relation to the machine, so the page behind the
+  // dialog became unreadable and showed "ingen behörighet". A confirmation now, not an error (ADR 0030).
+  await expect(page.locator("dialog[open]").getByText("Spärren släppt", { exact: false }).first()).toBeVisible();
+  await expect(page.getByText("behörighet", { exact: false })).toHaveCount(0);
+  await page.locator("dialog[open]").getByRole("link", { name: "Portfölj" }).click();
+  await expect(page).toHaveURL(/portfolio/);
 
   const [done] = await sql<{ enc: string; payoff: string; reminders_open: number }>(page, `
     select (select e.status::text from public.encumbrances e where e.machine_id = $1 order by e.created_at desc limit 1) enc,

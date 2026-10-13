@@ -1,4 +1,5 @@
 import { lazy, type ReactNode } from "react";
+import { ModuleGate } from "./components/ModuleGate";
 
 // Route tables. Pages are lazy-loaded so public pages (scan) stay small.
 const L = <T extends Record<string, unknown>>(loader: () => Promise<T>, name: keyof T) =>
@@ -48,6 +49,7 @@ const InspectionNewPage = L(() => import("./pages/app/fleet/InspectionNewPage"),
 const StockPage = L(() => import("./pages/app/dealer/StockPage"), "StockPage");
 const SalePage = L(() => import("./pages/app/dealer/SalePage"), "SalePage");
 const TradeInPage = L(() => import("./pages/app/dealer/TradeInPage"), "TradeInPage");
+const TradeInCheckPage = L(() => import("./pages/app/dealer/TradeInCheckPage"), "TradeInCheckPage");
 const LeadsPage = L(() => import("./pages/app/dealer/LeadsPage"), "LeadsPage");
 const CustomersPage = L(() => import("./pages/app/dealer/LeadsPage"), "CustomersPage");
 const LabelsPage = L(() => import("./pages/app/dealer/LabelsPage"), "LabelsPage");
@@ -132,10 +134,13 @@ export const appRoutes: { path: string; element: ReactNode }[] = [
   { path: "stock", element: <StockPage /> },
   { path: "sales/new", element: <SalePage /> },
   { path: "trade-in", element: <TradeInPage /> },
+  { path: "tradein-check", element: <TradeInCheckPage /> },
   { path: "leads", element: <LeadsPage /> },
   { path: "customers", element: <CustomersPage /> },
   { path: "labels", element: <LabelsPage /> },
-  { path: "rentals", element: <RentalsPage /> },
+  // The four fleet modules a dealer has off by default (ADR 0031). Gated here rather than inside each page so
+  // the rule is in one place; the database refuses the writes regardless of what the client renders.
+  { path: "rentals", element: <ModuleGate module="rentals"><RentalsPage /></ModuleGate> },
   { path: "client-reports", element: <ClientReportsPage /> },
   { path: "inspections/new", element: <InspectionNewPage /> },
   { path: "portfolio", element: <PortfolioPage /> },
@@ -149,10 +154,10 @@ export const appRoutes: { path: string; element: ReactNode }[] = [
   { path: "export-check", element: <ExportCheckPage /> },
   { path: "exports", element: <ExportsPage /> },
   { path: "oem", element: <OemPage /> },
-  { path: "attachments", element: <AttachmentsPage /> },
-  { path: "operators", element: <OperatorsPage /> },
-  { path: "daily-check", element: <DailyCheckPage /> },
-  { path: "climate", element: <ClimatePage /> },
+  { path: "attachments", element: <ModuleGate module="attachments"><AttachmentsPage /></ModuleGate> },
+  { path: "operators", element: <ModuleGate module="operators"><OperatorsPage /></ModuleGate> },
+  { path: "daily-check", element: <ModuleGate module="daily_check"><DailyCheckPage /></ModuleGate> },
+  { path: "climate", element: <ModuleGate module="climate"><ClimatePage /></ModuleGate> },
   { path: "mandates", element: <MandatesPage /> },
   { path: "group", element: <GroupFleetPage /> },
   { path: "admin", element: <AdminHomePage /> },

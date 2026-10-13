@@ -24,6 +24,20 @@ test("finansiär: kontroll med kvitto, förbehåll, andra finansiären blockeras
   const dialog = page.locator("dialog[open]");
   await dialog.locator("input[type=date]").nth(0).fill(new Date().toISOString().slice(0, 10));
   await dialog.locator("input[type=date]").nth(1).fill("2030-09-01");
+  // The agreement number is mandatory (ADR 0029), so submitting without one is refused before any signature.
+  await dialog.locator("button[type=submit]").click();
+  await expect(dialog.getByText("Avtalsnummer krävs.")).toBeVisible();
+  await expect(page.locator('dialog[open]').filter({ hasText: "Du signerar" })).toHaveCount(0);
+  await dialog.getByLabel("Avtalsreferens").fill("DBF-2026-5501");
+  // The finance calculator: the monthly cost is worked out from the terms, not typed in.
+  await dialog.getByLabel("Finansieringsbelopp").fill("1250000");
+  await dialog.getByLabel("Kontantinsats").fill("250000");
+  await dialog.getByLabel("Restvärde").fill("200000");
+  await dialog.getByLabel("Amorteringstid (mån)").fill("60");
+  await dialog.getByLabel("Ränta (%)").fill("6.45");
+  // Shown rounded to whole kronor like every other amount in the profile; stored to the öre.
+  await expect(dialog.getByText(/16\s*709\s*kr/)).toBeVisible();
+  await expect(dialog.getByText(/1\s*000\s*000\s*kr/)).toBeVisible();
   await dialog.locator("button[type=submit]").click();
   await signDemo(page);
   await expect(page.locator("dialog[open]")).toHaveCount(0);
@@ -31,6 +45,16 @@ test("finansiär: kontroll med kvitto, förbehåll, andra finansiären blockeras
     where e.machine_id = $1 and e.type in ('leasing', 'ownership_reservation') order by e.created_at desc limit 1`, [m.id]);
   expect(enc).toMatchObject({ holder: "demo-bank-finans" });
   expect(["active", "pending"]).toContain(enc.status);
+  // Stored terms, with the monthly cost computed by app.annuity_monthly rather than taken from the browser.
+  const [stored] = await sql<{ contract_ref: string; financing_amount: string; monthly_cost: string; total_credit_amount: string; terms_overridden: boolean }>(
+    page,
+    `select contract_ref, financing_amount, monthly_cost, total_credit_amount, terms_overridden from public.encumbrances
+     where machine_id = $1 order by created_at desc limit 1`, [m.id]);
+  expect(stored.contract_ref).toBe("DBF-2026-5501");
+  expect(Number(stored.financing_amount)).toBe(1_250_000);
+  expect(Number(stored.total_credit_amount)).toBe(1_000_000);
+  expect(Number(stored.monthly_cost)).toBeCloseTo(16_709.19, 2);
+  expect(stored.terms_overridden).toBe(false);
   await sql(page, "update public.encumbrances set status = 'active' where machine_id = $1 and status = 'pending'", [m.id]);
 
   await logout(page);

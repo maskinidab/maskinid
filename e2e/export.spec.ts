@@ -135,7 +135,9 @@ test("export: en belånad maskin går först efter att långivaren godkänt lös
   await page.getByRole("button", { name: "Godkänn lösen och släpp spärren" }).click();
   await page.locator("dialog[open] button[type=submit]").click();
   await signDemo(page);
-  await expect(page.locator("dialog[open]")).toHaveCount(0);
+  // Releasing ends the lender's relation to the machine, so the dialog confirms instead of closing into a page
+  // it can no longer read (ADR 0030).
+  await expect(page.locator("dialog[open]").getByText("Spärren släppt", { exact: false }).first()).toBeVisible();
 
   // Now the owner can export, with the country and customs reference already filled in from the payoff.
   await logout(page);

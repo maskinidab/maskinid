@@ -6,6 +6,7 @@ import { CompanyLookupField, type CompanyInfo } from "../../../components/Compan
 import { DocumentDropzone } from "../../../components/DocumentDropzone";
 import { ErrorNotice, Notice, PageHeader, Skeleton } from "../../../components/Feedback";
 import { FinancierPicker, type FinancierProfile, type PickedFinancier } from "../../../components/FinancierPicker";
+import { EMPTY_TERMS, FinancingTermsFields, termsError, termsPayload, type TermsForm } from "../../../components/FinancingTerms";
 import { FormField } from "../../../components/FormField";
 import { Icon } from "../../../components/Icon";
 import { RegNumber } from "../../../components/RegNumber";
@@ -35,6 +36,8 @@ export function SalePage() {
   const [fin, setFin] = useState({ holder: "", type: "ownership_reservation", ref: "", end: "" });
   // The buyer's bank may be one we know or one named by organisation number (ADR 0027).
   const [holder, setHolder] = useState<PickedFinancier | null>(null);
+  const [terms, setTerms] = useState<TermsForm>(EMPTY_TERMS);
+  const setTerm = <K extends keyof TermsForm>(k: K, v: TermsForm[K]) => setTerms((f) => ({ ...f, [k]: v }));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<unknown>(null);
   const [fieldErr, setFieldErr] = useState<string | null>(null);
@@ -51,14 +54,24 @@ export function SalePage() {
     if (mode === "email" && !/^\S+@\S+\.\S+$/.test(email)) return setFieldErr(t("actions.transfer.email_invalid"));
     if (newSaleEligible && newSale && !hasInvoice) return setFieldErr(t("dealer.invoice_required"));
     if (holder && fin.type === "ownership_reservation" && !fin.end) return setFieldErr(t("actions.encumbrance.end_required"));
+    // Mandatory as soon as a bank is named: the lender has to be able to tie the machine to the right financing
+    // agreement. app.require_contract_ref enforces it again when the financing reaches the bank.
+    if (holder && !fin.ref.trim()) return setFieldErr(t("actions.encumbrance.contract_ref_required"));
+    if (holder) {
+      const badTerms = termsError(terms, t);
+      if (badTerms) return setFieldErr(badTerms);
+    }
     setBusy(true);
     try {
       const r = await rpc<{ transfer: Transfer }>("sell_machine", {
         p_org_id: orgId, p_machine_id: m!.id, p_sale_date: saleDate, p_new_sale: newSaleEligible && newSale, p_document_ids: docs.map((d) => d.id),
         p_buyer: mode === "org" ? (company!.existing_org ? { org_id: company!.existing_org.id } : { org_number: company!.org_number }) : { email },
+        // The terms travel with the request and app.open_new_financing copies them onto the encumbrance and then
+        // strips them off the transfer row – open_transfer is visible to the authority and to a dealer at
+        // trade-in, and the terms are for the owner and the lender only (ADR 0029).
         p_new_financing: holder
           ? { holder_org_id: holder.holder_org_id, holder_org_number: holder.holder_org_number, holder_name: holder.holder_name,
-              type: fin.type, contract_ref: fin.ref || null, end_date: fin.end || null }
+              type: fin.type, contract_ref: fin.ref, end_date: fin.end || null, ...(termsPayload(terms) ?? {}) }
           : null,
       });
       if (askPayoff && m!.financing?.active) {
@@ -131,12 +144,13 @@ export function SalePage() {
                     {["ownership_reservation", "leasing"].map((x) => <option key={x} value={x}>{t(`enum.encumbrance_type.${x}`)}</option>)}
                   </select>
                 </FormField>
-                <FormField className="kol-6" label={t("actions.encumbrance.contract_ref")} optional>
+                <FormField className="kol-6" label={t("actions.encumbrance.contract_ref")} hint={t("actions.encumbrance.contract_ref_hint")}>
                   <input className="mid-input is-id" value={fin.ref} onChange={(e) => setFin({ ...fin, ref: e.target.value })} />
                 </FormField>
                 <FormField className="kol-6" label={t("actions.encumbrance.end")} optional={fin.type !== "ownership_reservation"}>
                   <input className="mid-input" type="date" min={saleDate} value={fin.end} onChange={(e) => setFin({ ...fin, end: e.target.value })} />
                 </FormField>
+                <div className="kol-12"><FinancingTermsFields form={terms} set={setTerm} /></div>
               </>}
             </div>
           </fieldset>

@@ -1,16 +1,19 @@
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useOrg } from "../../../auth/OrgContext";
+import { Link } from "react-router-dom";
 import { Dialog } from "../../../components/Dialog";
 import { uploadDocument } from "../../../components/DocumentDropzone";
 import { ErrorNotice, Notice } from "../../../components/Feedback";
 import { FinancierPicker, type FinancierProfile, type PickedFinancier } from "../../../components/FinancierPicker";
+import { EMPTY_TERMS, FinancingTermsFields, termsError, termsPayload, type TermsForm } from "../../../components/FinancingTerms";
 import { FormField } from "../../../components/FormField";
 import { Icon } from "../../../components/Icon";
 import { OcrCapture, OcrError, OcrSuggestionList, useOcr } from "../../../components/OcrCapture";
 import { useSign } from "../../../components/Signature";
 import { StatusBadge } from "../../../components/StatusBadge";
 import { queryClient, rpc } from "../../../lib/api/query";
+import { backend } from "../../../lib/backend";
 import type { DocumentItem, Encumbrance, MachineView, PayoffRequest } from "../../../lib/api/types";
 import { formatDate, todayIso } from "../../../lib/format";
 
@@ -73,15 +76,41 @@ export function useUpload() {
 
 const ENC_TYPES = ["ownership_reservation", "leasing", "rental", "other"];
 
+/**
+ * Opens one of a payoff's documents through the signed-URL Edge Function. Errors are surfaced rather than
+ * swallowed: DOCUMENT_NOT_READY (the virus scan has not finished) used to look exactly like the permission bug
+ * this flow just had, so the two must read differently.
+ */
+async function openPayoffDocument(id: string, onError: (e: unknown) => void) {
+  try {
+    onError(null);
+    const r = await backend.invoke<{ url: string }>("document-url", { document_id: id });
+    window.open(r.url, "_blank", "noopener");
+  } catch (e) {
+    onError(e);
+  }
+}
+
 interface FinancingForm {
   type: string;
   contract_ref: string;
   start: string;
   end: string;
-  term_months: string;
+  terms: TermsForm;
 }
 
-const EMPTY_FORM: FinancingForm = { type: "ownership_reservation", contract_ref: "", start: todayIso(), end: "", term_months: "" };
+const EMPTY_FORM: FinancingForm = { type: "ownership_reservation", contract_ref: "", start: todayIso(), end: "", terms: EMPTY_TERMS };
+
+/**
+ * Shared validation for all three ways in. The agreement number is mandatory (Rikard's request: the bank has to
+ * be able to tie the machine to the right financing agreement), and SQL enforces it again in
+ * app.require_contract_ref so an API client cannot skip it.
+ */
+function financingError(form: FinancingForm, holder: PickedFinancier | null, t: (k: string) => string): string | null {
+  if (!holder) return t("common.required");
+  if (!form.contract_ref.trim()) return t("actions.encumbrance.contract_ref_required");
+  return termsError(form.terms, t);
+}
 
 /** end_date from a start date + a term in months, so an agreement that only states "60 months" still fills in. */
 function endFromTerm(start: string, months: number): string {
@@ -106,6 +135,7 @@ export function AttachFinancingDialog({ m, open, onClose }: { m: MachineView; op
   const [matchNote, setMatchNote] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const set = <K extends keyof FinancingForm>(k: K, v: FinancingForm[K]) => setForm((f) => ({ ...f, [k]: v }));
+  const setTerm = <K extends keyof TermsForm>(k: K, v: TermsForm[K]) => setForm((f) => ({ ...f, terms: { ...f.terms, [k]: v } }));
 
   async function onFile(file: File) {
     const s = await ocr.read(file);
@@ -118,7 +148,12 @@ export function AttachFinancingDialog({ m, open, onClose }: { m: MachineView; op
     if (typeof s.contract_ref === "string") set("contract_ref", s.contract_ref);
     if (typeof s.start_date === "string") set("start", s.start_date);
     if (typeof s.end_date === "string") set("end", s.end_date);
-    if (typeof s.term_months === "number") set("term_months", String(s.term_months));
+    if (typeof s.term_months === "number") setTerm("amortization_months", String(s.term_months));
+    // Figures read off the agreement. Every one of them is shown in the calculator and can be corrected before
+    // signing; nothing is written from a reading alone.
+    for (const k of ["financing_amount", "down_payment", "residual_value", "interest_rate"] as const) {
+      if (typeof s[k] === "number") setTerm(k, String(s[k]));
+    }
     // Resolve the bank the document names, so the user only confirms.
     if (typeof s.financier_name === "string" || typeof s.financier_org_number === "string") {
       try {
@@ -142,8 +177,11 @@ export function AttachFinancingDialog({ m, open, onClose }: { m: MachineView; op
     if (field === "contract_ref") set("contract_ref", String(value));
     else if (field === "start_date") set("start", String(value));
     else if (field === "end_date") set("end", String(value));
-    else if (field === "term_months") set("term_months", String(value));
+    else if (field === "term_months") setTerm("amortization_months", String(value));
     else if (field === "encumbrance_type" && ENC_TYPES.includes(String(value))) set("type", String(value));
+    else if (field === "financing_amount" || field === "down_payment" || field === "residual_value" || field === "interest_rate") {
+      setTerm(field, String(value));
+    }
     ocr.drop(field);
   }
 
@@ -157,16 +195,18 @@ export function AttachFinancingDialog({ m, open, onClose }: { m: MachineView; op
       submitLabel={t("actions.financing.submit")}
       onSubmit={async () => {
         setErr(null);
-        if (!holder) { setErr(t("common.required")); throw new Error("holder"); }
-        const end = form.end || (form.term_months ? endFromTerm(form.start, Number(form.term_months)) : "");
+        const bad = financingError(form, holder, t);
+        if (bad) { setErr(bad); throw new Error("invalid"); }
+        const months = form.terms.amortization_months;
+        const end = form.end || (months ? endFromTerm(form.start, Number(months)) : "");
         if (endRequired && !end) { setErr(t("actions.encumbrance.end_required")); throw new Error("end"); }
         // Wait for the document, so the financing never reaches the bank without the agreement behind it.
         const d = await upload.settle();
         await rpc("request_encumbrance", {
-          p_org_id: orgId, p_machine_id: m.id, p_holder_org_id: holder.holder_org_id, p_type: form.type,
-          p_contract_ref: form.contract_ref || null, p_start_date: form.start, p_end_date: end || null,
-          p_holder_org_number: holder.holder_org_number, p_holder_name: holder.holder_name, p_holder_email: null,
-          p_document_ids: d ? [d.id] : [],
+          p_org_id: orgId, p_machine_id: m.id, p_holder_org_id: holder!.holder_org_id, p_type: form.type,
+          p_contract_ref: form.contract_ref, p_start_date: form.start, p_end_date: end || null,
+          p_holder_org_number: holder!.holder_org_number, p_holder_name: holder!.holder_name, p_holder_email: null,
+          p_document_ids: d ? [d.id] : [], p_terms: termsPayload(form.terms),
         });
         onClose();
       }}
@@ -180,35 +220,38 @@ export function AttachFinancingDialog({ m, open, onClose }: { m: MachineView; op
       <OcrSuggestionList suggestion={ocr.suggestion} labelKey="financing.ocr_field" onAccept={acceptField} />
       {matchNote && <Notice kind="info" title={matchNote} />}
       <FinancierPicker value={holder} onChange={setHolder} error={err} />
-      <FinancingFields form={form} set={set} endRequired={endRequired} />
+      <FinancingFields form={form} set={set} setTerm={setTerm} endRequired={endRequired} />
     </FinancingDialog>
   );
 }
 
-function FinancingFields({ form, set, endRequired }: {
-  form: FinancingForm; set: <K extends keyof FinancingForm>(k: K, v: FinancingForm[K]) => void; endRequired: boolean;
+function FinancingFields({ form, set, setTerm, endRequired }: {
+  form: FinancingForm;
+  set: <K extends keyof FinancingForm>(k: K, v: FinancingForm[K]) => void;
+  setTerm: <K extends keyof TermsForm>(k: K, v: TermsForm[K]) => void;
+  endRequired: boolean;
 }) {
   const { t } = useTranslation();
   return (
-    <div className="rutnat">
-      <FormField className="kol-6" label={t("common.type")}>
-        <select className="mid-select" value={form.type} onChange={(e) => set("type", e.target.value)}>
-          {ENC_TYPES.map((x) => <option key={x} value={x}>{t(`enum.encumbrance_type.${x}`)}</option>)}
-        </select>
-      </FormField>
-      <FormField className="kol-6" label={t("actions.encumbrance.contract_ref")} optional>
-        <input className="mid-input is-id" value={form.contract_ref} onChange={(e) => set("contract_ref", e.target.value)} />
-      </FormField>
-      <FormField className="kol-4" label={t("actions.encumbrance.start")}>
-        <input className="mid-input" type="date" value={form.start} onChange={(e) => set("start", e.target.value)} />
-      </FormField>
-      <FormField className="kol-4" label={t("actions.encumbrance.end")} optional={!endRequired}>
-        <input className="mid-input" type="date" min={form.start} value={form.end} onChange={(e) => set("end", e.target.value)} />
-      </FormField>
-      <FormField className="kol-4" label={t("financier.defaults.default_term_months")} optional>
-        <input className="mid-input" type="number" min={1} max={240} value={form.term_months} onChange={(e) => set("term_months", e.target.value)} />
-      </FormField>
-    </div>
+    <>
+      <div className="rutnat">
+        <FormField className="kol-6" label={t("common.type")}>
+          <select className="mid-select" value={form.type} onChange={(e) => set("type", e.target.value)}>
+            {ENC_TYPES.map((x) => <option key={x} value={x}>{t(`enum.encumbrance_type.${x}`)}</option>)}
+          </select>
+        </FormField>
+        <FormField className="kol-6" label={t("actions.encumbrance.contract_ref")} hint={t("actions.encumbrance.contract_ref_hint")}>
+          <input className="mid-input is-id" value={form.contract_ref} onChange={(e) => set("contract_ref", e.target.value)} />
+        </FormField>
+        <FormField className="kol-6" label={t("actions.encumbrance.start")}>
+          <input className="mid-input" type="date" value={form.start} onChange={(e) => set("start", e.target.value)} />
+        </FormField>
+        <FormField className="kol-6" label={t("actions.encumbrance.end")} optional={!endRequired}>
+          <input className="mid-input" type="date" min={form.start} value={form.end} onChange={(e) => set("end", e.target.value)} />
+        </FormField>
+      </div>
+      <FinancingTermsFields form={form.terms} set={setTerm} />
+    </>
   );
 }
 
@@ -220,6 +263,7 @@ export function ManualFinancingDialog({ m, open, onClose }: { m: MachineView; op
   const [holder, setHolder] = useState<PickedFinancier | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const set = <K extends keyof FinancingForm>(k: K, v: FinancingForm[K]) => setForm((f) => ({ ...f, [k]: v }));
+  const setTerm = <K extends keyof TermsForm>(k: K, v: TermsForm[K]) => setForm((f) => ({ ...f, terms: { ...f.terms, [k]: v } }));
   const endRequired = form.type === "ownership_reservation";
   return (
     <FinancingDialog
@@ -230,14 +274,16 @@ export function ManualFinancingDialog({ m, open, onClose }: { m: MachineView; op
       submitLabel={t("actions.financing.submit")}
       onSubmit={async () => {
         setErr(null);
-        if (!holder) { setErr(t("common.required")); throw new Error("holder"); }
-        const end = form.end || (form.term_months ? endFromTerm(form.start, Number(form.term_months)) : "");
+        const bad = financingError(form, holder, t);
+        if (bad) { setErr(bad); throw new Error("invalid"); }
+        const months = form.terms.amortization_months;
+        const end = form.end || (months ? endFromTerm(form.start, Number(months)) : "");
         if (endRequired && !end) { setErr(t("actions.encumbrance.end_required")); throw new Error("end"); }
         await rpc("request_encumbrance", {
-          p_org_id: orgId, p_machine_id: m.id, p_holder_org_id: holder.holder_org_id, p_type: form.type,
-          p_contract_ref: form.contract_ref || null, p_start_date: form.start, p_end_date: end || null,
-          p_holder_org_number: holder.holder_org_number, p_holder_name: holder.holder_name, p_holder_email: null,
-          p_document_ids: [],
+          p_org_id: orgId, p_machine_id: m.id, p_holder_org_id: holder!.holder_org_id, p_type: form.type,
+          p_contract_ref: form.contract_ref, p_start_date: form.start, p_end_date: end || null,
+          p_holder_org_number: holder!.holder_org_number, p_holder_name: holder!.holder_name, p_holder_email: null,
+          p_document_ids: [], p_terms: termsPayload(form.terms),
         });
         onClose();
       }}
@@ -250,12 +296,12 @@ export function ManualFinancingDialog({ m, open, onClose }: { m: MachineView; op
         onProfile={(p: FinancierProfile | null) => {
           const d = p?.financing_defaults;
           if (d?.default_type && ENC_TYPES.includes(d.default_type)) set("type", d.default_type);
-          if (d?.default_term_months) set("term_months", String(d.default_term_months));
+          if (d?.default_term_months) setTerm("amortization_months", String(d.default_term_months));
           if (d?.contract_ref_prefix && !form.contract_ref) set("contract_ref", d.contract_ref_prefix);
         }}
         error={err}
       />
-      <FinancingFields form={form} set={set} endRequired={endRequired} />
+      <FinancingFields form={form} set={set} setTerm={setTerm} endRequired={endRequired} />
     </FinancingDialog>
   );
 }
@@ -463,10 +509,32 @@ export function PayoffSettlementDialog({ m, payoff, onClose }: { m: MachineView;
 }
 
 /** The lender approves and the block is released in the same signed step. */
+/**
+ * The lender approves the payoff and releases the block. Approving ends its own `holder` relation to the machine,
+ * so the page behind the dialog stops being readable in the same transaction — which is why this showed "ingen
+ * behörighet" instead of a confirmation (ADR 0030). The dialog therefore stays open on a receipt of its own
+ * instead of closing into a page that is no longer there.
+ */
 export function PayoffSettleDialog({ payoff, onClose }: { payoff: PayoffRequest | null; onClose(): void }) {
   const { t } = useTranslation();
-  const { orgId } = useOrg();
+  const { orgId, path } = useOrg();
   const sign = useSign();
+  const [done, setDone] = useState<string | null>(null);
+  if (payoff && done) {
+    return (
+      <Dialog open onClose={onClose} title={t("payoff.settle_confirmed")}>
+        <div className="stack-4">
+          <Notice kind="ok" title={t("payoff.settle_confirmed")}>
+            <p>{t("payoff.settle_confirmed_body", { reg: done })}</p>
+          </Notice>
+          <div className="mid-rad mid-rad-slut">
+            <Link className="mid-knapp mid-knapp-kontur" to={path("inbox")} onClick={onClose}>{t("nav.inbox")}</Link>
+            <Link className="mid-knapp mid-knapp-primar" to={path("portfolio")} onClick={onClose}>{t("nav.portfolio")}</Link>
+          </div>
+        </div>
+      </Dialog>
+    );
+  }
   return (
     <FinancingDialog
       open={!!payoff}
@@ -476,7 +544,7 @@ export function PayoffSettleDialog({ payoff, onClose }: { payoff: PayoffRequest 
       onSubmit={async () => {
         const sig = await sign(orgId, "release_encumbrance", payoff!.encumbrance_id, {});
         await rpc("settle_payoff", { p_org_id: orgId, p_payoff_request_id: payoff!.id, p_signature_id: sig, p_release: true });
-        onClose();
+        setDone(payoff!.reg_number);
       }}
     >
       <p className="t-liten">{t("payoff.settle_lead")}</p>
@@ -517,6 +585,7 @@ export function PayoffPanel({ payoff, isHolder, onAction }: {
 }) {
   const { t } = useTranslation();
   const { canWrite } = useOrg();
+  const [docError, setDocError] = useState<unknown>(null);
   if (!payoff) return null;
   const open = ["requested", "quoted", "settlement_submitted"].includes(payoff.status);
   return (
@@ -530,6 +599,25 @@ export function PayoffPanel({ payoff, isHolder, onAction }: {
       <p className="t-liten t-sekundar">{t("payoff.requested_by", { org: payoff.requested_by?.name ?? "" })}</p>
       {payoff.quote_valid_until && <p className="t-liten">{t("payoff.quote_valid", { date: formatDate(payoff.quote_valid_until) })}</p>}
       {payoff.declined_reason && <p className="mid-fel">{t("payoff.declined_by", { holder: payoff.holder?.name ?? "", reason: payoff.declined_reason })}</p>}
+      {/* The two documents of the payoff. Both parties may open both (ADR 0030); the panel never offered them
+          before, so the figure in the lender's statement was only reachable from the trade-in page. */}
+      {(payoff.quote_document_id || payoff.settlement_document_id) && (
+        <div className="mid-rad">
+          {payoff.quote_document_id && (
+            <button type="button" className="mid-knapp mid-knapp-sekundar mid-knapp-liten"
+              onClick={() => void openPayoffDocument(payoff.quote_document_id!, setDocError)}>
+              <Icon name="dokument" />{t("payoff.quote_open")}
+            </button>
+          )}
+          {payoff.settlement_document_id && (
+            <button type="button" className="mid-knapp mid-knapp-kontur mid-knapp-liten"
+              onClick={() => void openPayoffDocument(payoff.settlement_document_id!, setDocError)}>
+              <Icon name="kvitto" />{t("payoff.settlement_open")}
+            </button>
+          )}
+        </div>
+      )}
+      {docError != null && <ErrorNotice error={docError} />}
       <p className="t-liten t-sekundar">{t("payoff.no_amounts")}</p>
       {canWrite && (
         <div className="mid-rad">
@@ -556,5 +644,59 @@ export function PayoffPanel({ payoff, isHolder, onAction }: {
         </div>
       )}
     </article>
+  );
+}
+
+/**
+ * Correct the financing terms afterwards (ADR 0029). Figures read off a document will sometimes be wrong, and
+ * without this the only way to fix one is to release the financing and register it again — which breaks the
+ * chain for what is a clerical error. Open to the machine's owner and to the lender holding it.
+ */
+export function EditFinancingTermsDialog({ e, onClose }: { e: Encumbrance | null; onClose(): void }) {
+  const { t } = useTranslation();
+  const { orgId } = useOrg();
+  const [terms, setTerms] = useState<TermsForm>(EMPTY_TERMS);
+  const [ref, setRef] = useState("");
+  const [err, setErr] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState<string | null>(null);
+  const setTerm = <K extends keyof TermsForm>(k: K, v: TermsForm[K]) => setTerms((f) => ({ ...f, [k]: v }));
+  // Fill the form from the row the first time this encumbrance is opened, so an edit starts from what is stored.
+  if (e && loaded !== e.id) {
+    const s = (v: unknown) => (v === null || v === undefined ? "" : String(v));
+    setTerms({
+      financing_amount: s(e.terms?.financing_amount), down_payment: s(e.terms?.down_payment),
+      residual_value: s(e.terms?.residual_value), amortization_months: s(e.terms?.amortization_months),
+      interest_rate: s(e.terms?.interest_rate),
+      monthly_cost: e.terms?.terms_overridden ? s(e.terms?.monthly_cost) : "",
+    });
+    setRef(e.contract_ref ?? "");
+    setLoaded(e.id);
+  }
+  return (
+    <FinancingDialog
+      open={!!e}
+      onClose={onClose}
+      wide
+      title={t("financing.terms.edit")}
+      submitLabel={t("common.save")}
+      onSubmit={async () => {
+        setErr(null);
+        if (!ref.trim()) { setErr(t("actions.encumbrance.contract_ref_required")); throw new Error("ref"); }
+        const bad = termsError(terms, t);
+        if (bad) { setErr(bad); throw new Error("terms"); }
+        await rpc("update_encumbrance_terms", {
+          p_org_id: orgId, p_encumbrance_id: e!.id,
+          p_terms: { ...(termsPayload(terms) ?? {}), contract_ref: ref },
+        });
+        onClose();
+      }}
+    >
+      <p className="t-liten t-sekundar">{t("actions.encumbrance.no_amounts")}</p>
+      <FormField label={t("actions.encumbrance.contract_ref")} hint={t("actions.encumbrance.contract_ref_hint")}>
+        <input className="mid-input is-id" value={ref} onChange={(ev) => setRef(ev.target.value)} />
+      </FormField>
+      <FinancingTermsFields form={terms} set={setTerm} />
+      {err && <p className="t-liten t-fel">{err}</p>}
+    </FinancingDialog>
   );
 }

@@ -48,9 +48,9 @@ function Badge({ kind }: { kind: NavItem["badge"] }) {
 
 function SideNav({ onNavigate }: { onNavigate?: () => void }) {
   const { t } = useTranslation();
-  const { types, isAdmin, path, canWrite } = useOrg();
+  const { types, isAdmin, path, canWrite, modules } = useOrg();
   const { context } = useAuth();
-  const groups = navGroups(types, isAdmin, !!context?.operator_role, canWrite);
+  const groups = navGroups(types, isAdmin, !!context?.operator_role, canWrite, modules);
   return (
     <nav className="sidomeny" aria-label={t("nav.main")} onClick={(e) => { if ((e.target as HTMLElement).closest("a")) onNavigate?.(); }}>
       {groups.map((g) => (

@@ -24,10 +24,13 @@ begin
   perform public.assign_machine(berg, seed.mid(8), p2, current_date - 15);
   perform public.assign_machine(berg, seed.mid(12), p2, current_date - 12);
 
-  -- Two rented machines (Nordmaskin's rental fleet, scenario 'rented').
-  perform seed.act('nordmaskin@demo.se');
-  perform public.create_rental(nord, seed.mid(27), berg, current_date - 10, current_date + 20, 'HYR-2026-118');
-  perform public.create_rental(nord, seed.mid(28), kommun, current_date - 3, current_date + 60, 'HYR-2026-121');
+  -- Two rented machines (scenario 'rented'). The lessor is Bergs Schakt rather than Nordmaskin: Uthyrning is one
+  -- of the four fleet modules taken out of the dealer view (ADR 0031), so seeding it on the main dealer account
+  -- would both fail the module guard and put the menu item back where the product owner asked for it to be gone.
+  -- A dealer that wants Uthyrning turns it on under Inställningar → Moduler.
+  perform seed.act('berg@demo.se');
+  perform public.create_rental(berg, seed.mid(9), kommun, current_date - 10, current_date + 20, 'HYR-2026-118');
+  perform public.create_rental(berg, seed.mid(10), nord, current_date - 3, current_date + 60, 'HYR-2026-121');
 
   -- Hour meter readings and service for the owners' fleets.
   for r in select mp.slot, mp.hours, ow.email, ow.org_id from seed.machine_plan mp join seed.machine_ids mi on mi.slot = mp.slot
