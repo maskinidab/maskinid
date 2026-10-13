@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { APP_LEGAL_NAME, APP_NAME } from "@maskinid/shared/config.ts";
 import { useAuth } from "../auth/AuthProvider";
+import { useFlag } from "../lib/flags";
 import { Icon } from "../components/Icon";
 import { Wordmark } from "../components/Logo";
 import { ScanButton } from "../components/Scanner";
@@ -11,6 +12,7 @@ import { DemoBanner, LanguageSwitch, LogoLink, SkipLink, ThemeSwitch } from "./C
 export function PublicHeader() {
   const { t } = useTranslation();
   const { session, context } = useAuth();
+  const pricing = useFlag("FEATURE_PRICING");
   const [open, setOpen] = useState(false);
   const first = context?.memberships.find((m) => m.org.id === context.last_active_org_id) ?? context?.memberships[0];
   return (
@@ -22,7 +24,7 @@ export function PublicHeader() {
         </button>
         <nav id="huvudmeny" className={`sidhuvud-nav${open ? " is-oppen" : ""}`} aria-label={t("nav.main")} onClick={(e) => { if ((e.target as HTMLElement).closest("a")) setOpen(false); }}>
           <NavLink to="/how">{t("nav.how_it_works")}</NavLink>
-          <NavLink to="/pricing">{t("nav.pricing")}</NavLink>
+          {pricing && <NavLink to="/pricing">{t("nav.pricing")}</NavLink>}
           <NavLink to="/security">{t("nav.security")}</NavLink>
           <NavLink to="/help">{t("nav.help")}</NavLink>
           <ScanButton />
@@ -41,6 +43,7 @@ export function PublicHeader() {
 
 export function Footer() {
   const { t } = useTranslation();
+  const pricing = useFlag("FEATURE_PRICING");
   return (
     <footer className="sidfot">
       <div className="behallare sidfot-inre">
@@ -52,7 +55,7 @@ export function Footer() {
           <h2>{APP_NAME}</h2>
           <ul>
             <li><Link to="/how">{t("nav.how_it_works")}</Link></li>
-            <li><Link to="/pricing">{t("nav.pricing")}</Link></li>
+            {pricing && <li><Link to="/pricing">{t("nav.pricing")}</Link></li>}
             <li><Link to="/statistics">{t("nav.statistics")}</Link></li>
             <li><Link to="/stolen">{t("public.stolen_list")}</Link></li>
             <li><Link to="/tips">{t("tips.link")}</Link></li>

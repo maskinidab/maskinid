@@ -274,6 +274,7 @@
     "FEATURE_MARKET": "Market surveillance",
     "FEATURE_NFC": "NFC labels",
     "FEATURE_PAYMENTS": "Payments (Stripe, test mode)",
+    "FEATURE_PRICING": "Price list and price information (public pricing page, the billing tab and the label order price preview)",
     "FEATURE_PUSH": "Browser push notifications",
     "FEATURE_SMS": "SMS for critical notifications",
     "FEATURE_TELEMATICS": "Telematics integrations",

@@ -7,14 +7,31 @@ const usage = (b: any, metric: string) => b.usage.find((u: any) => u.metric === 
 describe("billing: plans and prices (step 23)", () => {
   it("anyone can read public plans and the price list; the public-sector plan is not listed", async () => {
     await tx(async (t) => {
+      await t.as("service");
+      await t.q(`update public.app_config set value = 'true' where key = 'FEATURE_PRICING'`);
       await t.as("anon");
       const r = await t.rpc<any>("list_plans", {});
+      expect(r.pricing_enabled).toBe(true);
       const keys = r.plans.map((p: any) => p.key);
       expect(keys).toEqual(expect.arrayContaining(["free", "dealer", "financier", "insurer", "marketplace", "enterprise"]));
       expect(keys).not.toContain("public_sector");
       expect(r.price_items).toMatchObject({ check: 4900, register_extract: 9900 });
       expect(r.vat_rate).toBe(0.25);
       expect(r.plans.find((p: any) => p.key === "financier").unit_prices.check).toBe(1500);
+    });
+  });
+
+  it("FEATURE_PRICING off empties the price list instead of raising", async () => {
+    // list_plans is anon-granted and its callers index price_items directly (LabelsPage), so with pricing off it
+    // must answer with the same shape and nothing in it – never an error, never a zero price (ADR 0033).
+    await tx(async (t) => {
+      expect(await t.val("select value #>> '{}' from public.app_config where key = 'FEATURE_PRICING'")).toBe("false");
+      await t.as("anon");
+      const r = await t.rpc<any>("list_plans", {});
+      expect(r).toMatchObject({ pricing_enabled: false, plans: [], price_items: {}, currency: "SEK" });
+      expect(r.vat_rate).toBe(0.25);
+      await t.as("dealer");
+      expect((await t.rpc<any>("list_plans", {})).price_items).toEqual({});
     });
   });
 
@@ -177,6 +194,9 @@ describe("billing: monthly invoices (step 23)", () => {
       expect((await t.rpcError("admin_set_price", { p_key: "check", p_unit_price_ore: -1 })).code).toBe("VALIDATION");
       expect((await t.rpcError("admin_set_plan", { p_key: "dealer", p_monthly_fee_ore: 1, p_included: { bogus: 1 }, p_unit_prices: {}, p_active: true })).code).toBe("VALIDATION");
       await t.rpc("admin_set_plan", { p_key: "dealer", p_monthly_fee_ore: 109000, p_included: { check: 60 }, p_unit_prices: { check: 2900 }, p_active: true });
+      // The operator's own editing works whatever FEATURE_PRICING says; reading the public list back needs it on.
+      await t.as("service");
+      await t.q(`update public.app_config set value = 'true' where key = 'FEATURE_PRICING'`);
       await t.as("anon");
       const r = await t.rpc<any>("list_plans", {});
       expect(r.price_items.check).toBe(5900);

@@ -274,6 +274,7 @@
     "FEATURE_MARKET": "Marknadsbevakning",
     "FEATURE_NFC": "NFC-märken",
     "FEATURE_PAYMENTS": "Betalning (Stripe, testläge)",
+    "FEATURE_PRICING": "Prislista och prisinformation (publik prissida, betalningsfliken och prisförhandsvisningen vid märkesbeställning)",
     "FEATURE_PUSH": "Push-notiser i webbläsaren",
     "FEATURE_SMS": "SMS vid kritiska notiser",
     "FEATURE_TELEMATICS": "Telematikintegrationer",

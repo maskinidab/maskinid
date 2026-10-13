@@ -12,7 +12,8 @@ async function audit(page: Page, name: string) {
   expect(bad, `${name}\n${report}`).toEqual([]);
 }
 
-const PUBLIC = ["/", "/how", "/security", "/pricing", "/statistics", "/stolen", "/tips", "/help", "/contact", "/status", "/api-docs", "/login", "/signup"];
+// /pricing is left out while FEATURE_PRICING is off – it redirects to "/", which is already audited (ADR 0033).
+const PUBLIC = ["/", "/how", "/security", "/statistics", "/stolen", "/tips", "/help", "/contact", "/status", "/api-docs", "/login", "/signup"];
 
 for (const path of PUBLIC) {
   test(`a11y ${path}`, async ({ page }) => {

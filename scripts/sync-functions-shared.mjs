@@ -2,8 +2,8 @@
 // code without relying on imports outside the functions directory. Run after changing packages/shared:
 //   node scripts/sync-functions-shared.mjs          (write)
 //   node scripts/sync-functions-shared.mjs --check  (CI: fail if out of date)
-import { cpSync, existsSync, readdirSync, readFileSync, rmSync, statSync } from "node:fs";
-import { join, relative } from "node:path";
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
@@ -32,7 +32,18 @@ if (process.argv.includes("--check")) {
   }
   console.log("functions shared code is in sync");
 } else {
-  rmSync(dst, { recursive: true, force: true });
-  cpSync(src, dst, { recursive: true, filter: (p) => !skip(p) });
-  console.log(`synced ${list(dst).length} files to ${relative(root, dst)}`);
+  // Copied file by file rather than with cpSync: on a OneDrive-backed working copy cpSync fails trying to unlink
+  // the destination (errno 0, "The operation completed successfully"), and rmSync does not reliably clear it either.
+  // Writing each file and then pruning what is no longer wanted gives the same result without touching that path.
+  const want = list(src).map((p) => relative(src, p));
+  for (const f of want) {
+    const to = join(dst, f);
+    mkdirSync(dirname(to), { recursive: true });
+    const body = readFileSync(join(src, f));
+    if (!existsSync(to) || !readFileSync(to).equals(body)) writeFileSync(to, body);
+  }
+  for (const f of (existsSync(dst) ? list(dst).map((p) => relative(dst, p)) : [])) {
+    if (!want.includes(f)) rmSync(join(dst, f), { force: true });
+  }
+  console.log(`synced ${want.length} files to ${relative(root, dst)}`);
 }

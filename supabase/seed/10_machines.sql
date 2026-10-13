@@ -13,7 +13,7 @@ insert into seed.machine_plan values
   (9, 'berg', 'Volvo', 'ECR25 Electric', 'excavator_tracked', 2016, 4590, 'VCEECR25E45597', array['level2']::text[]),
   (10, 'berg', 'Volvo', 'A30G', 'dumper', 2013, 5122, 'VCEA30G45118', array['level1']::text[]),
   (11, 'berg', 'Toyota', '8FD30', 'forklift', 2017, 5868, 'TYT8FD3013676', array['level1']::text[]),
-  (12, 'berg', 'Caterpillar', 'D6', 'dozer', 2023, 2310, 'CAT0D606695', '{}'::text[]),
+  (12, 'berg', 'Caterpillar', 'D6', 'dozer', 2023, 2310, 'CAT0D606695', array['enc:nordic:leasing']::text[]),
   (13, 'lena', 'JCB', '3CX', 'backhoe', 2018, 3040, 'JCB3CX17361', array['enc:bank:ownership_reservation','new_sale']::text[]),
   (14, 'lena', 'JCB', '3CX', 'backhoe', 2025, 943, 'JCB3CX39427', array['level2']::text[]),
   (15, 'lena', 'JCB', '3CX', 'backhoe', 2021, 2480, 'JCB3CX48400', array['level1']::text[]),
@@ -75,7 +75,8 @@ create or replace function seed.owner(p_key text) returns table (org_id uuid, em
     ('kommun', 'kommunfastigheter-vast', 'kommun@demo.se'), ('nordmaskin', 'nordmaskin-ab', 'nordmaskin@demo.se'),
     ('syd', 'entreprenadcenter-syd-ab', 'syd@demo.se'), ('norr', 'skogsmaskiner-norr-ab', 'norr@demo.se'),
     ('bank', 'demo-bank-finans', 'bank@demo.se'), ('finans', 'nordisk-maskinfinans', 'finans@demo.se'),
-    ('dnb', 'dnb-finans-demo', 'dnb@demo.se'), ('santander', 'santander-consumer-demo', 'santander@demo.se'))
+    ('dnb', 'dnb-finans-demo', 'dnb@demo.se'), ('santander', 'santander-consumer-demo', 'santander@demo.se'),
+    ('nordic', 'nordic-finance-demo', 'nordic@demo.se'))
     x(key, slug, email) where x.key = p_key
 $$;
 

@@ -1,9 +1,10 @@
 import { BILLING_METRICS, formatSek, vatOf } from "@maskinid/shared/billing.ts";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { ErrorNotice, Skeleton } from "../../components/Feedback";
 import { useRpc } from "../../lib/api/query";
+import { useFlagState } from "../../lib/flags";
 import { currentLocale } from "../../i18n";
 
 export interface Plan {
@@ -42,11 +43,21 @@ export function PlanCard({ plan, vatRate, current, action }: { plan: Plan; vatRa
   );
 }
 
-/** Public price list (/pricing). Registration is always free; all prices excl. VAT, VAT shown separately. */
+/**
+ * Public price list (/pricing). Registration is always free; all prices excl. VAT, VAT shown separately.
+ *
+ * While FEATURE_PRICING is off the page is not reachable – the links to it are gone, and a typed-in address lands
+ * on the start page rather than on an empty price table (ADR 0033).
+ */
 export function PricingPage() {
   const { t } = useTranslation();
   const loc = currentLocale();
+  const { flags, loading } = useFlagState();
   const q = useRpc<{ plans: Plan[]; price_items: Record<string, number>; vat_rate: number }>("list_plans", {});
+  // useFlagState, not useFlag: redirecting on the build-time default would send a visitor away from a price list
+  // that is in fact turned on, before the database has answered.
+  if (loading) return <div className="behallare sektion"><Skeleton lines={6} /></div>;
+  if (!flags.FEATURE_PRICING) return <Navigate to="/" replace />;
   return (
     <div className="behallare sektion stack-6">
       <header className="stack-2">

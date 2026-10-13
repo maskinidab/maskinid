@@ -72,3 +72,36 @@ test("driftstatus visar jobb och kontrollvärde", async ({ page }) => {
   await expect(page.getByText("cleanup").first()).toBeVisible();
   await expect(page.getByText("e2e").first()).toBeVisible();
 });
+
+// Rikard's point: the prices come off the product for now. The links are gone from the header, the footer and the
+// segment pages, a typed-in /pricing lands on the start page, and the operator can turn it all back on (ADR 0033).
+test("prisinformationen är borta och går att tända igen", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await expect(page.locator('a[href="/pricing"]')).toHaveCount(0);
+
+  await page.goto("/for/handlare");
+  await expect(page.getByRole("heading", { name: "För maskinhandlare", level: 1 })).toBeVisible();
+  await expect(page.locator('a[href="/pricing"]')).toHaveCount(0);
+
+  await page.goto("/pricing");
+  await expect(page).toHaveURL(/\/$/);
+
+  // The märke order form must not show a price either. Those two strings are the whole price paragraph
+  // (labels.price), so their absence also rules out a "0 kr" or a NaN from an empty price list.
+  const dealer = await login(page, "nordmaskin@demo.se");
+  await page.goto(`${dealer}/labels`);
+  await expect(page.getByRole("heading", { name: "Beställ märken" })).toBeVisible();
+  await expect(page.getByText("exkl. moms")).toHaveCount(0);
+  await expect(page.getByText("Faktureras med månadens faktura")).toHaveCount(0);
+
+  // Betalning is gone from the organisation's settings while the flag is off.
+  await page.goto(`${dealer}/settings`);
+  await expect(page.getByRole("tab", { name: "Betalning" })).toHaveCount(0);
+
+  await sql(page, "update public.app_config set value = 'true' where key = 'FEATURE_PRICING'");
+  await logout(page);
+  await page.goto("/pricing");
+  await expect(page.getByRole("heading", { name: "Priser", level: 1 })).toBeVisible();
+  await expect(page.getByRole("cell", { name: "Kontroller" })).toBeVisible();
+});
