@@ -76,7 +76,7 @@ export function AdminOrgPage() {
   const { id } = useParams();
   const { atLeast } = useAdmin();
   const q = useRpc<OrgDetail>("admin_get_org", { p_org_id: id });
-  const [dialog, setDialog] = useState<"types" | "suspend" | "viewas" | null>(null);
+  const [dialog, setDialog] = useState<"types" | "suspend" | "viewas" | "reject" | null>(null);
   const approve = useRpcMutation<{ p_org_id: string }>("approve_org");
   if (q.isLoading) return <Skeleton lines={8} />;
   if (q.error) return <ErrorNotice error={q.error} />;
@@ -95,6 +95,10 @@ export function AdminOrgPage() {
           <div><dt>{t("admin.orgs.api_keys")}</dt><dd>{q.data!.api_keys}</dd></div>
         </dl>
         {org.suspended_reason && <Notice kind="fel" title={t("admin.orgs.suspended_reason", { reason: org.suspended_reason })} />}
+        {/* Entered by hand in the closed pilot: nothing has checked the name against the org number (ADR 0034). */}
+        {org.status === "pending" && org.lookup_source === "manual" && (
+          <Notice kind="info" title={t("admin.orgs.manual_title")}><p className="t-liten">{t("admin.orgs.manual_body")}</p></Notice>
+        )}
         {approve.error && <ErrorNotice error={approve.error} />}
         {atLeast("support") && (
           <div className="mid-rad">
@@ -104,6 +108,9 @@ export function AdminOrgPage() {
               </button>
             )}
             {atLeast("verifier") && !org.types.includes("operator") && <button type="button" className="mid-knapp mid-knapp-kontur" onClick={() => setDialog("types")}>{t("admin.orgs.change_types")}</button>}
+            {atLeast("verifier") && org.status === "pending" && (
+              <button type="button" className="mid-knapp mid-knapp-kontur" onClick={() => setDialog("reject")}>{t("admin.orgs.reject")}</button>
+            )}
             {atLeast("superadmin") && org.status !== "suspended" && !org.types.includes("operator") && (
               <button type="button" className="mid-knapp mid-knapp-kontur" onClick={() => setDialog("suspend")}>{t("admin.orgs.suspend")}</button>
             )}
@@ -132,6 +139,7 @@ export function AdminOrgPage() {
       </section>
       {dialog === "types" && <TypesDialog org={org} onClose={() => setDialog(null)} />}
       {dialog === "suspend" && <SuspendDialog org={org} onClose={() => setDialog(null)} />}
+      {dialog === "reject" && <SuspendDialog org={org} reject onClose={() => setDialog(null)} />}
       {dialog === "viewas" && <ViewAsDialog org={org} onClose={() => setDialog(null)} />}
     </div>
   );
@@ -165,18 +173,19 @@ function TypesDialog({ org, onClose }: { org: AdminOrg; onClose(): void }) {
   );
 }
 
-function SuspendDialog({ org, onClose }: { org: AdminOrg; onClose(): void }) {
+/** Suspend an organisation, or – with `reject` – turn down an application. The applicant is told the reason. */
+function SuspendDialog({ org, onClose, reject = false }: { org: AdminOrg; onClose(): void; reject?: boolean }) {
   const { t } = useTranslation();
   const [reason, setReason] = useState("");
-  const m = useRpcMutation<{ p_org_id: string; p_reason: string }>("suspend_org", { onSuccess: onClose });
+  const m = useRpcMutation<{ p_org_id: string; p_reason: string }>(reject ? "reject_org" : "suspend_org", { onSuccess: onClose });
   return (
-    <Dialog open onClose={onClose} title={t("admin.orgs.suspend")}>
+    <Dialog open onClose={onClose} title={reject ? t("admin.orgs.reject") : t("admin.orgs.suspend")}>
       <form className="stack-4" onSubmit={(e) => { e.preventDefault(); m.mutate({ p_org_id: org.id, p_reason: reason.trim() }); }}>
-        <p>{t("admin.orgs.suspend_lead", { name: org.name })}</p>
+        <p>{reject ? t("admin.orgs.reject_lead", { name: org.name }) : t("admin.orgs.suspend_lead", { name: org.name })}</p>
         <FormField label={t("admin.reason")}><textarea className="mid-input" rows={3} value={reason} onChange={(e) => setReason(e.target.value)} required /></FormField>
         {m.error && <ErrorNotice error={m.error} />}
         <div className="mid-rad">
-          <button type="submit" className="mid-knapp mid-knapp-fara" disabled={!reason.trim() || m.isPending}>{t("admin.orgs.suspend")}</button>
+          <button type="submit" className="mid-knapp mid-knapp-fara" disabled={!reason.trim() || m.isPending}>{reject ? t("admin.orgs.reject") : t("admin.orgs.suspend")}</button>
           <button type="button" className="mid-knapp mid-knapp-text" onClick={onClose}>{t("common.cancel")}</button>
         </div>
       </form>

@@ -13,6 +13,9 @@ export interface OrgBrief {
   types: OrgType[];
   status: "pending" | "approved" | "suspended";
   city: string | null;
+  /** Set on the member's own organisations when an operator rejected the application (ADR 0034). */
+  rejection_reason?: string | null;
+  created_at?: string;
 }
 
 export interface Membership {
@@ -43,6 +46,10 @@ export interface MyContext {
   unread_notifications: number;
   legal_pending?: { key: string; version: number }[];
   demo_mode: boolean;
+  /** Demo-BankID is allowed – in demo mode, or in the closed pilot without it (ADR 0034). */
+  mock_identity?: boolean;
+  /** The closed pilot: every organisation waits for an operator before it can be used (ADR 0034). */
+  require_org_approval?: boolean;
 }
 
 export interface Identifier {

@@ -4,7 +4,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useOrg } from "../../../auth/OrgContext";
 import { DataTable } from "../../../components/DataTable";
 import { Dialog } from "../../../components/Dialog";
-import { EmptyState, ErrorNotice, PageHeader, Skeleton, Tabs } from "../../../components/Feedback";
+import { EmptyState, ErrorNotice, Notice, PageHeader, Skeleton, Tabs } from "../../../components/Feedback";
 import { FormField } from "../../../components/FormField";
 import { Icon, type IconName } from "../../../components/Icon";
 import { RegNumber } from "../../../components/RegNumber";
@@ -24,6 +24,9 @@ export function AdminHomePage() {
   const o = overview.data!;
   const tiles: { to: string; label: string; value: number; icon: IconName; urgent?: boolean }[] = [
     { to: "admin/organizations?status=pending", label: t("admin.home.orgs_pending"), value: o.orgs_pending, icon: "personer", urgent: o.orgs_pending > 0 },
+    { to: "admin/users", label: t("admin.home.users_unconfirmed"), value: o.users_unconfirmed ?? 0, icon: "personer" },
+    { to: "admin/emails?status=failed", label: t("admin.home.emails_failed"), value: o.emails_failed_24h ?? 0, icon: "inkorg", urgent: (o.emails_failed_24h ?? 0) > 0 },
+    { to: "admin/emails?status=pending", label: t("admin.home.emails_pending"), value: o.emails_pending ?? 0, icon: "tid" },
     { to: "verify", label: t("admin.home.verifications_open"), value: o.verifications_open, icon: "sigill", urgent: o.verifications_open > 0 },
     { to: "admin/conflicts", label: t("admin.home.conflicts_open"), value: o.conflicts_open, icon: "varning", urgent: o.conflicts_open > 0 },
     { to: "admin/corrections", label: t("admin.home.corrections_pending"), value: o.corrections_pending, icon: "penna" },
@@ -35,9 +38,14 @@ export function AdminHomePage() {
   return (
     <div className="stack-6">
       <PageHeader title={t("nav.admin")} lead={t("admin.home.lead", { role: t(`enum.operator_role.${o.operator_role}`) })} />
+      {/* Which mode the register runs in, so nobody mistakes the pilot for demo or for full BankID (ADR 0034). */}
+      {o.pilot && !o.pilot.demo_mode && o.pilot.mock_identity && (
+        <Notice title={t("admin.home.pilot_title")}><p className="t-liten">{t("admin.home.pilot_body")}</p></Notice>
+      )}
       <dl className="nyckeltal">
         <div><dt>{t("dashboard.machines")}</dt><dd>{o.machines}</dd></div>
         <div><dt>{t("admin.home.orgs")}</dt><dd>{o.orgs}</dd></div>
+        <div><dt>{t("admin.home.users")}</dt><dd>{o.users_total ?? 0}</dd></div>
         <div><dt>{t("admin.home.last_anchor")}</dt><dd>{o.last_anchor ? formatDate(o.last_anchor.day) : "–"}</dd></div>
       </dl>
       <ul className="admin-rutor">

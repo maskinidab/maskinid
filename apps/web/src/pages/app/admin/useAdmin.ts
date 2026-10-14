@@ -9,6 +9,9 @@ export interface AdminOverview {
   orgs_pending: number; verifications_open: number; conflicts_open: number; corrections_pending: number;
   label_batches_ordered: number; market_alerts_open: number; webhooks_failed_24h: number; api_requests_24h: number;
   machines: number; orgs: number; last_anchor: { day: string; published_at: string | null } | null;
+  users_total?: number; users_unconfirmed?: number; emails_pending?: number; emails_failed_24h?: number;
+  /** The closed pilot's switches (ADR 0034). */
+  pilot?: { demo_mode: boolean; mock_identity: boolean; require_org_approval: boolean };
 }
 
 /** Operator role of the signed-in user (SPEC §2.4): support reads, verifier handles queues, superadmin changes settings. */

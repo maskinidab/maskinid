@@ -19,6 +19,9 @@ export function OrgForm({ initialTypes = ["owner"], onCreated }: { initialTypes?
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<unknown>(null);
   const [requested, setRequested] = useState(false);
+  // No company register to ask (the closed pilot): the applicant types the name and MaskinID checks it (ADR 0034).
+  const [manualName, setManualName] = useState("");
+  const manual = !!company?.manual && !company.existing_org;
   // lookup_company reports whether the organisation has any active member; one without is free to take over.
   const claimable = !!company?.existing_org?.claimable;
 
@@ -29,6 +32,7 @@ export function OrgForm({ initialTypes = ["owner"], onCreated }: { initialTypes?
       const org = await backend.rpc<OrgBrief>("create_org", {
         p_org_number: company?.org_number === "19XXXXXX-XXXX" ? orgNumber : company?.org_number ?? orgNumber,
         p_types: types, p_accept_dpa_version: dpa ? DPA_VERSION : null,
+        p_name: manual ? manualName.trim() : null,
       });
       onCreated(org);
     } catch (e) {
@@ -52,6 +56,13 @@ export function OrgForm({ initialTypes = ["owner"], onCreated }: { initialTypes?
         }} />
       </div>
       {company?.is_sole_trader && <Notice title={t("onboarding.sole_trader")} />}
+      {manual && (
+        <div className="mid-faltgrupp">
+          <label className="mid-etikett" htmlFor="orgnamn">{t("onboarding.manual_name")}</label>
+          <input id="orgnamn" className="mid-input" value={manualName} onChange={(e) => setManualName(e.target.value)} autoComplete="organization" />
+          <p className="mid-hjalp">{t("onboarding.manual_hint")}</p>
+        </div>
+      )}
       {/*
         An existing organisation with no active member is a placeholder somebody else created — a dealer who
         registered a machine for this company, or a dealer who registered a financing against this bank. The SQL
@@ -91,7 +102,7 @@ export function OrgForm({ initialTypes = ["owner"], onCreated }: { initialTypes?
             <input type="checkbox" checked={dpa} onChange={(e) => setDpa(e.target.checked)} />
             <span>{t("onboarding.dpa_label", { version: DPA_VERSION })} <Link className="mid-lank" to="/legal/dpa" target="_blank">{t("onboarding.dpa_link")}</Link></span>
           </label>
-          <button type="button" className="mid-knapp mid-knapp-primar" disabled={!company || !types.length || !dpa || busy} onClick={() => void create()}>
+          <button type="button" className="mid-knapp mid-knapp-primar" disabled={!company || !types.length || !dpa || busy || (manual && !manualName.trim())} onClick={() => void create()}>
             {claimable ? t("onboarding.claim_submit") : t("onboarding.create")}
           </button>
         </>

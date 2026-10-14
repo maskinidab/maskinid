@@ -61,6 +61,8 @@ export function FinancierPicker({ value, onChange, onProfile, error, label }: {
   const orgNr = typedOrgNr ?? value?.holder_org_number ?? "";
   const [profile, setProfile] = useState<FinancierProfile | null>(null);
   const [lookupError, setLookupError] = useState<string | null>(null);
+  // No company register to ask (the closed pilot): the bank's name is typed by hand (ADR 0034).
+  const [manual, setManual] = useState(false);
   const setMode = setPicked;
   const setOrgNr = setTypedOrgNr;
 
@@ -86,6 +88,7 @@ export function FinancierPicker({ value, onChange, onProfile, error, label }: {
 
   function pickByNumber(c: CompanyInfo | null) {
     setLookupError(null);
+    setManual(!!c?.manual && !c.existing_org);
     if (!c) {
       onChange(null);
       return;
@@ -97,12 +100,13 @@ export function FinancierPicker({ value, onChange, onProfile, error, label }: {
       onChange(null);
       return;
     }
+    const name = c.name ?? existing?.name ?? "";
     onChange({
       holder_org_id: existing && existing.types?.includes("financier") && existing.claimable === false ? existing.id : null,
       holder_org_number: c.org_number,
-      holder_name: c.name,
+      holder_name: name || null,
       unclaimed: !existing || existing.claimable !== false,
-      name: c.name,
+      name,
     });
   }
 
@@ -121,7 +125,13 @@ export function FinancierPicker({ value, onChange, onProfile, error, label }: {
         <div className="stack-2">
           <CompanyLookupField value={orgNr} onChange={setOrgNr} onFound={pickByNumber} label={t("common.org_number")} />
           <p className="mid-hjalp">{t("financier.picker.other_hint")}</p>
-          {value?.name && <p className="t-liten"><strong>{value.name}</strong></p>}
+          {manual && value && (
+            <FormField label={t("onboarding.manual_name")}>
+              <input className="mid-input" value={value.name ?? ""} autoComplete="organization"
+                onChange={(e) => onChange({ ...value, holder_name: e.target.value || null, name: e.target.value })} />
+            </FormField>
+          )}
+          {value?.name && !manual && <p className="t-liten"><strong>{value.name}</strong></p>}
           {value?.unclaimed && value.name && (
             <StatusBadge kind="vantar">{t("financier.picker.not_connected")}</StatusBadge>
           )}

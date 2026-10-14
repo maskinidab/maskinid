@@ -83,6 +83,11 @@ const AdminApiPage = L(() => import("./pages/app/admin/AdminTools"), "AdminApiPa
 const AdminSupportPage = L(() => import("./pages/app/admin/AdminTools"), "AdminSupportPage");
 const AdminFlagsPage = L(() => import("./pages/app/admin/AdminTools"), "AdminFlagsPage");
 const AdminHealthPage = L(() => import("./pages/app/admin/AdminTools"), "AdminHealthPage");
+const AdminUsersPage = L(() => import("./pages/app/admin/AdminPeople"), "AdminUsersPage");
+const AdminUserPage = L(() => import("./pages/app/admin/AdminPeople"), "AdminUserPage");
+const AdminFinanciersPage = L(() => import("./pages/app/admin/AdminPeople"), "AdminFinanciersPage");
+const AdminEmailLogPage = L(() => import("./pages/app/admin/AdminPeople"), "AdminEmailLogPage");
+const AdminAuditLogPage = L(() => import("./pages/app/admin/AdminPeople"), "AdminAuditLogPage");
 const SupportPage = L(() => import("./pages/app/org/SupportPages"), "SupportPage");
 const AdminTicketsPage = L(() => import("./pages/app/org/SupportPages"), "AdminTicketsPage");
 const AdminTipsPage = L(() => import("./pages/app/org/SupportPages"), "AdminTipsPage");
@@ -163,6 +168,11 @@ export const appRoutes: { path: string; element: ReactNode }[] = [
   { path: "admin", element: <AdminHomePage /> },
   { path: "admin/organizations", element: <AdminOrgsPage /> },
   { path: "admin/organizations/:id", element: <AdminOrgPage /> },
+  { path: "admin/users", element: <AdminUsersPage /> },
+  { path: "admin/users/:id", element: <AdminUserPage /> },
+  { path: "admin/financiers", element: <AdminFinanciersPage /> },
+  { path: "admin/emails", element: <AdminEmailLogPage /> },
+  { path: "admin/audit", element: <AdminAuditLogPage /> },
   { path: "admin/verifications", element: <VerifyQueuePage /> },
   { path: "admin/conflicts", element: <AdminConflictsPage /> },
   { path: "admin/corrections", element: <AdminCorrectionsPage /> },

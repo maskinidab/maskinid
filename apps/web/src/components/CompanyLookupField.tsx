@@ -15,7 +15,10 @@ import { Icon } from "./Icon";
 export type ExistingOrg = OrgBrief & { claimable?: boolean; needs_signatory?: boolean };
 
 export interface CompanyInfo {
-  name: string;
+  /** Null when there is no register to ask and the applicant types it (the closed pilot, ADR 0034). */
+  name: string | null;
+  /** No lookup provider: the name is entered by hand and checked by MaskinID before approval. */
+  manual?: boolean;
   city: string | null;
   org_number: string;
   is_sole_trader: boolean;
@@ -69,7 +72,7 @@ export function CompanyLookupField({ id, value, onChange, onFound, describedBy, 
       </div>
       <div aria-live="polite">
         {error && <p className="mid-fel"><Icon name="varning" />{error}</p>}
-        {found && <p className="t-liten"><Icon name="bock" className="ikon-inline" /> <strong>{found.name}</strong>{found.city ? `, ${found.city}` : ""}</p>}
+        {found && !found.manual && <p className="t-liten"><Icon name="bock" className="ikon-inline" /> <strong>{found.name}</strong>{found.city ? `, ${found.city}` : ""}</p>}
       </div>
     </div>
   );
