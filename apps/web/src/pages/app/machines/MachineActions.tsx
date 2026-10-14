@@ -18,6 +18,7 @@ import { useSign } from "../../../components/Signature";
 import { queryClient, rpc, useRpc } from "../../../lib/api/query";
 import type { DocumentItem, Encumbrance, Flag, MachineView, OrgBrief, Transfer } from "../../../lib/api/types";
 import { formatDate, formatReg, todayIso } from "../../../lib/format";
+import { siteUrl } from "../../../lib/surfaces";
 
 /** Thrown after an inline field error has been shown; the dialog shows nothing more. */
 class FieldError extends Error {}
@@ -370,7 +371,7 @@ export function ShareDialog({ m, open, onClose }: { m: MachineView; open: boolea
   const [maxViews, setMaxViews] = useState("");
   const [result, setResult] = useState<{ token: string; expires_at: string } | null>(null);
   const [copied, setCopied] = useState(false);
-  const url = result ? `${location.origin}/s/${result.token}` : "";
+  const url = result ? `${siteUrl()}/s/${result.token}` : "";
   const close = () => { setResult(null); setCopied(false); onClose(); };
   if (result) {
     return (

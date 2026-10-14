@@ -13,6 +13,11 @@ interface ImportMetaEnv {
   readonly VITE_SENTRY_DSN?: string;
   readonly VITE_TURNSTILE_SITE_KEY?: string;
   readonly VITE_VAPID_PUBLIC_KEY?: string;
+  /** Where the public site and the app live when they are separate deployments (ADR 0035). Unset: same origin. */
+  readonly VITE_SITE_URL?: string;
+  readonly VITE_APP_URL?: string;
+  /** "site" in the public site's build (apps/site). */
+  readonly VITE_SURFACE?: "site" | "app";
 }
 
 interface ImportMeta {

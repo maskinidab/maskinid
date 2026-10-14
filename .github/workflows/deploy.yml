@@ -1,7 +1,8 @@
 # Deploy (step 26, docs/runbooks/deploy.md). Migrations and Edge Functions reach staging/production only through here.
 #
-# Branch model:
-#   push to `staging` + green CI  ->  staging Supabase project   (automatic)
+# Branch model (ADR 0036): dev -> staging -> main.
+#   push to `dev`     + green CI  ->  staging Supabase project   (automatic; dev.maskinid.se shares demo's backend)
+#   push to `staging` + green CI  ->  staging Supabase project   (automatic; demo.maskinid.se)
 #   push to `main`    + green CI  ->  production Supabase project (the "production" environment has required
 #                                     reviewers configured in GitHub, so it waits for an approval)
 # The web app itself is deployed by the Vercel Git integration: `staging` branch -> staging deployment,
@@ -12,7 +13,7 @@ on:
   workflow_run:
     workflows: [CI]
     types: [completed]
-    branches: [main, staging]
+    branches: [main, staging, dev]
   workflow_dispatch:
     inputs:
       target:
@@ -53,11 +54,62 @@ jobs:
         run: supabase migration list
       - name: Apply migrations
         run: supabase db push --include-all
+      # Per-environment settings live in the GitHub environment (Settings → Environments), not in a migration, so
+      # staging and production can differ without code (ADR 0034). Only variables that are set are applied.
+      - name: Apply environment flags
+        env:
+          DEMO_MODE: ${{ vars.DEMO_MODE }}
+          MOCK_IDENTITY: ${{ vars.MOCK_IDENTITY }}
+          REQUIRE_ORG_APPROVAL: ${{ vars.REQUIRE_ORG_APPROVAL }}
+        run: |
+          for k in DEMO_MODE MOCK_IDENTITY REQUIRE_ORG_APPROVAL; do
+            v="${!k}"
+            if [ -n "$v" ]; then
+              case "$v" in true|false) ;; *) echo "::error::$k must be true or false"; exit 1;; esac
+              psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -c "update public.app_config set value = '$v'::jsonb, updated_at = now() where key = '$k'"
+              echo "$k = $v"
+            fi
+          done
+      - name: Edge Function settings
+        env:
+          # The functions can leave demo mode on their own (FUNCTIONS_DEMO_MODE): demo.maskinid.se keeps demo data and
+          # Demo-BankID in the database but sends real e-mail to the testers it invites (ADR 0036).
+          DEMO_MODE: ${{ vars.FUNCTIONS_DEMO_MODE || vars.DEMO_MODE }}
+          IDENTITY_PROVIDER: ${{ vars.IDENTITY_PROVIDER }}
+          SIGNATURE_PROVIDER: ${{ vars.SIGNATURE_PROVIDER }}
+          COMPANY_LOOKUP_PROVIDER: ${{ vars.COMPANY_LOOKUP_PROVIDER }}
+          VEHICLE_REGISTRY_PROVIDER: ${{ vars.VEHICLE_REGISTRY_PROVIDER }}
+          THEFT_REGISTRY_PROVIDER: ${{ vars.THEFT_REGISTRY_PROVIDER }}
+          OCR_PROVIDER: ${{ vars.OCR_PROVIDER }}
+          EMAIL_FROM: ${{ vars.EMAIL_FROM }}
+          PUBLIC_APP_URL: ${{ vars.PUBLIC_APP_URL }}
+          APP_ORIGIN: ${{ vars.APP_ORIGIN }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          # The scheduler's secret is created in the database and copied to the functions here, so no person
+          # ever handles it (ADR 0034).
+          CRON_SECRET="$(psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -At -c "select app.ensure_cron_secret()")"
+          echo "::add-mask::$CRON_SECRET"
+          args=("CRON_SECRET=$CRON_SECRET")
+          for k in DEMO_MODE IDENTITY_PROVIDER SIGNATURE_PROVIDER COMPANY_LOOKUP_PROVIDER VEHICLE_REGISTRY_PROVIDER \
+                   THEFT_REGISTRY_PROVIDER OCR_PROVIDER EMAIL_FROM PUBLIC_APP_URL APP_ORIGIN RESEND_API_KEY ANTHROPIC_API_KEY; do
+            if [ -n "${!k}" ]; then args+=("$k=${!k}"); echo "setting $k"; fi
+          done
+          supabase secrets set --project-ref "$SUPABASE_PROJECT_REF" "${args[@]}" > /dev/null
       - name: Deploy Edge Functions
         run: supabase functions deploy --project-ref "$SUPABASE_PROJECT_REF"
       - name: Point scheduled jobs at this project and (re)schedule
         run: |
           psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -c "update public.app_config set value = to_jsonb('https://${SUPABASE_PROJECT_REF}.supabase.co/functions/v1'::text) where key = 'FUNCTIONS_BASE_URL'" -c "select app.schedule_jobs()"
+      # The first operator: production has no seed. A no-op until that person has signed up, so it is safe on every run.
+      - name: Bootstrap operator
+        if: vars.OPERATOR_EMAIL != ''
+        env:
+          OPERATOR_EMAIL: ${{ vars.OPERATOR_EMAIL }}
+        run: |
+          # Through stdin: psql substitutes :'email' (quoted, so no injection) there, not in -c.
+          echo "select app.bootstrap_operator(:'email');" | psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -v email="$OPERATOR_EMAIL" -At
       - name: Smoke test
         run: |
           curl -fsS "https://${SUPABASE_PROJECT_REF}.supabase.co/functions/v1/health" | tee /dev/stderr | grep -q '"ok":true'

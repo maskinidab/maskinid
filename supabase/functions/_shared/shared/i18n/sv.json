@@ -191,6 +191,43 @@
    "webhooks_delivered": "Webhooks levererade",
    "webhooks_failed": "Webhooks misslyckade"
   },
+  "audit": {
+   "action": "Vad",
+   "actions": {
+    "billing_period_closed": "Faktureringsperiod stängd",
+    "billing_plan_set": "Plan ändrad",
+    "billing_price_set": "Pris ändrat",
+    "config_changed": "Inställning ändrad",
+    "job_run": "Jobb kört",
+    "labels_codes_exported": "Märkeskoder exporterade",
+    "legal_published": "Juridiskt dokument publicerat",
+    "machine_merged": "Maskiner sammanslagna",
+    "operator_bootstrapped": "Operatör upplagd",
+    "org_approved": "Organisation godkänd",
+    "org_modules_changed": "Moduler ändrade",
+    "org_rejected": "Ansökan avslagen",
+    "org_search": "Sökning bland organisationer",
+    "org_types_changed": "Organisationstyper ändrade",
+    "org_view": "Organisation visad",
+    "support_reply": "Svar på supportärende",
+    "support_search": "Supportsökning",
+    "support_ticket_view": "Supportärende visat",
+    "theft_external_reviewed": "Extern stöldrapport granskad",
+    "tips_list": "Tips listade",
+    "tips_review": "Tips granskat",
+    "user_search": "Sökning bland konton",
+    "user_view": "Konto visat",
+    "view_as_ended": "Visa som organisation avslutat",
+    "view_as_started": "Visa som organisation startat"
+   },
+   "details": "Detaljer",
+   "empty": "Inga händelser",
+   "lead": "Vad operatörerna har gjort: godkännanden, avslag, visningar av konton och organisationer, ändrade inställningar.",
+   "target": "Gäller",
+   "title": "Revisionslogg",
+   "when": "När",
+   "who": "Vem"
+  },
   "billing": {
    "close": "Skapa fakturor",
    "close_lead": "Skapar fakturor för månaden. Körs automatiskt den första varje månad; en organisation som redan fakturerats för perioden hoppas över.",
@@ -249,6 +286,35 @@
    "to_org_hint": "Organisationsnummer eller namn",
    "until": "Invändningstid till {{date}}"
   },
+  "emails": {
+   "created": "Skapat",
+   "empty": "Inga mejl",
+   "lead": "Allt som har skickats eller väntar på att skickas, och varför något misslyckades. Inloggnings- och bekräftelsemejl skickas av Supabase och syns inte här.",
+   "search": "Sök på mottagare eller mall",
+   "sent_at": "Skickat",
+   "status": {
+    "failed": "Misslyckat",
+    "pending": "Väntar",
+    "sent": "Skickat",
+    "skipped": "Hoppat över"
+   },
+   "template": {
+    "invite": "Inbjudan",
+    "invite_financier": "Inbjudan till långivare",
+    "invite_owner": "Inbjudan till ägare",
+    "invoice": "Faktura",
+    "notification": "Notis",
+    "notification_digest": "Sammanfattning av notiser",
+    "ownership_certificate": "Ägarbevis",
+    "sms": "SMS",
+    "support_reply": "Supportsvar",
+    "transfer_invite": "Ägarbyte",
+    "weekly_digest": "Veckosammanfattning"
+   },
+   "title": "E-postlogg",
+   "to": "Till",
+   "what": "Vad"
+  },
   "events": {
    "all_for_org": "Alla händelser för organisationen",
    "anchor_bad": "Stämmer inte",
@@ -270,6 +336,18 @@
    "type_hint": "Början av typen, t.ex. encumbrance eller market.",
    "verify_anchor": "Verifiera",
    "verify_chain": "Verifiera hela kedjan"
+  },
+  "financiers": {
+   "account": "Konto",
+   "active": "Aktiva förbehåll",
+   "connected": "Ansluten",
+   "empty": "Inga långivare",
+   "last_activity": "Senast aktiv",
+   "lead": "Alla långivare i registret, även banker som har pekats ut i en finansiering men inte skaffat konto. Antal förbehåll, väntande bekräftelser och öppna lösenärenden.",
+   "payoffs": "Öppna lösen",
+   "pending": "Att bekräfta",
+   "placeholder": "Ej ansluten",
+   "title": "Långivare"
   },
   "flags": {
    "changed": "Ändrad av {{who}} {{at}}",
@@ -315,12 +393,18 @@
    "api_requests": "API-anrop (24 h)",
    "conflicts_open": "öppna konflikter",
    "corrections_pending": "rättelser pågår",
+   "emails_failed": "Misslyckade mejl (24 h)",
+   "emails_pending": "Mejl i kö",
    "labels_ordered": "märkesbeställningar att trycka",
    "last_anchor": "Senaste ankare",
    "lead": "Det som väntar på registerhållaren just nu. Din roll: {{role}}.",
    "market_alerts": "öppna marknadslarm",
    "orgs": "Godkända organisationer",
    "orgs_pending": "organisationer väntar på godkännande",
+   "pilot_body": "Registret körs med riktiga konton och riktig e-post men med Demo-BankID. Ingen identitet är alltså kontrollerad av BankID – granska varje ansökan innan du godkänner den.",
+   "pilot_title": "Pilotläge",
+   "users": "Konton",
+   "users_unconfirmed": "Ej bekräftad e-post",
    "verifications_open": "verifieringar i kö",
    "webhooks_failed": "misslyckade webhooks (24 h)"
   },
@@ -394,9 +478,13 @@
    "identity": "BankID",
    "lead": "Godkännandekö och sök bland alla organisationer. Handlare, långivare, försäkringsgivare, myndigheter, besiktningsorgan och marknadsplatser godkänns manuellt.",
    "lookup": "Uppslag",
+   "manual_body": "Inget företagsregister har kontrollerat att namnet hör till organisationsnumret. Kontrollera mot Bolagsverket och att den sökande företräder bolaget innan du godkänner.",
+   "manual_title": "Uppgifterna är inmatade för hand",
    "members": "Medlemmar",
    "not_looked_up": "Inte uppslagen",
    "reactivate": "Återaktivera",
+   "reject": "Avslå ansökan",
+   "reject_lead": "{{name}} får ett mejl med skälet. Organisationen kan inte användas, men du kan godkänna den senare.",
    "role": "Behörighet",
    "search": "Namn eller organisationsnummer",
    "suspend": "Stäng av",
@@ -437,6 +525,24 @@
     "new": "Nytt"
    },
    "title": "Tips"
+  },
+  "users": {
+   "created": "Skapat",
+   "demo_bankid": "Demo-BankID",
+   "email_confirmed": "E-post bekräftad",
+   "empty": "Inga konton",
+   "has_org": "Har organisation",
+   "invites": "Inbjuden till: {{orgs}}",
+   "last_sign_in": "Senast inloggad",
+   "lead": "Alla som har skapat ett konto: om e-postadressen är bekräftad, om identiteten är verifierad och vilka organisationer de tillhör. Varje visning loggas.",
+   "mfa": "Tvåstegsverifiering",
+   "no_org": "Ingen ännu",
+   "no_org_lead": "Kontot har ingen organisation. Personen har inte ansökt än, eller väntar på en inbjudan.",
+   "no_security": "Inga säkerhetshändelser.",
+   "orgs": "Organisationer",
+   "search": "Sök på namn eller e-post",
+   "security": "Säkerhetshändelser",
+   "title": "Konton"
   }
  },
  "alerts": {
@@ -1718,6 +1824,7 @@
   "SIGNATURE_REQUIRED": "Signera med BankID för att fortsätta.",
   "SIGNATURE_REQUIRES_USER": "Den här åtgärden måste signeras av en person.",
   "SIGNUP_FAILED": "Kontot kunde inte skapas.",
+  "SURFACE_NOT_CONFIGURED": "Den här driftsättningen saknar adressen till webbplatsen eller appen (VITE_SITE_URL / VITE_APP_URL).",
   "TRANSFER_ALREADY_OPEN": "Det finns redan ett pågående ägarbyte för maskinen.",
   "TRANSFER_EXPIRED": "Ägarbytet har gått ut. Säljaren behöver starta om det.",
   "TRANSFER_NOT_AWAITING_BUYER": "Ägarbytet väntar inte på köparen.",
@@ -2155,6 +2262,7 @@
   "demo_button": "Verifiera med Demo-BankID",
   "demo_notice": "Demo-BankID: ingen riktig legitimering görs.",
   "lead": "All skrivning i registret kräver att du har verifierat din identitet med BankID. Personnumret sparas aldrig i klartext.",
+  "pilot_notice": "Under pilotperioden används Demo-BankID. MaskinID granskar varje konto manuellt innan det öppnas.",
   "title": "Verifiera din identitet",
   "verified": "Identitet verifierad {{date}}",
   "verified_title": "Din identitet är verifierad"
@@ -2661,10 +2769,13 @@
   "about": "Om oss",
   "admin": "Administration",
   "admin_api": "API-användning",
+  "admin_audit": "Revisionslogg",
   "admin_billing": "Betalning",
   "admin_conflicts": "Konflikter",
   "admin_corrections": "Rättelser",
+  "admin_emails": "E-postlogg",
   "admin_events": "Händelselogg",
+  "admin_financiers": "Långivare",
   "admin_flags": "Funktionsflaggor",
   "admin_health": "Systemhälsa",
   "admin_home": "Översikt",
@@ -2678,6 +2789,7 @@
   "admin_theft_reports": "Stöldregister",
   "admin_tickets": "Supportärenden",
   "admin_tips": "Tips",
+  "admin_users": "Konton",
   "alerts": "Larm",
   "api_docs": "API",
   "attachments": "Redskap",
@@ -3076,12 +3188,20 @@
   },
   "org": {
    "approved": {
-    "body": "{{name}} är godkänd. Alla funktioner för er organisationstyp är nu öppna.",
+    "body": "{{name}} är godkänd. Du kan nu logga in och använda MaskinID.",
     "title": "Organisationen är godkänd"
    },
    "pending_approval": {
-    "body": "{{name}} väntar på godkännande.",
+    "body": "{{name}} har ansökt om konto och väntar på granskning.",
     "title": "Ny organisation att granska"
+   },
+   "received": {
+    "body": "Tack för din ansökan. MaskinID granskar {{name}} och hör av sig så snart kontot är öppnat.",
+    "title": "Vi har tagit emot din ansökan"
+   },
+   "rejected": {
+    "body": "{{name}} har inte godkänts: {{reason}}",
+    "title": "Ansökan har inte godkänts"
    },
    "suspended": {
     "body": "{{name}} är avstängd: {{reason}}",
@@ -3280,6 +3400,8 @@
   "invite_emails": "E-postadresser, en per rad",
   "invites_sent": "{{count}} inbjudningar skickade.",
   "lookup": "Hämta uppgifter",
+  "manual_hint": "Skriv namnet som det står hos Bolagsverket. MaskinID kontrollerar uppgifterna innan kontot öppnas.",
+  "manual_name": "Företagets namn",
   "order_starter": "Beställ 50 märken",
   "pending_body": "Vi granskar inom en arbetsdag. Ni kan redan nu lägga in era egna maskiner.",
   "pending_title": "Vi granskar er organisation",
@@ -4191,5 +4313,22 @@
   "weight": "Tjänstevikt (kg)",
   "weight_hint": "Avgör om maskinen omfattas av registreringsplikt (från 1 500 kg).",
   "year": "Årsmodell"
+ },
+ "approval": {
+  "check_again": "Kontrollera igen",
+  "contact": "Kontakta MaskinID",
+  "mfa_lead": "{{name}} är en organisation som kräver tvåstegsverifiering vid inloggning. Aktivera den med en autentiseringsapp, eller ange koden från appen om du redan har gjort det.",
+  "mfa_title": "Aktivera tvåstegsverifiering",
+  "other_orgs": "Dina andra organisationer",
+  "pending_email": "Du får ett mejl så snart kontot är öppnat.",
+  "pending_lead": "Under pilotperioden granskar MaskinID varje nytt konto innan det öppnas. Det tar normalt en arbetsdag.",
+  "pending_title": "Ansökan är skickad",
+  "rejected_next": "Hör av dig till oss om du tror att det är fel, så tittar vi på det igen.",
+  "rejected_reason": "Skäl: {{reason}}",
+  "rejected_title": "Ansökan har inte godkänts",
+  "step_applied": "Ansökan skickad {{date}}",
+  "step_email": "E-postadressen är bekräftad",
+  "step_identity": "Identiteten är verifierad",
+  "step_review": "MaskinID granskar ansökan"
  }
 }

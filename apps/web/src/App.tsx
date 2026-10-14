@@ -2,6 +2,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, HashRouter } from "react-router-dom";
 import { AuthProvider } from "./auth/AuthProvider";
 import { SignatureProvider } from "./components/Signature";
+import { WebAnalytics } from "./components/WebAnalytics";
 import { queryClient } from "./lib/api/query";
 import { AppRoutes } from "./routes";
 
@@ -16,6 +17,7 @@ export function App() {
           <Router>
             <AppRoutes />
           </Router>
+          <WebAnalytics />
         </SignatureProvider>
       </AuthProvider>
     </QueryClientProvider>

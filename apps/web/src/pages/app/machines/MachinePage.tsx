@@ -36,6 +36,7 @@ import {
   BindLabelDialog, ClearFlagDialog, DeregisterDialog, EditMachineDialog, EncumbranceDialog, FlagDialog, ReleaseEncumbranceDialog,
   ReimportDialog, RequestReleaseDialog, ShareDialog, TransferDialog, VerificationDialog,
 } from "./MachineActions";
+import { siteUrl } from "../../../lib/surfaces";
 
 type Tab = "overview" | "history" | "documents" | "financing" | "service" | "access";
 type DialogId = "transfer" | "flag" | "deregister" | "share" | "encumbrance" | "label" | "verify" | "edit" | "mandate"
@@ -325,10 +326,10 @@ function Overview({ m, flags, onClearFlag }: { m: MachineView; flags: Flag[]; on
             <Fact label={t("machine.label_qr")}>
               <span className="qr-rad">
                 <a href={`/m/${bound.code}`} target="_blank" rel="noopener">
-                  <QrCode url={`${location.origin}/m/${bound.code}`} size={128} alt={t("labels.qr_alt", { serial: labelSerial(bound.code) })} />
+                  <QrCode url={`${siteUrl()}/m/${bound.code}`} size={128} alt={t("labels.qr_alt", { serial: labelSerial(bound.code) })} />
                 </a>
                 <button type="button" className="mid-knapp mid-knapp-sekundar mid-knapp-liten"
-                  onClick={() => { setLabelError(null); lotTagPdf({ ...m, label_code: bound.code }, t, location.origin)
+                  onClick={() => { setLabelError(null); lotTagPdf({ ...m, label_code: bound.code }, t, siteUrl())
                     .then((b) => downloadBytes(b, `marke-${m.reg_number}.pdf`)).catch(setLabelError); }}>
                   <Icon name="uppladdning" />{t("machine.label_print")}
                 </button>

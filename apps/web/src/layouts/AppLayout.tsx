@@ -16,6 +16,7 @@ import { backend } from "../lib/backend";
 import { DemoBanner, LanguageSwitch, LogoLink, SkipLink, ThemeSwitch } from "./Chrome";
 import { LocalPushPump } from "../components/LocalPushPump";
 import { LegalGate, ViewAsBanner } from "../components/AccountGuards";
+import { AwaitingApproval, MfaRequired } from "../pages/onboarding/AwaitingApproval";
 import { bottomNav, navGroups, type NavItem } from "./nav";
 
 /** Guards the /o/:orgSlug area: signed in, member of the org; otherwise redirects sensibly. */
@@ -30,6 +31,15 @@ export function AppLayout() {
   if (!m) {
     const first = context.memberships.find((x) => x.org.id === context.last_active_org_id) ?? context.memberships[0];
     return <Navigate to={first ? `/o/${first.org.slug}/dashboard` : "/onboarding"} replace />;
+  }
+  // The closed pilot: an application is not an account yet (ADR 0034). A rejected one says why.
+  if (!m.view_as && ((context.require_org_approval && m.org.status === "pending") || (m.org.status === "suspended" && m.org.rejection_reason))) {
+    return <AwaitingApproval membership={m} />;
+  }
+  // Outside demo mode these organisations need a two-factor session; app.require_actor refuses everything else.
+  if (!m.view_as && !context.demo_mode && m.org.status === "approved" && session.aal !== "aal2"
+      && m.org.types.some((x) => x === "financier" || x === "authority" || x === "operator")) {
+    return <MfaRequired membership={m} />;
   }
   return (
     <OrgProvider membership={m}>

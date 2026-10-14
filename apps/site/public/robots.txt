@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+# Machine cards and share links are personal to the machine and its owner; they ask not to be indexed themselves.
+Disallow: /s/

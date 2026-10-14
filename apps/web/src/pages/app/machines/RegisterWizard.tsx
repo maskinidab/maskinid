@@ -19,6 +19,7 @@ import { rpc, useRpc } from "../../../lib/api/query";
 import type { OrgBrief } from "../../../lib/api/types";
 import { backend } from "../../../lib/backend";
 import { formatDateTime, formatReg, todayIso } from "../../../lib/format";
+import { siteUrl } from "../../../lib/surfaces";
 
 const CATEGORIES = ["excavator_tracked", "excavator_wheeled", "wheel_loader", "backhoe", "dumper", "dozer", "grader", "roller", "paver",
   "telehandler", "forklift", "crane_mobile", "drill_rig", "crusher", "screener", "compressor", "generator", "forestry_harvester",
@@ -482,9 +483,15 @@ function StepOwner({ d, set, err, orgName }: { d: WizardData; set: Setter; err(k
         <>
           <FormField label={t("common.org_number")} error={err("owner_org_number")}>
             <CompanyLookupField value={d.owner_org_number} onChange={(v) => set("owner_org_number", v)}
-              onFound={(c) => { setCompany(c); if (c) set("owner_name", c.name); }} />
+              onFound={(c) => { setCompany(c); if (c) set("owner_name", c.name ?? c.existing_org?.name ?? ""); }} />
           </FormField>
-          {company && <p className="t-liten">{company.existing_org ? t("wizard.owner_exists", { name: company.name }) : t("wizard.owner_new", { name: company.name })}</p>}
+          {/* No company register to ask (the closed pilot): the owner's name is typed by hand (ADR 0034). */}
+          {company?.manual && !company.existing_org && (
+            <FormField label={t("onboarding.manual_name")} error={err("owner_name")}>
+              <input className="mid-input" value={d.owner_name} onChange={(e) => set("owner_name", e.target.value)} autoComplete="off" />
+            </FormField>
+          )}
+          {company && !company.manual && <p className="t-liten">{company.existing_org ? t("wizard.owner_exists", { name: company.name }) : t("wizard.owner_new", { name: company.name })}</p>}
           <FormField label={t("wizard.owner_email")} optional hint={t("wizard.owner_email_hint")} error={err("owner_email")}>
             <input className="mid-input" type="email" value={d.owner_email} onChange={(e) => set("owner_email", e.target.value)} autoComplete="off" />
           </FormField>
@@ -547,7 +554,7 @@ function StepLabel({ d, set, error }: { d: WizardData; set: Setter; error?: stri
       <p className="t-brodtext">{t("wizard.label_lead")}</p>
       {isLabelCode(code) && (
         <div className="qr-rad">
-          <QrCode url={`${location.origin}/m/${code}`} size={112} alt={t("labels.qr_alt", { serial: labelSerial(code) })} />
+          <QrCode url={`${siteUrl()}/m/${code}`} size={112} alt={t("labels.qr_alt", { serial: labelSerial(code) })} />
           <div className="stack-2">
             {check?.bindable && <p className="t-liten t-sekundar">{t("wizard.label_free")}</p>}
             {check && !check.bindable && check.reason === "already_bound" && (

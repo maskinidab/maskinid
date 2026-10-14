@@ -1,0 +1,67 @@
+# Reseed the demo environment (demo.maskinid.se, and dev.maskinid.se which shares its backend – ADR 0036).
+#
+# Replaces the manual procedure in docs/TESTGUIDE.md §5: drops the register's schemas, replays every migration and the
+# demo seed, then runs Deploy so the functions, the scheduler secret and the operator are set up again.
+# Bound to the `staging` environment and refuses the production project outright, whatever the secrets say.
+name: Reseed demo
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: "Type 'demo' to wipe demo.maskinid.se / dev.maskinid.se and load the demo data again"
+        required: true
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  reseed:
+    if: github.event.inputs.confirm == 'demo'
+    runs-on: ubuntu-latest
+    environment: staging
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+    steps:
+      - name: Refuse production
+        run: |
+          if [ "$SUPABASE_PROJECT_REF" = "ogpqatvgamzgwwhgtlcr" ]; then echo "::error::This is the production project"; exit 1; fi
+          echo "Reseeding $SUPABASE_PROJECT_REF"
+      - uses: actions/checkout@v4
+        with:
+          ref: staging
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.118.0
+      - name: Link project
+        run: supabase link --project-ref "$SUPABASE_PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
+      # db reset on a remote project leaves free-standing sequences behind and the replay then fails, so the schemas
+      # go first. The demo accounts are removed too: the seed creates them again. Other accounts (testers, the
+      # operator) keep their login but lose their organisations with the rest of the data.
+      - name: Drop the register
+        run: |
+          psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 <<'SQL'
+          drop schema if exists public cascade;
+          drop schema if exists app cascade;
+          drop schema if exists seed cascade;
+          create schema public;
+          alter schema public owner to pg_database_owner;
+          grant usage on schema public to postgres, anon, authenticated, service_role;
+          grant all on schema public to postgres, service_role;
+          delete from supabase_migrations.schema_migrations;
+          delete from auth.users where email like '%@demo.se' or email like '%.demo.se';
+          SQL
+      - name: Migrations and demo seed
+        run: supabase db reset --linked --yes
+      - name: Run Deploy for staging (functions, scheduler, operator)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yml --ref staging -f target=staging

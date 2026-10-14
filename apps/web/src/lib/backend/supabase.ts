@@ -50,8 +50,9 @@ export function createSupabaseBackend(url: string, key: string): Backend {
         if (error) throw new ApiError(error.message.includes("registered") ? "EMAIL_IN_USE" : "SIGNUP_FAILED", error.message, 400);
         return { session: toSession(data.session) };
       },
+      // A login link never creates an account: that would skip the signup form and the terms (ADR 0034).
       async signInWithOtp(email, redirectTo) {
-        const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo, shouldCreateUser: true } });
+        const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo, shouldCreateUser: false } });
         if (error) throw new ApiError("OTP_FAILED", error.message, 400);
         return {};
       },

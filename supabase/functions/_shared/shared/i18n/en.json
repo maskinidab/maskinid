@@ -191,6 +191,43 @@
    "webhooks_delivered": "Webhooks delivered",
    "webhooks_failed": "Webhooks failed"
   },
+  "audit": {
+   "action": "What",
+   "actions": {
+    "billing_period_closed": "Billing period closed",
+    "billing_plan_set": "Plan changed",
+    "billing_price_set": "Price changed",
+    "config_changed": "Setting changed",
+    "job_run": "Job run",
+    "labels_codes_exported": "Label codes exported",
+    "legal_published": "Legal document published",
+    "machine_merged": "Machines merged",
+    "operator_bootstrapped": "Operator set up",
+    "org_approved": "Organisation approved",
+    "org_modules_changed": "Modules changed",
+    "org_rejected": "Application rejected",
+    "org_search": "Organisation search",
+    "org_types_changed": "Organisation types changed",
+    "org_view": "Organisation viewed",
+    "support_reply": "Support reply",
+    "support_search": "Support search",
+    "support_ticket_view": "Support ticket viewed",
+    "theft_external_reviewed": "External theft report reviewed",
+    "tips_list": "Tips listed",
+    "tips_review": "Tip reviewed",
+    "user_search": "Account search",
+    "user_view": "Account viewed",
+    "view_as_ended": "View as organisation ended",
+    "view_as_started": "View as organisation started"
+   },
+   "details": "Details",
+   "empty": "No events",
+   "lead": "What operators have done: approvals, rejections, views of accounts and organisations, changed settings.",
+   "target": "Concerns",
+   "title": "Audit log",
+   "when": "When",
+   "who": "Who"
+  },
   "billing": {
    "close": "Create invoices",
    "close_lead": "Creates invoices for the month. Runs automatically on the first of each month; an organisation already invoiced for the period is skipped.",
@@ -249,6 +286,35 @@
    "to_org_hint": "Organisation number or name",
    "until": "Objection period until {{date}}"
   },
+  "emails": {
+   "created": "Created",
+   "empty": "No emails",
+   "lead": "Everything sent or waiting to be sent, and why anything failed. Sign-in and confirmation emails are sent by Supabase and are not shown here.",
+   "search": "Search by recipient or template",
+   "sent_at": "Sent",
+   "status": {
+    "failed": "Failed",
+    "pending": "Waiting",
+    "sent": "Sent",
+    "skipped": "Skipped"
+   },
+   "template": {
+    "invite": "Invitation",
+    "invite_financier": "Lender invitation",
+    "invite_owner": "Owner invitation",
+    "invoice": "Invoice",
+    "notification": "Notification",
+    "notification_digest": "Notification summary",
+    "ownership_certificate": "Ownership certificate",
+    "sms": "SMS",
+    "support_reply": "Support reply",
+    "transfer_invite": "Ownership transfer",
+    "weekly_digest": "Weekly summary"
+   },
+   "title": "Email log",
+   "to": "To",
+   "what": "What"
+  },
   "events": {
    "all_for_org": "All events for the organisation",
    "anchor_bad": "Does not match",
@@ -270,6 +336,18 @@
    "type_hint": "Start of the type, e.g. encumbrance or market.",
    "verify_anchor": "Verify",
    "verify_chain": "Verify the whole chain"
+  },
+  "financiers": {
+   "account": "Account",
+   "active": "Active financings",
+   "connected": "Connected",
+   "empty": "No lenders",
+   "last_activity": "Last active",
+   "lead": "Every lender in the register, including banks named in a financing that have not created an account. Financings, pending confirmations and open payoff requests.",
+   "payoffs": "Open payoffs",
+   "pending": "To confirm",
+   "placeholder": "Not connected",
+   "title": "Lenders"
   },
   "flags": {
    "changed": "Changed by {{who}} {{at}}",
@@ -315,12 +393,18 @@
    "api_requests": "API requests (24 h)",
    "conflicts_open": "open conflicts",
    "corrections_pending": "corrections in progress",
+   "emails_failed": "Failed emails (24 h)",
+   "emails_pending": "Emails queued",
    "labels_ordered": "label orders to print",
    "last_anchor": "Latest anchor",
    "lead": "What is waiting for the register keeper right now. Your role: {{role}}.",
    "market_alerts": "open market alerts",
    "orgs": "Approved organisations",
    "orgs_pending": "organisations awaiting approval",
+   "pilot_body": "The register runs with real accounts and real email, but with Demo-BankID. No identity has been checked by BankID, so review every application before approving it.",
+   "pilot_title": "Pilot mode",
+   "users": "Accounts",
+   "users_unconfirmed": "Unconfirmed email",
    "verifications_open": "verifications in queue",
    "webhooks_failed": "failed webhooks (24 h)"
   },
@@ -394,9 +478,13 @@
    "identity": "BankID",
    "lead": "Approval queue and search across all organisations. Dealers, lenders, insurers, authorities, inspection bodies and marketplaces are approved manually.",
    "lookup": "Lookup",
+   "manual_body": "No company register has checked that the name belongs to the organisation number. Check with Bolagsverket, and that the applicant represents the company, before approving.",
+   "manual_title": "Entered by hand",
    "members": "Members",
    "not_looked_up": "Not looked up",
    "reactivate": "Reactivate",
+   "reject": "Reject application",
+   "reject_lead": "{{name}} gets an email with the reason. The organisation cannot be used, but you can still approve it later.",
    "role": "Permission",
    "search": "Name or organisation number",
    "suspend": "Suspend",
@@ -437,6 +525,24 @@
     "new": "New"
    },
    "title": "Tips"
+  },
+  "users": {
+   "created": "Created",
+   "demo_bankid": "Demo-BankID",
+   "email_confirmed": "Email confirmed",
+   "empty": "No accounts",
+   "has_org": "Has organisation",
+   "invites": "Invited to: {{orgs}}",
+   "last_sign_in": "Last signed in",
+   "lead": "Everyone who has created an account: whether the email is confirmed, whether the identity is verified, and which organisations they belong to. Every view is logged.",
+   "mfa": "Two-factor authentication",
+   "no_org": "None yet",
+   "no_org_lead": "The account has no organisation. The person has not applied yet, or is waiting for an invitation.",
+   "no_security": "No security events.",
+   "orgs": "Organisations",
+   "search": "Search by name or email",
+   "security": "Security events",
+   "title": "Accounts"
   }
  },
  "alerts": {
@@ -1718,6 +1824,7 @@
   "SIGNATURE_REQUIRED": "Sign with BankID to continue.",
   "SIGNATURE_REQUIRES_USER": "This action must be signed by a person.",
   "SIGNUP_FAILED": "The account could not be created.",
+  "SURFACE_NOT_CONFIGURED": "This deployment is missing the address of the site or the app (VITE_SITE_URL / VITE_APP_URL).",
   "TRANSFER_ALREADY_OPEN": "There is already an ongoing transfer for this machine.",
   "TRANSFER_EXPIRED": "The transfer has expired. The seller needs to start it again.",
   "TRANSFER_NOT_AWAITING_BUYER": "The transfer is not waiting for the buyer.",
@@ -2155,6 +2262,7 @@
   "demo_button": "Verify with Demo BankID",
   "demo_notice": "Demo BankID: no real identification takes place.",
   "lead": "Every change to the register requires a BankID-verified identity. Your personal number is never stored in clear text.",
+  "pilot_notice": "During the pilot, Demo-BankID is used. MaskinID reviews every account by hand before it is opened.",
   "title": "Verify your identity",
   "verified": "Identity verified {{date}}",
   "verified_title": "Your identity is verified"
@@ -2661,10 +2769,13 @@
   "about": "About us",
   "admin": "Administration",
   "admin_api": "API usage",
+  "admin_audit": "Audit log",
   "admin_billing": "Billing",
   "admin_conflicts": "Conflicts",
   "admin_corrections": "Corrections",
+  "admin_emails": "Email log",
   "admin_events": "Event log",
+  "admin_financiers": "Lenders",
   "admin_flags": "Feature flags",
   "admin_health": "System health",
   "admin_home": "Overview",
@@ -2678,6 +2789,7 @@
   "admin_theft_reports": "Theft register",
   "admin_tickets": "Support cases",
   "admin_tips": "Tips",
+  "admin_users": "Accounts",
   "alerts": "Alerts",
   "api_docs": "API",
   "attachments": "Attachments",
@@ -3076,12 +3188,20 @@
   },
   "org": {
    "approved": {
-    "body": "{{name}} is approved. All features for your organisation type are now available.",
+    "body": "{{name}} is approved. You can now sign in and use MaskinID.",
     "title": "Organisation approved"
    },
    "pending_approval": {
-    "body": "{{name}} is waiting for approval.",
+    "body": "{{name}} has applied for an account and is waiting for review.",
     "title": "New organisation to review"
+   },
+   "received": {
+    "body": "Thank you for applying. MaskinID is reviewing {{name}} and will be in touch as soon as the account is open.",
+    "title": "We have received your application"
+   },
+   "rejected": {
+    "body": "{{name}} was not approved: {{reason}}",
+    "title": "Your application was not approved"
    },
    "suspended": {
     "body": "{{name}} is suspended: {{reason}}",
@@ -3280,6 +3400,8 @@
   "invite_emails": "E-mail addresses, one per line",
   "invites_sent": "{{count}} invitations sent.",
   "lookup": "Look up",
+  "manual_hint": "Enter the name as registered with Bolagsverket. MaskinID checks the details before the account is opened.",
+  "manual_name": "Company name",
   "order_starter": "Order 50 labels",
   "pending_body": "We review within one working day. You can already add your own machines.",
   "pending_title": "We are reviewing your organisation",
@@ -4191,5 +4313,22 @@
   "weight": "Operating weight (kg)",
   "weight_hint": "Determines whether registration is mandatory (from 1,500 kg).",
   "year": "Model year"
+ },
+ "approval": {
+  "check_again": "Check again",
+  "contact": "Contact MaskinID",
+  "mfa_lead": "{{name}} requires two-factor sign-in. Set it up with an authenticator app, or enter the code from the app if you already have.",
+  "mfa_title": "Turn on two-factor authentication",
+  "other_orgs": "Your other organisations",
+  "pending_email": "You will get an email as soon as the account is open.",
+  "pending_lead": "During the pilot, MaskinID reviews every new account before it is opened. This normally takes one working day.",
+  "pending_title": "Your application has been sent",
+  "rejected_next": "Get in touch if you think this is a mistake and we will take another look.",
+  "rejected_reason": "Reason: {{reason}}",
+  "rejected_title": "Your application was not approved",
+  "step_applied": "Application sent {{date}}",
+  "step_email": "Email address confirmed",
+  "step_identity": "Identity verified",
+  "step_review": "MaskinID is reviewing the application"
  }
 }

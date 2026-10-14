@@ -13,6 +13,7 @@ import { formatDate, formatNumber } from "../../../lib/format";
 import { adSignPdf, lotTagPdf } from "../../../lib/pdf/adQr";
 import { downloadBytes } from "../../../lib/pdf/receipt";
 import { ShareDialog } from "../machines/MachineActions";
+import { siteUrl } from "../../../lib/surfaces";
 
 type Tab = "stock" | "trade_in" | "demo" | "consignment" | "sold";
 interface Sale extends Transfer { make: string; model: string; is_new_sale: boolean; seller_user: string | null }
@@ -33,12 +34,12 @@ export function StockPage() {
   const counts = (s: string) => (stock.data?.items ?? []).filter((m) => bucket(m) === s).length;
 
   async function adQr(m: MachineListItem) {
-    downloadBytes(await adSignPdf({ ...m, dealer: org.name }, t, location.origin), `annons-${m.reg_number}.pdf`);
+    downloadBytes(await adSignPdf({ ...m, dealer: org.name }, t, siteUrl()), `annons-${m.reg_number}.pdf`);
   }
   async function lotTag(m: MachineListItem) {
     const v = await rpc<MachineView>("get_machine", { p_org_id: orgId, p_machine_id: m.id });
     const label = Array.isArray(v.labels) ? v.labels.find((l) => l.status === "bound")?.code ?? null : null;
-    downloadBytes(await lotTagPdf({ ...m, label_code: label }, t, location.origin), `lagerlapp-${m.reg_number}.pdf`);
+    downloadBytes(await lotTagPdf({ ...m, label_code: label }, t, siteUrl()), `lagerlapp-${m.reg_number}.pdf`);
   }
   async function setStatus(m: MachineListItem, s: string) {
     setError(null);

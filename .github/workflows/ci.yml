@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main, staging]
+    branches: [main, staging, dev]
   pull_request:
 
 concurrency:
@@ -25,6 +25,8 @@ jobs:
       - run: npm run check:functions
       - run: npm test
       - run: npm run build
+      # The public site (maskinid.se) is a second build of the same source (ADR 0035).
+      - run: npm run build:site
       - name: Dependency scan
         run: npm audit --audit-level=high --omit=dev
 

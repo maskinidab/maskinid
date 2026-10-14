@@ -59,6 +59,9 @@ verify_jwt = false
 # Step 24: scheduled push delivery accepts CRON_SECRET.
 [functions.push-send]
 verify_jwt = false
+# Called by the scheduler with x-cron-secret, not a user JWT (ADR 0034: e-mail was never sent in production).
+[functions.email-send]
+verify_jwt = false
 # Step 25: scheduled integration jobs accept CRON_SECRET.
 [functions.telematics-sync]
 verify_jwt = false
