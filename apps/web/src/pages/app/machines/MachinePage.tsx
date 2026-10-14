@@ -12,7 +12,7 @@ import { Icon, type IconName } from "../../../components/Icon";
 import { MachinePhoto } from "../../../components/MachinePhoto";
 import { RegNumber } from "../../../components/RegNumber";
 import { FinancingTermsSummary } from "../../../components/FinancingTerms";
-import { RequestMachineHistoryDialog } from "../../../components/MandateRequest";
+import { RequestHistoryAction, RequestMachineHistoryDialog } from "../../../components/MandateRequest";
 import { FinancingBadge, MachineStatusBadge, StatusBadge, VerificationBadge } from "../../../components/StatusBadge";
 import { StatusBanner } from "../../../components/StatusBanner";
 import { Timeline } from "../../../components/Timeline";
@@ -363,7 +363,7 @@ function Overview({ m, flags, onClearFlag }: { m: MachineView; flags: Flag[]; on
 
 function History({ machineId }: { machineId: string }) {
   const { t } = useTranslation();
-  const { orgId, isAdmin } = useOrg();
+  const { orgId } = useOrg();
   const [before, setBefore] = useState<number | null>(null);
   const [pages, setPages] = useState<HistoryEvent[]>([]);
   const [ask, setAsk] = useState(false);
@@ -377,13 +377,7 @@ function History({ machineId }: { machineId: string }) {
         <Notice kind="info" title={t("mandate.request_history")}>
           <p>{t("mandate.request_history_lead")}</p>
         </Notice>
-        {isAdmin && (
-          <div>
-            <button type="button" className="mid-knapp mid-knapp-primar" onClick={() => setAsk(true)}>
-              <Icon name="sigill" />{t("mandate.request_history")}
-            </button>
-          </div>
-        )}
+        <div><RequestHistoryAction machineId={machineId} onAsk={() => setAsk(true)} /></div>
         <RequestMachineHistoryDialog machineId={machineId} open={ask} onClose={() => setAsk(false)} />
       </div>
     );

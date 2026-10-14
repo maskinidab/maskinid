@@ -32,6 +32,20 @@ test("enskild firma: söker serienummer, ser Belånad, begär historik, ägaren 
   expect(req).toMatchObject({ status: "requested", requested_by: "agent" });
   expect(req.machine_id).toBeTruthy();
 
+  // The request does not vanish: searching again shows it waiting, and Fullmakter lists it without naming the
+  // owner, since the lookup withholds who owns the machine until the owner says yes.
+  await page.goto(`${base}/dashboard`);
+  await page.getByRole("button", { name: /Sök regnr eller serienummer/ }).click();
+  const again = page.locator("dialog[open]");
+  await again.getByRole("textbox", { name: "Sök regnr eller serienummer" }).fill("JCB3CX04278");
+  await again.getByRole("button", { name: "Sök" }).click();
+  await expect(again.getByText("väntar på ägarens godkännande", { exact: false })).toBeVisible();
+  await expect(again.getByRole("button", { name: "Dra tillbaka" })).toBeVisible();
+  await expect(again.getByRole("button", { name: "Begär full historik" })).toHaveCount(0);
+  await page.goto(`${base}/mandates`);
+  await expect(page.getByRole("cell", { name: "Från maskinens ägare" })).toBeVisible();
+  await expect(page.getByText("Bergs Schakt", { exact: false })).toHaveCount(0);
+
   // The owner finds it in the inbox and approves it with Demo-BankID.
   await logout(page);
   const owner = await login(page, "berg@demo.se");

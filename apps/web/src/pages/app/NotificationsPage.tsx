@@ -13,7 +13,9 @@ export function useNotificationText() {
   return (n: NotificationItem) => {
     const base = `notifications.${n.type}`;
     const known = i18n.exists(`${base}.title`);
-    const vars = { ...n.data, type: n.data.type ? t(`enum.flag_type.${n.data.type as string}`, { defaultValue: String(n.data.type) }) : undefined };
+    const vars: Record<string, unknown> = { ...n.data, type: n.data.type ? t(`enum.flag_type.${n.data.type as string}`, { defaultValue: String(n.data.type) }) : undefined };
+    // A machine-history request keeps the owner anonymous until approved (ADR 0032); the server sends null.
+    if (n.type.startsWith("mandate.")) for (const k of ["principal", "by"]) if (k in n.data && n.data[k] == null) vars[k] = t("mandate.the_owner");
     return {
       title: n.title ?? (known ? t(`${base}.title`, vars) : t("notifications.fallback.title")),
       body: n.body ?? (known ? t(`${base}.body`, vars) : ""),

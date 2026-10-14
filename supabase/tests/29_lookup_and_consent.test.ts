@@ -299,6 +299,44 @@ describe("consent: asking the owner for the full history (ADR 0032)", () => {
     });
   });
 
+  it("asking does not tell the requester who owns the machine, until the owner says yes", async () => {
+    // The lookup withholds the owner's name (ADR 0032), so the request must not hand it back: otherwise
+    // "request, then read Fullmakter" is a way to find out who owns any serial.
+    await tx(async (t) => {
+      const first = await askForMachine(t);
+      expect(first.request.principal_org_id ?? null).toBeNull();
+      await t.as("owner_a");
+      let row = (await t.rpc<any[]>("list_mandates", { p_org_id: ORGS.owner_a })).find((d) => d.id === first.request.id);
+      expect(row.principal).toBeNull();
+      expect(row.principal_org_id ?? null).toBeNull();
+      expect(row.awaiting).toBe("principal");
+
+      // A decline does not reveal it either, neither in the list nor in the notification.
+      await t.as("owner_b");
+      await t.rpc("decide_mandate_request", { p_org_id: ORGS.owner_b, p_mandate_id: first.request.id, p_approve: false });
+      await t.as("owner_a");
+      row = (await t.rpc<any[]>("list_mandates", { p_org_id: ORGS.owner_a })).find((d) => d.id === first.request.id);
+      expect(row.principal).toBeNull();
+      await t.as(null);
+      const ownerName = await t.val("select name from public.organizations where id = $1", [ORGS.owner_b]);
+      const declinedNote = await t.val<any>(
+        "select data from public.notifications where type = 'mandate.request_declined' and org_id = $1 order by created_at desc limit 1", [ORGS.owner_a]);
+      expect(JSON.stringify(declinedNote)).not.toContain(ownerName);
+
+      // Once approved, the owner has chosen to deal with the requester, and the name is shown.
+      const second = await askForMachine(t);
+      await t.as("owner_b");
+      const sig = await sign(t, ORGS.owner_b, "grant_mandate", ORGS.owner_b, {
+        agent_org_id: ORGS.owner_a, machine_id: second.m.id, scopes: "view", valid_to: NEXT_YEAR,
+      });
+      await t.as("owner_b");
+      await t.rpc("decide_mandate_request", { p_org_id: ORGS.owner_b, p_mandate_id: second.request.id, p_approve: true, p_signature_id: sig });
+      await t.as("owner_a");
+      row = (await t.rpc<any[]>("list_mandates", { p_org_id: ORGS.owner_a })).find((d) => d.id === second.request.id);
+      expect(row.principal.id).toBe(ORGS.owner_b);
+    });
+  });
+
   it("the decision is in the chain and the requester is told", async () => {
     await tx(async (t) => {
       const { m, request } = await askForMachine(t);

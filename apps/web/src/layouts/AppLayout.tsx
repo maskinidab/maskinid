@@ -8,7 +8,7 @@ import { Skeleton } from "../components/Feedback";
 import { Icon } from "../components/Icon";
 import { RegNumber } from "../components/RegNumber";
 import { ScanButton } from "../components/Scanner";
-import { RequestMachineHistoryDialog } from "../components/MandateRequest";
+import { RequestHistoryAction, RequestMachineHistoryDialog } from "../components/MandateRequest";
 import { FinancingBadge, MachineStatusBadge } from "../components/StatusBadge";
 import { useRpc } from "../lib/api/query";
 import type { MachineView } from "../lib/api/types";
@@ -101,7 +101,7 @@ function OrgSwitcher() {
 /** Global exact search by reg number or serial (Ctrl/Cmd+K, SPEC §9.3). */
 function GlobalSearch() {
   const { t } = useTranslation();
-  const { orgId, path, isAdmin } = useOrg();
+  const { orgId, path } = useOrg();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
@@ -142,11 +142,7 @@ function GlobalSearch() {
                     <RegNumber value={m.reg_number} /> <span>{m.make} {m.model}{m.year ? ` · ${m.year}` : ""}</span>
                     <MachineStatusBadge status={m.status} />
                     {m.financing && <FinancingBadge hasActive={m.financing.has_active} pending={m.financing.has_pending} />}
-                    {isAdmin && (
-                      <button type="button" className="mid-knapp mid-knapp-kontur mid-knapp-liten" onClick={() => setAskHistory(m.id)}>
-                        {t("mandate.request_history")}
-                      </button>
-                    )}
+                    <RequestHistoryAction machineId={m.id} compact onAsk={() => setAskHistory(m.id)} />
                   </div>
                 ) : (
                   <button type="button" className="sokresultat-rad" onClick={() => { setOpen(false); navigate(path(`machines/${m.id}`)); }}>

@@ -2601,8 +2601,11 @@
   "request_history": "Begär full historik",
   "request_history_lead": "Maskinens ägare får en förfrågan och avgör själv om historiken ska delas. Du ser grundinformation och om maskinen är belånad redan nu.",
   "request_message": "Varför behöver ni åtkomst?",
+  "request_open": "Förfrågan skickad {{date}} – väntar på ägarens godkännande.",
   "request_principal": "Företagets organisationsnummer",
-  "request_sent": "Förfrågan är skickad. Ägaren avgör.",
+  "request_sent": "Förfrågan är skickad till maskinens ägare.",
+  "request_sent_fleet": "Förfrågan är skickad till företaget.",
+  "request_sent_next": "Du får en notis när ägaren har svarat. Förfrågan syns under Fullmakter, där du också kan dra tillbaka den.",
   "request_valid_to": "Åtkomst till och med",
   "requested_status": "Väntar på ägarens godkännande",
   "revoke": "Återkalla",
@@ -2628,7 +2631,9 @@
    "requested": "Begärd",
    "revoked": "Återkallad"
   },
+  "the_owner": "maskinens ägare",
   "to": "Till {{org}}",
+  "to_mandates": "Gå till Fullmakter",
   "valid_hint": "Högst två år.",
   "valid_to": "Giltig till",
   "what_fleet": "hela er maskinflotta",
@@ -3006,7 +3011,7 @@
     "title": "Åtkomst godkänd"
    },
    "request_declined": {
-    "body": "{{principal}} avslog er begäran om åtkomst.",
+    "body": "Er begäran om åtkomst avslogs av {{principal}}.",
     "title": "Åtkomst avslagen"
    },
    "requested": {
