@@ -5,6 +5,7 @@ import { AuthProvider } from "@web/auth/AuthProvider";
 import { ExternalRedirect } from "@web/components/ExternalRedirect";
 import { Skeleton } from "@web/components/Feedback";
 import { SignatureProvider } from "@web/components/Signature";
+import { WebAnalytics } from "@web/components/WebAnalytics";
 import { PublicLayout } from "@web/layouts/PublicLayout";
 import { queryClient } from "@web/lib/api/query";
 import { APP_ONLY_PREFIXES, APP_PUBLIC_PATHS, appUrl } from "@web/lib/surfaces";
@@ -46,6 +47,7 @@ export function SiteApp() {
               </Route>
             </Routes>
           </BrowserRouter>
+          <WebAnalytics />
         </SignatureProvider>
       </AuthProvider>
     </QueryClientProvider>
