@@ -53,7 +53,11 @@ export function MandatesPage() {
             { id: "party", header: t("mandate.party"), value: (d) => (d.direction === "granted" ? d.agent.name : d.principal?.name ?? t("mandate.the_owner")),
               cell: (d) => <>{d.direction === "granted" ? t("mandate.to", { org: d.agent.name }) : t("mandate.from", { org: d.principal?.name ?? t("mandate.the_owner") })}</> },
             { id: "machine", header: t("machines.col_machine"), value: (d) => d.machine?.reg_number ?? "",
-              cell: (d) => (d.machine ? <Link to={path(`machines/${d.machine.id}`)}><RegNumber value={d.machine.reg_number} /></Link> : t("mandate.all_machines")) },
+              cell: (d) => (d.machine ? <Link to={path(`machines/${d.machine.id}`)}><RegNumber value={d.machine.reg_number} /></Link>
+                // A fleet-wide consent we hold: the machines are listed under Maskiner → Delade med oss.
+                : d.direction === "received" && d.effective_status === "active" && d.kind === "power_of_attorney"
+                  ? <Link to={path("machines?scope=shared")}>{t("mandate.all_machines")} · {t("mandate.show_machines")}</Link>
+                  : t("mandate.all_machines")) },
             { id: "valid", header: t("mandate.valid_to"), value: (d) => d.valid_to, sortable: true, cell: (d) => formatDate(d.valid_to) },
             { id: "status", header: t("common.status"), value: (d) => d.effective_status,
               cell: (d) => <StatusBadge kind={KIND[d.effective_status as keyof typeof KIND] ?? "neutral"}>{t(`mandate.status.${d.effective_status}`)}</StatusBadge> },

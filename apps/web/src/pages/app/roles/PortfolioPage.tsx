@@ -54,6 +54,7 @@ export function PortfolioPage() {
             <button type="button" className="mid-knapp mid-knapp-kontur" onClick={() => setAskFleet(true)}>
               <Icon name="sigill" />{t("mandate.request_fleet")}
             </button>
+            {" "}<Link className="mid-knapp mid-knapp-text" to={path("machines?scope=shared")}>{t("mandate.shared_fleets")}</Link>
           </div>
         </section>
       )}

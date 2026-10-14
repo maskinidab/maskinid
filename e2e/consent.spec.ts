@@ -76,3 +76,36 @@ test("enskild firma: söker serienummer, ser Belånad, begär historik, ägaren 
   // That the revocation itself closes the history again is covered at the RPC level in
   // supabase/tests/29_lookup_and_consent.test.ts; here it is enough that the owner has the control on screen.
 });
+
+/**
+ * Round 13: a lender sees only what it finances, asks a company for insight into its whole fleet, the company
+ * approves with Demo-BankID, and the fleet is then listed under Maskiner → Delade med oss (ADR 0032).
+ */
+test("långivare: begär insyn i maskinflottan, företaget godkänner, flottan listas", async ({ page }) => {
+  const bank = await login(page, "bank@demo.se");
+  await page.goto(`${bank}/portfolio`);
+  await page.getByRole("button", { name: "Begär insyn i maskinflottan" }).click();
+  const ask = page.locator("dialog[open]");
+  await ask.getByLabel("Företagets organisationsnummer").fill("556701-2009");
+  await ask.getByRole("button", { name: "Skicka" }).click();
+  await expect(ask.getByText("Förfrågan är skickad till företaget")).toBeVisible();
+
+  await logout(page);
+  const owner = await login(page, "berg@demo.se");
+  await page.goto(`${owner}/inbox`);
+  await page.getByRole("listitem").filter({ hasText: "Begäran om åtkomst" }).getByRole("button", { name: "Hantera" }).click();
+  const decide = page.locator("dialog[open]");
+  await expect(decide.getByText("hela er maskinflotta", { exact: false })).toBeVisible();
+  await decide.getByRole("button", { name: "Godkänn åtkomst" }).click();
+  await signDemo(page);
+  await expect(page.locator("dialog[open]")).toHaveCount(0);
+
+  await logout(page);
+  await login(page, "bank@demo.se");
+  await page.goto(`${bank}/mandates`);
+  await page.getByRole("link", { name: /visa maskinerna/ }).first().click();
+  await expect(page).toHaveURL(/scope=shared/);
+  const [{ n }] = await sql<{ n: number }>(page, `select count(*)::int n from public.machines m join public.organizations o on o.id = m.owner_org_id
+    where o.slug = 'bergs-schakt-entreprenad-ab' and m.status <> 'draft'`);
+  await expect(page.locator("main table tbody tr")).toHaveCount(n);
+});

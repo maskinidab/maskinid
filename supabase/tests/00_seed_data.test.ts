@@ -73,6 +73,11 @@ describe("demo seed", () => {
           (select count(*)::int from public.encumbrances e where e.holder_org_id = o.id and e.status = 'active') as active
         from public.organizations o where o.slug = 'nordic-finance-demo' and 'financier' = any (o.types)`))
         .toEqual([{ status: "approved", prefix: "NF-", members: 1, active: 1 }]);
+      // ...and that lease carries the full terms, so the financing calculator has something to show.
+      expect(await t.q(`select e.financing_amount::float8 as amount, e.amortization_months as months, e.total_credit_amount::float8 as credit
+        from public.encumbrances e join public.organizations o on o.id = e.holder_org_id
+        where o.slug = 'nordic-finance-demo' and e.status = 'active'`))
+        .toEqual([{ amount: 1850000, months: 60, credit: 1500000 }]);
       expect((await t.rpc<any[]>("public_stolen_list", {})).length).toBe(2);
       expect(await n("select count(*) from public.tips where machine_id is not null")).toBe(1);
       expect(await n("select count(*) from public.support_tickets where status = 'waiting_customer'")).toBe(1);

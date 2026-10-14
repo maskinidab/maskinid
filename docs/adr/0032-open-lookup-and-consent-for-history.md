@@ -80,3 +80,9 @@ the requester of a *machine* request until the owner approves (`app.mandate_hide
 machine's owner". A fleet request is unaffected – the requester typed the organisation number. The same round made
 an open request visible to the requester: search and the history tab now show "sent, waiting for the owner" with a
 withdraw button instead of offering the request again, which is what made the flow look broken on staging.
+
+**Addendum 2 (2026-10-14): a consent you can browse.** A fleet-wide consent let the lender open any of the
+company's machines, but no list contained them – it could only open a machine whose regnr it already knew.
+Migration `20261014000002` adds the `list_machines` scope `shared`, defined by the same `app.has_mandate` test as
+the access itself, shown as Maskiner → "Delade med oss" with an owner filter and linked from Fullmakter and the
+portfolio.

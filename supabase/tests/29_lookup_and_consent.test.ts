@@ -229,9 +229,20 @@ describe("consent: asking the owner for the full history (ADR 0032)", () => {
         expect((await t.rpc<any>("get_machine", { p_org_id: ORGS.financier_a, p_machine_id: m.id })).access, m.id).toBe("full");
         expect((await t.rpc<any[]>("get_machine_history", { p_org_id: ORGS.financier_a, p_machine_id: m.id })).length).toBeGreaterThan(0);
       }
+      // And it can find them: being allowed to open a machine is no use without a list to open it from.
+      const shared = async (org: string) =>
+        (await t.rpc<any>("list_machines", { p_org_id: org, p_scope: "shared", p_limit: 500 })).items.map((x: any) => x.id);
+      await t.as("financier_a");
+      expect(await shared(ORGS.financier_a)).toEqual(expect.arrayContaining([a.id, b.id]));
       // Another lender is unaffected: consent is to one organisation.
       await t.as("financier_b");
       expect((await t.rpcError("get_machine", { p_org_id: ORGS.financier_b, p_machine_id: a.id })).code).toBe("NOT_FOUND");
+      expect(await shared(ORGS.financier_b)).not.toContain(a.id);
+      // Revoked, the list empties with the access.
+      await t.as("owner_b");
+      await t.rpc("revoke_mandate", { p_org_id: ORGS.owner_b, p_mandate_id: r.mandate.id });
+      await t.as("financier_a");
+      expect(await shared(ORGS.financier_a)).not.toContain(a.id);
     });
   });
 
