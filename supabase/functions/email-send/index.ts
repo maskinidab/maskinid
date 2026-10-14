@@ -3,6 +3,7 @@
 // Email adapter (Resend, or console in DEMO_MODE). Failures back off (record_email_result); unknown templates are skipped.
 import { createAdapters } from "../_shared/shared/adapters/index.ts";
 import { renderEmail } from "../_shared/shared/email/render.ts";
+import { isBlockedRecipient } from "../_shared/shared/email/recipients.ts";
 import { APP_BASE_URL } from "../_shared/shared/config.ts";
 import { envRecord, serviceClient } from "../_shared/db.ts";
 import { isInternalCall, json, preflight } from "../_shared/http.ts";
@@ -17,11 +18,18 @@ Deno.serve(withSentry("email-send", async (req) => {
   const svc = serviceClient();
   const { email } = createAdapters(envRecord());
   const baseUrl = Deno.env.get("PUBLIC_APP_URL") ?? APP_BASE_URL;
+  const blockedExtra = (Deno.env.get("EMAIL_BLOCKED_DOMAINS") ?? "").split(",");
   const { data, error } = await svc.rpc("claim_email_outbox", { p_limit: 50 });
   if (error) return json(500, { code: "CLAIM_FAILED" });
   let sent = 0, failed = 0, skipped = 0;
   for (const m of data as Claimed[]) {
     const r = renderEmail({ template: m.template, locale: m.locale, data: m.data }, { baseUrl });
+    // Made-up demo and test addresses belong to real third-party domains (demo.se): never send to them (ADR 0036).
+    if (m.template !== "sms" && isBlockedRecipient(m.to_email, blockedExtra)) {
+      await svc.rpc("record_email_result", { p_id: m.id, p_ok: false, p_error: "blocked_recipient_domain", p_skip: true });
+      skipped++;
+      continue;
+    }
     // SMS has no provider adapter yet (FEATURE_SMS, docs/OPEN_QUESTIONS.md) – recorded as skipped, never retried.
     if (!r || m.template === "sms") {
       await svc.rpc("record_email_result", { p_id: m.id, p_ok: false, p_error: r ? "sms_provider_missing" : "unknown_template", p_skip: true });
