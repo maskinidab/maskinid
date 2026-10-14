@@ -80,7 +80,10 @@ interface OwnRequest { id: string; machine_id: string | null; status: string; di
 function useOpenHistoryRequest(machineId: string) {
   const { orgId } = useOrg();
   const q = useRpc<OwnRequest[]>("list_mandates", { p_org_id: orgId });
-  return (q.data ?? []).find((d) => d.machine_id === machineId && d.direction === "received" && d.status === "requested") ?? null;
+  return {
+    loading: q.isLoading,
+    open: (q.data ?? []).find((d) => d.machine_id === machineId && d.direction === "received" && d.status === "requested") ?? null,
+  };
 }
 
 /**
@@ -90,7 +93,10 @@ function useOpenHistoryRequest(machineId: string) {
 export function RequestHistoryAction({ machineId, onAsk, compact }: { machineId: string; onAsk(): void; compact?: boolean }) {
   const { t } = useTranslation();
   const { orgId, isAdmin } = useOrg();
-  const open = useOpenHistoryRequest(machineId);
+  const { loading, open } = useOpenHistoryRequest(machineId);
+  // Nothing until we know: offering "ask" for a moment and then swapping it for "already asked" invites a
+  // click that the server refuses (MANDATE_ALREADY_OPEN).
+  if (loading) return null;
   if (open) {
     return (
       <span className="mid-rad">

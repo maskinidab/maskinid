@@ -114,6 +114,13 @@ test("runda 9: inbytestest på någon annans maskin, och på en okänd", async (
 
 test("runda 10: enskild firma söker, ber om historiken, ägaren godkänner och återkallar", async ({ page }) => {
   const lena = await login(page, "lena@demo.se");
+  // Rerun-safe: withdraw any request an earlier, interrupted run left open.
+  await page.goto(`${lena}/mandates`);
+  // Lena has rows from earlier runs; wait for the list itself before counting what is still open.
+  await page.locator("main table tbody tr").first().waitFor().catch(() => {});
+  const open = page.getByRole("button", { name: "Dra tillbaka" });
+  while (await open.count()) { await open.first().click(); await page.waitForTimeout(1500); }
+  await page.goto(`${lena}/dashboard`);
   let hit = await search(page, "JCB3CX04278");
   await expect(hit.getByText("Belånad")).toBeVisible();
   await expect(hit.getByText("Demo Bank Finans")).toHaveCount(0);
@@ -128,8 +135,9 @@ test("runda 10: enskild firma söker, ber om historiken, ägaren godkänner och 
   hit = await search(page, "JCB3CX04278");
   await expect(hit.getByText("väntar på ägarens godkännande", { exact: false })).toBeVisible();
   await page.goto(`${lena}/mandates`);
-  await expect(page.getByRole("cell", { name: "Från maskinens ägare" })).toBeVisible();
-  await expect(page.getByText("Bergs Schakt", { exact: false })).toHaveCount(0);
+  const newest = page.locator("main table tbody tr").first();
+  await expect(newest.getByRole("cell", { name: "Från maskinens ägare" })).toBeVisible();
+  await expect(newest.getByText("Bergs Schakt", { exact: false })).toHaveCount(0);
 
   await logout(page);
   const berg = await login(page, "berg@demo.se");
@@ -142,8 +150,9 @@ test("runda 10: enskild firma söker, ber om historiken, ägaren godkänner och 
   await logout(page);
   await login(page, "lena@demo.se");
   await page.goto(`${lena}/mandates`);
-  await expect(page.getByRole("cell", { name: /Bergs Schakt/ })).toBeVisible();
-  await page.locator("main table").getByRole("link").first().click();
+  const granted = page.locator("main table tbody tr").first();
+  await expect(granted.getByRole("cell", { name: /Bergs Schakt/ })).toBeVisible();
+  await granted.getByRole("link").first().click();
   await page.waitForURL(/\/machines\/[0-9a-f-]{36}/);
   await page.goto(`${page.url().split("?")[0]}?tab=history`);
   await expect(page.locator(".tidslinje li").first()).toBeVisible();
@@ -153,8 +162,9 @@ test("runda 10: enskild firma söker, ber om historiken, ägaren godkänner och 
   await logout(page);
   await login(page, "berg@demo.se");
   await page.goto(`${berg}/mandates`);
-  await page.getByRole("row").filter({ hasText: "Lena Grävmaskin" }).getByRole("button", { name: "Återkalla" }).click();
-  await expect(page.getByRole("row").filter({ hasText: "Lena Grävmaskin" }).getByText("Återkallad")).toBeVisible();
+  const lenaRow = page.getByRole("row").filter({ hasText: "Lena Grävmaskin" }).first();
+  await lenaRow.getByRole("button", { name: "Återkalla" }).click();
+  await expect(page.getByRole("row").filter({ hasText: "Lena Grävmaskin" }).first().getByText("Återkallad")).toBeVisible();
 });
 
 test("runda 11: handlarvyn och modulerna", async ({ page }) => {
@@ -268,8 +278,8 @@ test("runda 13: bankens insyn i en maskinflotta, och priserna", async ({ page })
   await logout(page);
   await login(page, "berg@demo.se");
   await page.goto(`${berg}/mandates`);
-  await page.getByRole("row").filter({ hasText: "Demo Bank Finans" }).getByRole("button", { name: "Återkalla" }).click();
-  await expect(page.getByRole("row").filter({ hasText: "Demo Bank Finans" }).getByText("Återkallad")).toBeVisible();
+  await page.getByRole("row").filter({ hasText: "Demo Bank Finans" }).first().getByRole("button", { name: "Återkalla" }).click();
+  await expect(page.getByRole("row").filter({ hasText: "Demo Bank Finans" }).first().getByText("Återkallad")).toBeVisible();
 
   // Prices are off: no link anywhere for a visitor, /pricing goes home, no Betalning tab.
   await logout(page);
