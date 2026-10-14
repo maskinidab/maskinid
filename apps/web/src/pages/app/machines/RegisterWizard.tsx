@@ -19,6 +19,7 @@ import { rpc, useRpc } from "../../../lib/api/query";
 import type { OrgBrief } from "../../../lib/api/types";
 import { backend } from "../../../lib/backend";
 import { formatDateTime, formatReg, todayIso } from "../../../lib/format";
+import { siteUrl } from "../../../lib/surfaces";
 
 const CATEGORIES = ["excavator_tracked", "excavator_wheeled", "wheel_loader", "backhoe", "dumper", "dozer", "grader", "roller", "paver",
   "telehandler", "forklift", "crane_mobile", "drill_rig", "crusher", "screener", "compressor", "generator", "forestry_harvester",
@@ -553,7 +554,7 @@ function StepLabel({ d, set, error }: { d: WizardData; set: Setter; error?: stri
       <p className="t-brodtext">{t("wizard.label_lead")}</p>
       {isLabelCode(code) && (
         <div className="qr-rad">
-          <QrCode url={`${location.origin}/m/${code}`} size={112} alt={t("labels.qr_alt", { serial: labelSerial(code) })} />
+          <QrCode url={`${siteUrl()}/m/${code}`} size={112} alt={t("labels.qr_alt", { serial: labelSerial(code) })} />
           <div className="stack-2">
             {check?.bindable && <p className="t-liten t-sekundar">{t("wizard.label_free")}</p>}
             {check && !check.bindable && check.reason === "already_bound" && (

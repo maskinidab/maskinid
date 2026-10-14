@@ -1824,6 +1824,7 @@
   "SIGNATURE_REQUIRED": "Sign with BankID to continue.",
   "SIGNATURE_REQUIRES_USER": "This action must be signed by a person.",
   "SIGNUP_FAILED": "The account could not be created.",
+  "SURFACE_NOT_CONFIGURED": "This deployment is missing the address of the site or the app (VITE_SITE_URL / VITE_APP_URL).",
   "TRANSFER_ALREADY_OPEN": "There is already an ongoing transfer for this machine.",
   "TRANSFER_EXPIRED": "The transfer has expired. The seller needs to start it again.",
   "TRANSFER_NOT_AWAITING_BUYER": "The transfer is not waiting for the buyer.",

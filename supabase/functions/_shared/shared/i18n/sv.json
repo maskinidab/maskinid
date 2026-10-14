@@ -1824,6 +1824,7 @@
   "SIGNATURE_REQUIRED": "Signera med BankID för att fortsätta.",
   "SIGNATURE_REQUIRES_USER": "Den här åtgärden måste signeras av en person.",
   "SIGNUP_FAILED": "Kontot kunde inte skapas.",
+  "SURFACE_NOT_CONFIGURED": "Den här driftsättningen saknar adressen till webbplatsen eller appen (VITE_SITE_URL / VITE_APP_URL).",
   "TRANSFER_ALREADY_OPEN": "Det finns redan ett pågående ägarbyte för maskinen.",
   "TRANSFER_EXPIRED": "Ägarbytet har gått ut. Säljaren behöver starta om det.",
   "TRANSFER_NOT_AWAITING_BUYER": "Ägarbytet väntar inte på köparen.",

@@ -15,6 +15,7 @@ import { formatDate, formatMonth, formatNumber } from "../../../lib/format";
 import { fleetReportPdf, type FleetReport, type FleetReportRow } from "../../../lib/pdf/fleetReport";
 import { downloadBytes } from "../../../lib/pdf/receipt";
 import { ReminderList, type Reminder } from "../machines/ServiceTab";
+import { siteUrl } from "../../../lib/surfaces";
 
 type Tab = "todo" | "projects" | "report" | "clients";
 interface Project { id: string; name: string; site_address: string | null; reference: string | null; starts_on: string | null; ends_on: string | null; archived_at: string | null; machine_count: number }
@@ -229,7 +230,7 @@ function Report() {
     try {
       const r = await rpc<{ token: string }>("create_share_link", { p_org_id: orgId, p_machine_id: null, p_scope: kind, p_days: 30,
         p_params: project ? { project_id: project } : {} });
-      setShare(`${location.origin}/s/${r.token}`);
+      setShare(`${siteUrl()}/s/${r.token}`);
     } catch (e) { setError(e); }
   }
   return (

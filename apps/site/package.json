@@ -1,0 +1,19 @@
+{
+  "name": "@maskinid/site",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "description": "The public site on maskinid.se: landing, machine cards (/m, /r), share links, stolen list, help. Built from the app's source (ADR 0035).",
+  "scripts": {
+    "dev": "vite --mode staging",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@maskinid/shared": "*"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.1.1",
+    "vite": "^8.3.0"
+  }
+}

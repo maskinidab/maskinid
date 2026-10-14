@@ -17,6 +17,7 @@ import { currentLocale } from "../../../i18n";
 import { nfcSupported, readNfcOnce } from "../../../lib/nfc";
 import { labelSheetPdf } from "../../../lib/pdf/labelSheet";
 import { downloadBytes } from "../../../lib/pdf/receipt";
+import { siteUrl } from "../../../lib/surfaces";
 
 interface Labels {
   batches: { id: string; quantity: number; status: string; created_at: string; shipping_address: Record<string, string> | null }[];
@@ -50,7 +51,7 @@ export function LabelsPage() {
             if (!codes.length) { setError(new Error(t("labels.print_sheet_none"))); return; }
             setSheetBusy(true);
             // One canvas rasterisation per code, so this can take a moment for a few hundred labels.
-            try { downloadBytes(await labelSheetPdf(codes, t, location.origin), "marken.pdf"); }
+            try { downloadBytes(await labelSheetPdf(codes, t, siteUrl()), "marken.pdf"); }
             catch (e) { setError(e); }
             finally { setSheetBusy(false); }
           }}>

@@ -2,6 +2,7 @@ import { labelSerial } from "@maskinid/shared/identifiers.ts";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Dialog } from "./Dialog";
+import { siteUrl } from "../lib/surfaces";
 
 /**
  * A QR code on screen.
@@ -33,7 +34,7 @@ export function LabelQrDialog({ code, open, onClose, origin }: {
   code: string; open: boolean; onClose(): void; origin?: string;
 }) {
   const { t } = useTranslation();
-  const url = `${origin ?? location.origin}/m/${code}`;
+  const url = `${origin ?? siteUrl()}/m/${code}`;
   return (
     <Dialog open={open} onClose={onClose} title={t("labels.qr_title")}>
       <div className="stack-3">

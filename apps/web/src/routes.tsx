@@ -6,6 +6,8 @@ import { AppLayout } from "./layouts/AppLayout";
 import { PublicLayout } from "./layouts/PublicLayout";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { appRoutes, publicRoutes } from "./routeTable";
+import { ExternalRedirect } from "./components/ExternalRedirect";
+import { APP_PUBLIC_PATHS, isSplit, siteUrl } from "./lib/surfaces";
 
 const LoginPage = lazy(() => import("./pages/auth/LoginPage").then((m) => ({ default: m.LoginPage })));
 const SignupPage = lazy(() => import("./pages/auth/SignupPage").then((m) => ({ default: m.SignupPage })));
@@ -72,13 +74,23 @@ function ScrollToTop() {
   return null;
 }
 
+/**
+ * The app's public pages. When the public site is its own deployment (ADR 0035), the app keeps only what needs a
+ * session and sends everything else – a scanned label, a share link, the landing page – to the site.
+ */
+function publicRouteElement(path: string, element: ReactNode): ReactNode {
+  if (!isSplit() || (APP_PUBLIC_PATHS as readonly string[]).includes(path)) return <Page>{element}</Page>;
+  if (path === "/") return <Navigate to="/app" replace />;
+  return <ExternalRedirect base={siteUrl} />;
+}
+
 export function AppRoutes() {
   return (
     <>
     <ScrollToTop />
     <Routes>
       <Route element={<PublicLayout />}>
-        {publicRoutes.map((r) => <Route key={r.path} path={r.path} element={<Page>{r.element}</Page>} />)}
+        {publicRoutes.map((r) => <Route key={r.path} path={r.path} element={publicRouteElement(r.path, r.element)} />)}
         <Route path="login" element={<Page><LoginPage /></Page>} />
         <Route path="signup" element={<Page><SignupPage /></Page>} />
         <Route path="auth/callback" element={<Page><AuthCallbackPage /></Page>} />

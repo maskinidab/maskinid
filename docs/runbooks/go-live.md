@@ -33,7 +33,9 @@ Settings → Environments → production.
 | `OCR_PROVIDER` | `mock` (eller `anthropic` med nyckel nedan) |
 | `EMAIL_FROM` | `MaskinID <noreply@maskinid.se>` |
 | `PUBLIC_APP_URL` | `https://app.maskinid.se` |
-| `APP_ORIGIN` | `https://app.maskinid.se` |
+
+Sätt **inte** `APP_ORIGIN` under piloten: den begränsar Edge Functions till ett enda ursprung, och både webbplatsen
+och appen anropar dem (ADR 0035). Osatt svarar de alla ursprung, som i dag – inloggning krävs ändå där det behövs.
 
 **Secrets**: `RESEND_API_KEY` (från steg 1), valfritt `ANTHROPIC_API_KEY`.
 
@@ -68,3 +70,31 @@ superadmin – det sista först när kontot finns, och utan risk att köra om.
 3. Skapa ett testkonto med en annan e-postadress: bekräftelsemejlet ska komma från `noreply@maskinid.se`, ansökan ska
    landa under **Admin → Organisationer** och ett mejl till operatören. Godkänn → testkontot får ett mejl och kan logga in.
 4. **Admin → E-postlogg**: inga misslyckade mejl. **Admin → Jobb**: schemaläggaren är klar och jobben körs.
+
+## 6. Webbplats och app på egna domäner (ADR 0035)
+
+Två Vercel-projekt från samma GitHub-repo.
+
+**Appen** – det befintliga projektet (`maskinid`):
+- Domän: `app.maskinid.se` för Production.
+- Environment Variables, Production: `VITE_SITE_URL=https://maskinid.se`, `VITE_APP_URL=https://app.maskinid.se`
+  (utöver de befintliga `VITE_DATA_SOURCE`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_DEMO_MODE=false`).
+- Preview (staging): `VITE_APP_URL` = appens staging-adress, `VITE_SITE_URL` = webbplatsens staging-adress.
+
+**Webbplatsen** – nytt projekt (`maskinid-site`):
+- Import samma repo. Root Directory `apps/site`, och slå på *Include files outside the Root Directory*.
+  `apps/site/vercel.json` sköter install, bygge och omskrivningar.
+- Production Branch `main`; staging-grenen blir preview.
+- Environment Variables: `VITE_DATA_SOURCE=supabase`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`,
+  `VITE_DEMO_MODE=false`, `VITE_SITE_URL`, `VITE_APP_URL` – samma värden som appen, per miljö.
+- Domän: `maskinid.se`, och `www.maskinid.se` som omdirigering till `maskinid.se`.
+
+**DNS** (hos er DNS-leverantör, värdena Vercel visar när domänerna läggs till):
+- `maskinid.se` → A-post till Vercel.
+- `www` och `app` → CNAME till Vercel.
+
+**Supabase** (steg 3): Site URL och Redirect URLs ska vara `https://app.maskinid.se/...` – inloggningen sker i appen.
+**GitHub** (steg 2): `PUBLIC_APP_URL` = `https://app.maskinid.se` (länkarna i mejlen går till appen).
+
+Kontroll: öppna `https://maskinid.se`, klicka *Logga in* (ska hamna på `app.maskinid.se/login`); skanna ett märke
+(ska öppna `maskinid.se/m/…`); skriv ut ett märkesark i appen och kontrollera att QR-koden pekar på `maskinid.se`.

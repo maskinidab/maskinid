@@ -294,6 +294,28 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   organisationens namn ⇒ migration `view_as_read_only` (skrivspärr via `require_actor` + triggrar, `VIEW_AS_READ_ONLY`).
   `/status` visar schemalagda jobb. README omskriven: uppstart på 10 minuter. ADR 0024, öppna frågor 34–37.
 
+## Produktion som stängd pilot, admin och webbplats/app (2026-10-14)
+
+Produktägarens beslut: riktiga konton och riktig e-post nu, Demo-BankID tills ett BankID-avtal finns, och MaskinID
+(maskinidab@gmail.com) godkänner varje organisation. Webbplatsen och appen delas i samma repo. ADR 0034 och 0035,
+migrationer `20261014000004`–`6`, runbook `docs/runbooks/go-live.md`.
+
+- **Pilotläge** (`MOCK_IDENTITY`, `REQUIRE_ORG_APPROVAL`, båda av som standard). En väntande organisation ser och gör
+  ingenting; appen visar en väntesida, och ett avslag visar skälet. Ingen automatisk godkänning, placeholder-övertag
+  går till granskning, företagsnamn skrivs för hand när det inte finns något register och flaggas för operatören.
+  `reject_org`, e-post till operatörer och sökande, tvåstegsverifiering som egen sida för långivare, myndigheter och
+  operatören. `app.bootstrap_operator` gör `OPERATOR_EMAIL` till superadmin via deploy.
+- **Inga schemalagda jobb hade någonsin körts** (ingen pg_cron, pg_net eller cron-hemlighet, och `email-send` nekades av
+  gatewayen) – ingen e-post skickades i någon miljö. Rättat; deploy kopierar hemligheten till funktionerna.
+- **Deploy** sätter flaggor, funktionsinställningar och hemligheter per GitHub-miljö.
+- **Admin**: Konton, Långivare, E-postlogg, Revisionslogg, pilotstatus på översikten.
+- **Webbplats** `apps/site` (maskinid.se) byggs ur appens källkod med bara de publika sidorna; appen på app.maskinid.se.
+  QR-koder och delningslänkar byggs alltid med webbplatsens adress. Utan `VITE_SITE_URL`/`VITE_APP_URL` beter sig allt
+  som förut (lokalt, e2e). Röktestad mot staging: startsida, maskinkort, stöldlista och vidarekoppling till appen.
+- **Kvar för produktägaren** (runbooken): Resend-domän och nyckel, GitHub-miljövariabler, Supabase Auth (SMTP,
+  e-postbekräftelse, URL:er), två Vercel-projekt och DNS, och `gh auth refresh -s workflow` för att kunna pusha
+  ändringar i `.github/workflows`.
+
 ## Kontroll av runda 8–13 på staging (2026-10-14)
 
 Produktägaren såg att Nordic Finance saknade konto och att en åtkomstbegäran inte gick att godkänna. Tre
