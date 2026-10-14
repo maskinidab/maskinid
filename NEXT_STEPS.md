@@ -1,25 +1,98 @@
 # Next steps
 
-Updated 2026-10-10, after the financing round (payoff, export, placeholder lenders, document OCR). Day-to-day
-instructions live in **[docs/WORKFLOW.md](docs/WORKFLOW.md)** — this file is only what is still open.
+Updated **2026-10-14 evening**, after the closed pilot, the admin area, the public site and the three environments
+(ADR 0034–0036). Start a new session with: *"Läs CLAUDE.md, NEXT_STEPS.md och PROGRESS.md och fortsätt."*
+Claude's own memory lives on the laptop only – everything a session on another computer needs is in this file,
+`PROGRESS.md`, the ADRs and `docs/runbooks/go-live.md` + `docs/runbooks/environments.md`.
 
 ---
 
-## Where things stand
+## Where things stand (2026-10-14, 18:45)
 
 | | State |
 |---|---|
-| Production Supabase | ✅ `ogpqatvgamzgwwhgtlcr` · eu-north-1 · **no data** |
-| Staging Supabase | ✅ `okgwcmgjdvtmbgjhvwwt` · eu-west-1 · demo seed |
-| `main` | Carries the financing round and Rikard's second round (ADR 0029–0033) |
-| `staging` | Merged into `main`; the two branches are level |
-| Vercel production | https://maskinid.vercel.app — public, empty register |
-| Vercel staging | https://maskinid-git-staging-maskinid.vercel.app — public, demo data |
-| Pipeline | CI on both branches, `main` protected, production deploy needs approval |
+| **Branches** | `dev` → `staging` → `main`. All three carry the same code (PR #7 and #8 merged to `main`). **Work on `dev`.** |
+| **Production Supabase** `ogpqatvgamzgwwhgtlcr` | Migrations up to `20261014000006`. Scheduler on (pg_cron, pg_net, cron secret). **Still in demo mode** – pilot not switched on. Only user: maskinidab@gmail.com. |
+| **Staging Supabase** `okgwcmgjdvtmbgjhvwwt` | Serves **both demo and dev**. Demo seed, scheduler on. Functions set to send real e-mail, but no `RESEND_API_KEY` yet, so mail is only logged. |
+| **Website** (Vercel project `maskinid-site`) | ✅ Live on https://www.maskinid.se (`maskinid.se` redirects there). Builds from `main` only, always against production. |
+| **App, prod** (Vercel project `maskinid`) | https://maskinid.vercel.app. Public pages redirect to maskinid.se. `app.maskinid.se` attached but DNS not working yet. |
+| **Demo** | https://maskinid-demo.vercel.app (branch `staging`). `demo.maskinid.se` attached, DNS pending. |
+| **Dev** | https://maskinid-dev.vercel.app (branch `dev`). `dev.maskinid.se` attached, DNS pending. |
+| **DNS at Loopia** | `@` A `216.198.79.1` ✅, `www` CNAME ✅, Resend records ✅, e-mail (MX/SPF) untouched ✅. `app`/`demo`/`dev` CNAMEs added but **Loopia still serves the old `*` wildcard** (zone not republished since 17:55). |
+| **Resend** | Domain `maskinid.se` added, DNS records visible. Verify in Resend, API key not created/stored yet. |
+| **GitHub environments** | `staging`: all variables set (see `docs/runbooks/environments.md` §4). `production`: **no variables yet**. Secret `RESEND_API_KEY` missing in both. |
+| **Vercel plan** | Hobby – deliberately, no Pro. Everything is set up to work on Hobby. |
 
 ---
 
-## Pick up here
+## Setting up another computer (e.g. at home)
+
+1. **Code**: `git clone https://github.com/maskinidab/maskinid.git` (or `git pull`), `git checkout dev`, `npm ci`.
+2. **GitHub CLI**: `gh auth login` as **maskinidab**, then `gh auth refresh -h github.com -s workflow` (needed to
+   push changes in `.github/workflows`). If git picks another GitHub account, push with
+   `git -c credential.helper= -c 'credential.helper=!gh auth git-credential' push`.
+3. **Claude Code MCP servers** – add them in a terminal in the repo folder *before* starting `claude`, then run
+   `/mcp` inside Claude Code to log in:
+   ```
+   claude mcp add --transport http supabase-maskinid-staging "https://mcp.supabase.com/mcp?project_ref=okgwcmgjdvtmbgjhvwwt"
+   claude mcp add --transport http supabase-maskinid-prod "https://mcp.supabase.com/mcp?project_ref=ogpqatvgamzgwwhgtlcr&read_only=true"
+   claude mcp add --transport http vercel https://mcp.vercel.com
+   claude mcp add --transport http resend https://mcp.resend.com/mcp
+   ```
+   Log in to Supabase with the **maskinidab** account (not TradeMatch). Production is read-only on purpose: changes
+   to production go through CI only.
+4. **Vercel without MCP**: `npx vercel login` (device code), then e.g.
+   `MSYS_NO_PATHCONV=1 npx vercel api /v9/projects/maskinid --scope maskinid` (the `MSYS_NO_PATHCONV` is for Git Bash).
+5. **Database tests locally** need PostgreSQL 16 on port 54322 (`README.md`). Without Docker:
+   `npm i embedded-postgres@16.14.0-beta.17` in a scratch folder, `initdb` + `pg_ctl start -o "-p 54322"`, then
+   `TZ=UTC npm run test:db` (the import test `08_imports` fails on Windows only; it passes in CI).
+
+---
+
+## Pick up here – in this order
+
+1. **Loopia DNS.** Check in the DNS editor that the `*` row (194.9.94.85/86) is really gone. Check from a terminal:
+   `nslookup nonexistent123.maskinid.se ns1.loopia.se` must say *Non-existent domain*. When it does, `app`, `demo`
+   and `dev` resolve to Vercel; press **Refresh** on them in Vercel and certificates are issued. If nothing happens
+   within an hour, ask Loopia's support to republish the zone.
+2. **Remove `maskind.se`** (typo, the domain does not exist) from Vercel → Domains if it is still listed.
+3. **Resend**: Domains → `maskinid.se` → *Verify DNS Records*. Create an API key (*Sending access*, domain
+   `maskinid.se`) and store it **yourself** as secret `RESEND_API_KEY` in GitHub → Settings → Environments →
+   `staging` **and** `production`. Never paste it in a chat.
+4. **Supabase Auth, both projects** (dashboard → Authentication), per `docs/runbooks/go-live.md` §3 and
+   `docs/runbooks/environments.md` §5: *Confirm email* on, SMTP via Resend (`smtp.resend.com`, 465, user `resend`,
+   password = the API key), Swedish templates. URL configuration with today's addresses:
+   - production: Site URL `https://maskinid.vercel.app`, redirect `https://maskinid.vercel.app/**` (later `https://app.maskinid.se/**`);
+   - staging: Site URL `https://maskinid-demo.vercel.app`, redirects `https://maskinid-demo.vercel.app/**`,
+     `https://maskinid-dev.vercel.app/**`, `https://*-maskinid.vercel.app/**` (later demo./dev.maskinid.se).
+5. **Switch production to the closed pilot**: set the GitHub `production` variables from `go-live.md` §2
+   (`DEMO_MODE=false`, `MOCK_IDENTITY=true`, `REQUIRE_ORG_APPROVAL=true`, `OPERATOR_EMAIL=maskinidab@gmail.com`,
+   the `*_PROVIDER=mock` set, `EMAIL_FROM`, `PUBLIC_APP_URL=https://maskinid.vercel.app` for now; **not**
+   `APP_ORIGIN`). Then GitHub → Actions → Deploy → Run workflow → target `production` → approve. That run also
+   makes maskinidab@gmail.com superadmin.
+6. **First login as operator in production** (https://maskinid.vercel.app): Demo-BankID, then the app asks for
+   two-factor (authenticator app) – required for the operator outside demo mode. Then **Admin** – the overview
+   should say *Pilotläge*.
+7. **Test the pilot end to end** (`go-live.md` §5): sign up with another e-mail → confirmation mail arrives from
+   `noreply@maskinid.se` → apply → appears under Admin → Organisationer + mail to the operator → approve → the
+   applicant gets mail and can use the app. Check Admin → E-postlogg and Admin → Jobb.
+8. **Operator on demo too**: sign up maskinidab@gmail.com on https://maskinid-demo.vercel.app, then run Deploy with
+   target `staging` (makes it superadmin there; dev shares the same accounts).
+9. **Vercel Analytics**: Analytics tab → Enable, on both `maskinid` and `maskinid-site`.
+10. **When `app.maskinid.se` works**: set `VITE_APP_URL=https://app.maskinid.se` in both Vercel projects
+    (Production), GitHub `production` `PUBLIC_APP_URL=https://app.maskinid.se`, Supabase production URLs; redeploy.
+    Same for demo/dev (`PUBLIC_APP_URL` in GitHub `staging`, Supabase staging URLs).
+
+**Remember**
+- Work on `dev`; promote `dev` → `staging` → `main` (PRs). `dev` shares demo's backend: don't push to `dev` during a demo.
+- Reset demo: GitHub → Actions → **Reseed demo** → type `demo`. It refuses production.
+- `npm run test:staging` walks rounds 8–13 on demo; round 12 needs an unused bank-financed machine
+  (`R12_SERIAL`, reseed first).
+- QR labels now carry `https://maskinid.se/m/…` (`VITE_SITE_URL`), so labels printed from production are final.
+
+---
+
+## Older notes (2026-10-10) – mostly done, kept for reference
 
 ### 0. Run Rikard's second round on staging ⚠️
 
