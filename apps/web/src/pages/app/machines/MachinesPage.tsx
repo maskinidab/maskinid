@@ -12,7 +12,7 @@ import type { MachineListItem, MachineStatus } from "../../../lib/api/types";
 import { formatDate, formatDateTime, formatNumber } from "../../../lib/format";
 import { MarketCandidates } from "./MarketCandidates";
 
-type Scope = "owned" | "used" | "registered" | "previous" | "all";
+type Scope = "owned" | "used" | "registered" | "previous" | "all" | "shared";
 const STATUSES: MachineStatus[] = ["active", "stolen", "blocked", "disputed", "scrapped", "exported", "deregistered"];
 
 interface Draft { id: string; draft_data: Record<string, unknown> & { make?: string; model?: string; step?: number }; updated_at: string }
@@ -26,6 +26,11 @@ export function MachinesPage() {
   const list = useRpc<{ total: number; items: MachineListItem[] }>("list_machines", { p_org_id: orgId, p_scope: scope, p_limit: 500 });
   const drafts = useRpc<Draft[]>("list_machine_drafts", { p_org_id: orgId });
   const departments = useRpc<{ id: string; name: string }[]>("list_departments", { p_org_id: orgId });
+  // Who has shared machines with us (ADR 0032): names the owner filter on the "Delade med oss" tab.
+  const mandates = useRpc<{ direction: string; status: string; principal: { id: string; name: string } | null }[]>("list_mandates", { p_org_id: orgId });
+  const sharers = [...new Map((mandates.data ?? [])
+    .filter((d) => d.direction === "received" && d.status === "active" && d.principal)
+    .map((d) => [d.principal!.id, d.principal!.name])).entries()];
   const delDraft = useRpcMutation<{ p_org_id: string; p_draft_id: string }>("delete_machine_draft");
   const canRegister = canWrite && (has("owner") || has("dealer") || has("financier") || has("inspector"));
 
@@ -62,6 +67,8 @@ export function MachinesPage() {
     ...(has("owner") ? [{ id: "used" as Scope, label: t("machines.scope_used") }] : []),
     ...(has("dealer") || has("financier") ? [{ id: "registered" as Scope, label: t("machines.scope_registered") }] : []),
     { id: "previous", label: t("machines.scope_previous") },
+    // Another company's machines we have been granted access to – a lender's fleet insight, a history request.
+    ...(sharers.length || scope === "shared" ? [{ id: "shared" as Scope, label: t("machines.scope_shared") }] : []),
   ];
 
   return (
@@ -97,12 +104,14 @@ export function MachinesPage() {
               { id: "financing", label: t("machines.filter_financing"),
                 options: [{ value: "yes", label: t("common.yes") }, { value: "pending", label: t("components.financing.pending") }, { value: "no", label: t("common.no") }],
                 match: (m, v) => v === "pending" ? !!m.has_pending_financing : m.has_active_financing === (v === "yes") },
+              ...(scope === "shared" && sharers.length ? [{ id: "owner", label: t("machines.filter_owner"), options: sharers.map(([id, name]) => ({ value: id, label: name })),
+                match: (m: MachineListItem, v: string) => m.owner_org_id === v }] : []),
               ...(departments.data?.length ? [{ id: "department", label: t("department.label"), options: departments.data.map((d) => ({ value: d.id, label: d.name })),
                 match: (m: MachineListItem, v: string) => (m.department as { id: string } | null | undefined)?.id === v }] : []),
               { id: "level", label: t("machines.filter_level"), options: [0, 1, 2].map((l) => ({ value: String(l), label: t(`level.${l}.name`) })),
                 match: (m, v) => String(m.verification_level) === v },
             ]}
-            empty={<EmptyState icon="maskin" title={t("machines.empty_title")} body={t("machines.empty_body")}
+            empty={scope === "shared" ? <EmptyState icon="sigill" title={t("machines.shared_empty")} body={t("machines.shared_empty_body")} /> : <EmptyState icon="maskin" title={t("machines.empty_title")} body={t("machines.empty_body")}
               action={canRegister ? { label: t("nav.register"), to: path("machines/new") } : undefined} />} />
         )}
       </div>

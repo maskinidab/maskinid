@@ -144,8 +144,11 @@ begin
         params := jsonb_build_object('type', typ, 'contract_ref', 'AVT-' || p.slot || '-' || upper(left(split_part(t, ':', 2), 3)),
           'start_date', (current_date - 25)::text, 'end_date', (current_date + 900)::text);
         sig := seed.sign(fin.org_id, 'register_encumbrance', mid, params);
+        -- Nordic Finance's lease carries the full terms, so the financing calculator has something to show (ADR 0029).
         perform public.register_encumbrance(fin.org_id, mid, typ::public.encumbrance_type, params ->> 'contract_ref',
-          (params ->> 'start_date')::date, (params ->> 'end_date')::date, null, null, sig);
+          (params ->> 'start_date')::date, (params ->> 'end_date')::date, null, null, sig, null,
+          case when split_part(t, ':', 2) = 'nordic' then jsonb_build_object('financing_amount', 1850000, 'down_payment', 350000,
+            'residual_value', 300000, 'amortization_months', 60, 'interest_rate', 6.2) end);
       end if;
     end loop;
 

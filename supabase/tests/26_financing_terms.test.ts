@@ -199,6 +199,29 @@ describe("financing terms: the agreement number is mandatory (ADR 0029)", () => 
     });
   });
 
+  it("the lender's bare prefix is not an agreement number", async () => {
+    // Picking a lender fills in its prefix ("NF-"), so "submit without filling anything in" sent the prefix alone
+    // and registered a financing the bank could not tie to any agreement.
+    await tx(async (t) => {
+      await t.as(null);
+      await t.q(`update public.organizations set settings = coalesce(settings, '{}'::jsonb)
+        || '{"financing_defaults":{"contract_ref_prefix":"FA-"}}'::jsonb where id = $1`, [ORGS.financier_a]);
+      const m = await registerAs(t, "owner_a");
+      await t.as("owner_a");
+      const report = (ref: string) => ({
+        p_org_id: ORGS.owner_a, p_machine_id: m.id, p_holder_org_id: ORGS.financier_a, p_type: "leasing",
+        p_contract_ref: ref, p_start_date: TODAY, p_end_date: NEXT_YEAR,
+      });
+      for (const ref of ["FA-", " fa- "]) {
+        const e = await t.rpcError("request_encumbrance", report(ref));
+        expect(e.code, ref).toBe("VALIDATION");
+        expect(e.detail).toMatchObject({ field: "contract_ref", reason: "required" });
+      }
+      await t.as("owner_a");
+      expect((await t.rpc<any>("request_encumbrance", report("FA-2026-17"))).ok).toBe(true);
+    });
+  });
+
   it("an agreement number longer than 100 characters is refused", async () => {
     await tx(async (t) => {
       const m = await registerAs(t, "owner_a");

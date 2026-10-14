@@ -29,7 +29,8 @@
     "sync:functions": "node scripts/sync-functions-shared.mjs",
     "lighthouse": "node scripts/lighthouse.mjs",
     "test:a11y": "playwright test --config e2e/playwright.config.ts a11y",
-    "dev:staging": "npm run dev -w @maskinid/web -- --mode staging"
+    "dev:staging": "npm run dev -w @maskinid/web -- --mode staging",
+    "test:staging": "playwright test --config e2e/staging.config.ts"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",

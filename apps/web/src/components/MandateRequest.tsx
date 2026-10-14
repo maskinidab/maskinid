@@ -10,12 +10,14 @@
  */
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { useOrg } from "../auth/OrgContext";
 import { Dialog } from "./Dialog";
 import { ErrorNotice, Notice } from "./Feedback";
 import { FormField } from "./FormField";
+import { Icon } from "./Icon";
 import { useSign } from "./Signature";
-import { queryClient, rpc } from "../lib/api/query";
+import { queryClient, rpc, useRpc } from "../lib/api/query";
 import { ApiError } from "../lib/backend";
 import { formatDate, todayIso } from "../lib/format";
 
@@ -59,6 +61,63 @@ function RequestDialog({ open, onClose, title, submitLabel, onSubmit, children }
   );
 }
 
+/** After sending: who it went to (without naming the owner, ADR 0032) and where to follow it. */
+function RequestSent({ fleet }: { fleet?: boolean }) {
+  const { t } = useTranslation();
+  const { path } = useOrg();
+  return (
+    <div className="stack-3">
+      <Notice kind="ok" title={t(fleet ? "mandate.request_sent_fleet" : "mandate.request_sent")}><p className="t-liten">{t("mandate.request_sent_next")}</p></Notice>
+      <p className="t-liten t-sekundar">{t("mandate.no_terms_note")}</p>
+      <div><Link className="mid-knapp mid-knapp-kontur mid-knapp-liten" to={path("mandates")}>{t("mandate.to_mandates")}</Link></div>
+    </div>
+  );
+}
+
+interface OwnRequest { id: string; machine_id: string | null; status: string; direction: string; created_at: string }
+
+/** Our own open request for this machine's history, if there is one. Reads the same list as Fullmakter. */
+function useOpenHistoryRequest(machineId: string) {
+  const { orgId } = useOrg();
+  const q = useRpc<OwnRequest[]>("list_mandates", { p_org_id: orgId });
+  return {
+    loading: q.isLoading,
+    open: (q.data ?? []).find((d) => d.machine_id === machineId && d.direction === "received" && d.status === "requested") ?? null,
+  };
+}
+
+/**
+ * Asking, or – once asked – what became of it. Without this a sent request vanished: the requester saw the same
+ * button again and had no way to tell that anything was waiting anywhere.
+ */
+export function RequestHistoryAction({ machineId, onAsk, compact }: { machineId: string; onAsk(): void; compact?: boolean }) {
+  const { t } = useTranslation();
+  const { orgId, isAdmin } = useOrg();
+  const { loading, open } = useOpenHistoryRequest(machineId);
+  // Nothing until we know: offering "ask" for a moment and then swapping it for "already asked" invites a
+  // click that the server refuses (MANDATE_ALREADY_OPEN).
+  if (loading) return null;
+  if (open) {
+    return (
+      <span className="mid-rad">
+        <span className={compact ? "t-liten t-sekundar" : "t-brodtext"}>{t("mandate.request_open", { date: formatDate(open.created_at) })}</span>
+        {isAdmin && (
+          <button type="button" className="mid-knapp mid-knapp-text mid-knapp-liten" onClick={async () => {
+            await rpc("revoke_mandate", { p_org_id: orgId, p_mandate_id: open.id });
+            await queryClient.invalidateQueries({ queryKey: ["rpc"] });
+          }}>{t("mandate.withdraw")}</button>
+        )}
+      </span>
+    );
+  }
+  if (!isAdmin) return null;
+  return (
+    <button type="button" className={compact ? "mid-knapp mid-knapp-kontur mid-knapp-liten" : "mid-knapp mid-knapp-primar"} onClick={onAsk}>
+      {!compact && <Icon name="sigill" />}{t("mandate.request_history")}
+    </button>
+  );
+}
+
 /** Ask the owner of one machine for its full history. */
 export function RequestMachineHistoryDialog({ machineId, open, onClose }: { machineId: string; open: boolean; onClose(): void }) {
   const { t } = useTranslation();
@@ -69,10 +128,7 @@ export function RequestMachineHistoryDialog({ machineId, open, onClose }: { mach
   if (open && sent) {
     return (
       <Dialog open onClose={() => { setSent(false); onClose(); }} title={t("mandate.request_history")}>
-        <div className="stack-3">
-          <Notice kind="ok" title={t("mandate.request_sent")} />
-          <p className="t-liten t-sekundar">{t("mandate.no_terms_note")}</p>
-        </div>
+        <RequestSent />
       </Dialog>
     );
   }
@@ -112,10 +168,7 @@ export function RequestFleetAccessDialog({ open, onClose }: { open: boolean; onC
   if (open && sent) {
     return (
       <Dialog open onClose={() => { setSent(false); onClose(); }} title={t("mandate.request_fleet")}>
-        <div className="stack-3">
-          <Notice kind="ok" title={t("mandate.request_sent")} />
-          <p className="t-liten t-sekundar">{t("mandate.no_terms_note")}</p>
-        </div>
+        <RequestSent fleet />
       </Dialog>
     );
   }

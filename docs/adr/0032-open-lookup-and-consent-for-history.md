@@ -72,3 +72,17 @@ assessment.
 Consent gives the **history**, never the lender's terms. A machine's `view` mandate yields `access: "full"` and
 the full timeline, and `supabase/tests/29_lookup_and_consent.test.ts` asserts that the financing amounts are still
 absent — the contract between an owner and its bank is not the owner's to share on the bank's behalf.
+
+**Addendum (2026-10-14): the request must not name the owner.** The lookup withholds the owner's name, but
+`request_mandate`, `list_mandates`, the decline notification and a principal-side revoke all returned it, so
+"request, then read Fullmakter" told anyone who owns a serial. Migration `20261014000001` hides the principal from
+the requester of a *machine* request until the owner approves (`app.mandate_hides_principal`); the UI says "the
+machine's owner". A fleet request is unaffected – the requester typed the organisation number. The same round made
+an open request visible to the requester: search and the history tab now show "sent, waiting for the owner" with a
+withdraw button instead of offering the request again, which is what made the flow look broken on staging.
+
+**Addendum 2 (2026-10-14): a consent you can browse.** A fleet-wide consent let the lender open any of the
+company's machines, but no list contained them – it could only open a machine whose regnr it already knew.
+Migration `20261014000002` adds the `list_machines` scope `shared`, defined by the same `app.has_mandate` test as
+the access itself, shown as Maskiner → "Delade med oss" with an owner filter and linked from Fullmakter and the
+portfolio.

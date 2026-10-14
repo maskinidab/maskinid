@@ -1,7 +1,7 @@
 # Testguide – MaskinID på staging
 
-Allt i den här guiden är provkört mot staging 2026-10-11, efter att databasen seedats om med den
-committade demoseeden. Den beskriver vilka konton som finns och varför, vilka maskiner som är förberedda
+Allt i den här guiden är provkört mot staging 2026-10-11, och rundorna 8–13 igen 2026-10-14 (automatiskt,
+se slutet av avsnitt 5), efter att databasen seedats om med den committade demoseeden. Den beskriver vilka konton som finns och varför, vilka maskiner som är förberedda
 för vilka scenarier, och hur du testar varje funktion.
 
 | | |
@@ -236,14 +236,17 @@ avtalsnummer ska vara obligatoriskt.
 
 1. `nordmaskin@demo.se` → en maskin i lagret utan belåning → fliken **Förbehåll** → **Lägg in finansiering
    manuellt**. Välj `Nordic Finance (demo)`.
-2. Klicka **Anmäl finansieringen** utan att fylla i något. Du får **"Avtalsnummer krävs."** – det är hela
-   poängen: banken måste kunna koppla maskinen till rätt finansieringsavtal.
+2. Avtalsreferensen fylls i med bankens prefix `NF-`. Klicka **Anmäl finansieringen** utan att skriva något
+   mer. Du får **"Avtalsnummer krävs."** – prefixet ensamt är inget avtalsnummer, och det är hela poängen:
+   banken måste kunna koppla maskinen till rätt finansieringsavtal.
 3. Fyll i avtalsnummer, och sedan finanssnurran: finansieringsbelopp `1 250 000`, kontantinsats `250 000`,
    restvärde `200 000`, amorteringstid `60`, ränta `6,45`. **Månadskostnaden räknas fram till 16 709 kr** och
    totalt kreditbelopp till 1 000 000 kr.
 4. **Skriv över månadskostnaden** om du vill – den sparas då som överskriven, så en senare formeländring aldrig
    skriver om bankens siffra.
-5. Signera. Logga in som `nordic@demo.se` → **Väntar på mig** → bekräfta. Banken ser samma uppgifter.
+5. Klicka **Anmäl finansieringen** – handlaren anmäler, banken bekräftar, så här signeras inget. Maskinen står
+   direkt som **Belåning anmäld**. Logga in som `nordic@demo.se` → **Väntar på mig** → *Förbehåll att bekräfta*
+   → **Hantera** → **Bekräfta förbehållet**. Banken ser samma uppgifter.
 6. **Det viktiga provet:** logga in som `syd@demo.se` (en annan handlare) eller `polisen@demo.se` och slå upp
    maskinen. Du ser att den är belånad och vem långivaren är, men **inga belopp**. De syns bara för ägaren och
    för den bank som håller förbehållet.
@@ -269,9 +272,16 @@ Rikards punkter om att enskild firma inte såg historiken, och att alla kontotyp
 
 1. `lena@demo.se` (enskild firma) → sökrutan högst upp (**Ctrl+K**) → `JCB3CX04278`.
 2. Du ser maskin, modell, status och **Belånad** – men inte vem långivaren är och inte historiken.
-3. Klicka **Begär full historik**, skriv en motivering och skicka.
+3. Klicka **Begär full historik**, skriv en motivering och skicka. Förfrågan går till **maskinens nuvarande
+   ägare**. Lena får inte veta vem det är förrän ägaren godkänt – sökningen visar inte ägaren, och förfrågan ska
+   inte vara ett sätt att ta reda på det. Sök igen: raden säger nu *"Förfrågan skickad … väntar på ägarens
+   godkännande"* med **Dra tillbaka**, och under **Fullmakter** står den som *Från maskinens ägare*.
 4. `berg@demo.se` → **Väntar på mig** → *Begäran om åtkomst att godkänna* → **Hantera** → **Godkänn åtkomst** →
    signera med Demo-BankID.
+
+   > Kör runda 10 **före** runda 2 och 12, eller nollställ emellan. Runda 2 avslutar inbytet av `JCB3CX04278`,
+   > så maskinen ägs därefter av Nordmaskin och har ingen belåning – då går Lenas förfrågan till Nordmaskins
+   > inkorg, inte till Bergs. Det var därför flödet såg trasigt ut på staging 2026-10-13.
 5. Tillbaka som `lena@demo.se`: maskinen går att öppna och **Historik** är full. Finansieringsbeloppen syns
    fortfarande inte – avtalet mellan Berg och banken är inte Bergs att dela vidare.
 6. `berg@demo.se` → **Fullmakter** → **Återkalla**. Historiken stängs igen direkt.
@@ -301,9 +311,13 @@ Rikards punkter om att enskild firma inte såg historiken, och att alla kontotyp
 
 1. `bank@demo.se` → **Portfölj**. Banken ser bara de maskiner den själv finansierar – så är det utan samtycke.
 2. Klicka **Begär insyn i maskinflottan**, ange `556701-2009` (Bergs Schakt) och ett slutdatum.
-3. `berg@demo.se` godkänner i inkorgen med Demo-BankID. Nu ser banken hela Bergs flotta och historiken, till och
-   med slutdatumet, och Berg kan återkalla när som helst.
-4. Priserna: utloggad finns ingen prislänk i sidhuvudet, footern eller på `/for/handlare`, och `/pricing`
+3. `berg@demo.se` godkänner i inkorgen med Demo-BankID.
+4. Tillbaka som `bank@demo.se`: **Maskiner → Delade med oss** listar hela Bergs flotta (även via **Fullmakter**
+   → *Alla maskiner · visa maskinerna*, eller **Visa delade maskinflottor** i Portföljen). Varje maskin går att
+   öppna med full historik, till och med slutdatumet. Finansieringsvillkoren för andra långivares avtal syns
+   fortfarande inte.
+5. `berg@demo.se` → **Fullmakter** → **Återkalla**. Listan töms direkt.
+6. Priserna: utloggad finns ingen prislänk i sidhuvudet, footern eller på `/for/handlare`, och `/pricing`
    skickar vidare till startsidan. Fliken **Betalning** är borta ur inställningarna och märkesbeställningen
    visar inget pris. Allt finns kvar i koden: `admin@demo.se` → **Funktionsflaggor** → `FEATURE_PRICING` → På.
 
@@ -361,12 +375,14 @@ Har du testat sönder något, eller vill börja om inför en demo:
 5. Kontrollera: `curl https://okgwcmgjdvtmbgjhvwwt.supabase.co/functions/v1/health` ska svara
    `"ok":true`.
 
-Hela guiden går också att provköra automatiskt – `test-results/staging-walkthrough.mjs` kör de sju första
-huvudrundorna i en headless webbläsare, och `test-results/verify-seed.mjs` kontrollerar att demodatan
-ligger rätt efter en omseedning.
+Rundorna 8–13 går att provköra automatiskt mot staging: `npm run test:staging` (`e2e/staging/rounds.staging.ts`)
+loggar in med demokontona och klickar igenom dem i en headless webbläsare. Den skriver i staging, men håller sig
+borta från guidens scenariomaskiner: runda 8 finansierar `PONBUFFAL12915` och runda 12 löser
+`LHRR92630256` (ändra med `R8_SERIAL`/`R12_SERIAL`), och samtyckena i runda 10 och 13 återkallas efteråt.
+Nollställ inför en demo.
 
-> **Obs:** `staging-walkthrough.mjs` skrevs före den här rundan och klickar bland annat på **Daglig kontroll**
-> och **Uthyrning** i handlarvyn, som nu är borta där (runda 11). Rundorna 8–13 täcks i stället av
-> `e2e/`-sviten: `financier.spec.ts` (finanssnurran), `dealer-view.spec.ts` (Inbytestest och modulerna),
-> `consent.spec.ts` (sök och samtycke), `payoff.spec.ts` (lösenbeskedet och bekräftelsen) och
-> `public.spec.ts` (priserna). Kör `npm run test:e2e` för hela svepet.
+Samma flöden täcks lokalt av `e2e/`-sviten (`npm run test:e2e`, mot databasen i webbläsaren):
+`financier.spec.ts` och `dealer.spec.ts` (finanssnurran och avtalsnumret), `dealer-view.spec.ts` (Inbytestest
+och modulerna), `consent.spec.ts` (sök, samtycke och flottinsyn), `payoff.spec.ts` (lösenbeskedet och
+bekräftelsen) och `public.spec.ts` (priserna). De tidigare skripten `test-results/staging-walkthrough.mjs` och
+`verify-seed.mjs` låg i en katalog som Playwright tömmer vid varje körning och finns inte längre.

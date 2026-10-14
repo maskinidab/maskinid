@@ -17,7 +17,7 @@ import { formatDate, formatReg } from "../../../lib/format";
 
 interface Mandate {
   id: string; kind: "consignment" | "power_of_attorney"; scopes: string[]; valid_from: string; valid_to: string; note: string | null;
-  status: string; effective_status: string; direction: "granted" | "received"; principal: OrgBrief; agent: OrgBrief;
+  status: string; effective_status: string; direction: "granted" | "received"; principal: OrgBrief | null; agent: OrgBrief;
   machine: { id: string; reg_number: string; make: string; model: string } | null;
   machine_id: string | null;
   /** Who started it, and therefore who has to act (ADR 0032). */
@@ -49,10 +49,15 @@ export function MandatesPage() {
           columns={[
             { id: "kind", header: t("common.type"), value: (d) => d.kind,
               cell: (d) => <><strong>{t(`mandate.kind.${d.kind}`)}</strong><br /><span className="t-liten t-sekundar">{d.scopes.map((s) => t(`mandate.scope.${s}`)).join(", ")}</span></> },
-            { id: "party", header: t("mandate.party"), value: (d) => (d.direction === "granted" ? d.agent.name : d.principal.name),
-              cell: (d) => <>{d.direction === "granted" ? t("mandate.to", { org: d.agent.name }) : t("mandate.from", { org: d.principal.name })}</> },
+            // A machine-history request does not name the owner until the owner approves (ADR 0032): principal is null.
+            { id: "party", header: t("mandate.party"), value: (d) => (d.direction === "granted" ? d.agent.name : d.principal?.name ?? t("mandate.the_owner")),
+              cell: (d) => <>{d.direction === "granted" ? t("mandate.to", { org: d.agent.name }) : t("mandate.from", { org: d.principal?.name ?? t("mandate.the_owner") })}</> },
             { id: "machine", header: t("machines.col_machine"), value: (d) => d.machine?.reg_number ?? "",
-              cell: (d) => (d.machine ? <Link to={path(`machines/${d.machine.id}`)}><RegNumber value={d.machine.reg_number} /></Link> : t("mandate.all_machines")) },
+              cell: (d) => (d.machine ? <Link to={path(`machines/${d.machine.id}`)}><RegNumber value={d.machine.reg_number} /></Link>
+                // A fleet-wide consent we hold: the machines are listed under Maskiner → Delade med oss.
+                : d.direction === "received" && d.effective_status === "active" && d.kind === "power_of_attorney"
+                  ? <Link to={path("machines?scope=shared")}>{t("mandate.all_machines")} · {t("mandate.show_machines")}</Link>
+                  : t("mandate.all_machines")) },
             { id: "valid", header: t("mandate.valid_to"), value: (d) => d.valid_to, sortable: true, cell: (d) => formatDate(d.valid_to) },
             { id: "status", header: t("common.status"), value: (d) => d.effective_status,
               cell: (d) => <StatusBadge kind={KIND[d.effective_status as keyof typeof KIND] ?? "neutral"}>{t(`mandate.status.${d.effective_status}`)}</StatusBadge> },

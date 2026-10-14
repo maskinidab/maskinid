@@ -2557,13 +2557,17 @@
   "empty_title": "Inga maskiner här ännu",
   "filter_financing": "Förbehåll",
   "filter_level": "Nivå",
+  "filter_owner": "Ägare",
   "lead": "Maskiner ni äger, brukar eller har registrerat.",
   "scope_all": "Alla",
   "scope_owned": "Ägda",
   "scope_previous": "Tidigare maskiner",
   "scope_registered": "Registrerade åt kund",
+  "scope_shared": "Delade med oss",
   "scope_used": "Brukade",
   "search_placeholder": "Sök regnr, serienummer eller modell",
+  "shared_empty": "Inga delade maskiner",
+  "shared_empty_body": "Maskiner som ett annat företag har gett er insyn i visas här, så länge samtycket gäller.",
   "title": "Maskiner",
   "transfer_open": "Ägarbyte pågår"
  },
@@ -2601,8 +2605,11 @@
   "request_history": "Begär full historik",
   "request_history_lead": "Maskinens ägare får en förfrågan och avgör själv om historiken ska delas. Du ser grundinformation och om maskinen är belånad redan nu.",
   "request_message": "Varför behöver ni åtkomst?",
+  "request_open": "Förfrågan skickad {{date}} – väntar på ägarens godkännande.",
   "request_principal": "Företagets organisationsnummer",
-  "request_sent": "Förfrågan är skickad. Ägaren avgör.",
+  "request_sent": "Förfrågan är skickad till maskinens ägare.",
+  "request_sent_fleet": "Förfrågan är skickad till företaget.",
+  "request_sent_next": "Du får en notis när ägaren har svarat. Förfrågan syns under Fullmakter, där du också kan dra tillbaka den.",
   "request_valid_to": "Åtkomst till och med",
   "requested_status": "Väntar på ägarens godkännande",
   "revoke": "Återkalla",
@@ -2618,6 +2625,8 @@
   },
   "scopes": "Behörigheter",
   "search_agent": "Sök organisation",
+  "shared_fleets": "Visa delade maskinflottor",
+  "show_machines": "visa maskinerna",
   "sign_grant": "Signera med BankID",
   "status": {
    "active": "Aktiv",
@@ -2628,7 +2637,9 @@
    "requested": "Begärd",
    "revoked": "Återkallad"
   },
+  "the_owner": "maskinens ägare",
   "to": "Till {{org}}",
+  "to_mandates": "Gå till Fullmakter",
   "valid_hint": "Högst två år.",
   "valid_to": "Giltig till",
   "what_fleet": "hela er maskinflotta",
@@ -3006,7 +3017,7 @@
     "title": "Åtkomst godkänd"
    },
    "request_declined": {
-    "body": "{{principal}} avslog er begäran om åtkomst.",
+    "body": "Er begäran om åtkomst avslogs av {{principal}}.",
     "title": "Åtkomst avslagen"
    },
    "requested": {

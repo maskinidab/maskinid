@@ -2557,13 +2557,17 @@
   "empty_title": "No machines here yet",
   "filter_financing": "Encumbrance",
   "filter_level": "Level",
+  "filter_owner": "Owner",
   "lead": "Machines you own, use or have registered.",
   "scope_all": "All",
   "scope_owned": "Owned",
   "scope_previous": "Previous machines",
   "scope_registered": "Registered for customers",
+  "scope_shared": "Shared with us",
   "scope_used": "Used",
   "search_placeholder": "Search reg no, serial number or model",
+  "shared_empty": "No shared machines",
+  "shared_empty_body": "Machines another company has given you insight into are listed here for as long as the consent runs.",
   "title": "Machines",
   "transfer_open": "Transfer in progress"
  },
@@ -2601,8 +2605,11 @@
   "request_history": "Request the full history",
   "request_history_lead": "The machine's owner gets a request and decides whether the history is shared. You can already see the basic information and whether the machine is financed.",
   "request_message": "Why do you need access?",
+  "request_open": "Request sent {{date}} – waiting for the owner's approval.",
   "request_principal": "The company's organisation number",
-  "request_sent": "The request has been sent. The owner decides.",
+  "request_sent": "The request has been sent to the machine's owner.",
+  "request_sent_fleet": "The request has been sent to the company.",
+  "request_sent_next": "You will be notified when the owner has answered. The request is listed under Mandates, where you can also withdraw it.",
   "request_valid_to": "Access until",
   "requested_status": "Waiting for the owner's approval",
   "revoke": "Revoke",
@@ -2618,6 +2625,8 @@
   },
   "scopes": "Permissions",
   "search_agent": "Search organisation",
+  "shared_fleets": "Show shared fleets",
+  "show_machines": "show the machines",
   "sign_grant": "Sign with BankID",
   "status": {
    "active": "Active",
@@ -2628,7 +2637,9 @@
    "requested": "Requested",
    "revoked": "Revoked"
   },
+  "the_owner": "the machine's owner",
   "to": "To {{org}}",
+  "to_mandates": "Go to Mandates",
   "valid_hint": "At most two years.",
   "valid_to": "Valid until",
   "what_fleet": "your whole machine fleet",
@@ -3006,7 +3017,7 @@
     "title": "Access approved"
    },
    "request_declined": {
-    "body": "{{principal}} declined your access request.",
+    "body": "Your access request was declined by {{principal}}.",
     "title": "Access declined"
    },
    "requested": {

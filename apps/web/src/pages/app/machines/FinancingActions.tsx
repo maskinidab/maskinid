@@ -106,9 +106,11 @@ const EMPTY_FORM: FinancingForm = { type: "ownership_reservation", contract_ref:
  * be able to tie the machine to the right financing agreement), and SQL enforces it again in
  * app.require_contract_ref so an API client cannot skip it.
  */
-function financingError(form: FinancingForm, holder: PickedFinancier | null, t: (k: string) => string): string | null {
+function financingError(form: FinancingForm, holder: PickedFinancier | null, t: (k: string) => string, prefix = ""): string | null {
   if (!holder) return t("common.required");
-  if (!form.contract_ref.trim()) return t("actions.encumbrance.contract_ref_required");
+  // The lender's prefix is pre-filled as a start, and is not an agreement number on its own.
+  const ref = form.contract_ref.trim();
+  if (!ref || (prefix.trim() && ref.toLowerCase() === prefix.trim().toLowerCase())) return t("actions.encumbrance.contract_ref_required");
   return termsError(form.terms, t);
 }
 
@@ -261,6 +263,7 @@ export function ManualFinancingDialog({ m, open, onClose }: { m: MachineView; op
   const { orgId } = useOrg();
   const [form, setForm] = useState<FinancingForm>(EMPTY_FORM);
   const [holder, setHolder] = useState<PickedFinancier | null>(null);
+  const [prefix, setPrefix] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const set = <K extends keyof FinancingForm>(k: K, v: FinancingForm[K]) => setForm((f) => ({ ...f, [k]: v }));
   const setTerm = <K extends keyof TermsForm>(k: K, v: TermsForm[K]) => setForm((f) => ({ ...f, terms: { ...f.terms, [k]: v } }));
@@ -274,7 +277,7 @@ export function ManualFinancingDialog({ m, open, onClose }: { m: MachineView; op
       submitLabel={t("actions.financing.submit")}
       onSubmit={async () => {
         setErr(null);
-        const bad = financingError(form, holder, t);
+        const bad = financingError(form, holder, t, prefix);
         if (bad) { setErr(bad); throw new Error("invalid"); }
         const months = form.terms.amortization_months;
         const end = form.end || (months ? endFromTerm(form.start, Number(months)) : "");
@@ -295,6 +298,7 @@ export function ManualFinancingDialog({ m, open, onClose }: { m: MachineView; op
         onChange={setHolder}
         onProfile={(p: FinancierProfile | null) => {
           const d = p?.financing_defaults;
+          setPrefix(d?.contract_ref_prefix ?? "");
           if (d?.default_type && ENC_TYPES.includes(d.default_type)) set("type", d.default_type);
           if (d?.default_term_months) setTerm("amortization_months", String(d.default_term_months));
           if (d?.contract_ref_prefix && !form.contract_ref) set("contract_ref", d.contract_ref_prefix);
