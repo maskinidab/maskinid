@@ -189,6 +189,10 @@ test("handlare: anmäld finansiering syns direkt som \"Belåning anmäld\"", asy
   await page.getByRole("tabpanel", { name: "Förbehåll" }).getByRole("button", { name: "Lägg in finansiering manuellt" }).click();
   const dialog = page.locator("dialog[open]");
   await dialog.getByRole("combobox", { name: "Långivare" }).selectOption({ label: "DNB Finans (demo)" });
+  // The bank's prefix is filled in as a start, and submitting it alone is refused: it is not an agreement number.
+  await expect(dialog.getByLabel("Avtalsreferens")).toHaveValue("DNB-");
+  await dialog.locator("button[type=submit]").click();
+  await expect(dialog.getByText("Avtalsnummer krävs.")).toBeVisible();
   // Filled explicitly: the prefix autofill arrives asynchronously and the agreement number is mandatory (ADR 0029).
   await dialog.getByLabel("Avtalsreferens").fill("DNB-2026-4711");
   await dialog.getByLabel("Slutdatum").fill(new Date(Date.now() + 3 * 365 * 86_400_000).toISOString().slice(0, 10));
