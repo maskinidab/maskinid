@@ -294,6 +294,32 @@ Status: ✅ klart · 🔄 pågår · ⬜ ej påbörjat
   organisationens namn ⇒ migration `view_as_read_only` (skrivspärr via `require_actor` + triggrar, `VIEW_AS_READ_ONLY`).
   `/status` visar schemalagda jobb. README omskriven: uppstart på 10 minuter. ADR 0024, öppna frågor 34–37.
 
+## Kontroll av runda 8–13 på staging (2026-10-14)
+
+Produktägaren såg att Nordic Finance saknade konto och att en åtkomstbegäran inte gick att godkänna. Tre
+migrationer (`20261014000001`–`20261014000003`), tillägg i ADR 0032.
+
+- **Staging var aldrig omseedad efter runda 8–13.** Migrationerna låg ute, men seeden körs inte av `db push`:
+  `nordic@demo.se` fanns inte, och en tidigare körning av runda 2 hade flyttat `JCB3CX04278` till Nordmaskin –
+  så Lenas förfrågan hamnade i Nordmaskins inkorg, inte Bergs. Omseedad via MCP: datatabellerna tömdes (de nio
+  tabeller som migrationerna själva fyller – config, jobb, planer, juridik, modeller – behölls, bestämt genom att
+  bygga en databas med bara migrationer i PGlite), sedan de elva seedfilerna i ordning. Guiden säger nu att runda
+  10 ska köras före runda 2/12.
+- **Åtkomstbegäran försvann för den som frågade** – samma knapp igen, inget som sa var den låg. Nu "Förfrågan
+  skickad … väntar på ägarens godkännande" med **Dra tillbaka** i sökningen och på historikfliken.
+- **Begäran avslöjade ägaren.** `request_mandate`, `list_mandates`, avslagsnotisen och en återkallelse från
+  ägaren returnerade ägarens namn, som uppslaget medvetet döljer. Döljs nu tills ägaren godkänt
+  (`app.mandate_hides_principal`).
+- **Flottinsynen (runda 13) gick inte att se.** Ett samtycke för hela flottan gav åtkomst men ingen lista: banken
+  kunde bara öppna en maskin vars regnr den redan kände till. Nytt scope `shared` i `list_machines`, "Delade med
+  oss" under Maskiner, länkat från Fullmakter och Portföljen.
+- **Avtalsnumret var inte obligatoriskt i praktiken.** Bankens prefix (`NF-`) fylls i, och det ensamt godtogs –
+  runda 8:s "Avtalsnummer krävs." kom aldrig. Trigger på `encumbrances` + kontroll i handlarens dialog.
+- **Nordics leasing saknade villkoren** som guiden lovade; seeden sätter dem nu och `00_seed_data` kontrollerar.
+- **Provkörning:** `npm run test:staging` (`e2e/staging/rounds.staging.ts`) klickar igenom runda 8–13 mot
+  staging – alla sex gröna 2026-10-14. De gamla `test-results/*.mjs`-skripten var otrackade i en katalog som
+  Playwright tömmer och är borta; ersatta av den här.
+
 ## Rikards andra runda (2026-10-13): belopp, inbytestest, handlarvyn, behörigheter
 
 Tretton punkter efter produktägarens andra provkörning. Sju migrationer (`20261013000001`–`20261013000007`),
